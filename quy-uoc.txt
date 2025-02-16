@@ -1,0 +1,26 @@
+==Tên file: tên trang-(ten san pham), viết thường không dấu, tiếng Việt (trừ trang index.html), những trang của Admin thì lưu hết trong thư mục admin
+Vd: trangchu.html, phanloai-ao.html, phanloai-quan.html, ...
+
+==Vị trí lưu file
+   =admin: chứ code các trang bên admin
+   =assets:  Chứa tài nguyên chung (hình ảnh, font, icon, v.v.)
+     =images: Chứa hình ảnh
+     =font: Chứa font chữ
+     =libs: chứa các thư viện (bootstrap, tailwin, ...)
+     =icons: chứ các icon
+     =components: chứa thành phần tái sử dụng
+   =pages: Chứa các trang HTML riêng lẻ
+   =php: chứa các file php
+   =src: chứa source code chính
+    =css: Chứa file CSS
+    =js: chứ các file javascript
+   =php-api: chứa các file php và api (nếu có dùng)
+   
+
+==Lưu ý khi PUSH/ PULL code
+  =Không push vào nhánh master, release, develop, Chỉ push lên nhánh đang viết
+  =Pull code trước khi push
+  =Nhánh feature đầu tiên tạo từ nhánh master
+  =Tạo nhánh mới từ nhánh feature/... vừa viết
+  =Không push file rác
+  =Commit rõ ràng 
