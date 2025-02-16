@@ -20,7 +20,6 @@ Vd: trangchu.html, phanloai-ao.html, phanloai-quan.html, ...
 
 ==Lưu ý khi PUSH code
 =Không push vào nhánh master, develop, release, chỉ push lên nhánh đang viết
-=Không TỰ DUYỆT Pull Request
-=Khi viết một tính năng nào đó thì tạo nhánh mới, đặt tên nhánh là tính năng đang viết (đặt tên như trên kia)
-=Vd: dangnhap, dangky, trangchu, ...
+=Khi viết một tính năng nào đó thì tạo nhánh mới, đặt tên nhánh là feature/tính năng đang viết (đặt tên như trên kia)
+=Vd: feature/dangnhap, feature/dangky, feature/trangchu, ...
 =Mô tả chi tiết khi commit
