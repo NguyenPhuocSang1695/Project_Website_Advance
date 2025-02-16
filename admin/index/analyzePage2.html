@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>Thống Kê Kinh Doanh</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  
+  <link rel="stylesheet" href="../style/header.css">
+  <link rel="stylesheet" href="../style/sidebar.css">
+  <link rel="stylesheet" href="../icon/css/all.css">
+  <link rel="stylesheet" href="../style/generall.css">
+  <link rel="stylesheet" href="../style/analyzeStyle.css">
+  <link rel="stylesheet" href="../style/main.css">
+  <link rel="stylesheet" href="../icon/css/fontawesome.min.css">
+  <!-- Add reponsive -->
+  <link rel="stylesheet" href="../style/reponsiveAnalyze.css">
+  <!-- Add bootstrap -->
+  <link rel="stylesheet" href="./asset/bootstrap/css/bootstrap.min.css">
+  <!-- Add login function -->
+  <link rel="stylesheet" href="../style/LogInfo.css">
+  <!-- Add charts -->
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+<div class="header">
+    <div class="index-menu">
+      <i class="fa-solid fa-bars" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
+        aria-controls="offcanvasExample">
+      </i>
+      <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div style=" 
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: rgb(176, 176, 176);" class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasExampleLabel">Mục lục</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <a href="homePage.html" style="text-decoration: none; color: black;">
+            <div class="container-function-selection">
+              <button class="button-function-selection">
+                <i class="fa-solid fa-house" style="
+                  font-size: 20px;
+                  color: #FAD4AE;
+                  "></i>
+              </button>
+              <p>Trang chủ</p>
+            </div>
+          </a>
+          <a href="wareHouse.html" style="text-decoration: none; color: black;">
+            <div class="container-function-selection">
+              <button class="button-function-selection">
+                <i class="fa-solid fa-warehouse" style="font-size: 20px;
+                  color: #FAD4AE;
+              "></i></button>
+              <p>Kho hàng</p>
+            </div>
+          </a>
+          <a href="customer.html" style="text-decoration: none; color: black;">
+            <div class="container-function-selection">
+              <button class="button-function-selection">
+                <i class="fa-solid fa-users" style="
+                              font-size: 20px;
+                              color: #FAD4AE;
+                          "></i>
+              </button>
+              <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
+            </div>
+          </a>
+          <a href="orderPage.html" style="text-decoration: none; color: black;">
+            <div class="container-function-selection">
+              <button class="button-function-selection" >
+                <i class="fa-solid fa-list-check" style="
+                          font-size: 18px;
+                          color: #FAD4AE;
+                          "></i>
+              </button>
+              <p style="color:black">Đơn hàng</p>
+            </div>
+          </a>
+          <a href="analyzePage.html" style="text-decoration: none; color: black;">
+            <div class="container-function-selection">
+              <button class="button-function-selection" style="background-color: #6aa173;">
+                <i class="fa-solid fa-chart-simple" style="
+                          font-size: 20px;
+                          color: #FAD4AE;
+                      "></i>
+              </button>
+              <p>Thống kê</p>
+            </div>
+          </a>
+          <a href="accountPage.html" style="text-decoration: none; color: black;">
+            <div class="container-function-selection">
+              <button class="button-function-selection">
+                <i class="fa-solid fa-circle-user" style="
+                           font-size: 20px;
+                           color: #FAD4AE;
+                       "></i>
+              </button>
+              <p style="color:black">Tài khoản</p>
+            </div>
+          </a>
+        </div>
+      </div>
+  
+    </div>
+    <div class="header-left-section">
+      <p class="header-left-title">Thống kê</p>
+    </div>
+    <div class="header-middle-section">
+      <img class="logo-store" src="../image/logo.webp">
+    </div>
+    <div class="header-right-section">
+      <div class="bell-notification">
+        <i class="fa-regular fa-bell" style="
+                        color: #64792c;
+                        font-size: 45px;
+                        width:100%;
+                        "></i>
+      </div>
+      <div>
+        <div class="position-employee">
+          <p>Nhân viên</p>
+        </div>
+        <div class="name-employee">
+          <p>Nguyen Chuong</p>
+        </div>
+      </div>
+      <div>
+        <img class="avatar" class src="../image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
+      </div>
+      <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+        aria-labelledby="offcanvasWithBothOptionsLabel">
+        <div style=" 
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: rgb(176, 176, 176);" class="offcanvas-header">
+          <img class="avatar" class src="../image/chuong-avatar.jpg" alt="">
+          <div style="display: flex; flex-direction: column; height: 95px;">
+            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">NgNguyenChuong</h4>
+            <h5>Ng_Nguyen_Chuong</h5>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <a href="accountPage.html" class="navbar_user">
+            <i class="fa-solid fa-user"></i>
+            <p>Thông tin cá nhân </p>
+          </a>
+          <a href="#logoutModal" class="navbar_logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <p>Đăng xuất</p>
+          </a>
+          <div id="logoutModal" class="modal">
+            <div class="modal_content">
+              <h2>Xác nhận đăng xuất</h2>
+              <p>Bạn có chắc chắn muốn đăng xuất không?</p>
+              <div class="modal_actions">
+                <a href="../index.html" class="btn_2 confirm">Đăng xuất</a>
+                <a href="#" class="btn_2 cancel">Hủy</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
+  
+  <div class="main-container">
+    <div class="side-bar">
+      <div class="backToHome">
+        <a href="homePage.html" style="text-decoration: none; color: black;">
+          <div class="container-function-selection">
+            <button class="button-function-selection" style="margin-top: 35px;">
+              <i class="fa-solid fa-house" style="
+              font-size: 20px;
+              color: #FAD4AE;
+              "></i>
+            </button>
+            <p>Trang chủ</p>
+          </div>
+        </a>
+      </div>
+      <a href="wareHouse.html" style="text-decoration: none; color: black;">
+        <div class="container-function-selection">
+          <button class="button-function-selection">
+            <i class="fa-solid fa-warehouse" style="font-size: 20px;
+            color: #FAD4AE;
+        "></i></button>
+          <p>Kho hàng</p>
+        </div>
+      </a>
+      <a href="customer.html" style="text-decoration: none; color: black;">
+      <div class="container-function-selection">
+        <button class="button-function-selection">
+          <i class="fa-solid fa-users" style="
+                        font-size: 20px;
+                        color: #FAD4AE;
+                    "></i>
+        </button>
+        <p>Khách hàng</p>
+      </div>
+      </a>
+      <a href="orderPage.html" style="text-decoration: none; color: black;">
+        <div class="container-function-selection">
+          <button class="button-function-selection" >
+            <i class="fa-solid fa-list-check" style="
+                    font-size: 20px;
+                    color: #FAD4AE;
+                    "></i>
+          </button>
+          <p>Đơn hàng</p>
+        </div>
+      </a>
+      <a href="analyzePage.html" style="text-decoration: none; color: black;">
+        <div class="container-function-selection">
+          <button class="button-function-selection" style="background-color: #6aa173;">
+            <i class="fa-solid fa-chart-simple" style="
+                    font-size: 20px;
+                    color: #FAD4AE;
+                "></i>
+          </button>
+          <p>Thống kê</p>
+        </div>
+      </a>
+      <a href="accountPage.html" style="text-decoration: none; color: black;">
+        <div class="container-function-selection">
+          <button class="button-function-selection">
+            <i class="fa-solid fa-circle-user" style="
+                     font-size: 20px;
+                     color: #FAD4AE;
+                 "></i>
+          </button>
+          <p>Tài khoản</p>
+        </div>
+      </a>
+    </div>
+    <!-- Phần Body -->
+    <div class="container-analyze content">
+      <!-- Tiêu đề trang -->
+      <div class="container-bar-operation">
+        <p style="font-size: 30px;
+                font-weight:700px;">
+          Chi tiết thống kê</p>
+      </div>
+      <!-- Phím lọc -->
+      <div class="filter-option">
+        <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i
+            class="fa-solid fa-filter">
+            <p style="font-family:Arial, sans-serif;margin-left: 3px; ">
+              Bộ lọc</p>
+          </i></button>
+        <ul class="dropdown-menu">
+          <li>
+            <label for="filter-select" style="margin:auto">Thống kê</label>
+            <select name="filter-select" id="filter-select" style="width: 45%;">
+              <option value>Tất cả</option>
+              <option value>Doanh số</option>
+              <option value>Sản phẩm bán chạy</option>
+              <option value>Nhân viên</option>
+              <option value>Đơn hàng</option>
+            </select>
+          </li> <br>
+          <li>
+            <label for="filter-select">
+              <p style="margin:auto">Loại sản phẩm</p>
+            </label>
+            <select name="filter-select" id="filter-select" style="width: 45%;">
+              <option value="All">Tất cả</option>
+              <option value="Meat">Thịt</option>
+              <option value="Vegetable">Rau</option>
+              <option value="Egg">Trứng</option>
+              <option value="Fruit">Trái cây</option>
+            </select>
+          </li><br>
+          <li>
+            <label for="date-from">
+              <p style="margin:auto">Từ ngày:</p>
+            </label>
+            <input type="date" id="date-from">
+
+          </li> <br>
+          <li>
+            <label for="date-to">
+              <p style="margin:auto">Đến ngày:</p>
+            </label>
+            <input type="date" id="date-to">
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li style="margin-left:50px ;"> <button type="button" class="filter-button">Xác nhận</button></li>
+        </ul>
+      </div>
+      <!-- Chọn khoảng thời gian -->
+      <div class="filter-section">
+        <form action="analyzePage.html" method="GET">
+          <label for="filter-select">Thống kê</label>
+          <select name="filter-select" id="filter-select" style="width: 100px; text-align: center;">
+            <option value>Tất cả</option>
+            <option value>Doanh số</option>
+            <option value>Sản phẩm bán chạy</option>
+            <option value>Nhân viên</option>
+            <option value>Đơn hàng</option>
+          </select>
+          <label for="filter-select">
+            <p style="margin-left: 10px;">Loại sản phẩm</p>
+          </label>
+          <select name="filter-select" id="filter-select" style="width: 100px; text-align: center;">
+            <option value="All">Tất cả</option>
+            <option value="Meat">Thịt</option>
+            <option value="Vegetable">Rau</option>
+            <option value="Egg">Trứng</option>
+            <option value="Fruit">Trái cây</option>
+          </select>
+          <label for="date-from">
+            <p style="margin-left: 10px;">Từ ngày:</p>
+          </label>
+          <input type="date" id="date-from">
+
+          <label for="date-to">
+            <p style="margin-left: 10px;">Đến ngày:</p>
+          </label>
+          <input type="date" id="date-to">
+          <button type="submit" class="filter-button">Lọc dữ liệu</button>
+        </form>
+      </div>
+
+      <!-- Thống kê mặt hàng -->
+      <div class="statistic-section">
+        <h2>Các mặt hàng bán ra</h2>
+        <!-- Thực phẩm bán chạy -->
+        <table class="statistic-table">
+          <thead>
+            <tr>
+              <th>Mặt hàng</th>
+              <th>Số lượng bán ra</th>
+              <th>Tổng tiền thu được (VND) </th>
+              <th>Xem hóa đơn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Thịt bò kobe</td>
+              <td>50</td>
+
+              <td>12,500,000</td>
+              <td><a class="detail-info" href="orderDetail1.html"><span>Xem chi tiết </span><i
+                    class="fa-solid fa-circle-info"></i></a></td>
+            </tr>
+            <tr>
+              <td>Thịt heo</td>
+              <td>30</td>
+              <td>900,000</td>
+              <td><a class="detail-info" href="orderDetail1.html"><span>Xem chi tiết </span><i class="fa-solid fa-circle-info"></i></a></td>
+            </tr>
+            <tr>
+              <td>Thịt bò Mỹ</td>
+              <td>100</td>
+              <td>28,000,000</td>
+              <td><a class="detail-info" href="orderDetail1.html"><span>Xem chi tiết </span><i class="fa-solid fa-circle-info"></i></a></td>
+            </tr>
+            <tr>
+              <td>Gạo ST 25</td>
+              <td>45</td>
+              <td>2,900,000</td>
+              <td><a class="detail-info" href="orderDetail1.html"><span>Xem chi tiết </span><i class="fa-solid fa-circle-info"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 10px;" class="hide-text"><b>.Mặt hàng bán chạy nhất:</b> Thịt bò Mỹ (số lượng bán ra: 100)
+        </p> <br>
+        <p style="margin-top: 10px;" class="hide-text"><b>.Mặt hàng bán ế nhất:</b> Củ cải (số lượng bán ra: 30 )</p>
+
+      </div>
+      <!-- Thống kê khách hàng -->
+      <div class="statistic-section ">
+        <h2>Top 5 khách hàng mua nhiều đơn nhất tuần qua</h2>
+        <table class="statistic-table">
+          <thead>
+            <tr>
+              <th>Mã đơn hàng</th>
+              <th>Khách Hàng</th>
+              <th class="hide-index-smartphone ">Đơn hàng chủ yếu</th>
+              <th class="hide-index-smartphone ">Tổng Số Hóa Đơn</th>
+              <th>Tổng Doanh Thu (VND) </th>
+              <th>Xem đơn hàng</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>DCT123</td>
+              <td>Trần Quốc An</td>
+              <td class="hide-index-smartphone "> Cà rốt, thịt heo</td>
+              <td class="hide-index-smartphone ">10</td>
+              <td>25,000 </td>
+              <td><a class="detail-info" href="customer.html"><span>Xem chi tiết </span><i
+                    class="fa-solid fa-circle-info"></i></a></td>
+
+            </tr>
+            <tr>
+              <td>DCT124</td>
+              <td>Nguyễn Nguyên Chương</td>
+              <td class="hide-index-smartphone">Gạo ST25,thịt gà, rau muống
+              </td>
+              <td class="hide-index-smartphone">8</td>
+              <td>800,000</td>
+              <td><a class="detail-info" href="customer.html"><span>Xem chi tiết </span><i
+                    class="fa-solid fa-circle-info"></i></a></td>
+
+            </tr>
+            <tr>
+              <td>DCT126</td>
+              <td>Đỗ Thái Hòa</td>
+              <td class="hide-index-smartphone ">Thăn bò</td>
+              <td class="hide-index-smartphone ">8</td>
+              <td>800,000</td>
+
+              <td><a class="detail-info" href="customer.html"><span>Xem chi tiết </span><i
+                    class="fa-solid fa-circle-info"></i></a></td>
+            </tr>
+            <tr>
+              <td>DCT120</td>
+              <td>Nguyễn Văn A</td>
+              <td class="hide-index-smartphone ">Thăn bò</td>
+              <td class="hide-index-smartphone ">2</td>
+              <td>350,000</td>
+
+              <td><a class="detail-info" href="customer.html"><span>Xem chi tiết </span><i
+                    class="fa-solid fa-circle-info"></i></a></td>
+            </tr>
+            <tr>
+              <td>DCT100</td>
+              <td>Trần Thị B</td>
+              <td class="hide-index-smartphone ">Cà rốt, cải thảo</td>
+              <td class="hide-index-smartphone ">8</td>
+              <td>400,000 </td>
+
+              <td><a class="detail-info" href="customer.html"><span>Xem chi tiết </span><i
+                    class="fa-solid fa-circle-info"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Biểu đồ thống kê -->
+      <div class="statistic-section">
+        <h2>Thống kê quý 1-2024</h2>
+        <canvas class="chart-container" style="display: block;" id="visitors-chart" height="100"></canvas>
+      </div>
+    </div>
+  </div>
+  <!-- Script cho biểu đồ-->
+  <script src="../icon/js/Chart.min.js"></script>
+  <script src="../icon/js/chart.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+.container-order {
+  display: flex;
+    flex-direction: row;
+    margin-top: 100px;
+    margin-left: 50px;
+    margin-right: 100px;
+    width:200px;
+    height: 300px;
+    justify-content: space-around;
+    
+}
+
+.searching {
+  display:flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 300px;
+  
+}
+.Search-bar {
+  
+  padding-right: 500px;
+  margin-left:500px;
+margin-left: 70px;
+ height: 30px;
+ margin-top: 50px;
+ border-radius: 12px;
+ font-size: 15px;
+ margin-right: 10px ;
+border-width: 2px;
+text-align: start;
+}
+.BOX {
+  font-size: 50px;
+  margin-left: 150px;
+  margin-bottom: 500px;
+  border-color: gray;
+  border-style: solid ;
+
+}

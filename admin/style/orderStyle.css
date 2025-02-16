@@ -1,0 +1,152 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; 
+  height: 100%;
+}
+
+
+.container-order-management {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 95%; 
+  padding: 20px;
+}
+
+.main-container {
+  display: flex;
+  height: calc(100vh - 100px);
+  overflow: hidden;
+  margin-left: 10px;
+}
+.main-content {
+  flex: 1;
+  background-color: #fff;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+
+
+.statistic-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.statistic-table th,
+.statistic-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.statistic-table th {
+  background-color: #f2f2f2;
+}
+
+.statistic-table img {
+  width: 150px;
+}
+
+
+.filter-section {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 16px;
+  margin: 20px;
+}
+
+
+.filter-button {
+  background-color: #6aa173;
+  border: none;
+  padding: 8px 15px;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.filter-button:hover {
+  background-color: #578b59;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: #000;
+  font-weight: bold;
+}
+
+.status.pending {
+  background-color: yellow;
+}
+
+.status.pending2 {
+  background-color: #00ff51;
+}
+
+.status.pending3 {
+  background-color: #ff0000;
+}
+
+.status.pending4 {
+  background-color: #00aeff;
+}
+
+.detail-info {
+  color: #c12f2f;
+  text-decoration: none;
+}
+
+.search-bar-order {
+    padding-left: 10px;
+    margin-bottom: 15px;
+  height: 46px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  margin-left: 17px;
+  font-size: 20px;
+  border-color:#35635A;
+  width: 98%;
+  border-style: solid;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.search-container-order {
+  position: relative;
+  width:60%;
+  margin-left: 65px;
+  margin-top: 100px;
+}
+.search-icon-order {
+  position: absolute;
+  right: -18px;
+  top: 0;
+  height: 46px;
+  width: 45px;
+  font-size: 20px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-style: solid;
+  border-color:#35635A;
+  cursor: pointer;
+  border-color:#35635A;
+  color:#35635A;
+  transition: all 0.2s;
+}
+.search-icon-order:hover {
+  background-color: #35635A;
+  color:#FAD4AE;
+}
