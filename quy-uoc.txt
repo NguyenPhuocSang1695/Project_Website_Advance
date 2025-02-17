@@ -15,6 +15,7 @@ Vd: trangchu.html, phanloai-ao.html, phanloai-quan.html, ...
     =css: Chứa file CSS
     =js: chứ các file javascript
    =php-api: chứa các file php và api (nếu có dùng)
+   =configs: kết nối với mysql, ...
    
 
 ==Lưu ý khi PUSH/ PULL code
