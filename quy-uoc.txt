@@ -21,6 +21,7 @@ Vd: trangchu.html, phanloai-ao.html, phanloai-quan.html, ...
 ==Lưu ý khi PUSH/ PULL code
   =Không push vào nhánh master, release, develop, Chỉ push lên nhánh đang viết
   =Pull code trước khi push
+  =Mỗi tính năng viết ở một nhánh riêng biệt
   =Nhánh feature đầu tiên tạo từ nhánh master
   =Tạo nhánh mới từ nhánh feature/... vừa viết
   =Không push file rác
