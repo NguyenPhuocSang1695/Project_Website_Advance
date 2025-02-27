@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chi tiết sản phẩm</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/san-pham.css" />
+    <script src="../js/Trang_chu.js"></script>
+    <link rel="stylesheet" href="../asset/css/bootstrap.min.css" />
+    <script src="../asset/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+  </head>
+
+  <body>
+    <div class="Sticky">
+      <div class="container-fluid" style="padding: 0 !important">
+        <!-- HEADER  -->
+        <div class="header">
+          <!-- MENU  -->
+          <div class="grid">
+            <div class="aaa"></div>
+            <div class="item-header">
+              <div class="search-group">
+                <input
+                  type="search"
+                  placeholder="Tìm kiếm..."
+                  id="searchInput"
+                  style="position: relative; left: 15%"
+                  oninput="filterProducts()"
+                />
+                <button class="btn">
+                  <img
+                    src="../character/search.svg"
+                    style="position: relative; top: -15%"
+                    alt="search"
+                  />
+                </button>
+
+                <div
+                  class="product-list"
+                  id="productList"
+                  onclick="window.location.href='user-san-pham1.html';"
+                >
+                  .
+
+                  <div class="product">
+                    <img src="../img/CAY5.jpg" alt="Cây phát tài" />
+                    <div class="p-details">
+                      <h2>Cây phát tài</h2>
+                      <h3>750.000 vnđ</h3>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="./img/CAY6.jpg" alt="Cây kim ngân" />
+                    <div class="p-details">
+                      <h2>Cây kim ngân</h2>
+                      <h3>280.000 vnđ</h3>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="./img/CAY7.jpg" alt="Cây trầu bà" />
+                    <div class="p-details">
+                      <h2>Cây trầu bà</h2>
+                      <h3>120.000 vnđ</h3>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="./img/CAY8.jpg" alt="Cây lan chi" />
+                    <div class="p-details">
+                      <h2>Cây lan chi</h2>
+                      <h3>120.000 vnđ</h3>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="./img/CAY9.jpg" alt="Cây trầu bà đỏ" />
+                    <div class="p-details">
+                      <h2>Cây trầu bà đỏ</h2>
+                      <h3>320.000 vnđ</h3>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="./img/CAY10.jpg" alt="Cây lưỡi hổ" />
+                    <div class="p-details">
+                      <h2>Cây lưỡi hổ</h2>
+                      <h3>750.000 vnđ</h3>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="./img/CAY11.jpg" alt="Cây lưỡi hổ vàng" />
+                    <div class="p-details">
+                      <h2>Cây lưỡi hổ vàng</h2>
+                      <h3>160.000 vnđ</h3>
+                    </div>
+                  </div>
+                  <div class="product">
+                    <img src="./img/CAY12.jpg" alt="Cây hạnh phúc" />
+                    <div class="p-details">
+                      <h2>Cây hạnh phúc</h2>
+                      <h3>1.200.000 vnđ</h3>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="./img/CAY13.jpg" alt="Cây trầu bà châu lớn" />
+                    <div class="p-details">
+                      <h2>Cây trầu bà châu lớn</h2>
+                      <h3>1.100.000 vnđ</h3>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="./img/CAY14.jpg" alt="Cây phát tài DORADO" />
+                    <div class="p-details">
+                      <h2>Cây phát tài DORADO</h2>
+                      <h3>220.000 vnđ</h3>
+                    </div>
+                  </div>
+                  <div class="product">
+                    <img src="./img/CAY16.jpg" alt="Cây vạn lộc" />
+                    <div class="p-details">
+                      <h2>Cây vạn lộc</h2>
+                      <h3>1.150.000 vnđ</h3>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="./img/CAY17.jpg" alt="Cây ngọc vừng" />
+                    <div class="p-details">
+                      <h2>Cây ngọc vừng</h2>
+                      <h3>1.750.000 vnđ</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cart-icon">
+                <a href="gio-hang.html"
+                  ><img src="../character/cart.svg" alt="cart"
+                /></a>
+              </div>
+              <div class="user-icon">
+                <label for="tick" style="cursor: pointer"
+                  ><img src="../character/user.svg" alt=""
+                /></label>
+                <input
+                  id="tick"
+                  hidden
+                  type="button"
+                  data-bs-toggle="offcanvas"
+                  data-bs-target="#offcanvasExample"
+                  aria-controls="offcanvasExample"
+                />
+                <div
+                  class="offcanvas offcanvas-end"
+                  tabindex="-1"
+                  id="offcanvasExample"
+                  aria-labelledby="offcanvasExampleLabel"
+                >
+                  <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+                      Nguyễn Phước Sang
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close text-reset"
+                      data-bs-dismiss="offcanvas"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                      <li class="nav-item">
+                        <a
+                          class="nav-link login-logout"
+                          href="user-register.html"
+                          >Đăng kí</a
+                        >
+                      </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-login.html"
+                          >Đăng nhập</a
+                        >
+                      </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="user-History.html"
+                          >Lịch sử mua hàng</a
+                        >
+                      </li>
+                      <li class="nav-item">
+                        <a
+                          class="nav-link hs-ls-dx"
+                          href="../index.html"
+                          onclick="logOut()"
+                          >Đăng xuất</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BAR  -->
+          <nav class="navbar position-absolute">
+            <div class="a">
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div
+                class="offcanvas offcanvas-start"
+                tabindex="-1"
+                id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel"
+              >
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+                    THEE TREE
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="offcanvas-body offcanvas-fullscreen mt-20">
+                  <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                      <a
+                        class="nav-link active"
+                        aria-current="page"
+                        href="../index.html"
+                        >Trang chủ</a
+                      >
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Giới thiệu</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                      <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        Sản phẩm
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li>
+                          <a class="dropdown-item" href="phan-loai1.html"
+                            >Cây dễ chăm</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="phan-loai1.html"
+                            >Cây văn phòng</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="phan-loai1.html"
+                            >Cây để bàn</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="phan-loai1.html"
+                            >Cây dưới nước</a
+                          >
+                        </li>
+                      </ul>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Tin tức</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Liên hệ</a>
+                    </li>
+                  </ul>
+                  <form class="d-flex mt-3" role="search">
+                    <input
+                      class="form-control me-2"
+                      type="search"
+                      placeholder="Tìm kiếm"
+                      aria-label="Search"
+                    />
+                    <button class="btn btn-outline-success" type="submit">
+                      Search
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- NAV  -->
+      <div class="nav">
+        <div class="brand">
+          <div class="brand-logo">
+            <!-- Quay về trang chủ  -->
+            <a href="../index.html"
+              ><img class="img-fluid" src="../img/LOGO-2.png" alt="LOGO"
+            /></a>
+          </div>
+          <div class="brand-name">THE TREE</div>
+        </div>
+        <div class="choose">
+          <ul>
+            <li>
+              <a
+                href="../index.html"
+                ```````````````````````````````````````````
+                style="font-weight: bold"
+                >Trang chủ</a
+              >
+            </li>
+            <li><a href="#">Giới thiệu</a></li>
+            <li>
+              <div class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Sản phẩm
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="phan-loai1.html"
+                      >Cây dễ chăm</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="phan-loai1.html"
+                      >Cây văn phòng</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="phan-loai1.html"
+                      >Cây để bàn</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="phan-loai1.html"
+                      >Cây dưới nước</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li><a href="">Tin tức</a></li>
+            <li><a href="">Liên hệ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- SECTION  -->
+    <div class="section">
+      <div class="img-21">
+        <img src="../img/CAY21.jpg" alt="CAY21" />
+      </div>
+    </div>
+
+    <!-- nội dung -->
+    <div class="sanpham">
+      <!-- ảnh sản phẩm -->
+      <img
+        src="../img/CAY6.jpg"
+        alt="caykimngan"
+        width="100%"
+        class="single-image"
+      />
+
+      <!-- tên cây, số lượng, giá -->
+      <div class="details">
+        <!-- mô tả nhỏ về cây -->
+        <div class="nametree">
+          <h2>Cây kim ngân</h2>
+          <h3 id="giá">280.000 vnđ</h3>
+          <p>
+            Cây Kim Ngân là loại cây cảnh trong nhà được trồng phổ biến trên
+            khắp thế giới, nó có sức ảnh hưởng tới mức mà hầu như ai cũng tin
+            rằng khi trồng có thể mang lại nhiều may mắn trong cuộc sống, công
+            việc hoặc làm ăn.
+          </p>
+        </div>
+
+        <!-- nút tăng chỉnh số lượng -->
+        <div class="order">
+          <div class="wrapper">
+            <span class="minus">-</span>
+            <span class="num">01</span>
+            <span class="plus">+</span>
+            <script src="../js/san-pham.js"></script>
+          </div>
+          <button type="button" class="btn btn-primary btn-lg">
+            Thêm vào giỏ hàng
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="description">
+      <!-- <hr style=" width:10%; text-align: left;margin-left: 0;size: 10px"> -->
+      <hr
+        style="
+          height: 3px;
+          border-width: 0;
+          background-color: #1c8e2e;
+          width: 20%;
+        "
+      />
+      <h3>MÔ TẢ</h3>
+      <p>
+        Cây Lim Ngân bộ còn được biết đến với tên gọi khác là cây thiết mộc lan,
+        là một loại cây cảnh phổ biến được nhiều người yêu thích bởi vẻ đẹp
+        thanh tao, sang trọng và ý nghĩa phong thủy tốt đẹp. Cây có tên khoa học
+        là Dracaena fragrans, thuộc họ Dracaenaceae. Cây có nguồn gốc từ Tây
+        Phi, hiện nay được trồng phổ biến ở nhiều nước trên thế giới, trong đó
+        có Việt Nam. Cây phát tài bộ là cây thân gỗ nhỏ, có chiều cao trung bình
+        từ 0,5 đến 1,5m. Lá cây dài, xanh bóng. Hoa phát tài bộ có màu trắng,
+        nhỏ và có mùi thơm dịu. Cây thường ra hoa vào mùa hè. Cây phát tài bộ là
+        cây có ý nghĩa phong thủy rất tốt. Trong phong thủy, cây phát tài bộ
+        được coi là biểu tượng của sự may mắn, tài lộc và thịnh vượng. Cây cũng
+        được coi là biểu tượng của sự bền vững và trường tồn. Cây phát tài bộ là
+        cây rất dễ trồng và chăm sóc. Cây có thể sống trong điều kiện ánh sáng
+        yếu, tuy nhiên cây sẽ phát triển tốt nhất trong điều kiện ánh sáng trung
+        bình. Cây không cần nhiều nước, chỉ cần tưới nước 2-3 lần/tuần. Cây cũng
+        không cần bón phân nhiều, chỉ cần bón phân 1-2 lần/tháng. Cây phát tài
+        bộ là cây cảnh rất đẹp và có ý nghĩa phong thủy tốt đẹp. Cây là lựa chọn
+        tuyệt vời để trang trí cho ngôi nhà, văn phòng hoặc cơ sở kinh doanh của
+        bạn.
+      </p>
+    </div>
+
+    <footer>
+      <div class="col-01">
+        <div class="row-1">
+          <img src="../img/LOGO-2.png" alt="Logo final" />
+        </div>
+
+        <div class="row-2">
+          <hr />
+        </div>
+
+        <div class="row-3">
+          <div class="text-wrapper">
+            <span style="font-size: 32px; color: white"
+              ><strong>THE TREE</strong></span
+            ><span
+              class="text-wrap-1"
+              style="color: white; font-size: 25px; text-align: justify"
+            >
+              mong mang đến không gian sống xanh, như là một cách để khơi nguồn
+              cảm hứng, cải thiện chất lượng tinh thần tươi và đồng thời còn
+              mang lại tính thẩm mỹ cho không gian nội thất.</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="col-02">
+        <div class="col-2-row-1">
+          <div class="text-wrapper-2">
+            <p style="color: white; font-size: 31px">CÁC TRANG MẠNG XÃ HỘI</p>
+          </div>
+
+          <div class="icon-socialnet">
+            <img src="../character/facebook.svg" alt="facebook" />
+            <img src="../character/instagram.svg" alt="instagram" />
+            <img src="../character/youtube.svg" alt="youtube" />
+            <img src="../character/mastercard.svg" alt="messenger" />
+            <img src="../character/x-twitter.svg" alt="x" />
+          </div>
+        </div>
+
+        <div class="col-2-row-2">
+          <div class="text-wrapper-3">
+            <div class="text-wrapper-3-1">
+              <p style="color: white; font-size: 31px">
+                PHƯƠNG THỨC THANH TOÁN
+              </p>
+            </div>
+          </div>
+          <div class="icon-socialnet">
+            <img src="../character/paypal.svg" alt="facebook" />
+            <img src="../character/mastercard.svg" alt="instagram" />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-03">
+        <p class="lien-he" style="font-size: 32px">LIÊN HỆ</p>
+        <div class="div">
+          <p style="font-size: 27px">SĐT: 0838 396 969</p>
+          <p style="font-size: 27px">
+            ĐỊA CHỈ: 105 Trần Thị Trọng, phường 15, quận Tân Bình, TP.HCM
+          </p>
+        </div>
+      </div>
+      <!-- xong footer  -->
+    </footer>
+    <script src="../asset/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
