@@ -107,7 +107,7 @@ body {
   font-size: 1.7rem;
 }
 
-.item-header input[type="text"] {
+.item-header input[type="search"] {
   width: 300px;
   height: 42px;
   border-radius: 10px;
