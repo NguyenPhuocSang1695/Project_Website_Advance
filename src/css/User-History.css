@@ -456,7 +456,7 @@ footer {
   display: block;
   overflow: hidden;
   position: relative;
-  background-image: url("../img/LAST_HOME.jpg");
+  background-image: url("../../assets/images/LAST_HOME.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   margin-left: auto;
@@ -541,6 +541,10 @@ footer {
 @media only screen and (max-width: 768.01px) {
   .item-header {
     gap: 20px;
+  }
+
+  .search-group {
+    display: none;
   }
 
   .item-header input[type="search"] {
