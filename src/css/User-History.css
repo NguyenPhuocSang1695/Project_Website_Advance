@@ -543,6 +543,10 @@ footer {
     gap: 20px;
   }
 
+  .search-group {
+    display: none;
+  }
+
   .item-header input[type="search"] {
     display: none;
   }

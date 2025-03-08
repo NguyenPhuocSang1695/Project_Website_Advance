@@ -556,6 +556,9 @@ footer {
   .item-header input[type="search"] {
     display: none;
   }
+  .search-group {
+    display: none;
+  }
 
   .search-group button {
     display: none !important;

@@ -675,6 +675,10 @@ footer {
     display: none !important;
   }
 
+  .search-group {
+    display: none;
+  }
+
   .nav,
   .section,
   .menu-option {
