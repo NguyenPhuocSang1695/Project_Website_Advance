@@ -646,6 +646,10 @@ footer {
     display: none;
   }
 
+  .search-group {
+    display: none;
+  }
+
   .search-group button {
     display: none !important;
   }
