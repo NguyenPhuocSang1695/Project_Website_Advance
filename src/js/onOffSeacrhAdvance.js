@@ -47,6 +47,23 @@ window.onload = function () {
 
 function performSearch() {
   var category = document.getElementById("categoryFilter").value;
+  var minPrice = document.getElementById("minPrice").value;
+  var maxPrice = document.getElementById("maxPrice").value;
+
+  console.log(
+    "Tìm kiếm với phân loại:",
+    category,
+    "Giá từ:",
+    minPrice,
+    "đến:",
+    maxPrice
+  );
+
+  // Thêm logic gửi dữ liệu tìm kiếm lên server hoặc lọc danh sách sản phẩm
+}
+
+function performSearchMobile() {
+  var category = document.getElementById("categoryFilter").value;
   var minPrice = document.getElementById("minPriceMobile").value;
   var maxPrice = document.getElementById("maxPriceMobile").value;
 
@@ -71,6 +88,19 @@ function resetMobileFilters() {
 }
 
 function setPrice(min, max) {
+  if (min === 0 && max === 200000) {
+    document.getElementById("minPrice").value = 0;
+    document.getElementById("maxPrice").value = 200000;
+  } else if (min === 200000 && max === 500000) {
+    document.getElementById("minPrice").value = 200000;
+    document.getElementById("maxPrice").value = 500000;
+  } else {
+    document.getElementById("minPrice").value = min;
+    document.getElementById("maxPrice").value = max > 0 ? max : "";
+  }
+}
+
+function setPriceMobile(min, max) {
   if (min === 0 && max === 200000) {
     document.getElementById("minPriceMobile").value = 0;
     document.getElementById("maxPriceMobile").value = 200000;
