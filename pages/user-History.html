@@ -352,16 +352,16 @@
                         <input type="number" id="maxPriceMobile" placeholder="Đến" min="0" />
                       </div>
                       <div class="price-ranges">
-                        <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
+                        <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
                           Dưới 200k
                         </button>
-                        <button type="button" class="price-preset" onclick="setPrice(200000, 500000)">
+                        <button type="button" class="price-preset" onclick="setPriceMobile(200000, 500000)">
                           200k - 500k
                         </button>
-                        <button type="button" class="price-preset" onclick="setPrice(500000, 1000000)">
+                        <button type="button" class="price-preset" onclick="setPriceMobile(500000, 1000000)">
                           500k - 1tr
                         </button>
-                        <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
+                        <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
                           Trên 1tr
                         </button>
                       </div>
@@ -369,7 +369,7 @@
                   </div>
 
                   <div class="filter-actions">
-                    <button type="button" class="btn-search" onclick="performSearch()">
+                    <button type="button" class="btn-search" onclick="performSearchMobile()">
                       <i class="fas fa-search"></i> Tìm kiếm
                     </button>
                     <button type="button" class="btn-reset" onclick="resetMobileFilters()">
@@ -435,6 +435,7 @@
     </div>
   </div>
 
+  <!-- Thông tin khách hàng  -->
   <section id="interface">
     <div class="tieu-de d-flex justify-content-between">
       <h3 class="i-name">Hồ sơ khách hàng</h3>
@@ -463,6 +464,7 @@
       </div>
     </div>
 
+    <!-- Hóa đơn sản phẩm  -->
     <h3 class="i-name-02">Lịch sử đặt hàng</h3>
     <div class="container-bill">
       <div class="header-bill">
@@ -488,7 +490,10 @@
       <div class="total-bill">Thành tiền: ₫263.260</div>
       <div class="buttons-bill">
         <button class="btn btn-danger rate-btn-bill">Đánh Giá</button>
-        <button class=" contact-btn-bill">Liên Hệ Người Bán</button>
+        <div class="chitiet-lienhe">
+          <button class="btn btn-light contact-btn-bill">Liên Hệ Người Bán</button>
+          <button class="btn btn-light" onclick="window.location.href='chitiethoadon.html'">Chi tiết</button>
+        </div>
       </div>
     </div>
     <div class="delete-button-back">

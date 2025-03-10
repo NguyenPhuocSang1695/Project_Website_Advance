@@ -1,3 +1,4 @@
+// Tìm kiếm nâng cao và gợi ý sản phẩm
 // Biến toàn cục
 let searchTimeout;
 const MIN_CHARS_FOR_SUGGESTIONS = 2;
