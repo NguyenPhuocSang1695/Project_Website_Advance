@@ -1,39 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const inforBanking = document.getElementById("inforBanking");
-  const mastercard = document.getElementById("mastercard");
-
-  mastercard.addEventListener("click", function () {
-    if (inforBanking.style.display === "flex") {
-      inforBanking.style.display = "none";
-    } else {
-      inforBanking.style.display = "flex";
-    }
-  });
-
-  const newInformation = document.getElementById("new-information");
-  const defaultInformation = document.getElementById("default-information");
-  const defaultInformationButton = document.getElementById(
-    "use-default-information"
+  const defaultInformation = document.getElementById(
+    "default-information-form"
   );
-  const newInformationButton = document.getElementById("use-new-informaion");
+  const newInformation = document.getElementById("new-information-form");
+  const defaultInformationButton = document.getElementById(
+    "default-information"
+  );
+  const newInformationButton = document.getElementById("new-information");
 
-  defaultInformationButton.addEventListener("click", function () {
-    if (defaultInformation.style.display === "flex") {
-      defaultInformation.style.display = "none";
-      newInformation.style.display = "none";
-    } else {
+  function toggleForm() {
+    if (defaultInformationButton.checked) {
       defaultInformation.style.display = "flex";
       newInformation.style.display = "none";
-    }
-  });
-
-  newInformationButton.addEventListener("click", function () {
-    if (newInformation.style.display === "flex") {
-      newInformation.style.display = "none";
+    } else if (newInformationButton.checked) {
       defaultInformation.style.display = "none";
-    } else {
       newInformation.style.display = "flex";
-      defaultInformation.style.display = "none";
     }
-  });
+  }
+
+  // Lắng nghe sự kiện thay đổi của radio buttons
+  defaultInformationButton.addEventListener("change", toggleForm);
+  newInformationButton.addEventListener("change", toggleForm);
+
+  // Gọi hàm ngay khi trang tải để kiểm tra trạng thái ban đầu
+  toggleForm();
 });

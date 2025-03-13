@@ -11,14 +11,10 @@
     <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
     <link rel="stylesheet" href="../src/css/search-styles.css" />
     <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
-    <link rel="stylesheet" href="../src/css/cthd.css" />
-    <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
-
     <!-- JS  -->
     <script src="../src/js/search-common.js"></script>
     <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../src/js/Trang_chu.js"></script>
-    <script src="../src/js/main.js"></script>
+    <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
     <script src="../src/js/onOffSeacrhAdvance.js"></script>
     <title>Lịch sử người dùng</title>
 </head>
@@ -36,7 +32,7 @@
                             <div class="search-container">
                                 <div class="search-input-wrapper">
                                     <input type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput"
-                                        class="search-input" />
+                                        onclick="searchProduct()" class="search-input" />
                                     <button class="advanced-search-toggle" onclick="toggleAdvancedSearch()"
                                         title="Tìm kiếm nâng cao">
                                         <i class="fas fa-sliders-h"></i>
@@ -232,7 +228,7 @@
                         </div>
 
                         <div class="cart-icon">
-                            <a href="gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
+                            <a href="./gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
                         </div>
                         <div class="user-icon">
                             <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg"
@@ -250,32 +246,25 @@
                                 </div>
                                 <div class="offcanvas-body">
                                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-
                                         <li class="nav-item">
-                                            <a class="nav-link login-logout" href="../pages/user-register.html">Đăng
-                                                kí</a>
+                                            <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
                                         </li>
 
                                         <li class="nav-item">
-                                            <a class="nav-link login-logout" href="../pages/user-login.html">Đăng
-                                                nhập</a>
+                                            <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
                                         </li>
 
-
                                         <li class="nav-item">
-                                            <a class="nav-link hs-ls-dx" href="../pages/ho-so.html">Hồ sơ</a>
+                                            <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link hs-ls-dx" href="../pages/user-History.html">Lịch sử mua
-                                                hàng</a>
+                                            <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng
                                                 xuất</a>
                                         </li>
-
                                     </ul>
-
                                 </div>
                             </div>
                         </div>
@@ -313,20 +302,19 @@
                                             data-bs-toggle="dropdown" aria-expanded="false">
                                             Sản phẩm
                                         </a>
+
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item" href="../pages/phan-loai1.html">Cây dễ chăm</a>
+                                                <a class="dropdown-item" href="">Cây dễ chăm</a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="../pagesphan-loai1.html">Cây văn
-                                                    phòng</a>
+                                                <a class="dropdown-item" href="#">Cây văn phòng</a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="../pagesphan-loai1.html">Cây để bàn</a>
+                                                <a class="dropdown-item" href="#">Cây để bàn</a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="../pagesphan-loai1.html">Cây dưới
-                                                    nước</a>
+                                                <a class="dropdown-item" href="#">Cây dưới nước</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -337,6 +325,7 @@
                                         <a class="nav-link" href="#">Liên hệ</a>
                                     </li>
                                 </ul>
+
                                 <form class="d-flex mt-3" role="search">
                                     <input class="form-control me-2" type="search" placeholder="Tìm kiếm"
                                         aria-label="Search" />
@@ -433,10 +422,18 @@
                                 Sản phẩm
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="../pagesphan-loai1.html">Cây dễ chăm</a></li>
-                                <li><a class="dropdown-item" href="../pagesphan-loai1.html">Cây văn phòng</a></li>
-                                <li><a class="dropdown-item" href="../pagesphan-loai1.html">Cây để bàn</a></li>
-                                <li><a class="dropdown-item" href="../pagesphan-loai1.html">Cây dưới nước</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="phan-loai1.html">Cây dễ chăm</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="phan-loai1.html">Cây văn phòng</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="phan-loai1.html">Cây để bàn</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="phan-loai1.html">Cây dưới nước</a>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -453,56 +450,24 @@
             <img src="../assets/images/CAY21.jpg" alt="CAY21" />
         </div>
     </div>
-
-    <!-- MAIN  -->
-    <main>
-        <div class="invoice-container">
-            <h2>HÓA ĐƠN MUA HÀNG</h2>
-            <p><strong>Cửa hàng:</strong> THE TREE</p>
-            <p><strong>Mã đơn hàng:</strong> [Mã đơn hàng]</p>
-            <p><strong>Ngày mua:</strong> [Ngày/tháng/năm]</p>
-            <p><strong>Người mua:</strong> [Tên người mua]</p>
-            <p><strong>Địa chỉ:</strong> [Địa chỉ người mua]</p>
-            <p><strong>Số điện thoại:</strong> [Số điện thoại người mua]</p>
-            <hr>
-            <h3>Chi tiết sản phẩm</h3>
-            <table class="invoice-table">
-                <thead>
-                    <tr>
-                        <th>Hình ảnh</th>
-                        <th>Sản phẩm</th>
-                        <th>Số lượng</th>
-                        <th>Đơn giá</th>
-                        <th>Thành tiền</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><img src="../assets/images/CAY1.PNG" alt="Loa Bluetooth ROBOT RB510" class="product-img">
-                        </td>
-                        <td><strong>Cây phát tài</strong><br>- Cây trồng trong nhà<br>- Dễ sống, dễ chăm<br>- Tạo cảnh
-                            quan nhà cửa</td>
-                        <td>1</td>
-                        <td>289.000₫</td>
-                        <td>289.000₫</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p class="total">Tổng tiền hàng: 289.000₫</p>
-            <p class="total">Phí vận chuyển: [Miễn phí/Có phí]</p>
-            <p class="total">Tổng thanh toán: <strong>289.000₫</strong></p>
-            <p><strong>Phương thức thanh toán:</strong> [COD/Chuyển khoản/Ví điện tử]</p>
-            <hr>
-            <div class="support">
-                <p><span class="icon">📌</span><strong>Liên hệ hỗ trợ:</strong></p>
-                <p><span class="icon">📞</span><strong>Hotline:</strong> 0366611233</p>
-                <p><span class="icon">✉</span><strong>Email:</strong> sangnguyen@gmail.com</p>
-            </div>
-            <p>Cảm ơn bạn đã mua sắm tại <strong>THE TREE</strong> ❤️</p>
+    <!-- Kết quả tìm kiếm  -->
+    <main id="result">
+        <div class="product-item">
+            <strong>Tên:</strong> tên sản phẩm <br>
+            <strong>Giá:</strong> giá sản phẩm <br>
+            <strong>Trạng thái:</strong> ${item.status}
         </div>
     </main>
 
 
+
+    <script>
+        $("#menu-btn").click(function () {
+            $("#menu").toggleClass("active");
+        });
+    </script>
+
+    <!-- Footer  -->
     <footer>
         <div class="col-01">
             <div class="row-1">
