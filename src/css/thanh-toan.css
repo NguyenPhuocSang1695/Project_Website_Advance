@@ -354,17 +354,20 @@ body {
   margin-top: 2rem;
   width: 70%;
   display: none;
+  gap: 5px;
 }
 
 #default-information-form input,
 #new-information-form input {
-  border-radius: 5px;
+  border-radius: 7px;
   border: 1px solid #1c8e2e;
   width: 100%;
+  height: 32px;
 }
 
 .infor-goods {
   width: 70%;
+  margin: 35px 0px;
 }
 
 .order {
@@ -455,7 +458,7 @@ body {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 400px;
+  width: 70%;
   margin-top: 15px;
 }
 
