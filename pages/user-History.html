@@ -352,16 +352,17 @@
                         <input type="number" id="maxPriceMobile" placeholder="Đến" min="0" />
                       </div>
                       <div class="price-ranges">
-                        <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
+
+                        <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
                           Dưới 200k
                         </button>
-                        <button type="button" class="price-preset" onclick="setPrice(200000, 500000)">
+                        <button type="button" class="price-preset" onclick="setPriceMobile(200000, 500000)">
                           200k - 500k
                         </button>
-                        <button type="button" class="price-preset" onclick="setPrice(500000, 1000000)">
+                        <button type="button" class="price-preset" onclick="setPriceMobile(500000, 1000000)">
                           500k - 1tr
                         </button>
-                        <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
+                        <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
                           Trên 1tr
                         </button>
                       </div>
@@ -369,7 +370,9 @@
                   </div>
 
                   <div class="filter-actions">
+
                     <button type="button" class="btn-search" onclick="performSearch()">
+
                       <i class="fas fa-search"></i> Tìm kiếm
                     </button>
                     <button type="button" class="btn-reset" onclick="resetMobileFilters()">
@@ -534,9 +537,10 @@
           <img src="../assets/images/youtube.svg" alt="youtube" />
           <img src="../assets/images/mastercard.svg" alt="messenger" />
           <img src="../assets/images/x-twitter.svg" alt="x" />
+
         </div>
       </div>
-
+    </div>
       <div class="col-2-row-2">
         <div class="text-wrapper-3">
           <div class="text-wrapper-3-1">
@@ -544,6 +548,11 @@
               PHƯƠNG THỨC THANH TOÁN
             </p>
           </div>
+        </div>
+        <div class="icon-socialnet">
+          <img src="../assets/images/paypal.svg" alt="facebook" />
+          <img src="../assets/images/mastercard.svg" alt="instagram" />
+
         </div>
         <div class="icon-socialnet">
           <img src="../assets/images/paypal.svg" alt="facebook" />

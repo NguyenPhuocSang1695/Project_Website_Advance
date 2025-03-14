@@ -1,211 +1,69 @@
-// Biến toàn cục để quản lý độ trễ khi gõ
-let searchTimeout;
-const MIN_CHARS_FOR_SUGGESTIONS = 2;
-
-// Khởi tạo tính năng tìm kiếm khi trang đã tải xong
-document.addEventListener("DOMContentLoaded", function () {
-  // Khởi tạo cho tìm kiếm desktop
-  initSearch("searchInput", "productList");
-
-  // Khởi tạo cho tìm kiếm mobile
-  initSearch("mobileSearchInput", "mobileProductList");
-
-  // Thêm sự kiện cho nút tìm kiếm
-  const searchButtons = document.querySelectorAll(".search-button");
-  searchButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      // Xác định input tương ứng dựa trên vị trí của nút
-      const isDesktop = !this.closest(".mobile-search-container");
-      const inputId = isDesktop ? "searchInput" : "mobileSearchInput";
-      performSearch(inputId);
-    });
-  });
-
-  // Thêm sự kiện cho nút tìm kiếm nâng cao
-  const advancedSearchBtn = document.querySelector(".btn-search");
-  if (advancedSearchBtn) {
-    advancedSearchBtn.addEventListener("click", function () {
-      performAdvancedSearch();
-    });
-  }
-
-  // Ẩn danh sách gợi ý khi click ra ngoài
-  document.addEventListener("click", function (e) {
-    if (
-      !e.target.closest(".search-group") &&
-      !e.target.closest(".mobile-search-container")
-    ) {
-      hideAllSuggestions();
-    }
-  });
-
-  // Đồng bộ danh sách sản phẩm từ desktop sang mobile
-  syncProductLists();
-});
-
-// Khởi tạo sự kiện tìm kiếm cho input và danh sách kết quả
-function initSearch(inputId, listId) {
-  const searchInput = document.getElementById(inputId);
-  if (!searchInput) return;
-
-  // Sự kiện khi gõ văn bản
-  searchInput.addEventListener("input", function () {
-    showSuggestions(inputId, listId);
-  });
-
-  // Sự kiện khi nhấn phím Enter
-  searchInput.addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
-      performSearch(inputId);
-    }
-  });
-
-  // Sự kiện khi focus vào input và đã có text
-  searchInput.addEventListener("focus", function () {
-    if (this.value.trim().length >= MIN_CHARS_FOR_SUGGESTIONS) {
-      showSuggestions(inputId, listId);
-    }
-  });
+// Tìm kiếm cơ bản với JavaScript
+// Hàm chuẩn hóa chuỗi, loại bỏ dấu tiếng Việt
+function removeVietnameseTones(str) {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase(); // Chuyển về chữ thường
 }
 
-// Hiển thị gợi ý khi gõ
-function showSuggestions(inputId, listId) {
-  clearTimeout(searchTimeout);
+const searchProduct = () => {
+  const product = [
+    { name: "Cây Phát Tài", price: 750000, status: "còn hàng" },
+    { name: "Cây Kim Ngân", price: 280000, status: "còn hàng" },
+    { name: "Cây Trầu Bà", price: 120000, status: "còn hàng" },
+    { name: "Cây Lan Chi", price: 120000, status: "còn hàng" },
+    { name: "Cây Trầu Bà Đỏ", price: 320000, status: "hết hàng" },
+    { name: "Cây Lưỡi Hổ", price: 750000, status: "còn hàng" },
+    { name: "Cây Hạnh Phúc", price: 1200000, status: "hết hàng" },
+    { name: "Cây Trầu Bà Lớn", price: 1100000, status: "còn hàng" },
+    { name: "Cây Phát Tài DORADO", price: 220000, status: "còn hàng" },
+    { name: "Cây Vạn Lộc", price: 1150000, status: "còn hàng" },
+    { name: "Cây Ngọc Vừng", price: 1750000, status: "còn hàng" },
+  ];
 
-  searchTimeout = setTimeout(() => {
-    const searchInput = document.getElementById(inputId);
-    const productList = document.getElementById(listId);
+  let inputValue = document.getElementById("searchInput").value.trim();
+  let resultDiv = document.getElementById("result");
 
-    if (!searchInput || !productList) return;
-
-    const searchTerm = searchInput.value.toLowerCase().trim();
-
-    // Ẩn danh sách nếu chuỗi tìm kiếm quá ngắn
-    if (searchTerm.length < MIN_CHARS_FOR_SUGGESTIONS) {
-      productList.style.display = "none";
-      return;
-    }
-
-    // Lấy tất cả sản phẩm trong list
-    const products = productList.querySelectorAll(".product");
-    let matchFound = false;
-
-    products.forEach((product) => {
-      const productName = product.querySelector("h2").textContent.toLowerCase();
-
-      if (productName.includes(searchTerm)) {
-        product.style.display = "";
-        matchFound = true;
-      } else {
-        product.style.display = "none";
-      }
-    });
-
-    // Hiển thị hoặc ẩn danh sách gợi ý
-    if (matchFound) {
-      productList.style.display = "block";
-      productList.classList.add("showing-suggestions");
-    } else {
-      productList.style.display = "none";
-    }
-  }, 300);
-}
-
-// Ẩn tất cả danh sách gợi ý
-function hideAllSuggestions() {
-  const suggestions = document.querySelectorAll(".product-list");
-  suggestions.forEach((list) => {
-    list.style.display = "none";
-    list.classList.remove("showing-suggestions");
-  });
-}
-
-// Thực hiện tìm kiếm với input thông thường và chuyển trang
-function performSearch(inputId) {
-  const searchInput = document.getElementById(inputId);
-  if (!searchInput) return;
-
-  const searchTerm = searchInput.value.trim();
-  if (!searchTerm) return; // Không tìm kiếm nếu không có từ khóa
-
-  // Lưu từ khóa tìm kiếm vào localStorage
-  const searchParams = {
-    term: searchTerm,
-    category: "",
-    minPrice: "",
-    maxPrice: "",
-  };
-
-  localStorage.setItem("lastSearchParams", JSON.stringify(searchParams));
-
-  // Chuyển trang với tham số tìm kiếm
-  window.location.href =
-    "./pages/phan-loai1.html?search=" + encodeURIComponent(searchTerm);
-}
-
-// Thực hiện tìm kiếm nâng cao và chuyển trang
-function performAdvancedSearch() {
-  const searchTerm = document.getElementById("searchInput").value.trim();
-  const category = document.getElementById("categoryFilter").value;
-  const minPrice = document.getElementById("minPrice").value;
-  const maxPrice = document.getElementById("maxPrice").value;
-
-  // Tạo URL với tham số tìm kiếm
-  let searchUrl = "./pages/phan-loai1.html?";
-  const params = [];
-
-  if (searchTerm) {
-    params.push("search=" + encodeURIComponent(searchTerm));
-  }
-
-  if (category) {
-    params.push("category=" + encodeURIComponent(category));
-  }
-
-  if (minPrice) {
-    params.push("minPrice=" + encodeURIComponent(minPrice));
-  }
-
-  if (maxPrice) {
-    params.push("maxPrice=" + encodeURIComponent(maxPrice));
-  }
-
-  // Nếu không có tham số nào, vẫn đến trang phân loại
-  if (params.length === 0) {
-    window.location.href = "./pages/phan-loai1.html";
+  if (!inputValue) {
+    resultDiv.innerHTML =
+      "<span style='color:red;'>Vui lòng nhập tên sản phẩm!</span>";
     return;
   }
 
-  // Lưu tham số tìm kiếm vào localStorage
-  const searchParams = {
-    term: searchTerm,
-    category: category,
-    minPrice: minPrice,
-    maxPrice: maxPrice,
-  };
+  // Chuẩn hóa input
+  let normalizedInput = removeVietnameseTones(inputValue);
 
-  localStorage.setItem("lastSearchParams", JSON.stringify(searchParams));
+  // Tìm kiếm tất cả sản phẩm chứa từ khóa nhập vào
+  const results = product.filter((item) =>
+    removeVietnameseTones(item.name).includes(normalizedInput)
+  );
 
-  // Chuyển trang với tham số tìm kiếm
-  window.location.href = searchUrl + params.join("&");
-}
-
-// Cập nhật giao diện khi chọn preset giá
-function setPrice(min, max) {
-  document.getElementById("minPrice").value = min;
-  document.getElementById("maxPrice").value = max || "";
-}
-
-// Hàm đồng bộ danh sách sản phẩm
-function syncProductLists() {
-  const desktopList = document.getElementById("productList");
-  const mobileList = document.getElementById("mobileProductList");
-
-  if (desktopList && mobileList) {
-    mobileList.innerHTML = desktopList.innerHTML;
+  if (results.length > 0) {
+    resultDiv.innerHTML = `<strong>Kết quả tìm kiếm:</strong> <br>`;
+    results.forEach((item) => {
+      resultDiv.innerHTML += `
+                        <div class="product-item">
+                            <strong>Tên:</strong> ${item.name} <br>
+                            <strong>Giá:</strong> ${item.price.toLocaleString()} VNĐ <br>
+                            <strong>Trạng thái:</strong> ${item.status}
+                        </div>
+                    `;
+    });
+  } else {
+    resultDiv.innerHTML =
+      "<span style='color:red;'>Không tìm thấy sản phẩm.</span>";
   }
-}
-function setPrice(min, max) {
-  document.getElementById("minPrice").value = min;
-  document.getElementById("maxPrice").value = max || "";
-}
+};
+
+// Lắng nghe sự kiện Enter trên ô input
+document
+  .getElementById("searchInput")
+  .addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Ngăn form bị reload
+      searchProduct();
+    }
+  });
