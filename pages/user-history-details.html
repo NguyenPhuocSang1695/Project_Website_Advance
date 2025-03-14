@@ -2,22 +2,23 @@
 <html>
 
 <head>
-  <title>Chi tiết sản phẩm</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <!-- CSS  -->
-  <link rel="stylesheet" href="../src/css/san-pham.css" />
+  <link rel="stylesheet" type="text/css" href="../src/css/user-history-details.css" />
+  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
   <link rel="stylesheet" href="../src/css/search-styles.css" />
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
-  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css" />
   <!-- JS  -->
   <script src="../src/js/search-common.js"></script>
-  <script src="../src/js/Trang_chu.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../src/js/Trang_chu.js"></script>
+  <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
   <script src="../src/js/main.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
+  <title>Lịch sử người dùng</title>
 </head>
 
 <body>
@@ -221,7 +222,7 @@
             </div>
 
             <div class="cart-icon">
-              <a href="gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="./gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
@@ -290,18 +291,19 @@
                       aria-expanded="false">
                       Sản phẩm
                     </a>
+
                     <ul class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="phan-loai1.html">Cây dễ chăm</a>
+                        <a class="dropdown-item" href="">Cây dễ chăm</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="phan-loai1.html">Cây văn phòng</a>
+                        <a class="dropdown-item" href="#">Cây văn phòng</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="phan-loai1.html">Cây để bàn</a>
+                        <a class="dropdown-item" href="#">Cây để bàn</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="phan-loai1.html">Cây dưới nước</a>
+                        <a class="dropdown-item" href="#">Cây dưới nước</a>
                       </li>
                     </ul>
                   </li>
@@ -312,6 +314,7 @@
                     <a class="nav-link" href="#">Liên hệ</a>
                   </li>
                 </ul>
+
                 <form class="d-flex mt-3" role="search">
                   <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search" />
                   <!-- Nút tìm kiếm nâng cao trên mobile  -->
@@ -319,6 +322,7 @@
                     title="Tìm kiếm nâng cao">
                     <i class="fas fa-sliders-h"></i>
                   </button>
+
                   <button class="btn btn-outline-success" type="submit">
                     Search
                   </button>
@@ -348,16 +352,16 @@
                         <input type="number" id="maxPriceMobile" placeholder="Đến" min="0" />
                       </div>
                       <div class="price-ranges">
-                        <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
+                        <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
                           Dưới 200k
                         </button>
-                        <button type="button" class="price-preset" onclick="setPriceMobile(200000, 500000)">
+                        <button type="button" class="price-preset" onclick="setPrice(200000, 500000)">
                           200k - 500k
                         </button>
-                        <button type="button" class="price-preset" onclick="setPriceMobile(500000, 1000000)">
+                        <button type="button" class="price-preset" onclick="setPrice(500000, 1000000)">
                           500k - 1tr
                         </button>
-                        <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
+                        <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
                           Trên 1tr
                         </button>
                       </div>
@@ -365,7 +369,7 @@
                   </div>
 
                   <div class="filter-actions">
-                    <button type="button" class="btn-search" onclick="performSearchMobile()">
+                    <button type="button" class="btn-search" onclick="performSearch()">
                       <i class="fas fa-search"></i> Tìm kiếm
                     </button>
                     <button type="button" class="btn-reset" onclick="resetMobileFilters()">
@@ -425,77 +429,106 @@
   </div>
 
   <!-- SECTION  -->
-  <div class="section">
+  <div class="section1">
     <div class="img-21">
       <img src="../assets/images/CAY21.jpg" alt="CAY21" />
     </div>
   </div>
 
-  <!-- nội dung -->
-  <div class="sanpham">
-    <!-- ảnh sản phẩm -->
-    <img src="../assets/images/CAY5.jpg" alt="Cayphattai" width="100%" class="single-image" />
-
-    <!-- tên cây, số lượng, giá -->
-    <div class="details">
-      <!-- mô tả nhỏ về cây -->
-      <div class="nametree">
-        <h2>Cây phát tài</h2>
-        <h3 id="giá">750.000 vnđ</h3>
-        <p>
-          Cây Phát Tài bộ còn được biết đến với tên gọi khác là cây thiết mộc
-          lan. Loài cây nội thất được đánh giá là đem lại nhiều sinh khí, may
-          mắn và thịnh vượng cho gia chủ, nhất là khi cây nở hoa là dấu hiệu
-          tiền tài đang đến với bạn. Hơn nữa, nếu bạn đặt cây theo hướng Đông
-          hay Đông Nam của ngôi nhà thì sẽ đem tới nhiều may mắn bởi cây là
-          đại diện cho hành Mộc.
-        </p>
+  <section>
+    <div class="information-client">
+      <h2>Hồ sơ khách hàng</h2>
+      <hr>
+      <div class="thongtin">
+        <h5>Họ tên:</h5>
+        <h5>Số điện thoại:</h5>
+        <h5>Địa chỉ:</h5>
       </div>
+    </div>
+    <div class="history">
+      <div class="main-content">
+        <!-- Left Section -->
+        <div class="left-section">
+          <div class="section products">
+            <div class="section-header">
+              <span style="color:#21923c;"><i class="fa-regular fa-circle" style="  margin-right: 5px;"></i>Chi tiết đơn
+                hàng</span>
+              <button class="more-btn">...</button>
+            </div>
+            <table>
 
-      <!-- nút tăng chỉnh số lượng -->
-      <div class="order">
-        <div class="wrapper">
-          <span class="minus">-</span>
-          <span class="num">01</span>
-          <span class="plus">+</span>
-          <script src="../src/js/san-pham.js"></script>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>SỐ LƯỢNG</th>
+                  <th>THÀNH TIỀN (đ)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <img src="../../assets/images/CAY2.PNG" alt="Product Image">
+                    <div class="product-info">
+                      <span class="product-name">Cay j ko bt ten</span><br>
+                      <span class="sku">SKU: QJ-0001</span><br>
+                    </div>
+                  </td>
+                  <td>1</td>
+                  <td>1,100,000 đ</td>
+                </tr>
+                
+                <tr>
+                  <td>
+                    <img src="../../assets/images/CAY1.PNG" alt="Product Image">
+                    <div class="product-info">
+                      <span class="product-name">Chac cay xuong rong</span><br>
+                      <span class="sku">SKU: JJ-0001</span><br>
+                    </div>
+                  </td>
+                  <td>1</td>
+
+                  <td>550,000 đ</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
         </div>
-        <button type="button" class="btn btn-primary btn-lg">
-          Thêm vào giỏ hàng
-        </button>
+      </div>
+    </div>
+    <div class="section payment">
+      <div class="section-header">
+        <span>Thanh Toán: </span>
+      </div>
+      <div class="payment-details">
+        <div class="payment-row">
+          <span>Số lượng sản phẩm: </span>
+          <span>2</span>
+        </div>
+        <div class="payment-row">
+          <span>Tổng tiền hàng:</span>
+          <span>1,650,000 đ</span>
+        </div>
+        <div class="payment-row">
+          <span>Vận chuyển:</span>
+          <span>20,000 đ</span>
+        </div>
+        <div class="payment-row paid">
+          <span>Đã thanh toán</span>
+          <span>1,505,000 đ</span>
+        </div>
+
+
       </div>
     </div>
   </div>
-  <div class="description">
-    <!-- <hr style=" width:10%; text-align: left;margin-left: 0;size: 10px"> -->
-    <hr style="
-          height: 3px;
-          border-width: 0;
-          background-color: #1c8e2e;
-          width: 20%;
-        " />
-    <h3>MÔ TẢ</h3>
-    <p>
-      Cây Phát Tài bộ còn được biết đến với tên gọi khác là cây thiết mộc lan,
-      là một loại cây cảnh phổ biến được nhiều người yêu thích bởi vẻ đẹp
-      thanh tao, sang trọng và ý nghĩa phong thủy tốt đẹp. Cây có tên khoa học
-      là Dracaena fragrans, thuộc họ Dracaenaceae. Cây có nguồn gốc từ Tây
-      Phi, hiện nay được trồng phổ biến ở nhiều nước trên thế giới, trong đó
-      có Việt Nam. Cây phát tài bộ là cây thân gỗ nhỏ, có chiều cao trung bình
-      từ 0,5 đến 1,5m. Lá cây dài, xanh bóng. Hoa phát tài bộ có màu trắng,
-      nhỏ và có mùi thơm dịu. Cây thường ra hoa vào mùa hè. Cây phát tài bộ là
-      cây có ý nghĩa phong thủy rất tốt. Trong phong thủy, cây phát tài bộ
-      được coi là biểu tượng của sự may mắn, tài lộc và thịnh vượng. Cây cũng
-      được coi là biểu tượng của sự bền vững và trường tồn. Cây phát tài bộ là
-      cây rất dễ trồng và chăm sóc. Cây có thể sống trong điều kiện ánh sáng
-      yếu, tuy nhiên cây sẽ phát triển tốt nhất trong điều kiện ánh sáng trung
-      bình. Cây không cần nhiều nước, chỉ cần tưới nước 2-3 lần/tuần. Cây cũng
-      không cần bón phân nhiều, chỉ cần bón phân 1-2 lần/tháng. Cây phát tài
-      bộ là cây cảnh rất đẹp và có ý nghĩa phong thủy tốt đẹp. Cây là lựa chọn
-      tuyệt vời để trang trí cho ngôi nhà, văn phòng hoặc cơ sở kinh doanh của
-      bạn.
-    </p>
-  </div>
+  </section>
+
+  <script>
+    $("#menu-btn").click(function () {
+      $("#menu").toggleClass("active");
+    });
+  </script>
 
   <footer>
     <div class="col-01">
@@ -559,7 +592,6 @@
     </div>
     <!-- xong footer  -->
   </footer>
-  <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
