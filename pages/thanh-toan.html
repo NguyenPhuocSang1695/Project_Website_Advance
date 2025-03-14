@@ -454,25 +454,25 @@
         </div>
 
         <form action="" id="default-information-form">
-          <label for="">Tên người dùng</label>
+          <label for=""><strong>Họ và tên</strong></label>
           <input type="text" name="name" id="name" placeholder="Nguyễn Phước Sang" disabled>
-          <label for="">Email</label>
+          <label for=""><strong>Email</strong></label>
           <input type="email" name="email" id="email" placeholder="sangnguyen20050916@gmail.com" disabled>
-          <label for="">Số điện thoại</label>
+          <label for=""><strong>Số điện thoại</strong></label>
           <input type="text" name="sdt" id="sdt" placeholder="0366679203" disabled>
-          <label for="">Địa chỉ</label>
+          <label for=""><strong>Địa chỉ</strong></label>
           <input type="text" name="diachi" id="diachi" placeholder="103a Phan Huy Ích, Phường 11, Quận 12, TP.HCM"
             disabled>
         </form>
 
         <form action="" id="new-information-form">
-          <label for="">Tên người dùng</label>
+          <label for=""><strong>Họ và tên</strong></label>
           <input type="text" name="name" id="new-name" placeholder="Họ và tên">
-          <label for="">Email</label>
+          <label for=""><strong>Email</strong></label>
           <input type="email" name="email" id="new-email" placeholder="Email">
-          <label for="">Số điện thoại</label>
+          <label for=""><strong>Số điện thoại</strong></label>
           <input type="text" name="sdt" id="new-sdt" placeholder="Số điện thoại">
-          <label for="">Địa chỉ</label>
+          <label for=""><strong>Địa chỉ</strong></label>
           <input type="text" name="diachi" id="new-diachi" placeholder="Địa chỉ">
         </form>
 
@@ -541,7 +541,7 @@
 
         <div class="payment-method">
           <label for="">
-            <input type="radio" name="paymentMehtod" id="cod-button"> <span>Thanh toán khi nhận hàng</span>
+            <input type="radio" name="paymentMehtod" id="cod-button" checked> <span>Thanh toán khi nhận hàng</span>
           </label>
           <label for="">
             <input type="radio" name="paymentMehtod" id="banking-button"> <span>Chuyển khoản</span>
@@ -549,8 +549,8 @@
         </div>
 
 
-        <div class="card-type">
-          <i class="fa-brands fa-cc-visa" id="mastercard" alter="thẻ visa"></i>
+        <div class="card-type" id="card-type">
+          <i class="fa-brands fa-cc-visa" alter="thẻ visa" id="visa-card"></i>
           <i class="fa-solid fa-credit-card" alter="thẻ tín dụng"></i>
         </div>
         <!-- Form chuyển khoản  -->
@@ -558,8 +558,8 @@
           <h2>Liên kết thẻ</h2>
           <label>Thông tin thẻ</label>
           <input type="text" placeholder="1234 1234 1234 1234">
-          <input type="text" placeholder="MM / YY" style="width: 48%; display: inline-block;">
-          <input type="text" placeholder="CVC" style="width: 48%; display: inline-block; float: right;">
+          <input type="text" placeholder="MM / YY">
+          <input type="text" placeholder="CVC">
           <label>Tên chủ thẻ</label>
           <input type="text" placeholder="Full name on card">
           <label>Địa chỉ</label>
@@ -574,7 +574,8 @@
           <button class="subscribe-btn">Đăng ký</button>
         </form>
         <div class="payment-button">
-          <button type="button" class="btn btn-success" id="payment-button">Thanh toán</button>
+          <a href="../pages/.."><button type="button" class="btn btn-success" id="payment-button">Thanh
+              toán</button></a>
         </div>
       </div>
     </div>

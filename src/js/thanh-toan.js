@@ -7,7 +7,32 @@ document.addEventListener("DOMContentLoaded", function () {
     "default-information"
   );
   const newInformationButton = document.getElementById("new-information");
+  // Thẻ visa
+  const visaCard = document.getElementById("visa-card");
+  const visaForm = document.getElementById("banking-form");
 
+  let isVisaFormVisible = false; // Biến lưu trạng thái
+
+  visaCard.addEventListener("click", function () {
+    isVisaFormVisible = !isVisaFormVisible; // Đảo trạng thái
+    visaForm.style.display = isVisaFormVisible ? "block" : "none";
+  });
+  // Ẩn hiện icon visa
+  const cardType = document.getElementById("card-type");
+  const codButton = document.getElementById("cod-button");
+  const bankingButton = document.getElementById("banking-button");
+  function toggleCardType() {
+    if (bankingButton.checked) {
+      cardType.style.display = "block";
+    } else if (codButton.checked) {
+      cardType.style.display = "none";
+    }
+  }
+  codButton.addEventListener("change", toggleCardType);
+  bankingButton.addEventListener("change", toggleCardType);
+  toggleCardType();
+
+  // Hàm hiển thị form tùy chọn thông tin
   function toggleForm() {
     if (defaultInformationButton.checked) {
       defaultInformation.style.display = "flex";
