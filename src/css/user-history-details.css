@@ -435,6 +435,41 @@ td img {
   font-size: 12px;
 }
 
+/* payment */
+.transfer-info {
+  font-size: 14px;
+  color: #333;
+}
+
+
+
+.payment-details {
+  font-size: 14px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.payment-row.total {
+  font-weight: bold;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.payment-row.paid {
+  color: #28a745;
+}
+
+.source-details,
+.shipping-details,
+.employee-details,
+.branch-details {
+  font-size: 14px;
+}
+
 /* footer */
 footer {
   width: 100%;
