@@ -17,31 +17,25 @@
     z-index: 1;
    }
    .header-right-section {
-    margin-right: 32px;
     position: relative;
-    left: -3px;
     top:15px;
     z-index: 1;
   }
   .header-left-section {
     position: fixed;
-    left:clamp(80px, 91px, 92px);
+    left: clamp(80px, 162px, 164px);
     top: 58px;
-  }
+}
 
   .header-middle-section {
-    width: 41%;
     height: auto;
     position: relative;
     right: clamp(52px, 75px, 104px);
     bottom: 12px;
  
   }
-  .header-middle-section img {
-    object-position: center;
-  }
   .logo-store {
-    width: 140px;
+    width: 60px;
     height :auto;
   }
   .header-left-title {
@@ -107,7 +101,8 @@
   }
  
   .main-content {
-    margin-top:-46px;
+    margin-top: -46px;
+    margin-left: -60px;
   }
   .statistic-table {
     max-width: 100%;
@@ -189,22 +184,6 @@
      overflow: hidden;
      text-overflow: ellipsis;
     }
-    .product-card {
-      width: 99%;
-
-    }
- 
-    .Button {
-      gap: 20px;
-      width: 95%;
-    }
-
-    .top-buttons {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 15px;
-    }
 
     .btn1, .btn_1, .btn2 {
       min-width: 120px;
@@ -224,13 +203,12 @@
         width: 130px;
        }
       .header-left-section p {
-        font-size: 25px;
+        font-size: 30px;
+        font-weight: bold;
+        position: relative;
+        left: -40px;
       }
       
-      .header-middle-section {
-        margin-left:-10px;
-        
-      }
       /* ------------------- */
       /* Phan body */
     
@@ -272,9 +250,6 @@
 
   /* Phan body */
  
-    .main-content {
-        width: 30%;
-       }
     .detail-info span,
     .hide-index-tablet, 
     .filter-option {
@@ -287,10 +262,6 @@
       display: none;
     }
   
-    .container-order-detail-2 {
-      margin-left: 75px;
-      width: 85%;
-    }
   } 
     /* PC : width >= 1024px */
     @media only screen and (min-width: 64em) {
@@ -320,8 +291,6 @@
      .index-menu {
       display: none;
      }
-     .container-order-detail-2 {
-      margin-left: 76px;
-     }
+   
      
     }

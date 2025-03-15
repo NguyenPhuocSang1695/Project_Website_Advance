@@ -5,7 +5,7 @@
   <title>Đơn Hàng</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <link rel="stylesheet" href="../style/header.css">
   <link rel="stylesheet" href="../style/sidebar.css">
   <link href="../icon/css/all.css" rel="stylesheet">
@@ -17,12 +17,59 @@
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Add reponsive -->
   <link rel="stylesheet" href="../style/reponsiveOrder.css">
+  <style>
+    .filter-section table {
+      border-spacing: 10px;
+      border-collapse: separate;
+    }
+
+    .filter-section td {
+      padding: 5px;
+    }
+
+    .filter-section select,
+    .filter-section input {
+      width: 100%;
+    }
+
+    .select_list {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .select_list {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .select_list button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 0 5px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .select_list button:hover {
+      background-color: #e0e0e0;
+    }
+
+    .select_list span {
+      margin: 0 5px;
+    }
+  </style>
 </head>
 
 <body>
   <div class="header">
     <div class="header-left-section">
-      <p class="header-left-title">Đơn hàng</p>
+      <p class="header-left-title">Đơn Hàng</p>
     </div>
     <div class="header-middle-section">
       <img class="logo-store" src="../image/logo.webp">
@@ -128,7 +175,7 @@
             <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
           </div>
         </a>
-        <a href="orderPage.html" style="text-decoration: none; color: black;">
+        <a href="orderPage1.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection" style="background-color: #6aa173; ">
               <i class="fa-solid fa-list-check" style="
@@ -139,7 +186,7 @@
             <p style="color:black">Đơn hàng</p>
           </div>
         </a>
-        <a href="analyzePage.html" style="text-decoration: none; color: black;">
+        <a href="analyzePage.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection">
               <i class="fa-solid fa-chart-simple" style="
@@ -190,17 +237,17 @@
         </div>
       </a>
       <a href="customer.html" style="text-decoration: none; color: black;">
-      <div class="container-function-selection">
-        <button class="button-function-selection">
-          <i class="fa-solid fa-users" style="
+        <div class="container-function-selection">
+          <button class="button-function-selection">
+            <i class="fa-solid fa-users" style="
                         font-size: 20px;
                         color: #FAD4AE;
                     "></i>
-        </button>
-        <p>Khách hàng</p>
-      </div>
+          </button>
+          <p>Khách hàng</p>
+        </div>
       </a>
-      <a href="orderPage.html" style="text-decoration: none; color: black;">
+      <a href="orderPage1.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection" style="background-color: #6aa173;">
             <i class="fa-solid fa-list-check" style="
@@ -211,7 +258,7 @@
           <p>Đơn hàng</p>
         </div>
       </a>
-      <a href="analyzePage.html" style="text-decoration: none; color: black;">
+      <a href="analyzePage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-chart-simple" style="
@@ -240,10 +287,10 @@
           <input class="search-bar-order" type="text" placeholder="Tìm kiếm">
           <a href="orderDetail1.html">
             <button class="search-icon-order">
-                <i class="fa-solid fa-magnifying-glass"></i>
+              <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </a>
-      </div>
+        </div>
         <div class="container-bar-operation">
           <p style="font-size: 30px;
                     font-weight:700px;">
@@ -261,11 +308,11 @@
               <label for="date-from">
                 <p style="margin-left: 15px; font-weight: bold;">Từ ngày:</p>
               </label>
-              <input type="date" id="date-from">
+              <input type="date" id="date-from" name="date-from">
             </li> <br>
             <li>
               <label style="margin-left: 10px;font-weight: bold;" for="end-date">Đến ngày:</label>
-              <input type="date" id="end-date" name="end-date">
+              <input type="date" id="end-date" name="end-date" name="date-end">
             </li><br>
             <li><label style="margin-left: 10px;font-weight: bold;" for="order-status"> Đơn hàng:</label>
               <select id="order-status">
@@ -287,60 +334,65 @@
                 <option value="quan-5">Quận 5</option>
                 <option value="quan-6">Quận 6</option>
                 <option value="quan-7">Quận 7</option>
-                <option value="quan-8">Quận 12</option>
-                <option value="quan-9">Hóc Môn</option>
-                <option value="quan-10">Bình Chánh</option>
-                <option value="quan-11">Bình Thạnh</option>
+                <option value="quan-12">Quận 12</option>
+                <option value="huyen-hoc-mon">Hóc Môn</option>
+                <option value="huyen-thu-duc">Thủ Đức</option>
+                <option value="quan-binh-chanh">Bình Chánh</option>
+                <option value="quan-binh-thanh">Bình Thạnh</option>
               </select>
             </li>
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li style="margin-left:50px ;"> <button type="button" class="filter-button">Xác nhận</button></li>
+            <li style="margin-left:50px ;"> <button type="button" class="filter-button">Lọc</button></li>
           </ul>
         </div>
         <!-- Bộ lọc theo thời gian -->
         <div class="filter-section">
-          <form action>
-            <!-- Bộ lọc theo trạng thái đơn hàng -->
-            <label for="date-from1">
-              <p style="margin-left: 15px; font-weight: bold;">Từ ngày:</p>
-            </label>
-            <input type="date" id="date-from1">
-            <label style="margin-left: 10px;font-weight: bold;" for="end-date">
-              <p style="margin-left: 15px; font-weight: bold;">Đến ngày:</p>
-
-            </label>
-            <input type="date" id="end-date1" name="end-date1">
-            <label style="margin-left: 10px;font-weight: bold;" for="order-status">Tình trạng đơn hàng:</label>
-            <select id="order-status">
-              <option value="all">Tất cả</option>
-              <option value="pending">Chưa xử lý</option>
-              <option value="confirmed">Đã xác nhận</option>
-              <option value="delivered">Đã giao</option>
-              <option value="cancelled">Đã hủy</option>
-            </select>
-
-            <!-- Bộ lọc theo địa chỉ giao hàng -->
-            <label style="margin-left: 10px;font-weight: bold;" for="district">Huyện/Quận:</label>
-            <select id="district">
-              <option value="all">Tất cả</option>
-              <option value="quan-1">Quận 1</option>
-              <option value="quan-2">Quận 2</option>
-              <option value="quan-3">Quận 3</option>
-              <option value="quan-4">Quận 4</option>
-              <option value="quan-5">Quận 5</option>
-              <option value="quan-6">Quận 6</option>
-              <option value="quan-7">Quận 7</option>
-              <option value="quan-8">Quận 12</option>
-              <option value="quan-9">Hóc Môn</option>
-              <option value="quan-10">Bình Chánh</option>
-              <option value="quan-11">Bình Thạnh</option>
-
-            </select>
-            <a href="orderPage2.html">
-              <button type="button" class="filter-button">Lọc</button>
-            </a>
+          <form action="locdon.php" method="post">
+            <table style="width: 100%;">
+              <tr>
+                <td>
+                  <label for="date-from1" style="font-weight: bold;">Từ ngày:</label>
+                  <input type="date" id="date-from1" name="date-from1">
+                </td>
+                <td>
+                  <label for="end-date1" style="font-weight: bold;">Đến ngày:</label>
+                  <input type="date" id="end-date1" name="end-date1">
+                </td>
+                <td>
+                  <label for="order-status" style="font-weight: bold;">Tình trạng đơn hàng:</label>
+                  <select id="order-status" name="order-status">
+                    <option value="all" >Tất cả</option>
+                    <option value="pending">Chưa xử lý</option>
+                    <option value="confirmed">Đã xác nhận</option>
+                    <option value="delivered">Đã giao</option>
+                    <option value="cancelled">Đã hủy</option>
+                  </select>
+                </td>
+                <td>
+                  <label for="district" style="font-weight: bold;">Huyện/Quận:</label>
+                  <select id="district" name="district">
+                    <option value="all">Tất cả</option>
+                    <option value="quan-1">Quận 1</option>
+                    <option value="quan-2">Quận 2</option>
+                    <option value="quan-3">Quận 3</option>
+                    <option value="quan-4">Quận 4</option>
+                    <option value="quan-5">Quận 5</option>
+                    <option value="quan-6">Quận 6</option>
+                    <option value="quan-7">Quận 7</option>
+                    <option value="quan-12">Quận 12</option>
+                    <option value="huyen-hoc-mon">Hóc Môn</option>
+                    <option value="huyen-thu-duc">Thủ Đức</option>
+                    <option value="quan-binh-chanh">Bình Chánh</option>
+                    <option value="quan-binh-thanh">Bình Thạnh</option>
+                  </select>
+                </td>
+                <td>
+                  <button type="submit" class="filter-button" name="btn">Lọc</button>
+                </td>
+              </tr>
+            </table>
           </form>
         </div>
         <!-- Danh sách đơn hàng -->
@@ -349,93 +401,89 @@
             <thead>
               <tr>
                 <th>Mã đơn hàng</th>
-
                 <th class="hide-index-tablet">Tên khách hàng</th>
-                <th>Sản phẩm</th>
-                <th class="hide-index-smartphone">Số lượng</th>
-                <th class="hide-index-mobile">Khối lượng (Kilogram)</th>
-                <th>Giá tiền (VND)</th>
+                <th >Ngày tạo</th>
+                <th class="hide-index-mobile">Giá tiền (VND)</th>
                 <th>Trạng thái</th>
-                <th class="hide-index-tablet">Địa chỉ</th>
+                <th >Địa chỉ</th>
                 <th>Xem chi tiết</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>DH001</td>
-                <td class="hide-index-tablet">Hiếu Thứ Hai</td>
-                <td>
-                  <p class="hide-text">Củ cải, dưa leo</p>
-                </td>
-                <td class="hide-index-smartphone">4 </td>
-                <td class="hide-index-mobile">1</td>
-                <td>30,000 </td>
-                <td><button class="status pending">Chưa xử lý</button> </td>
-                <td class="hide-index-tablet">Huyện Hóc Môn,TPHCM</td>
-                <td><a class="detail-info" href="orderDetail1.html"><span>Xem chi tiết </span><i
-                      class="fa-solid fa-circle-info"></i></a></td>
-              </tr>
-              <tr>
-                <td>DH002</td>
-                <td class="hide-index-tablet">Nê Văn Gav</td>
-                <td>Gạo ST25</td>
-                <td class="hide-index-smartphone">1</td>
-                <td class="hide-index-mobile">2.3</td>
-                <td>90,000 </td>
-                <td><button class="status pending4">Đã xác nhận</button></td>
-                <td class="hide-index-tablet">Quận 12, TPHCM </td>
-                <td><a class="detail-info" href="orderDetail2.html"><span>Xem chi tiết </span><i
-                      class="fa-solid fa-circle-info"></i></a></td>
-              </tr>
+              <?php
+              include "connect.php";
+              $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+              $items_per_page = 5; 
+              $offset = ($current_page - 1) * $items_per_page; 
+              $total_sql = "SELECT COUNT(*) as total FROM donhang";
+              $total_result = mysqli_query($myconn, $total_sql);
+              $total_row = mysqli_fetch_assoc($total_result);
+              $total_orders = $total_row['total'];
+              $total_pages = ceil($total_orders / $items_per_page); 
+              $sql = "SELECT * FROM donhang LIMIT $offset, $items_per_page";
+              $result = mysqli_query($myconn, $sql);
+              if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_array($result)) {
+              ?>
+                  <tr>
+                    <td><?php echo $row["madonhang"] . " "; ?></td>
+                    <td class="hide-index-tablet"><?php echo $row["tenkhachhang"]; ?></td>
+                    <td ><?php echo $row["ngaytao"]; ?></td>
+                    <td class="hide-index-mobile"><?php echo $row["giatien"]; ?> </td>
+                    <td>
+                      <?php
+                      $statusColor = '';
+                      switch ($row["trangthai"]) {
+                        case 'Đang xử lý':
+                          $statusClass = 'status pending';
+                          break;
+                        case 'Đã xác nhận':
+                          $statusClass = 'status pending4';
+                          break;
+                        case 'Đã giao':
+                          $statusClass = 'status pending2';
+                          break;
+                        case 'Đã hủy':
+                          $statusClass = 'status pending3';
+                          break;
+                        default:
+                          $statusClass = 'status pending2';
+                      }
+                      ?>
+                      <button class="<?php echo $statusClass; ?>"><?php echo $row["trangthai"]; ?></button>
+                    </td>
+                    <td ><?php echo $row["diachi"]; ?></td>
+                    <td><a class="detail-info" href="<?php echo "orderDetail" . $row["xemchitiet"] . ".html"; ?>"><span>Xem chi tiết </span><i
+                          class="fa-solid fa-circle-info"></i></a></td>
 
-              <tr>
-                <td> DH003</td>
-                <td class="hide-index-tablet">Dĩm</td>
-                <td>
-                  <p class="hide-text">Bắp cải, cà chua</p>
-                </td>
-                <td class="hide-index-smartphone">5</td>
-                <td class="hide-index-mobile">2</td>
-                <td>30,000</td>
-                <td><button class="status pending2">Đã giao</button></td>
-                <td class="hide-index-tablet">Quận Bình Thạnh, TPHCM </td>
-                <td><a class="detail-info" href="orderDetail3.html"><span>Xem chi tiết </span><i
-                      class="fa-solid fa-circle-info"></i></a></td>
-              </tr>
-              <tr>
-                <td>DH004</td>
-                <td class="hide-index-tablet">Thích Car Money</td>
-                <td>Cà rốt</td>
-                <td class="hide-index-smartphone">3</td>
-                <td class="hide-index-mobile">0.6</td>
-                <td>18,000 </td>
-                <td><button class="status pending4">Đã xác nhận</button></td>
-                <td class="hide-index-tablet">Quận 3, TPHCM</td>
-                <td><a class="detail-info" href="orderDetail4.html"><span>Xem chi tiết </span><i
-                      class="fa-solid fa-circle-info"></i></a></td>
-              </tr>
-              <tr>
-                <td>DH005</td>
-                <td class="hide-index-tablet">MCK</td>
-                <td>
-                  <p class="hide-text">Cà chua, cải ngọt, gạo thơm hương Lài</p>
-                </td>
-                <td class="hide-index-smartphone">4</td>
-                <td class="hide-index-mobile">0.9</td>
-                <td>36,000 </td>
-                <td><button class="status pending3">Đã hủy</button></td>
-                <td class="hide-index-tablet">Quận 4, TPHCM</td>
-                <td><a class="detail-info" href="orderDetail5.html"><span>Xem chi tiết </span><i
-                      class="fa-solid fa-circle-info"></i></a></td>
-              </tr>
+                  <?php } ?>
+                <?php } ?>
+                  </tr>
             </tbody>
           </table>
         </div>
       </div>
+      <div class="select_list">
+        <?php if ($current_page > 1): ?>
+          <a href="?page=<?php echo $current_page - 1; ?>" id="prevPage" ><button style=" font-style:bold">&laquo;</button></a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+          <button style="margin: 0 5px; <?php echo $current_page == $i ? 'font-weight: bold;' : ''; ?>">
+            <a href="?page=<?php echo $i; ?>" style="text-decoration: none; color: inherit;"><?php echo $i; ?></a>
+          </button>
+        <?php endfor; ?>
+
+        <?php if ($current_page < $total_pages): ?>
+          <a href="?page=<?php echo $current_page + 1; ?>" id="nextPage" ><button style=" font-style:bold ">&raquo;</button></a>
+        <?php endif; ?>
+      </div>
     </div>
   </div>
 
+  
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/chuyentrang.js"></script>
 </body>
 
 </html>
