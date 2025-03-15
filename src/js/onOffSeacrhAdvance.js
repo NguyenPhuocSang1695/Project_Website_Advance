@@ -1,3 +1,4 @@
+// Bật tăt bộ lọc tìm kiếm
 function toggleMobileSearch() {
   const searchContainer = document.getElementById(
     "search-filter-container-mobile"
