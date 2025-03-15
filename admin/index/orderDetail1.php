@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Đơn Hàng Số 3</title>
+  <title>Đơn Hàng Số 1</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -19,7 +19,7 @@
 </head>
 
 <body>
-  <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
+
   <div class="header">
     <div class="index-menu">
       <i class="fa-solid fa-bars" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
@@ -35,7 +35,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="../index/homePage.html" style="text-decoration: none; color: black;">
+          <a href="homePage.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-house" style="
@@ -46,7 +46,7 @@
               <p>Trang chủ</p>
             </div>
           </a>
-          <a href="../index/wareHouse.html" style="text-decoration: none; color: black;">
+          <a href="wareHouse.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-warehouse" style="font-size: 20px;
@@ -66,7 +66,7 @@
               <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
             </div>
           </a>
-          <a href="orderPage.html" style="text-decoration: none; color: black;">
+          <a href="orderPage1.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173; color: black;">
                 <i class="fa-solid fa-list-check" style="
@@ -77,7 +77,7 @@
               <p style="color:black">Đơn hàng</p>
             </div>
           </a>
-          <a href="analyzePage.html" style="text-decoration: none; color: black;">
+          <a href="analyzePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-chart-simple" style="
@@ -106,10 +106,10 @@
     <div class="header-left-section">
       <p style="
        font-size: 30px;
-       font-weight: bold;">Đơn số 3 </p>
+       font-weight: bold;">Đơn số 1 </p>
     </div>
     <div class="header-middle-section">
-      <img class="logo-store" src="../image/logo.webp">
+      <img class="logo-store" src="../images/image/logo.webp">
     </div>
     <div class="header-right-section">
       <div class="bell-notification">
@@ -168,6 +168,7 @@
       </div>
     </div>
   </div>
+
   <div class="side-bar">
     <div class="backToHome">
       <a href="homePage.html" style="text-decoration: none; color: black;">
@@ -202,7 +203,7 @@
         <p>Khách hàng</p>
       </div>
     </a>
-    <a href="orderPage.html" style="text-decoration: none; color: black;">
+    <a href="orderPage1.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection" style="background-color: #6aa173;">
           <i class="fa-solid fa-list-check" style="
@@ -213,7 +214,7 @@
         <p>Đơn hàng</p>
       </div>
     </a>
-    <a href="analyzePage.html" style="text-decoration: none; color: black;">
+    <a href="analyzePage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-chart-simple" style="
@@ -235,64 +236,60 @@
         <p>Tài khoản</p>
       </div>
     </a>
-
-
   </div>
   <!-- Chi tiết hóa đơn -->
   <div class="container-order-detail-2">
     <div class="container-bar-operation">
-      <p style="font-size: 30px;
-                font-weight:700px;">
-        Chi tiết đơn hàng</p>
+      <p style="font-size: 30px; margin-bottom: 50px;">Chi tiết đơn hàng</p>
     </div>
 
     <div class="order-summary">
       <div class="order-info">
-        <h2>Thông tin Đơn hàng</h2>
-        <div class="Test">
-          <p class="par-style"><strong>Mã đơn hàng:</strong> DH003</p>
-          <p class="par-style"><strong>Trạng thái:</strong> <span style=" background-color: #a4fec1;
-   color: rgb(82, 184, 85);">Đã giao &#10004;</span></p>
-          <p class="par-style"><strong>Tổng giá trị:</strong> 30,000 VND</p>
-          <p class="par-style"><strong>Thời gian dự kiến:</strong> Đã hoàn thành</p>
+        <h2 class="section-title">Thông tin Đơn hàng</h2>
+        <div class="info-item">
+          <p><strong>Mã đơn hàng:</strong> <span>1</span></p> <br>
+          <p><strong>Ngày lấy dự kiến:</strong> <span>Thứ 5, 14/05/2020</span></p> <br>
+          <p><strong>Ngày giao dự kiến:</strong> <span>Thứ 7, 16/05/2020</span></p><br>
+          <p><strong>Trạng thái:</strong> <span class="status pending">Đang xử lý</span></p><br>
+          <p><strong>Nhân viên trả hàng:</strong> <span>Trần Thị Hương - 097723</span></p><br>
         </div>
       </div>
 
       <div class="customer-info">
-        <h2>Thông tin Khách hàng</h2>
-        <p class="par-style"><strong>Họ tên:</strong> Dĩm</p>
-        <p class="par-style"><strong>Địa chỉ giao hàng:</strong> Quận Bình Thạnh, TP.HCM</p>
-        <p class="par-style"><strong>Số lượng đặt hàng:</strong> 5</p>
+        <h2 class="section-title">Thông tin Khách hàng</h2>
+        <div class="info-item">
+          <p><strong>Họ tên:</strong> <span>Trần Thị Hương</span></p> <br>
+          <p><strong>Địa chỉ giao hàng:</strong> <span>Trần Hưng Đạo, Quận 5, TP.HCM</span></p> <br>
+          <p><strong>Số điện thoại:</strong> <span>097723</span></p>
+        </div>
       </div>
     </div>
 
     <!-- Chi tiết của sản phẩm -->
     <h2>Chi tiết Sản phẩm</h2>
-    <!-- <div class="product-container-card"> -->
     <div class="product-card">
       <div>
-        <img class="product-image" src="../image/product1.webp"
-          style="margin-top: 0; margin-left: 10px; width: 90px; height: 90px; border-radius: 50%;">
+        <img class="product-image" src="../images/image/cucai.jpg" style="width: 90px; height: 90px; border-radius: 50%;">
       </div>
       <div class="info-overview-order-product">
-        <p style="margin-bottom: 15px"><strong>Tên sản phẩm:</strong><span class="space"> Bắp cải</span> </p>
-        <p><strong>Số lượng:</strong> <span class="space">2</span></p>
-        <p><strong>Khối lượng:</strong> <span class="space">0.5 kg</span></p>
-        <p><strong>Giá mỗi kg:</strong> <span class="space">15,000 VND</span></p>
+        <p><strong>Tên sản phẩm:</strong> <span>Dưa leo</span></p>
+        <p><strong>Số lượng:</strong> <span>2</span></p>
+        <p><strong>Giá mỗi kg:</strong> <span>20,000 VND</span></p>
       </div>
     </div>
     <div class="product-card">
       <div>
-        <img class="product-image" src="../image/product3.webp"
+        <img class="product-image" src="../images/image/dualeo.jpg"
           style="margin-top: 0; margin-left: 10px; width: 90px; height: 90px; border-radius: 50%;">
       </div>
       <div class="info-overview-order-product">
-        <p style="margin-bottom: 15px"><strong>Tên sản phẩm:</strong><span class="space">Cà chua</span> </p>
+        <p style="margin-bottom: 15px"><strong>Tên sản phẩm:</strong><span class="space">Dưa leo</span> </p>
         <p><strong>Số lượng:</strong> <span class="space">2</span></p>
         <p><strong>Khối lượng:</strong> <span class="space">0.5 kg</span></p>
-        <p><strong>Giá mỗi kg:</strong> <span class="space">15,000 VND</span></p>
+        <p><strong>Giá mỗi kg:</strong> <span class="space">10,000 VND</span></p>
       </div>
     </div>
+
     <div class="Button">
       <div class="top-buttons">
         <div class="back-button-delete">
@@ -302,7 +299,7 @@
           </button>
         </div>
         <div class="back-button">
-          <a href="orderPage.html" class="btn_1">
+          <a href="orderPage1.php" class="btn_1">
             <i class="fa-solid fa-rotate-left"></i>
             Quay lại
             <span class="hide-on-mobile"> danh sách</span>
@@ -344,7 +341,7 @@
       </div>
     </div>
 
-
+    <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
       const editModal = document.getElementById("editModal");
       const deleteModal = document.getElementById("deleteModal");
@@ -388,10 +385,6 @@
       }
     </script>
   </div>
-
-
-
-
 </body>
 
 </html>
