@@ -29,45 +29,63 @@ body {
 }
 
 .dropdown-menu {
-  padding: 20px !important; /* Padding lớn cho menu */
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Viền nhẹ */
-  background-color: #fff; /* Màu nền */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
+  padding: 20px !important;
+  /* Padding lớn cho menu */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  /* Viền nhẹ */
+  background-color: #fff;
+  /* Màu nền */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  /* Hiệu ứng bóng */
 }
 
 .dropdown-item {
-  padding: 10px 15px !important; /* Khoảng cách nội dung trong từng mục */
-  margin-bottom: 10px; /* Khoảng cách giữa các mục */
-  border-radius: 10px !important; /* Bo góc nhẹ cho từng item */
+  padding: 10px 15px !important;
+  /* Khoảng cách nội dung trong từng mục */
+  margin-bottom: 10px;
+  /* Khoảng cách giữa các mục */
+  border-radius: 10px !important;
+  /* Bo góc nhẹ cho từng item */
   transition: background-color 0.2s ease, transform 0.2s ease;
-  color: #333; /* Màu chữ */
-  border: none; /* Xóa viền bên trong */
+  color: #333;
+  /* Màu chữ */
+  border: none;
+  /* Xóa viền bên trong */
 }
 
 /* Hiệu ứng hover */
 .dropdown-item:hover {
-  background-color: rgba(144, 238, 144, 0.2); /* Nền xanh nhạt khi hover */
-  transform: scale(1.05); /* Phóng to nhẹ khi hover */
+  background-color: rgba(144, 238, 144, 0.2);
+  /* Nền xanh nhạt khi hover */
+  transform: scale(1.05);
+  /* Phóng to nhẹ khi hover */
   color: #000;
 }
 
 /* STICKY */
 .Sticky {
-  position: -webkit-sticky; /* Để hỗ trợ cho các trình duyệt cũ hơn */
-  position: sticky; /* Dính khi cuộn */
-  top: 0; /* Đặt khoảng cách từ trên cùng của cửa sổ */
-  z-index: 1000; /* Đảm bảo sticky phần tử nằm trên các phần tử khác */
+  position: -webkit-sticky;
+  /* Để hỗ trợ cho các trình duyệt cũ hơn */
+  position: sticky;
+  /* Dính khi cuộn */
+  top: 0;
+  /* Đặt khoảng cách từ trên cùng của cửa sổ */
+  z-index: 1000;
+  /* Đảm bảo sticky phần tử nằm trên các phần tử khác */
 }
 
 .header,
 .nav {
-  background-color: white; /* Đảm bảo có nền để phần tử có thể dính */
-  z-index: 1; /* Đảm bảo chúng hiển thị trên các phần tử dưới */
+  background-color: white;
+  /* Đảm bảo có nền để phần tử có thể dính */
+  z-index: 1;
+  /* Đảm bảo chúng hiển thị trên các phần tử dưới */
 }
 
 /* Kiểm tra overflow cho phần tử cha */
 .Sticky .container-fluid {
-  overflow: visible; /* Đảm bảo không có thuộc tính overflow */
+  overflow: visible;
+  /* Đảm bảo không có thuộc tính overflow */
 }
 
 /*  */
@@ -80,7 +98,8 @@ body {
 
 /* Hiệu ứng hover chỉ thay đổi màu chữ */
 .choose ul li a:hover {
-  color: #1c8e2e; /* Màu xanh lục nhẹ khi hover */
+  color: #1c8e2e;
+  /* Màu xanh lục nhẹ khi hover */
 }
 
 /* HEADER */
@@ -295,7 +314,7 @@ body {
   align-items: center;
 
   height: 41rem;
-  width: 60%;
+  width: 70%;
   margin-top: -4vw;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-radius: 10px;
@@ -402,6 +421,58 @@ body {
   width: 200px;
   height: 70px;
   border-radius: 10px;
+}
+
+/* Hoa Don */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+p {
+  margin: 5px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #fff;
+  min-width: 1000px;
+}
+
+th,
+td {
+  border: 1px solid #ddd !important;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.total {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.btn-back {
+  margin-top: 20px;
+  padding: 7px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  display: block;
+  margin: 10px auto;
+  /* Căn giữa theo chiều ngang */
+}
+
+.btn-back:hover {
+  background-color: #218838;
 }
 
 /* FOOTER  */
@@ -594,6 +665,21 @@ footer {
     justify-content: flex-start;
     align-items: flex-start;
   }
+
+  /* Hoa DOn */
+  table {
+    min-width: 100%;
+    font-size: 14px;
+  }
+
+  th,
+  td {
+    padding: 8px;
+  }
+
+  .invoice-container {
+    padding: 10px;
+  }
 }
 
 /* TABLET  */
@@ -746,5 +832,19 @@ footer {
 
   .noti-thanks {
     width: 95%;
+  }
+
+  /* Hoa DOn */
+  table {
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 6px;
+  }
+
+  .btn-back {
+    width: 100%;
   }
 }
