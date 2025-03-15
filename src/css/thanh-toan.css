@@ -298,12 +298,13 @@ body {
 }
 
 /* main  */
-.container {
+.container-payment {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 2rem;
+  max-width: 100%;
 }
 
 .content {
@@ -319,19 +320,19 @@ body {
 
 .status-order {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   background-color: #99e5a5;
-  height: 4em;
+  height: 90px;
   border-radius: 2px;
   width: 70%;
-  height: 7.2em;
   margin: 3em 0 0 0;
   border-radius: 5px;
+  gap: 10px;
 }
 
 .status-order i {
-  font-size: 2em;
+  font-size: 40px;
 }
 
 .option-address {
@@ -429,22 +430,39 @@ body {
 
 /* Giao diện nút thêm bớt số lượng sản phẩm  */
 .wrapper {
+  height: 32px;
+  width: 86px;
   display: flex;
   align-items: center;
-  gap: 5px;
-  background: #f8f9fa;
-  border-radius: 20px;
-  padding: 5px 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.num {
-  width: 30px;
+.wrapper span {
+  width: 100%;
   text-align: center;
-  border: none;
-  background: transparent;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+.wrapper span.num {
+  font-size: 15px;
+  border-right: 2px solid rgba(0, 0, 0, 0.2);
+  border-left: 2px solid rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.wrapper span {
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
 }
 
 .payment-method input,
