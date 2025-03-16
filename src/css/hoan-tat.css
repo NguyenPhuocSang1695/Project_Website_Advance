@@ -313,7 +313,7 @@ body {
   flex-direction: column;
   align-items: center;
 
-  height: 41rem;
+  height: fit-content;
   width: 70%;
   margin-top: -4vw;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -558,17 +558,25 @@ footer {
     width: 38.666667%;
   }
 }
+
 @media only screen and (min-width: 1024px) {
   .invoice-container {
-    max-width: 100%; /* Đảm bảo không bị tràn */
-    padding: 20px;
+    max-width: 100%;
+    /* Đảm bảo không bị tràn */
+    padding: 0;
+    width: 70%;
   }
+
   .table-responsive {
-    overflow-x: auto; /* Cho phép cuộn ngang nếu bảng lớn */
+    overflow-x: auto;
+    /* Cho phép cuộn ngang nếu bảng lớn */
   }
+
   table {
-    width: 100%; /* Đảm bảo bảng không bị tràn */
-    min-width: unset; /* Bỏ min-width cố định */
+    width: 100%;
+    /* Đảm bảo bảng không bị tràn */
+    min-width: unset;
+    /* Bỏ min-width cố định */
   }
 }
 
@@ -691,7 +699,7 @@ footer {
   }
 
   .invoice-container {
-    padding: 10px;
+    width: 80%;
   }
 }
 
@@ -706,7 +714,7 @@ footer {
     flex-direction: column;
     align-items: center;
     /* justify-content: center; */
-    height: 42em;
+    height: fit-content;
     width: 100%;
     margin-top: -4vw;
   }
@@ -767,7 +775,7 @@ footer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 60em;
+    height: fit-content;
     width: 100%;
     margin-top: -4vw;
   }
