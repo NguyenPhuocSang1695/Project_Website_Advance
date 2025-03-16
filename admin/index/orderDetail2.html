@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
-  <title>Đơn Hàng Số 2</title>
+  <title>Đơn Hàng Số 3</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <link rel="stylesheet" href="../style/header.css">
   <link rel="stylesheet" href="../style/order.css">
   <link rel="stylesheet" href="../style/sidebar.css">
@@ -16,6 +15,8 @@
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/reponsiveOrder-detail.css">
+
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -23,8 +24,7 @@
   <div class="header">
     <div class="index-menu">
       <i class="fa-solid fa-bars" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
-        aria-controls="offcanvasExample">
-      </i>
+        aria-controls="offcanvasExample"></i>
       <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample"
         aria-labelledby="offcanvasExampleLabel">
         <div style=" 
@@ -35,7 +35,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="homePage.html" style="text-decoration: none; color: black;">
+          <a href="../index/homePage.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-house" style="
@@ -46,7 +46,7 @@
               <p>Trang chủ</p>
             </div>
           </a>
-          <a href="wareHouse.html" style="text-decoration: none; color: black;">
+          <a href="../index/wareHouse.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-warehouse" style="font-size: 20px;
@@ -66,7 +66,7 @@
               <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
             </div>
           </a>
-          <a href="orderPage.html" style="text-decoration: none; color: black;">
+          <a href="orderPage1.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173; color: black;">
                 <i class="fa-solid fa-list-check" style="
@@ -77,7 +77,7 @@
               <p style="color:black">Đơn hàng</p>
             </div>
           </a>
-          <a href="analyzePage.html" style="text-decoration: none; color: black;">
+          <a href="analyzePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-chart-simple" style="
@@ -101,15 +101,15 @@
           </a>
         </div>
       </div>
-
     </div>
     <div class="header-left-section">
       <p style="
        font-size: 30px;
-       font-weight: bold;">Đơn số 2 </p>
+       font-weight: bold; position: relative;
+       left: -25px;">Đơn số 3 </p>
     </div>
     <div class="header-middle-section">
-      <img class="logo-store" src="../image/logo.webp">
+      <img class="logo-store" src="../../assets/images/LOGO-2.png">
     </div>
     <div class="header-right-section">
       <div class="bell-notification">
@@ -127,16 +127,15 @@
         </div>
       </div>
       <div>
-        <img class="avatar" class src="../image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
+        <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
-
       </div>
       <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
         aria-labelledby="offcanvasWithBothOptionsLabel">
         <div style=" border-bottom-width: 1px;
       border-bottom-style: solid;
       border-bottom-color: rgb(176, 176, 176);" class="offcanvas-header">
-          <img class="avatar" class src="../image/chuong-avatar.jpg" alt="">
+          <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="">
           <div style="display: flex; flex-direction: column; height: 95px;">
             <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">NgNguyenChuong</h4>
             <h5>Ng_Nguyen_Chuong</h5>
@@ -144,7 +143,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="" class="navbar_user">
+          <a href="accountPage.html" class="navbar_user">
             <i class="fa-solid fa-user"></i>
             <p>Thông tin cá nhân </p>
           </a>
@@ -157,17 +156,17 @@
               <h2>Xác nhận đăng xuất</h2>
               <p>Bạn có chắc chắn muốn đăng xuất không?</p>
               <div class="modal_actions">
-
                 <a href="../index.html" class="btn_2 confirm">Đăng xuất</a>
                 <a href="#" class="btn_2 cancel">Hủy</a>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Sidebar -->
   <div class="side-bar">
     <div class="backToHome">
       <a href="homePage.html" style="text-decoration: none; color: black;">
@@ -202,7 +201,7 @@
         <p>Khách hàng</p>
       </div>
     </a>
-    <a href="/index/orderPage.html" style="text-decoration: none; color: black;">
+    <a href="orderPage1.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection" style="background-color: #6aa173;">
           <i class="fa-solid fa-list-check" style="
@@ -210,11 +209,10 @@
                     color: #FAD4AE;
                     "></i>
         </button>
-        <p>Đơn
-          hàng</p>
+        <p>Đơn hàng</p>
       </div>
     </a>
-    <a href="analyzePage.html" style="text-decoration: none; color: black;">
+    <a href="analyzePage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-chart-simple" style="
@@ -236,150 +234,181 @@
         <p>Tài khoản</p>
       </div>
     </a>
-
   </div>
-  <!-- Chi tiết hóa đơn -->
-  <div class="container-order-detail-2">
-    <div class="container-bar-operation">
-      <p style="font-size: 30px;
-                font-weight:700px;">
-        Chi tiết đơn hàng</p>
-    </div>
 
-    <div class="order-summary">
-      <div class="order-info">
-        <h2>Thông tin Đơn hàng</h2>
-        <div class="Test">
-          <p class="par-style"><strong>Mã đơn hàng:</strong> DH002</p>
-          <p class="par-style"><strong>Trạng thái:</strong> <span style=" background-color: #e6f7ff; 
-   color: #1a73e8; ">Đã xác nhận</span></p>
-          <p class="par-style"><strong>Tổng giá trị:</strong> 90,000 VND</p>
-          <p class="par-style"><strong>Thời gian dự kiến:</strong> 5-6 ngày</p>
-          <p class="par-style"><strong>(Thời gian xử lý/giao hàng trên vẫn có thể điểu chỉnh.)</strong></p>
+  <div class="content-wrapper">
+    <div class="order-container">
+      <div class="order-header">
+        <div class="breadcrumb">
+          <a href="orderPage1.php">Đơn hàng</a> > <span>DH003</span>
+        </div>
+        <table class="status-bar">
+          <thead>
+            <tr>
+              <th>MÃ ĐƠN HÀNG</th>
+              <th>NGÀY TẠO</th>
+              <th>TRẠNG THÁI</th>
+              <th>PHƯƠNG THỨC THANH TOÁN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2</td>
+              <td>Hôm qua 10:21 SA</td>
+              <td class="status delivered">Đã giao hàng</td>
+              <td class="status paid">Online-Banking <i class="fa-solid fa-money-check-dollar"
+                  style="font-size: 1rem;"></i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="left-section">
+          <div class="section products">
+            <div class="section-header">
+              <span style="color:#21923c;"><i class="fa-regular fa-circle" style="  margin-right: 5px;"></i>Chi tiết đơn
+                hàng</span>
+              <button class="more-btn">...</button>
+            </div>
+            <table>
+
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>SỐ LƯỢNG</th>
+                  <th>GIÁ (đ)</th>
+                  <th class="hide-display">THÀNH TIỀN (đ)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <img src="../../assets/images/CAY2.PNG" alt="Product Image">
+                    <div class="product-info">
+                      <span class="product-name">Cay j ko bt ten</span><br>
+                      <span class="sku">SKU: QJ-0001</span><br>
+                    </div>
+                  </td>
+                  <td>1</td>
+                  <td>1,100,000 đ</td>
+                  <td class="hide-display">1,100,000 đ</td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="../../assets/images/CAY1.PNG" alt="Product Image">
+                    <div class="product-info">
+                      <span class="product-name">Chac cay xuong rong</span><br>
+                      <span class="sku">SKU: JJ-0001</span><br>
+                    </div>
+                  </td>
+                  <td>1</td>
+                  <td>550,000 đ</td>
+                  <td class="hide-display">550,000 đ</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+          <div class="section payment">
+            <div class="section-header">
+              <span>Thanh Toán: </span>
+            </div>
+            <div class="payment-details">
+              <div class="payment-row">
+                <span>Ghi Chú Đơn Hàng</span>
+                <input type="text" placeholder="a" value="An dep zai :))">
+              </div>
+              <div class="payment-row">
+                <span>Số lượng sản phẩm</span>
+                <span>2</span>
+              </div>
+              <div class="payment-row">
+                <span>Tổng tiền hàng</span>
+                <span>1,650,000 đ</span>
+              </div>
+              <div class="payment-row">
+                <span>Giảm giá</span>
+                <span>0 đ</span>
+              </div>
+              <div class="payment-row">
+                <span>Vận chuyển</span>
+                <span>20,000 đ</span>
+              </div>
+              <div class="payment-row total">
+                <span>Tổng giá trị đơn hàng</span>
+                <span>1,505,000 đ</span>
+              </div>
+              <div class="payment-row paid">
+                <span>Đã thanh toán</span>
+                <span>1,505,000 đ</span>
+              </div>
+
+              <div class="payment-row remaining">
+                <span>Thực nhận</span>
+                <span>20,000 đ</span>
+              </div>
+            </div>
+            <div class="btn-funtion" style="justify-content: center;">
+              <button class="update-btn">Cập nhật</button>
+              <button class="delete-btn">Xóa đơn</button>
+            </div>
+
+          </div>
+        </div>
+        <!-- Right Section -->
+        <div class="right-section">
+          <div class="section customer">
+            <div class="section-header-2">
+              <span style="font-size: 16px; border-bottom: 1px solid #ddd; padding-bottom:15px">Xác Nhận Đơn Hàng</span>
+              <span style="text-align: center;">Vui lòng xác nhận đơn hàng</span>
+              <button class="confirm-btn">Xác nhận đơn hàng <i class="fa-solid fa-check-to-slot"></i></button>
+            </div>
+          </div>
+          <div class="section source">
+            <div class="section-header">
+              <span>Thông Tin Người Mua</span>
+
+            </div>
+            <div class="section-header">
+
+              <p style="color:#007bff">Hiếu Thứ Hai</p>
+            </div>
+
+            <div class="source-details">
+              <div>
+                <span style=" font-size: 16px; font-weight: bold; padding-bottom: 15px; padding-right: 4rem;">Người Liên
+                  Hệ</span>
+                <a href="" style="float:right"><i class="fa-solid fa-pen"></i></a> <br>
+                <p style="color:#007bff;font-weight: bold;padding-bottom:10px">Hiếu Thứ Hai</p>
+              </div>
+              <span>SĐT:</span>
+              <span class="highlight">012345678910JQKA</span>
+            </div>
+          </div>
+          <div class="section shipping">
+            <div class="section-header">
+              <span>Địa Chỉ Giao Hàng</span>
+            </div>
+            <div class="shipping-details">
+              <span>Đường An Dương Vương </span><br>
+              <span> Quận 5, Hồ Chí Minh, Vietnam</span>
+            </div>
+          </div>
+          <div class="section employee">
+            <div class="section-header">
+              <span>Nhân Viên Tạo</span>
+            </div>
+            <div class="employee-details">
+              <span>ÂN TRÀN</span>
+            </div>
+          </div>
 
         </div>
       </div>
-
-      <div class="customer-info">
-        <h2>Thông tin Khách hàng</h2>
-        <p class="par-style"><strong>Họ tên:</strong> Nê Văn Gav</p>
-        <p class="par-style"><strong>Địa chỉ giao hàng:</strong> Quận 12, TP.HCM</p>
-        <p class="par-style"><strong>Số lượng đặt hàng:</strong> 1</p>
-      </div>
     </div>
-
-
-    <!-- Chi tiết của sản phẩm -->
-    <h2>Chi tiết Sản phẩm</h2>
-    <!-- <div class="product-container-card"> -->
-    <div class="product-card">
-      <div>
-        <img class="product-image" src="../image/gaoST25.jpg"
-          style="margin-top: 0; margin-left: 10px; width: 90px; height: 90px; border-radius: 50%;">
-      </div>
-      <div class="info-overview-order-product">
-        <p style="margin-bottom: 15px"><strong>Tên sản phẩm:</strong><span class="space">Gạo ST25</span> </p>
-        <p><strong>Số lượng:</strong> <span class="space">1</span></p>
-        <p><strong>Khối lượng:</strong> <span class="space">2.3 kg</span></p>
-        <p><strong>Giá mỗi kg:</strong> <span class="space">39,000 VND</span></p>
-      </div>
-    </div>
-
-    <div class="Button">
-      <div class="top-buttons">
-        <div class="back-button-delete">
-          <button class="btn1" onclick="openDeleteModal()">
-            <i class="fa-solid fa-trash-can"></i>
-            Xóa <span class="hide-on-mobile"> đơn hàng</span>
-          </button>
-        </div>
-        <div class="back-button">
-          <a href="orderPage.html" class="btn_1">
-            <i class="fa-solid fa-rotate-left"></i>
-            Quay lại
-            <span class="hide-on-mobile"> danh sách</span>
-          </a>
-        </div>
-      </div>
-
-      <div class="back-button-edit">
-        <button class="btn2" onclick="openEditModal()">
-          <i class="fa-solid fa-pen-to-square"></i>Sửa
-          <span class="hide-on-mobile"> đơn hàng</span>
-        </button>
-      </div>
-    </div>
-
-
-    <div id="deleteModal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeDeleteModal()">&times;</span>
-        <h2>Xác nhận xóa đơn hàng</h2>
-        <p>Bạn có chắc chắn muốn xóa đơn hàng này không?</p>
-        <div class="modal-buttons">
-          <button class="modal-confirm" onclick="confirmDelete()">Đồng ý</button>
-          <button class="modal-cancel" onclick="closeDeleteModal()">Hủy</button>
-        </div>
-      </div>
-    </div>
-
-
-    <div id="editModal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeEditModal()">&times;</span>
-        <h2>Xác nhận sửa đơn hàng</h2>
-        <p>Bạn có chắc chắn muốn sửa đơn hàng này không?</p>
-        <div class="modal-buttons">
-          <button class="modal-confirm" onclick="confirmEdit()">Đồng ý</button>
-          <button class="modal-cancel" onclick="closeEditModal()">Hủy</button>
-        </div>
-      </div>
-    </div>
-
-
-    <script>
-      const editModal = document.getElementById("editModal");
-      const deleteModal = document.getElementById("deleteModal");
-
-      // Edit functions
-      function openEditModal() {
-        editModal.style.display = "block";
-      }
-
-      function closeEditModal() {
-        editModal.style.display = "none";
-      }
-
-      function confirmEdit() {
-        editModal.style.display = "none";
-        alert("Đã sửa đơn hàng thành công!");
-      }
-
-      // Delete functions
-      function openDeleteModal() {
-        deleteModal.style.display = "block";
-      }
-
-      function closeDeleteModal() {
-        deleteModal.style.display = "none";
-      }
-
-      function confirmDelete() {
-        deleteModal.style.display = "none";
-        alert("Đã xóa đơn hàng thành công!");
-      }
-
-      // Close modals when clicking outside
-      window.onclick = function (event) {
-        if (event.target == editModal) {
-          editModal.style.display = "none";
-        }
-        if (event.target == deleteModal) {
-          deleteModal.style.display = "none";
-        }
-      }
-    </script>
   </div>
+  <scriptt src="script.js"></scriptt>
 </body>
 
 </html>

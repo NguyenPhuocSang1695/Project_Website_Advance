@@ -1,20 +1,148 @@
+
+<?php
+include 'connect.php';
+$start_date = isset($_POST['start_date']) ? $_POST['start_date'] : '';
+$end_date = isset($_POST['end_date']) ? $_POST['end_date'] : '';
+$customers = [];
+
+if ($start_date && $end_date) {
+    $sql = "SELECT c.id, c.name, SUM(o.total) as total_spent, 
+            GROUP_CONCAT(CONCAT('<a href=\"orderDetail2.html?id=', o.id, '\" class=\"order-link\">Đơn ', o.id, '</a> - ', o.total, ' VND (', DATE_FORMAT(o.order_date, '%d/%m/%Y'), ')') SEPARATOR '<br>') as orders
+            FROM customers c
+            JOIN orders o ON c.id = o.customer_id
+            WHERE o.order_date BETWEEN ? AND ? 
+            -- đặt đièu kiện ngày Order phải ở khoảng giữa ngày bắt đầu và ngày kết thúc
+            GROUP BY c.id, c.name
+            ORDER BY total_spent DESC
+            LIMIT 5";
+    $stmt= $myconn->prepare($sql);
+    $stmt->bind_param("ss",$start_date,$end_date);
+    // dùng bind_param để gán giá trị cho biến khi điều kiện đúng
+    //ss : dùng để biến đổi ngày thành String và xóa các ký tự đặc biệt
+    $stmt->execute();
+    $result= $stmt->get_result();
+  while($row=mysqli_fetch_assoc($result)) {
+    $customers[] = $row;
+  }
+$stmt->close();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tài khoản</title>
+  <title>Thống Kê Kinh Doanh</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="stylesheet" href="../style/header.css">
   <link rel="stylesheet" href="../style/sidebar.css">
   <link rel="stylesheet" href="../icon/css/all.css">
   <link rel="stylesheet" href="../style/generall.css">
+  <link rel="stylesheet" href="../style/analyzeStyle.css">
   <link rel="stylesheet" href="../style/main.css">
-  <link rel="stylesheet" href="../style/accountStyle.css">
+  <link rel="stylesheet" href="../icon/css/fontawesome.min.css">
+  <!-- Add reponsive -->
+  <link rel="stylesheet" href="../style/reponsiveAnalyze.css">
+  <!-- Add bootstrap -->
   <link rel="stylesheet" href="./asset/bootstrap/css/bootstrap.min.css">
+  <!-- Add login function -->
   <link rel="stylesheet" href="../style/LogInfo.css">
-  <link rel="stylesheet" href="../style/reponsiveAccount.css">
+  <!-- Add charts -->
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+  }
+
+  .container {
+    max-width: 1120px;
+    margin-left: 15rem;
+    margin-top: 6rem;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .filter-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #ecf0f1;
+    border-radius: 5px;
+  }
+
+  .filter-section label {
+    margin-right: 10px;
+    font-weight: bold;
+  }
+
+  .filter-section input {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .filter-section button {
+    padding: 8px 20px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .filter-section button:hover {
+    background: #2980b9;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  th,
+  td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background: #1c8e2e;
+    color: white;
+  }
+
+  tr:hover {
+    background: #f8f9fa;
+  }
+
+  .order-link {
+    color: #1c8e2e;
+    text-decoration: none;
+  }
+
+  .order-link:hover {
+    text-decoration: underline;
+  }
+
+  .total {
+    font-weight: bold;
+    color: #e74c3c;
+  }
+</style>
 
 <body>
   <div class="header">
@@ -76,7 +204,7 @@
           </a>
           <a href="analyzePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
-              <button class="button-function-selection">
+              <button class="button-function-selection" style="background-color: #6aa173;">
                 <i class="fa-solid fa-chart-simple" style="
                           font-size: 20px;
                           color: #FAD4AE;
@@ -87,7 +215,7 @@
           </a>
           <a href="accountPage.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
-              <button class="button-function-selection" style="background-color: #6aa173;">
+              <button class="button-function-selection">
                 <i class="fa-solid fa-circle-user" style="
                            font-size: 20px;
                            color: #FAD4AE;
@@ -101,7 +229,7 @@
 
     </div>
     <div class="header-left-section">
-      <p class="header-left-title">Tài khoản</p>
+      <p class="header-left-title">Thống kê</p>
     </div>
     <div class="header-middle-section">
       <img class="logo-store" src="../../assets/images/LOGO-2.png">
@@ -140,7 +268,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="" class="navbar_user">
+          <a href="accountPage.html" class="navbar_user">
             <i class="fa-solid fa-user"></i>
             <p>Thông tin cá nhân </p>
           </a>
@@ -161,9 +289,7 @@
         </div>
       </div>
     </div>
-
   </div>
-
   <div class="main-container">
     <div class="side-bar">
       <div class="backToHome">
@@ -212,7 +338,7 @@
       </a>
       <a href="analyzePage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
-          <button class="button-function-selection">
+          <button class="button-function-selection" style="background-color: #6aa173;">
             <i class="fa-solid fa-chart-simple" style="
                     font-size: 20px;
                     color: #FAD4AE;
@@ -223,7 +349,7 @@
       </a>
       <a href="accountPage.html" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
-          <button class="button-function-selection" style="background-color: #6aa173;">
+          <button class="button-function-selection">
             <i class="fa-solid fa-circle-user" style="
                      font-size: 20px;
                      color: #FAD4AE;
@@ -233,85 +359,46 @@
         </div>
       </a>
     </div>
-    <div class="content-area">
-      <!-- Phần tiêu đề và thông tin tài khoản -->
-      <div class="header-section">
-        <div class="header-left">
-          <h1>Chủ cửa hàng</h1>
-          <p>Tài khoản toàn quyền truy cập của hàng</p>
-        </div>
-        <div class="header-right">
-          <div class="user-info">
-            <span class="user-icon">AT</span>
-            <div style="display: flex;flex-direction: column;">
-              <span class="user-name">Antran</span>
-              <span class="user-email">📧 3123411009@sv.edu.vn</span>
-            </div>
-
-
-          </div>
-        </div>
+    <!-- Phần Body -->
+    <div class="container">
+      <h1>Thống Kê Khách Hàng Mua Hàng Nhiều Nhất</h1>
+      <div class="filter-section">
+        <form method="POST" action="">
+          <label for="start-date">Từ ngày:</label>
+          <input type="date" id="start-date" name="start_date" value="<?php echo $start_date; ?>" required>
+          <label for="end-date">Đến ngày:</label>
+          <input type="date" id="end-date" name="end_date" value="<?php echo $end_date; ?>" required>
+          <button type="submit">Lọc <i class="fa-solid fa-filter"></i></button>
+        </form>
       </div>
-      <div class="main-content">
-        <div class="sidebar">
-          <h1>Danh sách nhân viên</h1>
-          <p>Bạn có thể cấp quyền quản lý của hàng cho nguồn khách</p>
-          <button class="add-employee-btn"><i class="fa-solid fa-plus"></i> Thêm nhân viên</button>
-        </div>
-
-        <div class="employee-list">
-          <div class="search-bar">
-            <input type="text" placeholder="Tìm kiếm nhân viên">
-          </div>
-          <table>
-            <thead>
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên khách hàng</th>
+            <th>Đơn hàng</th>
+            <th>Tổng tiền (VND)</th>
+          </tr>
+        </thead>
+        <tbody id="customer-table">
+          <?php if (empty($customers)): ?>
+            <tr>
+              <td colspan="4" style="text-align: center;">Vui lòng chọn khoảng thời gian phù hợp </td>
+            </tr>
+          <?php else: ?>
+            <?php foreach ($customers as $index => $customer): ?>
               <tr>
-                <th></th>
-                <th>Họ tên và email</th>
-                <th>Quyền truy cập</th>
-                <th></th>
+                <td><?php echo $index + 1; ?></td>
+                <td><?php echo htmlspecialchars($customer['name']); ?></td>
+                <td><?php echo $customer['orders']; ?></td>
+                <td class="total"><?php echo number_format($customer['total_spent'], 0, ',', '.'); ?></td>
               </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="icon" style="background-color:#a3c627">CR7</td>
-                <td>
-                  <span class="name">Cristiano Ronaldo</span>
-                  <span class="email">CR7.@portugal.com</span>
-                </td>
-                <td>Toàn quyền (trừ cài đặt, tạo nhân viên)</td>
-                <td><button class="edit-btn"><i class="fa-regular fa-pen-to-square"></i></button></td>
-                <td><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-              <tr>
-                <td class="icon" style="background-color:#27c62a">LE</td>
-                <td>
-                  <span class="name">LOZ MESSI</span>
-                  <span class="email">Messibulshit@gmail.com</span>
-                </td>
-                <td>Nhân viên quèn</td>
-                <td><button class="edit-btn"><i class="fa-regular fa-pen-to-square"></i></button></td>
-                <td><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-              <tr>
-                <td class="icon" style="background-color:#c6278e">DA</td>
-                <td>
-                  <span class="name">David Alaba</span>
-                  <span class="email">DA@yahoo.com</span>
-                </td>
-                <td>Quản lý</td>
-                <td><button class="edit-btn"><i class="fa-regular fa-pen-to-square"></i></button></td>
-                <td><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </tbody>
+      </table>
     </div>
-
-
-    <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+  </div>
 </body>
 
 </html>
