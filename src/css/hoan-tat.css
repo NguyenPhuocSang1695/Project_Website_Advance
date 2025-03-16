@@ -529,6 +529,19 @@ footer {
     width: 38.666667%;
   }
 }
+@media only screen and (min-width: 1024px) {
+  .invoice-container {
+    max-width: 100%; /* Đảm bảo không bị tràn */
+    padding: 20px;
+  }
+  .table-responsive {
+    overflow-x: auto; /* Cho phép cuộn ngang nếu bảng lớn */
+  }
+  table {
+    width: 100%; /* Đảm bảo bảng không bị tràn */
+    min-width: unset; /* Bỏ min-width cố định */
+  }
+}
 
 /* TABLET and MOBILE  */
 @media only screen and (max-width: 768.01px) {
