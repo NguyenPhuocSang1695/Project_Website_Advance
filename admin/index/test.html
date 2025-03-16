@@ -1,0 +1,90 @@
+<div class="container">
+  <h1>Thống Kê Khách Hàng Hàng Đầu</h1>
+
+  <div class="filter-section">
+    <label>Từ ngày:</label>
+    <input type="date" id="startDate">
+    <label>Đến ngày:</label>
+    <input type="date" id="endDate">
+    <button onclick="loadStatistics()">Thống kê</button>
+  </div>
+
+  <div id="statisticsTable">
+    <!-- Bảng thống kê sẽ được tạo bằng JavaScript -->
+  </div>
+</div>
+
+<script>
+  // Dữ liệu mẫu (thay bằng dữ liệu thực từ database)
+  const sampleData = [
+    {
+      customerId: 1,
+      name: "Nguyễn Văn A",
+      orders: [
+        { id: "DH001", date: "2025-03-01", amount: 5000000 },
+        { id: "DH002", date: "2025-03-05", amount: 3000000 }
+      ]
+    },
+    {
+      customerId: 2,
+      name: "Trần Thị B",
+      orders: [
+        { id: "DH003", date: "2025-03-02", amount: 7000000 },
+        { id: "DH004", date: "2025-03-06", amount: 4000000 }
+      ]
+    },
+    // Thêm dữ liệu mẫu khác...
+  ];
+
+  function loadStatistics() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    // Lọc dữ liệu theo khoảng thời gian
+    let filteredData = sampleData.map(customer => {
+      const filteredOrders = customer.orders.filter(order =>
+        (!startDate || order.date >= startDate) &&
+        (!endDate || order.date <= endDate)
+      );
+      const total = filteredOrders.reduce((sum, order) => sum + order.amount, 0);
+      return { ...customer, orders: filteredOrders, total };
+    });
+
+    // Sắp xếp theo tổng tiền giảm dần và lấy top 5
+    filteredData = filteredData
+      .filter(c => c.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 5);
+
+    // Tạo bảng HTML
+    let html = '<table><tr><th>Khách hàng</th><th>Đơn hàng</th><th>Tổng tiền</th></tr>';
+
+    filteredData.forEach(customer => {
+      html += `
+              <tr>
+                  <td>${customer.name}</td>
+                  <td>`;
+
+      customer.orders.forEach(order => {
+        html += `<div><a href="/order/${order.id}" class="order-link">${order.id}</a> - ${order.date} - ${formatCurrency(order.amount)}</div>`;
+      });
+
+      html += `</td>
+                  <td class="total">${formatCurrency(customer.total)}</td>
+              </tr>`;
+    });
+
+    html += '</table>';
+    document.getElementById('statisticsTable').innerHTML = html;
+  }
+
+  function formatCurrency(amount) {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount);
+  }
+
+  // Load dữ liệu mặc định khi mở trang
+  window.onload = loadStatistics;
+</script>
