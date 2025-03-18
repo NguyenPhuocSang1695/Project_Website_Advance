@@ -41,21 +41,28 @@ body {
 /* header */
 /* STICKY */
 .Sticky {
-  position: -webkit-sticky; /* Để hỗ trợ cho các trình duyệt cũ hơn */
-  position: sticky; /* Dính khi cuộn */
-  top: 0; /* Đặt khoảng cách từ trên cùng của cửa sổ */
-  z-index: 1000; /* Đảm bảo sticky phần tử nằm trên các phần tử khác */
+  position: -webkit-sticky;
+  /* Để hỗ trợ cho các trình duyệt cũ hơn */
+  position: sticky;
+  /* Dính khi cuộn */
+  top: 0;
+  /* Đặt khoảng cách từ trên cùng của cửa sổ */
+  z-index: 1000;
+  /* Đảm bảo sticky phần tử nằm trên các phần tử khác */
 }
 
 .header,
 .nav {
-  background-color: white; /* Đảm bảo có nền để phần tử có thể dính */
-  z-index: 1; /* Đảm bảo chúng hiển thị trên các phần tử dưới */
+  background-color: white;
+  /* Đảm bảo có nền để phần tử có thể dính */
+  z-index: 1;
+  /* Đảm bảo chúng hiển thị trên các phần tử dưới */
 }
 
 /* Kiểm tra overflow cho phần tử cha */
 .Sticky .container-fluid {
-  overflow: visible; /* Đảm bảo không có thuộc tính overflow */
+  overflow: visible;
+  /* Đảm bảo không có thuộc tính overflow */
 }
 
 /*  */
@@ -68,7 +75,8 @@ body {
 
 /* Hiệu ứng hover chỉ thay đổi màu chữ */
 .choose ul li a:hover {
-  color: #1c8e2e; /* Màu xanh lục nhẹ khi hover */
+  color: #1c8e2e;
+  /* Màu xanh lục nhẹ khi hover */
 }
 
 /* = */
@@ -187,7 +195,8 @@ body {
   overflow-y: auto;
   left: 15%;
   position: relative;
-  min-height: 200px; /* Đảm bảo luôn có chiều cao tối thiểu */
+  min-height: 200px;
+  /* Đảm bảo luôn có chiều cao tối thiểu */
 }
 
 .product-list .product {
@@ -223,35 +232,47 @@ body {
   font-size: 19px;
   color: #888;
 }
+
 /*  */
 
 /* NAV */
 
 .dropdown-menu {
-  display: none !important; /* Ẩn mặc định */
+  display: none !important;
+  /* Ẩn mặc định */
 }
 
 .nav-item.dropdown:hover .dropdown-menu {
-  display: block !important; /* Hiển thị khi hover hoặc focus */
+  display: block !important;
+  /* Hiển thị khi hover hoặc focus */
 }
 
 /* ============================================ */
 /* Thêm padding dày cho dropdown menu */
 
 .dropdown-menu {
-  padding: 20px !important; /* Padding lớn cho menu */
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Viền nhẹ */
-  background-color: #fff; /* Màu nền */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
+  padding: 20px !important;
+  /* Padding lớn cho menu */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  /* Viền nhẹ */
+  background-color: #fff;
+  /* Màu nền */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  /* Hiệu ứng bóng */
 }
 
 .dropdown-item {
-  padding: 10px 15px !important; /* Khoảng cách nội dung trong từng mục */
-  margin-bottom: 10px; /* Khoảng cách giữa các mục */
-  border-radius: 10px !important; /* Bo góc nhẹ cho từng item */
+  padding: 10px 15px !important;
+  /* Khoảng cách nội dung trong từng mục */
+  margin-bottom: 10px;
+  /* Khoảng cách giữa các mục */
+  border-radius: 10px !important;
+  /* Bo góc nhẹ cho từng item */
   transition: background-color 0.2s ease, transform 0.2s ease;
-  color: #333; /* Màu chữ */
-  border: none; /* Xóa viền bên trong */
+  color: #333;
+  /* Màu chữ */
+  border: none;
+  /* Xóa viền bên trong */
 }
 
 /* Xóa khoảng cách cuối cùng */
@@ -261,8 +282,10 @@ body {
 
 /* Hiệu ứng hover */
 .dropdown-item:hover {
-  background-color: rgba(144, 238, 144, 0.2); /* Nền xanh nhạt khi hover */
-  transform: scale(1.05); /* Phóng to nhẹ khi hover */
+  background-color: rgba(144, 238, 144, 0.2);
+  /* Nền xanh nhạt khi hover */
+  transform: scale(1.05);
+  /* Phóng to nhẹ khi hover */
   color: #000;
 }
 
@@ -315,6 +338,7 @@ body {
 .class {
   padding: 40px 80px;
 }
+
 .font_size {
   margin-top: 50px;
   text-align: center;
@@ -326,43 +350,68 @@ body {
 /* ANH IMG DANH MUC SAN PHAM */
 .IMG {
   margin-top: 20px;
-  display: flex; /* Kích hoạt Flexbox */
-  justify-content: center; /* Căn giữa toàn bộ ảnh theo chiều ngang */
-  flex-wrap: wrap; /* Cho phép ảnh xuống dòng nếu không đủ chỗ */
+  display: flex;
+  /* Kích hoạt Flexbox */
+  justify-content: center;
+  /* Căn giữa toàn bộ ảnh theo chiều ngang */
+  flex-wrap: wrap;
+  /* Cho phép ảnh xuống dòng nếu không đủ chỗ */
 }
 
 .img__TREE {
   position: relative;
-  width: 18%; /* Chiếm 22% chiều rộng container cha, có thể thay đổi */
-  min-width: 200px; /* Kích thước nhỏ nhất để ảnh không quá nhỏ */
-  padding: 10px; /* Khoảng cách giữa nội dung bên trong */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng mờ nhẹ */
-  margin: 0 20px; /* Căn giữa theo chiều ngang */
-  transition: all 0.3s ease; /* Thêm hiệu ứng chuyển đổi mượt mà */
+  width: 18%;
+  /* Chiếm 22% chiều rộng container cha, có thể thay đổi */
+  min-width: 200px;
+  /* Kích thước nhỏ nhất để ảnh không quá nhỏ */
+  padding: 10px;
+  /* Khoảng cách giữa nội dung bên trong */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  /* Hiệu ứng bóng mờ nhẹ */
+  margin: 0 20px;
+  /* Căn giữa theo chiều ngang */
+  transition: all 0.3s ease;
+  /* Thêm hiệu ứng chuyển đổi mượt mà */
 }
 
 .img__TREE:hover {
-  background-color: rgba(144, 238, 144, 0.2); /* Màu xanh lá cây nhạt */
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4); /* Bóng đậm hơn, rõ hơn */
+  background-color: rgba(144, 238, 144, 0.2);
+  /* Màu xanh lá cây nhạt */
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
+  /* Bóng đậm hơn, rõ hơn */
 }
+
 .THE-TREE {
-  width: 100%; /* Ảnh chiếm toàn bộ chiều rộng của phần tử cha */
-  height: auto; /* Tự động điều chỉnh chiều cao để giữ tỷ lệ khung hình */
-  cursor: pointer; /* Thay đổi con trỏ khi hover vào ảnh */
+  width: 100%;
+  /* Ảnh chiếm toàn bộ chiều rộng của phần tử cha */
+  height: auto;
+  /* Tự động điều chỉnh chiều cao để giữ tỷ lệ khung hình */
+  cursor: pointer;
+  /* Thay đổi con trỏ khi hover vào ảnh */
 }
 
 .content_TREE-1 {
   position: absolute;
-  left: 50%; /* Đặt khung màu xanh ở giữa ảnh */
-  transform: translateX(-50%); /* Căn chỉnh chính xác giữa */
-  background-color: rgba(0, 128, 0, 0.8); /* Nền xanh lá với độ trong suốt */
-  color: white; /* Màu chữ trắng */
-  text-align: center; /* Canh giữa chữ */
-  padding: 8px 0; /* Khoảng cách trên dưới cho nội dung */
-  width: 80%; /* Chiếm 80% chiều rộng của ảnh */
-  bottom: 10px; /* Cách đáy ảnh */
-  border-radius: 5px; /* Bo tròn nhẹ góc khung */
-  font-size: 16px; /* Kích thước chữ */
+  left: 50%;
+  /* Đặt khung màu xanh ở giữa ảnh */
+  transform: translateX(-50%);
+  /* Căn chỉnh chính xác giữa */
+  background-color: rgba(0, 128, 0, 0.8);
+  /* Nền xanh lá với độ trong suốt */
+  color: white;
+  /* Màu chữ trắng */
+  text-align: center;
+  /* Canh giữa chữ */
+  padding: 8px 0;
+  /* Khoảng cách trên dưới cho nội dung */
+  width: 80%;
+  /* Chiếm 80% chiều rộng của ảnh */
+  bottom: 10px;
+  /* Cách đáy ảnh */
+  border-radius: 5px;
+  /* Bo tròn nhẹ góc khung */
+  font-size: 16px;
+  /* Kích thước chữ */
 }
 
 /* SAN PHAM MOI */
@@ -377,36 +426,49 @@ body {
   flex-wrap: wrap;
   padding-top: 20px;
 }
+
 #product1 .pro {
   width: 23%;
   min-width: 250px;
   padding: 10px 12px;
   box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.02);
   margin: 15px 0;
-  transition: all 0.3s ease; /* Thêm hiệu ứng chuyển đổi mượt mà */
+  transition: all 0.3s ease;
+  /* Thêm hiệu ứng chuyển đổi mượt mà */
 }
+
 #product1 .pro img {
   width: 100%;
   cursor: pointer;
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4); /* Bóng đậm hơn, rõ hơn */
-  background-color: rgba(144, 238, 144, 0.2); /* Màu xanh lá cây nhạt */
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
+  /* Bóng đậm hơn, rõ hơn */
+  background-color: rgba(144, 238, 144, 0.2);
+  /* Màu xanh lá cây nhạt */
 }
+
 #product1 .pro:hover {
   box-shadow: 20px 20px 30px rgba(0, 0, 0, 0.06);
   transform: scale(1.05);
 }
+
 #product1 .pro .item_name__price {
   box-sizing: border-box;
   text-align: center;
   background: rgba(85, 85, 85, 0.33);
-  padding: 10px; /* Tạo khoảng cách nội dung bên trong khối */
-  text-align: center; /* Căn giữa nội dung */
-  margin-top: 0px; /* Loại bỏ khoảng cách trên của khối */
+  padding: 10px;
+  /* Tạo khoảng cách nội dung bên trong khối */
+  text-align: center;
+  /* Căn giữa nội dung */
+  margin-top: 0px;
+  /* Loại bỏ khoảng cách trên của khối */
 }
+
 #product1 .pro p {
   text-decoration: underline;
-  text-decoration-skip-ink: none; /* Tránh việc gạch dưới bị đứt */
+  text-decoration-skip-ink: none;
+  /* Tránh việc gạch dưới bị đứt */
 }
+
 #product1 .pro span {
   display: block;
   margin-top: -15px;
@@ -418,82 +480,14 @@ body {
 /* Product-Search */
 
 /* footer */
-footer {
-  width: 100%;
-  display: block;
-  overflow: hidden;
-  position: relative;
-  background-image: url("../../assets/images/LAST_HOME.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 4rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  height: 55em;
-}
 
-.col-01 {
-  flex: 0 0 auto;
-  width: 28.333333%;
-  margin-top: 5%;
-}
-
-.row-1 img {
-  width: 88%;
-  height: auto;
-}
-
-.row-2 hr {
-  border: 3px solid white;
-  width: 55%;
-}
-
-.row-3 p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  width: 100%;
-  color: white;
-  font-size: 21px;
-  text-align: justify;
-}
-
-.icon-socialnet img {
-  width: 3rem;
-}
-
-.icon-socialnet {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6%;
-  width: 100%;
-}
-
-.col-02 {
-  margin-top: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  height: 31%;
-}
-
-.col-03 {
-  color: white;
-  width: 20%;
-  margin-top: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 @media only screen and (min-width: 800px) and (max-width: 1000px) {
   .box_content {
     position: absolute;
     display: none;
   }
 }
+
 @media only screen and (max-width: 1025.98px) {
   .list-option-user {
     display: none;
@@ -749,12 +743,16 @@ footer {
   .class {
     padding: 40px 40px;
   }
+
   .section-p1 {
     padding: 40px 40px;
   }
+
   .IMG {
-    justify-items: center; /* Căn giữa theo chiều ngang */
+    justify-items: center;
+    /* Căn giữa theo chiều ngang */
   }
+
   .IMG .img__TREE {
     margin: 25px 25px;
   }
@@ -762,6 +760,7 @@ footer {
   #product1 .pro-container {
     justify-content: center;
   }
+
   #product1 .pro {
     margin: 10px;
   }
@@ -771,28 +770,37 @@ footer {
   .class {
     padding: 20px;
   }
+
   .section-p1 {
     padding: 20px;
   }
+
   #container_1 .img__TREE {
     width: 100%;
   }
+
   #product1 .pro {
     width: 100%;
   }
+
   .box_content {
     position: absolute;
     display: none;
   }
+
   .IMG {
-    justify-items: center; /* Căn giữa theo chiều ngang */
+    justify-items: center;
+    /* Căn giữa theo chiều ngang */
   }
+
   .IMG .img__TREE {
     margin: 25px 25px;
   }
+
   #product1 .pro-container {
     justify-content: center;
   }
+
   #product1 .pro {
     margin: 10px;
   }
@@ -1078,6 +1086,7 @@ footer {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1189,6 +1198,7 @@ footer {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
