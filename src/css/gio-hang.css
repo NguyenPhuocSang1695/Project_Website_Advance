@@ -483,76 +483,7 @@ body {
 }
 
 /* FOOTER  */
-footer {
-  width: 100%;
-  display: block;
-  overflow: hidden;
-  position: relative;
-  background-image: url("../../assets/images/LAST_HOME.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 4rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  height: 55em;
-}
 
-.col-01 {
-  flex: 0 0 auto;
-  width: 28.333333%;
-  margin-top: 5%;
-}
-
-.row-1 img {
-  width: 88%;
-  height: auto;
-}
-
-.row-2 hr {
-  border: 3px solid white;
-  width: 55%;
-}
-
-.row-3 p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  width: 100%;
-  color: white;
-  font-size: 21px;
-  text-align: justify;
-}
-
-.icon-socialnet img {
-  width: 3rem;
-}
-
-.icon-socialnet {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6%;
-  width: 100%;
-}
-
-.col-02 {
-  margin-top: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  height: 31%;
-}
-
-.col-03 {
-  color: white;
-  width: 20%;
-  margin-top: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 /* PC  */
 @media only screen and (min-width: 1023.98px) {
@@ -611,14 +542,6 @@ footer {
 
   .status-order {
     justify-content: center;
-  }
-
-  footer {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    height: 61em;
   }
 
   .row-1 {
@@ -766,10 +689,6 @@ footer {
     height: 10rem;
     align-items: center;
     margin: 0 0 0 0;
-  }
-
-  footer p {
-    margin-bottom: 0rem;
   }
 
   .row-1 img {
