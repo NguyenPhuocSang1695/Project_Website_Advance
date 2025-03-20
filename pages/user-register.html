@@ -427,90 +427,99 @@
     </div>
   </div>
 
-  <!-- ARTICLE -->
-  <section class="form-container ">
-    <form class="row g-3 needs-validation" onsubmit="event.preventDefault(); window.location.href='user-login.html';"
-      novalidate>
-      <div class="col-md-4">
-        <label for="validationCustom01" class="form-label">Họ và tên</label>
-        <input type="text" class="form-control" id="validationCustom01" placeholder="Họ và tên..." required>
-        <div class="valid-feedback">
-          Hoàn tất
-        </div>
-        <div class="invalid-feedback">
-          Nhập họ tên vào
-        </div>
+  <!-- MAIN -->
+  <div class="container">
+    <div class="form-card">
+      <div class="form-image">
+        <h2>Tham gia ngay với chúng tôi</h2>
+        <p>Tạo tài khoản để trải nghiệm các tính năng tuyệt vời:</p>
+        <ul class="feature-list">
+          <li>Giao diện trực quan, dễ sử dụng</li>
+          <li>Bảo mật thông tin tuyệt đối</li>
+          <li>Trải nghiệm đồng bộ trên mọi thiết bị</li>
+          <li>Hỗ trợ khách hàng 24/7</li>
+        </ul>
       </div>
-      <div class="col-md-4">
-        <label for="validationCustom02" class="form-label">Số điện thoại</label>
-        <input type="text" class="form-control" id="validationCustom02" placeholder="Số điện thoại..." required>
-        <div class="valid-feedback">
-          Hoàn tất
-        </div>
-        <div class="invalid-feedback">
-          Nhập số điện thoại
-        </div>
-      </div>
-      <div class="col-md-4">
-        <label for="validationCustomUsername" class="form-label">Gmail</label>
-        <div class="input-group has-validation">
-          <span class="input-group-text" id="inputGroupPrepend">@</span>
-          <input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend"
-            placeholder="Gmail..." required>
-          <div class="invalid-feedback">
-            Nhập gmail vào
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <label for="validationCustom03" class="form-label">Địa chỉ</label>
-        <input type="text" class="form-control" id="validationCustom03" placeholder="Địa chỉ..." required>
-        <div class="invalid-feedback">
-          Nhập địa chỉ vào
-        </div>
-      </div>
-      <div class="col-md-3">
-        <label for="validationCustom04" class="form-label">Tỉnh/ Thành phố</label>
-        <select class="form-select" id="validationCustom04" required>
-          <option selected disabled value="">Chọn tỉnh/ thành phố</option>
-          <option>TP. Hồ Chí Minh</option>
-          <option>TP. Cần thơ</option>
-          <option>Bình Định</option>
-          <option>Bình Dương</option>
-        </select>
-        <div class="invalid-feedback">
-          Chọn quốc gia
-        </div>
-      </div>
-      <div class="col-md-6">
-        <label for="password" class="form-label">Mật khẩu </label>
-        <input type="password" class="form-control" id="password" placeholder="Mật khẩu..." required>
-        <div class="invalid-feedback">
-          Nhập mật khẩu vào
-        </div>
-      </div>
-      <div class="col-md-6">
-        <label for="cnfrm-password" class="form-label">Nhập lại mật khẩu </label>
-        <input type="password" class="form-control" id="cnfrm-password" placeholder="Nhập lại mật khẩu..." required>
-        <!-- <div class="invalid-feedback">
-          Nhập lại mật khẩu mau
-        </div> -->
-        <p id="message"></p>
-      </div>
-      <div class="col-12">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-          <label class="form-check-label" for="invalidCheck">
-            Bạn chắc chắn với những thông tin này
-          </label>
 
+      <div class="form-content">
+        <div class="form-header">
+          <h1>Tạo tài khoản mới</h1>
+          <p>Điền thông tin dưới đây để bắt đầu</p>
         </div>
+
+        <form>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fullname">Họ và tên</label>
+              <input type="text" id="fullname" class="form-control" placeholder="Nhập họ và tên của bạn">
+            </div>
+
+            <div class="form-group">
+              <label for="username">Tên đăng nhập</label>
+              <input type="text" id="username" class="form-control" placeholder="Tạo tên đăng nhập">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Địa chỉ email</label>
+            <input type="email" id="email" class="form-control" placeholder="example@email.com">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Số điện thoại</label>
+              <input type="tel" id="phone" class="form-control" placeholder="Nhập số điện thoại">
+            </div>
+
+            <div class="form-group">
+              <label for="city">Tỉnh/Thành phố</label>
+              <select id="city" class="form-control">
+                <option value="" selected disabled>Chọn tỉnh/thành phố</option>
+                <option value="hanoi">Hà Nội</option>
+                <option value="hcm">TP. Hồ Chí Minh</option>
+                <option value="danang">Đà Nẵng</option>
+                <option value="other">Khác</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address">Địa chỉ</label>
+            <input type="text" id="address" class="form-control" placeholder="Nhập địa chỉ chi tiết">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">Mật khẩu</label>
+              <input type="password" id="password" class="form-control" placeholder="Tạo mật khẩu mới">
+            </div>
+
+            <div class="form-group">
+              <label for="confirm-password">Xác nhận mật khẩu</label>
+              <input type="password" id="confirm-password" class="form-control" placeholder="Nhập lại mật khẩu">
+            </div>
+          </div>
+
+          <div class="checkbox-container">
+            <input type="checkbox" id="terms">
+            <label for="terms">Tôi đã đọc và đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo
+                mật</a></label>
+          </div>
+
+          <button type="submit" class="btn">Đăng ký ngay</button>
+
+          <div class="divider">
+            <span>hoặc</span>
+          </div>
+
+          <div class="login-link">
+            Bạn đã có tài khoản? <a href="../pages/user-login.html">Đăng nhập</a>
+          </div>
+        </form>
       </div>
-      <div class="col-12 d-flex justify-content-center">
-        <button type="submit" class="btn btn-success" type="submit" onclick="checkPassword()">Đăng ký </button>
-      </div>
-    </form>
-  </section>
+    </div>
+  </div>
+
   <!-- FOOTER  -->
   <footer class="footer">
     <div class="footer-column">
