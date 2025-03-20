@@ -1,3 +1,4 @@
+// Kiểm tra xem có đang đăng nhập hay không và hiển thị tên người dùng tương ứng
 function singIn(e) {
   event.preventDefault();
   var email = document.getElementById("email").value;

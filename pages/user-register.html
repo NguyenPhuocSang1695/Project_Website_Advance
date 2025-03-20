@@ -15,7 +15,7 @@
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script></script>
   <script src="../js/main.js"></script>
-   <script src="../src/js/onOffSeacrhAdvance.js"></script>
+  <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <title>Đăng kí</title>
 </head>
 
@@ -29,337 +29,233 @@
           <div class="aaa"></div>
           <div class="item-header">
             <div class="search-group">
-                <div class="search-container">
-                  <div class="search-input-wrapper">
-                    <input
-                      type="search"
-                      placeholder="Tìm kiếm sản phẩm..."
-                      id="searchInput"
-                      class="search-input"
-                    />
-                    <button
-                      class="advanced-search-toggle"
-                      onclick="toggleAdvancedSearch()"
-                      title="Tìm kiếm nâng cao"
-                    >
-                      <i class="fas fa-sliders-h"></i>
-                    </button>
-                    <button
-                      type="button"
-                      class="search-button"
-                      onclick="performSearch()"
-                      title="Tìm kiếm"
-                    >
-                      <i class="fas fa-search"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Form tìm kiếm nâng cao được thiết kế lại -->
-                <div
-                  id="advancedSearchForm"
-                  class="advanced-search-panel"
-                  style="display: none"
-                >
-                  <div class="advanced-search-header">
-                    <h5>Tìm kiếm nâng cao</h5>
-                    <button
-                      type="button"
-                      class="close-advanced-search"
-                      onclick="toggleAdvancedSearch()"
-                    >
-                      <i class="fas fa-times"></i>
-                    </button>
-                  </div>
-
-                  <div class="search-filter-container">
-                    <div class="filter-group">
-                      <label for="categoryFilter">
-                        <i class="fas fa-leaf"></i> Phân loại sản phẩm
-                      </label>
-                      <select id="categoryFilter" class="form-select">
-                        <option value="">Tất cả phân loại</option>
-                        <option value="cay-de-cham">Cây dễ chăm</option>
-                        <option value="cay-van-phong">Cây văn phòng</option>
-                        <option value="cay-de-ban">Cây để bàn</option>
-                        <option value="cay-duoi-nuoc">Cây dưới nước</option>
-                      </select>
-                    </div>
-
-                    <div class="filter-group">
-                      <label for="priceRange">
-                        <i class="fas fa-tag"></i> Khoảng giá
-                      </label>
-                      <div class="price-range-slider">
-                        <div class="price-input-group">
-                          <input
-                            type="number"
-                            id="minPrice"
-                            placeholder="Từ"
-                            min="0"
-                          />
-                          <span class="price-separator">-</span>
-                          <input
-                            type="number"
-                            id="maxPrice"
-                            placeholder="Đến"
-                            min="0"
-                          />
-                        </div>
-                        <div class="price-ranges">
-                          <button
-                            type="button"
-                            class="price-preset"
-                            onclick="setPrice(0, 200000)"
-                          >
-                            Dưới 200k
-                          </button>
-                          <button
-                            type="button"
-                            class="price-preset"
-                            onclick="setPrice(200000, 500000)"
-                          >
-                            200k - 500k
-                          </button>
-                          <button
-                            type="button"
-                            class="price-preset"
-                            onclick="setPrice(500000, 1000000)"
-                          >
-                            500k - 1tr
-                          </button>
-                          <button
-                            type="button"
-                            class="price-preset"
-                            onclick="setPrice(1000000, 0)"
-                          >
-                            Trên 1tr
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="filter-actions">
-                      <button
-                        type="button"
-                        class="btn-search"
-                        onclick="performSearch()"
-                      >
-                        <i class="fas fa-search"></i> Tìm kiếm
-                      </button>
-                      <button
-                        type="button"
-                        class="btn-reset"
-                        onclick="resetFilters()"
-                      >
-                        <i class="fas fa-redo-alt"></i> Đặt lại
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="search-tips">
-                    <p>
-                      <i class="fas fa-lightbulb"></i> Mẹo: Kết hợp nhiều điều
-                      kiện để tìm kiếm chính xác hơn
-                    </p>
-                  </div>
-                </div>
-
-                <div id="productList" class="product-list">
-                  <!-- Thêm div thông báo không tìm thấy sản phẩm -->
-                  <div
-                    id="noResultsMessage"
-                    class="no-results-message"
-                    style="display: none"
-                  >
+              <div class="search-container">
+                <div class="search-input-wrapper">
+                  <input type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput" class="search-input" />
+                  <button class="advanced-search-toggle" onclick="toggleAdvancedSearch()" title="Tìm kiếm nâng cao">
+                    <i class="fas fa-sliders-h"></i>
+                  </button>
+                  <button type="button" class="search-button" onclick="performSearch()" title="Tìm kiếm">
                     <i class="fas fa-search"></i>
-                    <p>
-                      Không tìm thấy sản phẩm phù hợp với điều kiện tìm kiếm
-                    </p>
-                    <button
-                      type="button"
-                      class="btn-reset-search"
-                      onclick="resetFilters()"
-                    >
-                      <i class="fas fa-redo-alt"></i> Đặt lại bộ lọc
-                    </button>
-                  </div>
-
-                  <div class="product" data-category="cay-de-cham">
-                    <img src="./assets/images/CAY5.jpg" alt="Cây phát tài" />
-                    <div class="p-details">
-                      <h2>Cây phát tài</h2>
-                      <h3>750.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <!-- OK  -->
-                  <div class="product" data-category="cay-van-phong">
-                    <img src="./assets/images/CAY6.jpg" alt="Cây kim ngân" />
-                    <div class="p-details">
-                      <h2>Cây kim ngân</h2>
-                      <h3>280.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <div class="product" data-category="cay-de-ban">
-                    <img src="./assets/images/CAY7.jpg" alt="Cây trầu bà" />
-                    <div class="p-details">
-                      <h2>Cây trầu bà</h2>
-                      <h3>120.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <div class="product" data-category="cay-duoi-nuoc">
-                    <img src="./assets/images/CAY8.jpg" alt="Cây lan chi" />
-                    <div class="p-details">
-                      <h2>Cây lan chi</h2>
-                      <h3>120.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <div class="product" data-category="cay-de-ban">
-                    <img src="./assets/images/CAY9.jpg" alt="Cây trầu bà đỏ" />
-                    <div class="p-details">
-                      <h2>Cây trầu bà đỏ</h2>
-                      <h3>320.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <div class="product" data-category="cay-de-ban">
-                    <img src="./assets/images/CAY10.jpg" alt="Cây lưỡi hổ" />
-                    <div class="p-details">
-                      <h2>Cây lưỡi hổ</h2>
-                      <h3>750.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <div class="product" data-category="cay-de-ban">
-                    <img
-                      src="./assets/images/CAY11.jpg"
-                      alt="Cây lưỡi hổ vàng"
-                    />
-                    <div class="p-details">
-                      <h2>Cây lưỡi hổ vàng</h2>
-                      <h3>160.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <div class="product" data-category="cay-de-ban">
-                    <img src="./assets/images/CAY12.jpg" alt="Cây hạnh phúc" />
-                    <div class="p-details">
-                      <h2>Cây hạnh phúc</h2>
-                      <h3>1.200.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <div class="product" data-category="cay-de-ban">
-                    <img
-                      src="./assets/images/CAY13.jpg"
-                      alt="Cây trầu bà châu lớn"
-                    />
-                    <div class="p-details">
-                      <h2>Cây trầu bà châu lớn</h2>
-                      <h3>1.100.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <div class="product" data-category="cay-van-phong">
-                    <img
-                      src="./assets/images/CAY14.jpg"
-                      alt="Cây phát tài DORADO"
-                    />
-                    <div class="p-details">
-                      <h2>Cây phát tài DORADO</h2>
-                      <h3>220.000 vnđ</h3>
-                    </div>
-                  </div>
-                  <div class="product" data-category="cay-de-ban">
-                    <img src="./assets/images/CAY16.jpg" alt="Cây vạn lộc" />
-                    <div class="p-details">
-                      <h2>Cây vạn lộc</h2>
-                      <h3>1.150.000 vnđ</h3>
-                    </div>
-                  </div>
-
-                  <div class="product" data-category="cay-de-ban">
-                    <img src="./assets/images/CAY17.jpg" alt="Cây ngọc vừng" />
-                    <div class="p-details">
-                      <h2>Cây ngọc vừng</h2>
-                      <h3>1.750.000 vnđ</h3>
-                    </div>
-                  </div>
+                  </button>
                 </div>
               </div>
 
+              <!-- Form tìm kiếm nâng cao được thiết kế lại -->
+              <div id="advancedSearchForm" class="advanced-search-panel" style="display: none">
+                <div class="advanced-search-header">
+                  <h5>Tìm kiếm nâng cao</h5>
+                  <button type="button" class="close-advanced-search" onclick="toggleAdvancedSearch()">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+
+                <div class="search-filter-container">
+                  <div class="filter-group">
+                    <label for="categoryFilter">
+                      <i class="fas fa-leaf"></i> Phân loại sản phẩm
+                    </label>
+                    <select id="categoryFilter" class="form-select">
+                      <option value="">Tất cả phân loại</option>
+                      <option value="cay-de-cham">Cây dễ chăm</option>
+                      <option value="cay-van-phong">Cây văn phòng</option>
+                      <option value="cay-de-ban">Cây để bàn</option>
+                      <option value="cay-duoi-nuoc">Cây dưới nước</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="priceRange">
+                      <i class="fas fa-tag"></i> Khoảng giá
+                    </label>
+                    <div class="price-range-slider">
+                      <div class="price-input-group">
+                        <input type="number" id="minPrice" placeholder="Từ" min="0" />
+                        <span class="price-separator">-</span>
+                        <input type="number" id="maxPrice" placeholder="Đến" min="0" />
+                      </div>
+                      <div class="price-ranges">
+                        <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
+                          Dưới 200k
+                        </button>
+                        <button type="button" class="price-preset" onclick="setPrice(200000, 500000)">
+                          200k - 500k
+                        </button>
+                        <button type="button" class="price-preset" onclick="setPrice(500000, 1000000)">
+                          500k - 1tr
+                        </button>
+                        <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
+                          Trên 1tr
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="filter-actions">
+                    <button type="button" class="btn-search" onclick="performSearch()">
+                      <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    <button type="button" class="btn-reset" onclick="resetFilters()">
+                      <i class="fas fa-redo-alt"></i> Đặt lại
+                    </button>
+                  </div>
+                </div>
+
+                <div class="search-tips">
+                  <p>
+                    <i class="fas fa-lightbulb"></i> Mẹo: Kết hợp nhiều điều
+                    kiện để tìm kiếm chính xác hơn
+                  </p>
+                </div>
+              </div>
+
+              <div id="productList" class="product-list">
+                <!-- Thêm div thông báo không tìm thấy sản phẩm -->
+                <div id="noResultsMessage" class="no-results-message" style="display: none">
+                  <i class="fas fa-search"></i>
+                  <p>
+                    Không tìm thấy sản phẩm phù hợp với điều kiện tìm kiếm
+                  </p>
+                  <button type="button" class="btn-reset-search" onclick="resetFilters()">
+                    <i class="fas fa-redo-alt"></i> Đặt lại bộ lọc
+                  </button>
+                </div>
+
+                <div class="product" data-category="cay-de-cham">
+                  <img src="./assets/images/CAY5.jpg" alt="Cây phát tài" />
+                  <div class="p-details">
+                    <h2>Cây phát tài</h2>
+                    <h3>750.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <!-- OK  -->
+                <div class="product" data-category="cay-van-phong">
+                  <img src="./assets/images/CAY6.jpg" alt="Cây kim ngân" />
+                  <div class="p-details">
+                    <h2>Cây kim ngân</h2>
+                    <h3>280.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <div class="product" data-category="cay-de-ban">
+                  <img src="./assets/images/CAY7.jpg" alt="Cây trầu bà" />
+                  <div class="p-details">
+                    <h2>Cây trầu bà</h2>
+                    <h3>120.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <div class="product" data-category="cay-duoi-nuoc">
+                  <img src="./assets/images/CAY8.jpg" alt="Cây lan chi" />
+                  <div class="p-details">
+                    <h2>Cây lan chi</h2>
+                    <h3>120.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <div class="product" data-category="cay-de-ban">
+                  <img src="./assets/images/CAY9.jpg" alt="Cây trầu bà đỏ" />
+                  <div class="p-details">
+                    <h2>Cây trầu bà đỏ</h2>
+                    <h3>320.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <div class="product" data-category="cay-de-ban">
+                  <img src="./assets/images/CAY10.jpg" alt="Cây lưỡi hổ" />
+                  <div class="p-details">
+                    <h2>Cây lưỡi hổ</h2>
+                    <h3>750.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <div class="product" data-category="cay-de-ban">
+                  <img src="./assets/images/CAY11.jpg" alt="Cây lưỡi hổ vàng" />
+                  <div class="p-details">
+                    <h2>Cây lưỡi hổ vàng</h2>
+                    <h3>160.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <div class="product" data-category="cay-de-ban">
+                  <img src="./assets/images/CAY12.jpg" alt="Cây hạnh phúc" />
+                  <div class="p-details">
+                    <h2>Cây hạnh phúc</h2>
+                    <h3>1.200.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <div class="product" data-category="cay-de-ban">
+                  <img src="./assets/images/CAY13.jpg" alt="Cây trầu bà châu lớn" />
+                  <div class="p-details">
+                    <h2>Cây trầu bà châu lớn</h2>
+                    <h3>1.100.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <div class="product" data-category="cay-van-phong">
+                  <img src="./assets/images/CAY14.jpg" alt="Cây phát tài DORADO" />
+                  <div class="p-details">
+                    <h2>Cây phát tài DORADO</h2>
+                    <h3>220.000 vnđ</h3>
+                  </div>
+                </div>
+                <div class="product" data-category="cay-de-ban">
+                  <img src="./assets/images/CAY16.jpg" alt="Cây vạn lộc" />
+                  <div class="p-details">
+                    <h2>Cây vạn lộc</h2>
+                    <h3>1.150.000 vnđ</h3>
+                  </div>
+                </div>
+
+                <div class="product" data-category="cay-de-ban">
+                  <img src="./assets/images/CAY17.jpg" alt="Cây ngọc vừng" />
+                  <div class="p-details">
+                    <h2>Cây ngọc vừng</h2>
+                    <h3>1.750.000 vnđ</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="cart-icon">
-              <a href="user-register.html"
-                ><img src="../assets/images/cart.svg" alt="cart"
-              /></a>
+              <a href="user-register.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
-              <label for="tick" style="cursor: pointer"
-                ><img src="../assets/images/user.svg" alt=""
-              /></label>
-              <input
-                id="tick"
-                hidden
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasExample"
-                aria-controls="offcanvasExample"
-              />
-              <div
-                class="offcanvas offcanvas-end"
-                tabindex="-1"
-                id="offcanvasExample"
-                aria-labelledby="offcanvasExampleLabel"
-              >
+              <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
+              <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
+                aria-controls="offcanvasExample" />
+              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
+                aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
                     Xin vui lòng đăng nhâp!
                   </h5>
-                  <button
-                    type="button"
-                    class="btn-close text-reset"
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Close"
-                  ></button>
+                  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    
-                    
+                  <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+
+
                     <li class="nav-item">
-                        <a
-                          class="nav-link login-logout"
-                          href="user-register.html"
-                          >Đăng kí</a
-                        >
-                      </li>
+                      <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
+                    </li>
 
-                      <li class="nav-item">
-                        <a class="nav-link login-logout" href="user-login.html"
-                          >Đăng nhập</a
-                        >
-                      </li>
+                    <li class="nav-item">
+                      <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
+                    </li>
 
-                      <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="user-History.html"
-                          >Lịch sử mua hàng</a
-                        >
-                      </li>
-                      <li class="nav-item">
-                        <a
-                          class="nav-link hs-ls-dx"
-                          href="../index.html"
-                          onclick="logOut()"
-                          >Đăng xuất</a
-                        >
-                      </li>
+                    <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng xuất</a>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -370,51 +266,29 @@
         <!-- BAR  -->
         <nav class="navbar position-absolute">
           <div class="a">
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#offcanvasNavbar"
-              aria-controls="offcanvasNavbar"
-              aria-label="Toggle navigation"
-            >
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+              aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
-            <div
-              class="offcanvas offcanvas-start"
-              tabindex="-1"
-              id="offcanvasNavbar"
-              aria-labelledby="offcanvasNavbarLabel"
-            >
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
+              aria-labelledby="offcanvasNavbarLabel">
               <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
                   THEE TREE
                 </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="offcanvas"
-                  aria-label="Close"
-                ></button>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
               </div>
               <div class="offcanvas-body offcanvas-fullscreen mt-20">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="../index.html"
-                      >Trang chủ</a
-                    >
+                    <a class="nav-link active" aria-current="page" href="../index.html">Trang chủ</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Giới thiệu</a>
                   </li>
                   <li class="nav-item dropdown">
-                    <a
-                      class="nav-link dropdown-toggle"
-                      href="#"
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                      aria-expanded="false">
                       Sản phẩm
                     </a>
                     <ul class="dropdown-menu">
@@ -423,7 +297,7 @@
                       </li>
                       <li>
                         <a class="dropdown-item" href="phan-loai1.html">Cây văn phòng</a>
-</li>
+                      </li>
                       <li>
                         <a class="dropdown-item" href="phan-loai1.html">Cây để bàn</a>
                       </li>
@@ -440,112 +314,66 @@
                   </li>
                 </ul>
                 <form class="d-flex mt-3" role="search">
-                  <input
-                    class="form-control me-2"
-                    type="search"
-                    placeholder="Tìm kiếm"
-                    aria-label="Search"
-                  />
+                  <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search" />
                   <!-- Nút tìm kiếm nâng cao trên mobile  -->
-                    <button
-                      type="button"
-                      class="advanced-search-toggle"
-                      onclick="toggleMobileSearch()"
-                      title="Tìm kiếm nâng cao"
-                    >
-                      <i class="fas fa-sliders-h"></i>
-                    </button>
+                  <button type="button" class="advanced-search-toggle" onclick="toggleMobileSearch()"
+                    title="Tìm kiếm nâng cao">
+                    <i class="fas fa-sliders-h"></i>
+                  </button>
                   <button class="btn btn-outline-success" type="submit">
                     Search
                   </button>
                 </form>
-                <div
-                    id="search-filter-container-mobile"
-                    class="search-filter-container"
-                  >
-                    <div class="filter-group">
-                      <label for="categoryFilter">
-                        <i class="fas fa-leaf"></i> Phân loại sản phẩm
-                      </label>
-                      <select id="categoryFilter" class="form-select">
-                        <option value="">Tất cả phân loại</option>
-                        <option value="cay-de-cham">Cây dễ chăm</option>
-                        <option value="cay-van-phong">Cây văn phòng</option>
-                        <option value="cay-de-ban">Cây để bàn</option>
-                        <option value="cay-duoi-nuoc">Cây dưới nước</option>
-                      </select>
-                    </div>
+                <div id="search-filter-container-mobile" class="search-filter-container">
+                  <div class="filter-group">
+                    <label for="categoryFilter">
+                      <i class="fas fa-leaf"></i> Phân loại sản phẩm
+                    </label>
+                    <select id="categoryFilter" class="form-select">
+                      <option value="">Tất cả phân loại</option>
+                      <option value="cay-de-cham">Cây dễ chăm</option>
+                      <option value="cay-van-phong">Cây văn phòng</option>
+                      <option value="cay-de-ban">Cây để bàn</option>
+                      <option value="cay-duoi-nuoc">Cây dưới nước</option>
+                    </select>
+                  </div>
 
-                    <div class="filter-group">
-                      <label for="priceRange">
-                        <i class="fas fa-tag"></i> Khoảng giá
-                      </label>
-                      <div class="price-range-slider">
-                        <div class="price-input-group">
-                          <input
-                            type="number"
-                            id="minPriceMobile"
-                            placeholder="Từ"
-                            min="0"
-                          />
-                          <span class="price-separator">-</span>
-                          <input
-                            type="number"
-                            id="maxPriceMobile"
-                            placeholder="Đến"
-                            min="0"
-                          />
-                        </div>
-                        <div class="price-ranges">
-                          <button
-                            type="button"
-                            class="price-preset"
-                            onclick="setPrice(0, 200000)"
-                          >
-                            Dưới 200k
-                          </button>
-                          <button
-                            type="button"
-                            class="price-preset"
-                            onclick="setPrice(200000, 500000)"
-                          >
-                            200k - 500k
-                          </button>
-                          <button
-                            type="button"
-                            class="price-preset"
-                            onclick="setPrice(500000, 1000000)"
-                          >
-                            500k - 1tr
-                          </button>
-                          <button
-                            type="button"
-                            class="price-preset"
-                            onclick="setPrice(1000000, 0)"
-                          >
-                            Trên 1tr
-                          </button>
-                        </div>
+                  <div class="filter-group">
+                    <label for="priceRange">
+                      <i class="fas fa-tag"></i> Khoảng giá
+                    </label>
+                    <div class="price-range-slider">
+                      <div class="price-input-group">
+                        <input type="number" id="minPriceMobile" placeholder="Từ" min="0" />
+                        <span class="price-separator">-</span>
+                        <input type="number" id="maxPriceMobile" placeholder="Đến" min="0" />
+                      </div>
+                      <div class="price-ranges">
+                        <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
+                          Dưới 200k
+                        </button>
+                        <button type="button" class="price-preset" onclick="setPriceMobile(200000, 500000)">
+                          200k - 500k
+                        </button>
+                        <button type="button" class="price-preset" onclick="setPriceMobile(500000, 1000000)">
+                          500k - 1tr
+                        </button>
+                        <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
+                          Trên 1tr
+                        </button>
                       </div>
                     </div>
-
-                    <div class="filter-actions">
-                      <button
-                        type="button"
-                        class="btn-search"
-                        onclick="performSearch()"
-                      >
-                        <i class="fas fa-search"></i> Tìm kiếm
-                      </button>
-                      <button
-                        type="button"
-                        class="btn-reset"
-                        onclick="resetMobileFilters()"
-                      >
-                        <i class="fas fa-redo-alt"></i> Đặt lại
-                      </button>
-                    </div>
                   </div>
+
+                  <div class="filter-actions">
+                    <button type="button" class="btn-search" onclick="performSearchMobile()">
+                      <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    <button type="button" class="btn-reset" onclick="resetMobileFilters()">
+                      <i class="fas fa-redo-alt"></i> Đặt lại
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -558,31 +386,20 @@
       <div class="brand">
         <div class="brand-logo">
           <!-- Quay về trang chủ  -->
-          <a href="../index.html"
-            ><img class="img-fluid" src="../assets/images/LOGO-2.png" alt="LOGO"
-          /></a>
+          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.png" alt="LOGO" /></a>
         </div>
         <div class="brand-name">THE TREE</div>
       </div>
       <div class="choose">
         <ul>
           <li>
-            <a
-              href="../index.html"
-              style="font-weight: bold"
-              >Trang chủ</a
-            >
+            <a href="../index.html" style="font-weight: bold">Trang chủ</a>
           </li>
           <li><a href="#">Giới thiệu</a></li>
           <li>
             <div class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
                 Sản phẩm
               </a>
               <ul class="dropdown-menu">
@@ -598,7 +415,7 @@
         </ul>
       </div>
     </div>
-  </div> 
+  </div>
 
 
 
@@ -611,7 +428,8 @@
 
   <!-- ARTICLE -->
   <section class="form-container ">
-    <form class="row g-3 needs-validation" onsubmit="event.preventDefault(); window.location.href='user-login.html';" novalidate>
+    <form class="row g-3 needs-validation" onsubmit="event.preventDefault(); window.location.href='user-login.html';"
+      novalidate>
       <div class="col-md-4">
         <label for="validationCustom01" class="form-label">Họ và tên</label>
         <input type="text" class="form-control" id="validationCustom01" placeholder="Họ và tên..." required>
@@ -684,7 +502,7 @@
           <label class="form-check-label" for="invalidCheck">
             Bạn chắc chắn với những thông tin này
           </label>
-          
+
         </div>
       </div>
       <div class="col-12 d-flex justify-content-center">
@@ -753,8 +571,8 @@
   </footer>
   </div>
 
-<script src="../src/js/user-register.js"></script>
-<script src="../src/js/Trang_chu.js"></script>
+  <script src="../src/js/user-register.js"></script>
+  <script src="../src/js/Trang_chu.js"></script>
 </body>
 
 </html>
