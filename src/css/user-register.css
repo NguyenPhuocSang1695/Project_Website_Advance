@@ -349,9 +349,11 @@ body {
 
 /* Main   */
 :root {
-  --primary-color: #1a73e8;
-  --primary-hover: #1557b0;
-  --primary-gradient: linear-gradient(135deg, #1a73e8, #8e43e7);
+  --primary-color: #1c8e2e;
+  --primary-hover: #1b6b27;
+  --primary-gradient: linear-gradient(45deg, #1c7b2a, #3cb54a);
+
+
   --secondary-color: #4285f4;
   --text-color: #202124;
   --text-light: #5f6368;
