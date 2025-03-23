@@ -2,7 +2,7 @@
 $server="localhost";
 $user="root";
 $password="";
-$database="business_db";//quanlydonhang
+$database="business_analysis";//quanlydonhang
 
 $myconn =new mysqli($server,$user,$password,$database);
 if($myconn){

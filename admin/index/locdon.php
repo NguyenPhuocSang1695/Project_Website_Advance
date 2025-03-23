@@ -1,45 +1,44 @@
 <?php
-include("connect.php");
+include "connect.php";
+session_start();
 
-$date_from = "";
-$date_end = "";
-$order_status = "";
-$district = "";
-
+$where = "1=1";
 if (isset($_POST['btn'])) {
-  $date_from = $_POST['date-from1'];
-  $date_end = $_POST['end-date1'];
-  $order_status = $_POST['order-status']; 
+  $date_from = $_POST['date-from'];
+  $date_to = $_POST['end-date'];
+  $status = $_POST['order-status'];
   $district = $_POST['district'];
-  // Debugging output
-  echo "<br> Date From: " . $date_from . "<br>";
-  echo "Date End: " . $date_end . "<br>";
-  echo "Order Status: " . $order_status . "<br>";
-  echo "District: " . $district . "<br>";
 
-  // Prepare the SQL query to filter by date range
-  $sql = "SELECT * FROM donhang WHERE ngaytao >= '$date_from' AND ngaytao <= '$date_end'";
-
-  // Add order status filtering if not 'all'
-  if ($order_status != "all") {
-    $sql .= " AND trangthai = '$order_status'";
+  if (!empty($date_from)) {
+    $where .= " AND ngaytao >= '$date_from'";
+  }
+  if (!empty($date_to)) {
+    $where .= " AND ngaytao <= '$date_to'";
   }
 
-  // Add district filtering if not 'all'
-  if ($district != "all") {
-    $sql .= " AND diachi LIKE '%$district%'"; // Assuming 'diachi' contains district information
+  if ($status != 'all') {
+    $status_map = [
+      'pending' => 'Đang xử lý',
+      'confirmed' => 'Đã xác nhận',
+      'delivered' => 'Đã giao',
+      'cancelled' => 'Đã hủy'
+    ];
+    $where .= " AND trangthai = '" . $status_map[$status] . "'";
   }
-
-  $result = mysqli_query($myconn, $sql);
-
-  // Check if any results were returned
-  if (mysqli_num_rows($result) > 0) {
-    // Loop through the results and display the order IDs
-    while ($row = mysqli_fetch_assoc($result)) {
-      echo "<br> Mã đơn hàng: " . $row["madonhang"] . " Tên khách hàng: " . $row["tenkhachhang"] . "<br>"; // Display order ID
+  if ($district != 'all') {
+    if ($district === 'Quận 1') {
+      $where .= " AND (diachi LIKE '%Quận 1%' OR diachi LIKE '%Quận 1, %'
+      OR diachi LIKE '%Quận1' OR diachi LIKE '%Quận 1 ')
+      AND diachi NOT LIKE '%Quận 10%' 
+      AND diachi NOT LIKE '%Quận 11%' 
+      AND diachi NOT LIKE '%Quận 12%'";
+    } else {
+      $where .= " AND diachi LIKE '%$district%'";
     }
-  } else {
-    echo "Không có đơn hàng nào trong khoảng thời gian này."; 
   }
 }
-?>
+
+// Lưu điều kiện lọc vào session
+$_SESSION['filter_where'] = $where;
+header("Location: orderPage1.php");
+exit;

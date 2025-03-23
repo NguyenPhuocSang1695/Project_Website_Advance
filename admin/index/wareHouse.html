@@ -2,36 +2,147 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Kho hàng</title>
         
-        
-        <link href="../style/main_warehouse.css" rel="stylesheet">
+        <link href="../style/main_warehouse1.css" rel="stylesheet">
         <link rel="stylesheet" href="../style/header.css">
         <link rel="stylesheet" href="../style/sidebar.css">
         <link href="../icon/css/all.css" rel="stylesheet">
         <link href="../style/generall.css" rel="stylesheet">
         <link href="../style/main.css" rel="stylesheet">
-
         <link href="../style/LogInfo.css" rel="stylesheet">
-  <!-- Add bootstrap -->
-  <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Add reponsive -->
-  <link rel="stylesheet" href="../style/reponsiveAnalyze.css">
-        
+        <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../style/responsiveWarehouse.css">
+      <style>
+        /* Popup overlay cho thêm sản phẩm */
+.add-product-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Nền mờ */
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
 
-    </head>
+.add-product-overlay.active {
+    display: flex;
+}
+
+.add-product-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 400px; 
+    max-height: 80vh; 
+    overflow-y: auto; 
+    position: relative;
+}
+        /* Popup overlay */
+.product-details-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Nền mờ */
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-details-overlay.active {
+    display: flex;
+}
+
+.product-details-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 400px; 
+    max-height: 80vh; 
+    overflow-y: auto; 
+    position: relative;
+}
+
+/* Đảm bảo nội dung trong popup không bị tràn */
+.details-grid p,
+.form-group label,
+.form-group input {
+    font-size: 14px;
+}
+
+.form-grid {
+    grid-template-columns: 1fr 2fr; 
+    gap: 15px;
+}
+
+.image-preview,
+.edit-image-preview {
+    max-width: 150px;
+}
+/* Responsive */
+@media only screen and (max-width: 29.9375em) {
+
+  .product-details-content , .add-product-content {
+      width: 90%; 
+      padding: 15px;
+  }
+
+  .form-grid {
+      grid-template-columns: 1fr; 
+  }
+
+  .details-grid p,
+  .form-group label,
+  .form-group input {
+      font-size: 12px;
+  }
+
+  .image-preview,
+  .edit-image-preview {
+      max-width: 100px;
+  }
+}
+@media only screen and (min-width: 30em) and (max-width: 63.9375em) {
+  .product-details-content {
+      width: 70%;
+  }
+  .add-product-content {
+        padding: 20px;
+        width: 66%;
+    }
+}
+
+@media only screen and (min-width: 64em) {
+  .product-details-content {
+      width: 40%; 
+  }
+  .add-product-content {
+    padding: 25px;
+    width: 56%;
+  }
+  .form-grid {
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+  }
+}
+      </style>
+    </head>    
     <body>
       <div class="header">
         <div class="index-menu">
           <i class="fa-solid fa-bars" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
-            aria-controls="offcanvasExample">
-          </i>
+            aria-controls="offcanvasExample"></i>
           <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-            <div style=" 
-            border-bottom-width: 1px;
-            border-bottom-style: solid;
-            border-bottom-color: rgb(176, 176, 176);" class="offcanvas-header">
+            <div style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(176, 176, 176);" class="offcanvas-header">
               <h5 class="offcanvas-title" id="offcanvasExampleLabel">Mục lục</h5>
               <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
@@ -39,10 +150,7 @@
               <a href="homePage.html" style="text-decoration: none; color: black;">
                 <div class="container-function-selection">
                   <button class="button-function-selection">
-                    <i class="fa-solid fa-house" style="
-                      font-size: 20px;
-                      color: #FAD4AE;
-                      "></i>
+                    <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
                   </button>
                   <p>Trang chủ</p>
                 </div>
@@ -50,30 +158,23 @@
               <a href="wareHouse.html" style="text-decoration: none; color: black;" >
                 <div class="container-function-selection">
                   <button class="button-function-selection" style="background-color: #6aa173;">
-                    <i class="fa-solid fa-warehouse" style="font-size: 20px;
-                      color: #FAD4AE;
-                  "></i></button>
+                    <i class="fa-solid fa-warehouse" style="font-size: 20px; color: #FAD4AE;"></i>
+                  </button>
                   <p>Kho hàng</p>
                 </div>
               </a>
               <a href="customer.html" style="text-decoration: none; color: black;">
                 <div class="container-function-selection">
-                  <button class="button-function-selection" >
-                    <i class="fa-solid fa-users" style="
-                                  font-size: 20px;
-                                  color: #FAD4AE;
-                              "></i>
+                  <button class="button-function-selection">
+                    <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
                   </button>
-                  <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
+                  <p style="color: black; text-align: center; font-size: 10x;">Khách hàng</p>
                 </div>
               </a>
               <a href="orderPage1.php" style="text-decoration: none; color: black;">
                 <div class="container-function-selection">
-                  <button class="button-function-selection" >
-                    <i class="fa-solid fa-list-check" style="
-                              font-size: 18px;
-                              color: #FAD4AE;
-                              "></i>
+                  <button class="button-function-selection">
+                    <i class="fa-solid fa-list-check" style="font-size: 18px; color: #FAD4AE;"></i>
                   </button>
                   <p style="color:black">Đơn hàng</p>
                 </div>
@@ -81,10 +182,7 @@
               <a href="analyzePage.php" style="text-decoration: none; color: black;">
                 <div class="container-function-selection">
                   <button class="button-function-selection">
-                    <i class="fa-solid fa-chart-simple" style="
-                              font-size: 20px;
-                              color: #FAD4AE;
-                          "></i>
+                    <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
                   </button>
                   <p>Thống kê</p>
                 </div>
@@ -92,31 +190,23 @@
               <a href="accountPage.html" style="text-decoration: none; color: black;">
                 <div class="container-function-selection">
                   <button class="button-function-selection">
-                    <i class="fa-solid fa-circle-user" style="
-                               font-size: 20px;
-                               color: #FAD4AE;
-                           "></i>
+                    <i class="fa-solid fa-circle-user" style="font-size: 20px; color: #FAD4AE;"></i>
                   </button>
                   <p style="color:black">Tài khoản</p>
                 </div>
               </a>
             </div>
           </div>
-      
         </div>
         <div class="header-left-section">
           <p class="header-left-title">Kho hàng</p>
         </div>
         <div class="header-middle-section">
-          <img class="logo-store" src="../image/logo.webp">
+          <img class="logo-store" src="../../assets/images/LOGO-2.png">
         </div>
         <div class="header-right-section">
           <div class="bell-notification">
-            <i class="fa-regular fa-bell" style="
-                            color: #64792c;
-                            font-size: 45px;
-                            width:100%;
-                            "></i>
+            <i class="fa-regular fa-bell" style="color: #64792c; font-size: 45px; width:100%;"></i>
           </div>
           <div>
             <div class="position-employee">
@@ -127,16 +217,14 @@
             </div>
           </div>
           <div>
-            <img class="avatar" class src="../image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
+            <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
               data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
           </div>
           <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
             aria-labelledby="offcanvasWithBothOptionsLabel">
-            <div style=" 
-                border-bottom-width: 1px;
-                border-bottom-style: solid;
-                border-bottom-color: rgb(176, 176, 176);" class="offcanvas-header">
-              <img class="avatar" class src="../image/chuong-avatar.jpg" alt="">
+            <div style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(176, 176, 176);" 
+                 class="offcanvas-header">
+              <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="">
               <div style="display: flex; flex-direction: column; height: 95px;">
                 <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">NgNguyenChuong</h4>
                 <h5>Ng_Nguyen_Chuong</h5>
@@ -165,17 +253,14 @@
             </div>
           </div>
         </div>
-    
       </div>
-        <div class="side-bar">
+      
+      <div class="side-bar">
             <div class="backToHome">
               <a href="homePage.html" style="text-decoration: none; color: black;">
                 <div class="container-function-selection">
                   <button class="button-function-selection" style="margin-top: 35px;">
-                    <i class="fa-solid fa-house" style="
-                    font-size: 20px;
-                    color: #FAD4AE;
-                    "></i>
+                    <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
                   </button>
                   <p>Trang chủ</p>
                 </div>
@@ -184,30 +269,23 @@
             <a href="wareHouse.html" style="text-decoration: none; color: black;">
               <div class="container-function-selection">
                 <button class="button-function-selection" style="background-color: #6aa173;">
-                  <i class="fa-solid fa-warehouse" style="font-size: 20px;
-                  color: #FAD4AE;
-              "></i></button>
+                  <i class="fa-solid fa-warehouse" style="font-size: 20px; color: #FAD4AE;"></i>
+                </button>
                 <p>Kho hàng</p>
               </div>
             </a>
             <a href="customer.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
-                <i class="fa-solid fa-users" style="
-                              font-size: 20px;
-                              color: #FAD4AE;
-                          "></i>
+                <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
               </button>
               <p>Khách hàng</p>
             </div>
             </a>
             <a href="orderPage1.php" style="text-decoration: none; color: black;">
               <div class="container-function-selection">
-                <button class="button-function-selection" >
-                  <i class="fa-solid fa-list-check" style="
-                          font-size: 20px;
-                          color: #FAD4AE;
-                          "></i>
+                <button class="button-function-selection">
+                  <i class="fa-solid fa-list-check" style="font-size: 20px; color: #FAD4AE;"></i>
                 </button>
                 <p>Đơn hàng</p>
               </div>
@@ -215,10 +293,7 @@
             <a href="analyzePage.php" style="text-decoration: none; color: black;">
               <div class="container-function-selection">
                 <button class="button-function-selection">
-                  <i class="fa-solid fa-chart-simple" style="
-                          font-size: 20px;
-                          color: #FAD4AE;
-                      "></i>
+                  <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
                 </button>
                 <p>Thống kê</p>
               </div>
@@ -226,379 +301,87 @@
             <a href="accountPage.html" style="text-decoration: none; color: black;">
               <div class="container-function-selection">
                 <button class="button-function-selection">
-                  <i class="fa-solid fa-circle-user" style="
-                           font-size: 20px;
-                           color: #FAD4AE;
-                       "></i>
+                  <i class="fa-solid fa-circle-user" style="font-size: 20px; color: #FAD4AE;"></i>
                 </button>
                 <p>Tài khoản</p>
               </div>
             </a>
-          </div>
-
-
-        
-
-        <div class="container-main-warehouse">
-            <div class="container-search-warehouse">
-                <input class="search-bar" type="text"
-                 placeholder="Tìm kiếm sản phẩm">
-                 <a href="wareHouse2.html" style="text-decoration: none; color: black;">
-                  <button class="search-icon-warehouse">
+      </div>
+      <div class="container-main-warehouse">
+        <div class="warehouse-management">
+            <div class="search-container">
+                <input class="search-input" type="text" placeholder="Tìm kiếm sản phẩm..." onkeyup="searchProducts()">
+                <button class="search-btn">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                  </button>
-                </a>
-                 
+                </button>
             </div>
-            <div class="container-roll-his">
-                <div class="container-roll-bar-operation">
-                    <div class="container-bar-operation-warehouse">
-                        <p style="
-                            font-size: 30px;
-                            font-weight:700;
-                        
-                        ">Quản lý kho</p>
-                        <div class="container-add-product">
-                            <button class="button-add" style="margin-right: 10px;">Thêm</button>
-                            <div class="active-add-container"> 
-                                
-                                 <button class="button-add-product-active" style="
-                                    margin-left: 40px;   
-                                ">Thêm ảnh</button>
-                                <input type="file" name="" id="" class="input-add-product" style="height: 40px;" placeholder="Thêm ảnh">
-                                <input class="input-add-product" type="text" placeholder="Thêm tên">
-                                <input class="input-add-product" type="text" placeholder="Mô tả">
-                                <input class="input-add-product" type="text" placeholder="Xuất xứ">
-                                <input class="input-add-product" type="text" placeholder="Thành phần">
-                                <input class="input-add-product" type="text" placeholder="Khối lượng tịnh">
-                                <input class="input-add-product" type="text" placeholder="Hạn sử dụng">
-                                <input class="input-add-product" type="text" placeholder="Gợi ý sử dụng">
-                                <input class="input-add-product" type="text" placeholder="Hướng dẫn bảo quản">
-                                <div class="container-button-add-product-active">
-                                    <button onclick="confirmAddProduct()" class="button-add-product-active">Thêm</button>
-                                    <button onclick="confirmNotAddProduct()" class="button-add-product-active" style="
-                                        background-color:  #D95E5E;
-                                    ">Xoá</button>
-                                </div>
-                                
-
-                            </div>
-                        </div>
+    
+            <div class="management-content">
+                <div class="products-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Quản Lý Kho Hàng</h2>
+                        <button class="add-product-btn" onclick="showAddProductPopup()">Thêm Sản Phẩm</button>
                     </div>
-                    <div class="container-main-product">
-                        <div class="overview-product">
-                            <div>
-                                <img class="image-product" src="../image/product1.webp">
-                            </div>
-                            <div class="info-overview-order-product">
-                                <p style="margin-bottom: 15px;">Bắp cải hữu cơ</p>
-                                <p>Ngày hết hạn: 00/00/2000</p>
-                                <p>Kho: 34</p>
-                            </div>
-                            <div class="handle-product">
-                                <button onclick="toggleProductDetails(this)" class="button-handle-product">Xử lý</button>
-                                <div class="product-details-popup">
-                                    <h3>Thông tin sản phẩm</h3>
-                                    <div class="detail-row">
-                                        <label>Tên sản phẩm:</label>
-                                        <p>Bắp cải hữu cơ</p>
-                                    </div>
-                                    <div class="detail-row">
-                                        <label>Mô tả:</label>
-                                        <p>Bắp cải hữu cơ tươi ngon</p>
-                                    </div>
-                                    <div class="detail-row">
-                                        <label>Xuất xứ:</label>
-                                        <p>Việt Nam</p>
-                                    </div>
-                                    <div class="detail-row">
-                                        <label>Thành phần:</label>
-                                        <p>100% bắp cải hữu cơ</p>
-                                    </div>
-                                    <div class="detail-row">
-                                        <label>Khối lượng tịnh:</label>
-                                        <p>500g</p>
-                                    </div>
-                                    <div class="detail-row">
-                                        <label>Hạn sử dụng:</label>
-                                        <p>00/00/2000</p>
-                                    </div>
-                                    <div class="detail-row">
-                                        <label>Số lượng trong kho:</label>
-                                        <p>34</p>
-                                    </div>
-                                    <div class="action-buttons">
-                                        <button onclick="toggleEditPopup(this)" class="edit-btn">Chỉnh sửa</button>
-                                        <button onclick="confirmDeleteAction()" class="delete-btn">Xóa sản phẩm</button>
-                                        <button onclick="closeProductDetails(this)" class="close-btn">Đóng</button>
-                                    </div>
-                                </div>
-                                <div class="edit-product-popup">
-                                    <h3>Chỉnh sửa thông tin</h3>
-                                    <input type="text" class="edit-input" placeholder="Tên sản phẩm">
-                                    <input type="text" class="edit-input" placeholder="Mô tả">
-                                    <input type="text" class="edit-input" placeholder="Xuất xứ">
-                                    <input type="text" class="edit-input" placeholder="Thành phần">
-                                    <input type="text" class="edit-input" placeholder="Khối lượng tịnh">
-                                    <input type="text" class="edit-input" placeholder="Hạn sử dụng">
-                                    <input type="text" class="edit-input" placeholder="Số lượng trong kho">
-                                    <div class="edit-image-section">
-                                        <button class="delete-image-btn" onclick="confirmDeleteImage(this)">Xóa ảnh</button>
-                                        <input type="file" class="new-image-input">
-                                    </div>
-                                    <div class="edit-actions">
-                                        <button onclick="saveChanges(this)" class="save-btn">Lưu</button>
-                                        <button onclick="cancelEdit(this)" class="cancel-btn">Hủy</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="overview-product">
-                            <div>
-                                <img class="image-product" src="../image/product2.webp">
-                            </div>
-                            <div class="info-overview-order-product">
-                                <p style="
-                                    margin-bottom: 15px;   
-                                    ">Cải ngọt</p>
-                                <p>Ngày hết hạn: 30/02/2025</p>
-                                <p>Kho: 34</p>
-                                
-                            </div>
-                            <div class="handle-product">
-                              <button onclick="toggleProductDetails(this)" class="button-handle-product">Xử lý</button>
-                              <div class="product-details-popup">
-                                  <h3>Thông tin sản phẩm</h3>
-                                  <div class="detail-row">
-                                      <label>Tên sản phẩm:</label>
-                                      <p>Cải Ngọt</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Mô tả:</label>
-                                      <p>Cải ngọt hữu cơ tươi ngon</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Xuất xứ:</label>
-                                      <p>Việt Nam</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Thành phần:</label>
-                                      <p>100% Cải ngọt hữu cơ</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Khối lượng tịnh:</label>
-                                      <p>500g</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Hạn sử dụng:</label>
-                                      <p>00/00/2000</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Số lượng trong kho:</label>
-                                      <p>34</p>
-                                  </div>
-                                  <div class="action-buttons">
-                                      <button onclick="toggleEditPopup(this)" class="edit-btn">Chỉnh sửa</button>
-                                      <button onclick="confirmDeleteAction()" class="delete-btn">Xóa sản phẩm</button>
-                                      <button onclick="closeProductDetails(this)" class="close-btn">Đóng</button>
-                                  </div>
-                              </div>
-                              <div class="edit-product-popup">
-                                  <h3>Chỉnh sửa thông tin</h3>
-                                  <input type="text" class="edit-input" placeholder="Tên sản phẩm">
-                                  <input type="text" class="edit-input" placeholder="Mô tả">
-                                  <input type="text" class="edit-input" placeholder="Xuất xứ">
-                                  <input type="text" class="edit-input" placeholder="Thành phần">
-                                  <input type="text" class="edit-input" placeholder="Khối lượng tịnh">
-                                  <input type="text" class="edit-input" placeholder="Hạn sử dụng">
-                                  <input type="text" class="edit-input" placeholder="Số lượng trong kho">
-                                  <div class="edit-image-section">
-                                      <button class="delete-image-btn" onclick="confirmDeleteImage(this)">Xóa ảnh</button>
-                                      <input type="file" class="new-image-input">
-                                  </div>
-                                  <div class="edit-actions">
-                                      <button onclick="saveChanges(this)" class="save-btn">Lưu</button>
-                                      <button onclick="cancelEdit(this)" class="cancel-btn">Hủy</button>
-                                  </div>
-                              </div>
-                          </div>
-                        </div>
-                        <div class="overview-product">
-                            <div>
-                                <img class="image-product" src="../image/product3.webp">
-                            </div>
-                            <div class="info-overview-order-product">
-                                <p style="
-                                    margin-bottom: 15px;   
-                                    ">Cà chua</p>
-                                <p>Ngày hết hạn: 30/11/2024</p>
-                                <p>Kho: 34</p>
-                            </div>
-                            <div class="handle-product">
-                              <button onclick="toggleProductDetails(this)" class="button-handle-product">Xử lý</button>
-                              <div class="product-details-popup">
-                                  <h3>Thông tin sản phẩm</h3>
-                                  <div class="detail-row">
-                                      <label>Tên sản phẩm:</label>
-                                      <p>Cà chua</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Mô tả:</label>
-                                      <p>Cà chua organic đà lạt</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Xuất xứ:</label>
-                                      <p>Việt Nam</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Thành phần:</label>
-                                      <p>100% bắp cải hữu cơ</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Khối lượng tịnh:</label>
-                                      <p>500g</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Hạn sử dụng:</label>
-                                      <p>00/00/2000</p>
-                                  </div>
-                                  <div class="detail-row">
-                                      <label>Số lượng trong kho:</label>
-                                      <p>34</p>
-                                  </div>
-                                  <div class="action-buttons">
-                                      <button onclick="toggleEditPopup(this)" class="edit-btn">Chỉnh sửa</button>
-                                      <button onclick="confirmDeleteAction()" class="delete-btn">Xóa sản phẩm</button>
-                                      <button onclick="closeProductDetails(this)" class="close-btn">Đóng</button>
-                                  </div>
-                              </div>
-                              <div class="edit-product-popup">
-                                  <h3>Chỉnh sửa thông tin</h3>
-                                  <input type="text" class="edit-input" placeholder="Tên sản phẩm">
-                                  <input type="text" class="edit-input" placeholder="Mô tả">
-                                  <input type="text" class="edit-input" placeholder="Xuất xứ">
-                                  <input type="text" class="edit-input" placeholder="Thành phần">
-                                  <input type="text" class="edit-input" placeholder="Khối lượng tịnh">
-                                  <input type="text" class="edit-input" placeholder="Hạn sử dụng">
-                                  <input type="text" class="edit-input" placeholder="Số lượng trong kho">
-                                  <div class="edit-image-section">
-                                      <button class="delete-image-btn" onclick="confirmDeleteImage(this)">Xóa ảnh</button>
-                                      <input type="file" class="new-image-input">
-                                  </div>
-                                  <div class="edit-actions">
-                                      <button onclick="saveChanges(this)" class="save-btn">Lưu</button>
-                                      <button onclick="cancelEdit(this)" class="cancel-btn">Hủy</button>
-                                  </div>
-                              </div>
-                          </div>
-                        </div>
+    
+                    <table class="products-table" id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>Ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Hạn sử dụng</th>
+                                <th>Số lượng</th>
+                                <th>Giá</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsBody">
+                            <!-- Sản phẩm mốt thế PHP vô đây -->
+                        </tbody>
+                    </table>
+    
+                    <div class="pagination">
+                        <button onclick="prevPage()" class="page-btn"><<</button>
+                        <span id="pageInfo">Trang 1 / 1</span>
+                        <button onclick="nextPage()" class="page-btn">>></button>
                     </div>
-                </div>
-                <div class="history">
-                  <p>Lịch sử</p>
-                  <br>
-                  <p>--------------------------</p>
-                  <p>Tính năng chưa phát triển</p>
                 </div>
             </div>
         </div>
-        <script>
-            function confirmAddProduct() {
-                let confirmAction = confirm("Bạn có chắc chắn muốn thêm sản phẩm này không?");
-                if (confirmAction) {
-                    // Thực hiện hành động khi người dùng nhấn "OK"
-                    alert("Yêu cầu đã được thực hiện.");
-                } else {
-                    // Hành động khi người dùng nhấn "Cancel"
-                    alert("Yêu cầu đã bị hủy.");
-                }
-            }
-            function confirmNotAddProduct() {
-                let confirmAction = confirm("Bạn có chắc chắn không muốn thêm sản phẩm này không?");
-                if (confirmAction) {
-                    // Thực hiện hành động khi người dùng nhấn "OK"
-                    alert("Yêu cầu đã được thực hiện.");
-                } else {
-                    // Hành động khi người dùng nhấn "Cancel"
-                    alert("Yêu cầu đã bị hủy.");
-                }
-            }
-            function confirmDeleteAction() {
-                let confirmAction = confirm("Bạn có chắc chắn muốn xoá sản phẩm này không?");
-                if (confirmAction) {
-                    // Thực hiện hành động khi người dùng nhấn "OK"
-                    alert("Yêu cầu đã được thực hiện.");
-                } else {
-                    // Hành động khi người dùng nhấn "Cancel"
-                    alert("Yêu cầu đã bị hủy.");
-                }
-            }
-            function toggleProductDetails(button) {
-                const allPopups = document.querySelectorAll('.product-details-popup, .edit-product-popup');
-                allPopups.forEach(popup => {
-                    if (popup !== button.nextElementSibling) {
-                        popup.classList.remove('active');
-                    }
-                });
-                const detailsPopup = button.nextElementSibling;
-                detailsPopup.classList.toggle('active');
-            }
-
-            function closeProductDetails(button) {
-                const popup = button.closest('.product-details-popup');
-                popup.classList.remove('active');
-            }
-
-            function toggleEditPopup(button) {
-                const detailsPopup = button.closest('.product-details-popup');
-                detailsPopup.classList.remove('active');
-                const editPopup = button.closest('.handle-product').querySelector('.edit-product-popup');
-                editPopup.classList.add('active');
-            }
-
-            function saveChanges(button) {
-                let confirmAction = confirm("Bạn có chắc chắn muốn lưu các thay đổi?");
-                if (confirmAction) {
-                    alert("Đã lưu thay đổi thành công!");
-                    const editPopup = button.closest('.edit-product-popup');
-                    editPopup.classList.remove('active');
-                }
-            }
-
-            function cancelEdit(button) {
-                let confirmAction = confirm("Bạn có chắc chắn muốn hủy các thay đổi?");
-                if (confirmAction) {
-                    const editPopup = button.closest('.edit-product-popup');
-                    editPopup.classList.remove('active');
-                }
-            }
-
-            function confirmDeleteImage(button) {
-                let confirmAction = confirm("Bạn có chắc chắn muốn xóa ảnh này không?");
-                if (confirmAction) {
-                    alert("Đã xóa ảnh thành công!");
-                } else {
-                    alert("Đã hủy xóa ảnh!");
-                }
-            }
-
-            // Thêm event listener để đóng popup khi click ra ngoài
-            document.addEventListener('click', function(event) {
-                if (!event.target.closest('.handle-product')) {
-                    const allPopups = document.querySelectorAll('.product-details-popup, .edit-product-popup');
-                    allPopups.forEach(popup => {
-                        popup.classList.remove('active');
-                    });
-                }
-            });
-
-            // Ngăn chặn việc đóng popup khi click vào bên trong
-            document.querySelectorAll('.product-details-popup, .edit-product-popup').forEach(popup => {
-                popup.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                });
-            });
-        </script>
+    
+        <!-- Popup overlay cho thông tin sản phẩm -->
+        <div class="product-details-overlay" id="productDetailsOverlay">
+            <div class="product-details-content" id="productDetailsContent"></div>
+        </div>
+    
+        <!-- Popup overlay cho add product-->
+        <div class="add-product-overlay" id="addProductOverlay">
+            <div class="add-product-content">
+                <h3>Thêm Sản Phẩm Mới</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <input type="file" class="image-upload" accept="image/*" onchange="previewImage(event)">
+                        <img class="image-preview" id="imagePreview" src="#" alt="Preview" style="display: none;">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Tên sản phẩm" class="form-input" id="addName">
+                        <input type="text" placeholder="Mô tả" class="form-input" id="addDesc">
+                        <input type="text" placeholder="Xuất xứ" class="form-input" id="addOrigin">
+                        <input type="text" placeholder="Thành phần" class="form-input" id="addComp">
+                        <input type="text" placeholder="Khối lượng tịnh" class="form-input" id="addWeight">
+                        <input type="text" placeholder="Hạn sử dụng (dd/mm/yyyy)" class="form-input" id="addExp">
+                        <input type="number" placeholder="Số lượng" class="form-input" id="addQty" min="0">
+                        <input type="number" placeholder="Giá bán (VND)" class="form-input" id="addPrice" min="0">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button onclick="confirmAddProduct()" class="save-btn">Thêm</button>
+                    <button onclick="closeAddProductPopup()" class="cancel-btn">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  
         <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="../js/hienthisanpham_khohang.js"></script>
     </body>
 </html>
