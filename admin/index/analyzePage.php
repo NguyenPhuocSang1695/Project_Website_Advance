@@ -1,35 +1,7 @@
-
-<?php
-include 'connect.php';
-$start_date = isset($_POST['start_date']) ? $_POST['start_date'] : '';
-$end_date = isset($_POST['end_date']) ? $_POST['end_date'] : '';
-$customers = [];
-
-if ($start_date && $end_date) {
-    $sql = "SELECT c.id, c.name, SUM(o.total) as total_spent, 
-            GROUP_CONCAT(CONCAT('<a href=\"orderDetail2.html?id=', o.id, '\" class=\"order-link\">Đơn ', o.id, '</a> - ', o.total, ' VND (', DATE_FORMAT(o.order_date, '%d/%m/%Y'), ')') SEPARATOR '<br>') as orders
-            FROM customers c
-            JOIN orders o ON c.id = o.customer_id
-            WHERE o.order_date BETWEEN ? AND ? 
-            -- đặt đièu kiện ngày Order phải ở khoảng giữa ngày bắt đầu và ngày kết thúc
-            GROUP BY c.id, c.name
-            ORDER BY total_spent DESC
-            LIMIT 5";
-    $stmt= $myconn->prepare($sql);
-    $stmt->bind_param("ss",$start_date,$end_date);
-    // dùng bind_param để gán giá trị cho biến khi điều kiện đúng
-    //ss : dùng để biến đổi ngày thành String và xóa các ký tự đặc biệt
-    $stmt->execute();
-    $result= $stmt->get_result();
-  while($row=mysqli_fetch_assoc($result)) {
-    $customers[] = $row;
-  }
-$stmt->close();
-}
-
-?>
+<?php include '../pages/thongke.php' ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Thống Kê Kinh Doanh</title>
   <meta charset="UTF-8">
@@ -38,11 +10,12 @@ $stmt->close();
   <link rel="stylesheet" href="../style/sidebar.css">
   <link rel="stylesheet" href="../icon/css/all.css">
   <link rel="stylesheet" href="../style/generall.css">
+  <!-- Add style-->
   <link rel="stylesheet" href="../style/analyzeStyle.css">
   <link rel="stylesheet" href="../style/main.css">
   <link rel="stylesheet" href="../icon/css/fontawesome.min.css">
   <!-- Add reponsive -->
-  <link rel="stylesheet" href="../style/reponsiveAnalyze.css">
+  <link rel="stylesheet" href="../style/reponsiveAnalyze1.css">
   <!-- Add bootstrap -->
   <link rel="stylesheet" href="./asset/bootstrap/css/bootstrap.min.css">
   <!-- Add login function -->
@@ -51,98 +24,6 @@ $stmt->close();
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
-  }
-
-  .container {
-    max-width: 1120px;
-    margin-left: 15rem;
-    margin-top: 6rem;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  h1 {
-    color: #2c3e50;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .filter-section {
-    margin-bottom: 30px;
-    padding: 20px;
-    background: #ecf0f1;
-    border-radius: 5px;
-  }
-
-  .filter-section label {
-    margin-right: 10px;
-    font-weight: bold;
-  }
-
-  .filter-section input {
-    padding: 8px;
-    margin-right: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-
-  .filter-section button {
-    padding: 8px 20px;
-    background: #3498db;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .filter-section button:hover {
-    background: #2980b9;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-
-  th,
-  td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-
-  th {
-    background: #1c8e2e;
-    color: white;
-  }
-
-  tr:hover {
-    background: #f8f9fa;
-  }
-
-  .order-link {
-    color: #1c8e2e;
-    text-decoration: none;
-  }
-
-  .order-link:hover {
-    text-decoration: underline;
-  }
-
-  .total {
-    font-weight: bold;
-    color: #e74c3c;
-  }
-</style>
 
 <body>
   <div class="header">
@@ -388,15 +269,53 @@ $stmt->close();
           <?php else: ?>
             <?php foreach ($customers as $index => $customer): ?>
               <tr>
-                <td><?php echo $index + 1; ?></td>
-                <td><?php echo htmlspecialchars($customer['name']); ?></td>
-                <td><?php echo $customer['orders']; ?></td>
-                <td class="total"><?php echo number_format($customer['total_spent'], 0, ',', '.'); ?></td>
+                <td data-label="STT"><?php echo $index + 1; ?></td>
+                <td data-label="Tên khách hàng"><?php echo htmlspecialchars($customer['name']); ?></td>
+                <td data-label="Đơn hàng"><?php echo $customer['orders']; ?></td>
+                <td data-label="Tổng tiền (VND)" class="total"><?php echo number_format($customer['total_spent'], 0, ',', '.'); ?></td>
               </tr>
             <?php endforeach; ?>
           <?php endif; ?>
         </tbody>
       </table>
+    </div>
+    <div class="container" style="   margin-top: 3rem;">
+      <h1>Thống Kê Mặt Hàng Bán Ra</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Tên mặt hàng</th>
+            <th>Số lượng bán</th>
+            <th>Tổng tiền (VND)</th>
+            <th>Hóa đơn</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if (empty($items)): ?>
+            <tr>
+              <td colspan="5" style="text-align: center;">Vui lòng chọn khoảng thời gian phù hợp</td>
+            </tr>
+          <?php else: ?>
+            <?php foreach ($items as $index => $item): ?>
+              <tr>
+                <td data-label="STT"><?php echo $index + 1; ?></td>
+                <td data-label="Tên mặt hàng"><?php echo htmlspecialchars($item['name']); ?></td>
+                <td data-label="Số lượng bán"><?php echo $item['total_quantity']; ?></td>
+                <td data-label="Tổng tiền (VND)" class="total"><?php echo number_format($item['total_revenue'], 0, ',', '.'); ?></td>
+                <td data-label="Hóa đơn"><?php echo $item['orders']; ?></td>
+              </tr>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </tbody>
+      </table>
+      <h3>Tổng doanh thu: <?php echo number_format($total_revenue, 0, ',', '.'); ?> VND</h3>
+      <?php if ($best_selling_item): ?>
+        <p><strong>Mặt hàng bán chạy nhất:</strong> <?php echo htmlspecialchars($best_selling_item['name']); ?> (<?php echo $best_selling_item['total_quantity']; ?> sản phẩm)</p>
+      <?php endif; ?>
+      <?php if ($least_selling_item): ?>
+        <p><strong>Mặt hàng bán ế nhất:</strong> <?php echo htmlspecialchars($least_selling_item['name']); ?> (<?php echo $least_selling_item['total_quantity']; ?> sản phẩm)</p>
+      <?php endif; ?>
     </div>
   </div>
 </body>
