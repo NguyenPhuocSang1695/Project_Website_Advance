@@ -38,7 +38,6 @@ margin-right: 10px;
 🌿 Cây văn phòng
 Cây 4: Cây lan ý - 180.000đ
 Cây 5: Cây phát tài núi - 1.950.000đ
-Cây 6: Cây kim ngân - 100.000đ
 Cây 7: Trầu bà lá xanh - 200.000đ
 Cây 11: Cây Thiết Mộc Lan - 1.000.000đ
 Cây 41: Cây bàng Singapore - 400.000đ** ✅ [Thêm mới]
