@@ -430,7 +430,7 @@
       <div class="login-header">
         <h1>Đăng nhập</h1>
       </div>
-      <form>
+      <form id="form-02" onsubmit="event.preventDefault(); window.location.href='../index.html'; singIn()">
         <div class="form-group">
           <label for="username">Username</label>
           <input type="text" id="username" class="form-control" placeholder="Nhập username của bạn" required>
@@ -448,6 +448,7 @@
           <a href="#">Quên mật khẩu?</a>
         </div>
       </form>
+
     </div>
   </main>
 
