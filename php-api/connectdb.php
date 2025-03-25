@@ -7,7 +7,7 @@ function connect_db()
     $database = "webdb";
 
     // Create connection
-    $conn = mysqli_connect($server, $username, $password, $database);
+    $conn = new mysqli($server, $username, $password, $database);
     if (!$conn) {
         die("Connection failed: " . mysqli_connect_error());
     }

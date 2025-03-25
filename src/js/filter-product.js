@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let categoryId = categoryMap[categoryName];
       let typeTree = document.getElementById("type-tree");
       if (categoryId) {
-        fetch("../php-api/filter-product.php?category_id=" + categoryId)
+        fetch("./php-api/filter-product.php?category_id=" + categoryId)
           .then((response) => response.text()) // Đọc dữ liệu dưới dạng text trước
           .then((text) => {
             try {
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <h5 class="card-title">${product.ProductName}</h5>
                                         <p class="card-text">${product.DescriptionBrief}</p>
                                         <p class="card-text"><strong>Giá:</strong> ${product.Price} VNĐ</p>
-                                        <img src="${product.ImageURL}" class="img-fluid" alt="${product.ProductName}">
+                                        <img style="height: 40px; witdh: 40px" src="../${product.ImageURL}" class="img-fluid" alt="${product.ProductName}">
                                     </div>
                                 `;
                 productList.appendChild(productItem);
