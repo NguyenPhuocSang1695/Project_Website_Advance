@@ -91,7 +91,7 @@ body {
 .status.pending {
   background-color: yellow;
 }
-
+ 
 .status.pending2 {
   background-color: #00ff51;
 }
@@ -107,6 +107,7 @@ body {
 .detail-info {
   color: #c12f2f;
   text-decoration: none;
+  font-size: 20px;
 }
 
 .search-bar-order {
@@ -151,3 +152,41 @@ body {
 }
 
 
+.filter-section table {
+  border-spacing: 10px;
+  border-collapse: separate;
+}
+
+.filter-section td {
+  padding: 5px;
+}
+
+.filter-section select,
+.filter-section input {
+  width: 100%;
+}
+
+.select_list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.select_list button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 0 5px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.select_list button:hover {
+  background-color: #e0e0e0;
+}
+
+.select_list span {
+  margin: 0 5px;
+}

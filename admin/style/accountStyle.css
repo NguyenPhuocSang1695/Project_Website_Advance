@@ -160,7 +160,7 @@ td {
 .user-info {
   display: flex;
   align-items: center;
-  background-color: #40dafd;
+  background-color: #f2f2f2;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   padding: 10px;
@@ -197,4 +197,64 @@ td {
   border:1px solid white;
   border-radius: 100%;
   border-width: 2px;
+}
+.personal-info {
+  padding: 20px;
+width: 85%;
+margin: auto;
+}
+
+.personal-info h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.personal-info p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.info-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row label {
+  font-weight: bold;
+  color: #333;
+  width: 40%;
+}
+
+.info-row span {
+  color: #555;
+  width: 60%;
+  text-align: left;
+}
+
+.edit-info-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #6aa173;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-info-btn:hover {
+  background-color: #5a8c61;
 }

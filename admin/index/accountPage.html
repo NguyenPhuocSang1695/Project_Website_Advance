@@ -98,7 +98,6 @@
           </a>
         </div>
       </div>
-
     </div>
     <div class="header-left-section">
       <p class="header-left-title">Tài khoản</p>
@@ -123,7 +122,7 @@
         </div>
       </div>
       <div>
-        <img class="avatar" class src="../images/image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
+        <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
       </div>
       <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
@@ -132,7 +131,7 @@
             border-bottom-width: 1px;
             border-bottom-style: solid;
             border-bottom-color: rgb(176, 176, 176);" class="offcanvas-header">
-          <img class="avatar" class src="../images/image/chuong-avatar.jpg" alt="">
+          <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="">
           <div style="display: flex; flex-direction: column; height: 95px;">
             <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">NgNguyenChuong</h4>
             <h5>Ng_Nguyen_Chuong</h5>
@@ -161,7 +160,6 @@
         </div>
       </div>
     </div>
-
   </div>
 
   <div class="main-container">
@@ -237,81 +235,72 @@
       <!-- Phần tiêu đề và thông tin tài khoản -->
       <div class="header-section">
         <div class="header-left">
-          <h1>Chủ cửa hàng</h1>
-          <p>Tài khoản toàn quyền truy cập của hàng</p>
+          <h1>Thông tin tài khoản</h1>
+          <p>Chi tiết thông tin của nhân viên hiện tại</p>
         </div>
         <div class="header-right">
           <div class="user-info">
-            <span class="user-icon">AT</span>
-            <div style="display: flex;flex-direction: column;">
-              <span class="user-name">Antran</span>
-              <span class="user-email">📧 3123411009@sv.edu.vn</span>
+            <span class="user-icon">NC</span>
+            <div style="display: flex; flex-direction: column;">
+              <span class="user-name">Nguyen Chuong</span>
+              <span class="user-email">📧 nguyen.chuong@gmail.com</span>
             </div>
-
-
           </div>
         </div>
       </div>
       <div class="main-content">
-        <div class="sidebar">
-          <h1>Danh sách nhân viên</h1>
-          <p>Bạn có thể cấp quyền quản lý của hàng cho nguồn khách</p>
-          <button class="add-employee-btn"><i class="fa-solid fa-plus"></i> Thêm nhân viên</button>
-        </div>
-
-        <div class="employee-list">
-          <div class="search-bar">
-            <input type="text" placeholder="Tìm kiếm nhân viên">
+        <div class="personal-info">
+          <h1>Thông tin cá nhân</h1>
+          <p>Thông tin chi tiết của nhân viên hiện tại</p>
+          
+          <div class="info-container">
+            <div class="info-row">
+              <label>Họ và tên:</label>
+              <span>Nguyen Chuong</span>
+            </div>
+            <div class="info-row">
+              <label>Ngày tháng năm sinh:</label>
+              <span>15/03/2005</span>
+            </div>
+            <div class="info-row">
+              <label>Số điện thoại:</label>
+              <span>0123 456 789</span>
+            </div>
+            <div class="info-row">
+              <label>Email:</label>
+              <span>nguyen.chuong@gmail.com</span>
+            </div>
+            <div class="info-row">
+              <label>Ca làm việc:</label>
+              <span>08:00 - 17:00</span>
+            </div>
+            <div class="info-row">
+              <label>Chức vụ:</label>
+              <span>Chủ cửa hàng</span>
+            </div>
+            <div class="info-row">
+              <label>Quyền truy cập:</label>
+              <span>Toàn quyền (chỉnh sửa thông tin sản phẩm, khách hàng, đơn hàng, nhân viên)</span>
+            </div>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Họ tên và email</th>
-                <th>Quyền truy cập</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="icon" style="background-color:#a3c627">CR7</td>
-                <td>
-                  <span class="name">Cristiano Ronaldo</span>
-                  <span class="email">CR7.@portugal.com</span>
-                </td>
-                <td>Toàn quyền (trừ cài đặt, tạo nhân viên)</td>
-                <td><button class="edit-btn"><i class="fa-regular fa-pen-to-square"></i></button></td>
-                <td><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-              <tr>
-                <td class="icon" style="background-color:#27c62a">LE</td>
-                <td>
-                  <span class="name">LOZ MESSI</span>
-                  <span class="email">Messibulshit@gmail.com</span>
-                </td>
-                <td>Nhân viên quèn</td>
-                <td><button class="edit-btn"><i class="fa-regular fa-pen-to-square"></i></button></td>
-                <td><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-              <tr>
-                <td class="icon" style="background-color:#c6278e">DA</td>
-                <td>
-                  <span class="name">David Alaba</span>
-                  <span class="email">DA@yahoo.com</span>
-                </td>
-                <td>Quản lý</td>
-                <td><button class="edit-btn"><i class="fa-regular fa-pen-to-square"></i></button></td>
-                <td><button class="delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-              </tr>
-            </tbody>
-          </table>
+
+          <!-- Nút chỉnh sửa thông tin -->
+          <button class="edit-info-btn" id="editInfoBtn"><i class="fa-regular fa-pen-to-square"></i> Chỉnh sửa thông tin</button>
         </div>
       </div>
     </div>
+  </div>
 
+  <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Thay thế chỗ dữ liệu tĩnh này bằng dữ liệu database + PHP -->
+  <script>
+    const userRole = "Chủ cửa hàng"; // Thay đổi giá trị này tùy theo người đăng nhập
 
-    <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    // Ẩn nút chỉnh sửa nếu không có quyền
+    const editBtn = document.getElementById("editInfoBtn");
+    if (userRole !== "Chủ cửa hàng") {
+      editBtn.style.display = "none"; // Ẩn nút nếu không phải chủ
+    }
+  </script>
 </body>
-
 </html>

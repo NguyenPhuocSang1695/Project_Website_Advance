@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let endPage = Math.min(totalPages, startPage + 2);
       if (endPage - startPage < 2) {
           startPage = Math.max(1, endPage - 2);
-      }
+      } 
 
       if (startPage > 1) {
           pageNumbersContainer.appendChild(createPageButton(1));
