@@ -14,6 +14,9 @@ sửa lại đoạn này ở các file dòng 407
                   <a class="dropdown-item" href="./pages/phan-loai.html?category_id=4">Cây dưới nước</a>
                 </li>
               </ul>
+              \
+
+<!-- sửa lại sản phẩm mới cho đúng theo phân loại  -->
 <!-- Thông tin cây  -->
 
 🌿 Cây văn phòng
