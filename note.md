@@ -62,3 +62,29 @@ Cây 37: Cây bạch mã hoàng tử - 270.000đ** ✅ [Thêm mới]
 Cây 38: Cây hạnh phúc mini - 400.000đ** ✅ [Thêm mới]
 Cây 39: Cây tùng bồng lai - 350.000đ** ✅ [Thêm mới]
 Cây 40: Cây trường sinh - 200.000đ\*\* ✅ [Thêm mới]
+
+// <?php
+// require_once './connectdb.php'; // Kết nối database
+// $conn = connect_db();
+
+// if (isset($_GET['category_id'])) {
+//     $category_id = intval($\_GET['category_id']);
+
+// $sql = "SELECT * FROM products WHERE CategoryID = ?";
+//     $stmt = $conn->prepare($sql);
+// $stmt->bind_param("i", $category_id);
+// $stmt->execute();
+// $result = $stmt->get_result();
+
+// $products = [];
+//     while ($row = $result->fetch_assoc()) {
+// // Chuẩn hóa đường dẫn ảnh, chỉ giữ lại phần `/assets/...`
+// $row['ImageURL'] = preg_replace('/^(\.\.\/)+/', '/', $row['ImageURL']);
+
+// $products[] = $row;
+// }
+
+// echo json_encode($products);
+// } else {
+// echo json_encode(["error" => "Không tìm thấy sản phẩm!"]);
+// }

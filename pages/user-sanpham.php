@@ -468,7 +468,7 @@ if ($product_id > 0) {
 
 <div class="sanpham">
   <!-- Ảnh sản phẩm -->
-  <img src="<?php echo $product['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>" class="single-image" />
+  <img src="<?php echo ".." . $product['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>" class="single-image" />
   <!-- Tên cây, số lượng, giá -->
   <div class="details">
     <div class="nametree">
