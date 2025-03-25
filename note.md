@@ -27,6 +27,7 @@ Cây 23: Cây cọ nhật - 650.000đ** ✅ [Thêm mới]
 Cây 24: Cây kim tiền - 450.000đ** ✅ [Thêm mới]
 Cây 25: Cây ngọc ngân - 300.000đ\*\* ✅ [Thêm mới]
 
+
 💦 Cây dưới nước
 Cây 1: Cây thường xuân - 160.000đ
 Cây 2: Cây lá sọc dưa hấu - 85.000đ
@@ -39,6 +40,7 @@ Cây 28: Cây dương xỉ nước - 110.000đ** ✅ [Thêm mới]
 Cây 29: Cây thủy sinh cỏ thìa - 140.000đ\*\* ✅ [Thêm mới]
 Cây 30: Cây thủy cúc - 100.000đ\*\* ✅ [Thêm mới]
 
+
 🌱 Cây dễ chăm  
 Cây 8: Cây Dây nhện - 35.000đ
 Cây 10: Lưỡi hổ vàng - 200.000đ
@@ -50,6 +52,7 @@ Cây 32: Cây phú quý - 320.000đ** ✅ [Thêm mới]
 Cây 33: Cây vạn niên thanh - 250.000đ** ✅ [Thêm mới]
 Cây 34: Cây sen đá - 90.000đ** ✅ [Thêm mới]
 Cây 35: Cây cỏ lan chi - 50.000đ\*\* ✅ [Thêm mới]
+
 
 🖥 Cây để bàn
 Cây 3: Cây cẩm nhung - 150.000đ
