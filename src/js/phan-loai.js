@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", function () {
-  let params = new URLSearchParams(window.location.search);
-  let categoryId = params.get("category_id");
-  let categoryName = params.get("category_name");
+document.addEventListener("DOMContentLoaded", async function () {
+  const params = new URLSearchParams(window.location.search);
+  const categoryId = params.get("category_id");
+  const categoryName = params.get("category_name");
 
   const categoryMap = {
     1: "Cây dễ chăm",
@@ -10,47 +10,91 @@ document.addEventListener("DOMContentLoaded", function () {
     4: "Cây dưới nước",
   };
 
-  let typeTree = document.getElementById("type-tree");
-  let productList = document.getElementById("product-list");
-  let paginationDiv = document.getElementById("pagination-button");
+  const typeTree = document.getElementById("type-tree");
+  const productList = document.getElementById("product-list");
+  const paginationDiv = document.getElementById("pagination-button");
 
-  if (categoryName) {
-    typeTree.innerHTML = categoryName;
+  if (categoryName) typeTree.textContent = categoryName;
+  if (categoryId) {
+    document.getElementById("product_type_list").textContent =
+      categoryMap[categoryId] || "Danh mục khác";
+    await loadProducts(categoryId);
   }
 
-  if (categoryId) {
-    document.getElementById(
-      "product_type_list"
-    ).innerText = `${categoryMap[categoryId]}`;
+  async function loadProducts(categoryId) {
+    try {
+      const response = await fetch(
+        `../php-api/filter-product.php?category_id=${categoryId}`
+      );
+      const text = await response.text();
+      console.log("Raw API Response:", text);
 
-    fetch(`../php-api/filter-product.php?category_id=${categoryId}`)
-      .then((response) => response.text())
-      .then((text) => {
-        try {
-          console.log("Raw API Response:", text);
-          let data = JSON.parse(text);
+      const data = JSON.parse(text);
+      if (data.error) {
+        productList.innerHTML = `<p class="text-danger">${data.error}</p>`;
+        return;
+      }
 
-          if (data.error) {
-            productList.innerHTML = `<p class="text-danger">${data.error}</p>`;
-            return;
-          }
+      paginateProducts(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      productList.innerHTML = `<p class="text-danger">Lỗi khi tải dữ liệu.</p>`;
+    }
+  }
 
-          let currentPage = 1;
-          let itemsPerPage = 8;
-          let totalPages = Math.ceil(data.length / itemsPerPage);
+  function paginateProducts(data) {
+    let currentPage = 1;
+    const itemsPerPage = 8;
+    const totalPages = Math.ceil(data.length / itemsPerPage);
 
-          function renderPage(page) {
-            productList.innerHTML = "";
-            let start = (page - 1) * itemsPerPage;
-            let end = start + itemsPerPage;
-            let pageData = data.slice(start, end);
+    function renderPage(page) {
+      productList.innerHTML = "";
+      const start = (page - 1) * itemsPerPage;
+      const pageData = data.slice(start, start + itemsPerPage);
 
-            pageData.forEach((product) => {
-              let productItem = document.createElement("div");
-              productItem.classList.add("card", "mb-3");
+      pageData.forEach((product) => {
+        productList.appendChild(createProductCard(product));
+      });
+      renderPagination();
+    }
 
-              productItem.innerHTML = `
-                <div class="card-body">
+    function renderPagination() {
+      paginationDiv.innerHTML = "";
+      paginationDiv.appendChild(
+        createPaginationButton("‹", currentPage > 1, () =>
+          renderPage(--currentPage)
+        )
+      );
+
+      for (let i = 1; i <= totalPages; i++) {
+        paginationDiv.appendChild(
+          createPaginationButton(
+            i,
+            true,
+            () => {
+              currentPage = i;
+              renderPage(currentPage);
+            },
+            i === currentPage
+          )
+        );
+      }
+
+      paginationDiv.appendChild(
+        createPaginationButton("›", currentPage < totalPages, () =>
+          renderPage(++currentPage)
+        )
+      );
+    }
+
+    renderPage(currentPage);
+  }
+
+  function createProductCard(product) {
+    const card = document.createElement("div");
+    card.className = "card mb-3";
+    card.innerHTML = `
+      <div class="card-body">
         <h5 class="card-title">
           <a href="user-sanpham.php?id=${
             product.ProductID
@@ -63,74 +107,25 @@ document.addEventListener("DOMContentLoaded", function () {
           product.Price
         ).toLocaleString()} VNĐ</p>
         <a href="user-sanpham.php?id=${product.ProductID}">
-          <img src="../../${
+          <img src="..${
             product.ImageURL
           }" class="img-fluid" style="height: 275px;" alt="${
-                product.ProductName
-              }">
+      product.ProductName
+    }">
         </a>
       </div>
     `;
-              productList.appendChild(productItem);
-            });
+    return card;
+  }
 
-            renderPagination();
-          }
-
-          function renderPagination() {
-            paginationDiv.innerHTML = "";
-
-            // Nút "‹ Trước"
-            let prevBtn = document.createElement("button");
-            prevBtn.innerText = "‹";
-            prevBtn.classList.add("btn", "btn-secondary", "m-1");
-            prevBtn.disabled = currentPage === 1;
-            prevBtn.addEventListener("click", function () {
-              if (currentPage > 1) {
-                currentPage--;
-                renderPage(currentPage);
-              }
-            });
-            paginationDiv.appendChild(prevBtn);
-
-            // Nút số trang
-            for (let i = 1; i <= totalPages; i++) {
-              let btn = document.createElement("button");
-              btn.innerText = i;
-              btn.classList.add("btn", "btn-success", "m-1");
-              if (i === currentPage) btn.classList.add("active");
-
-              btn.addEventListener("click", function () {
-                currentPage = i;
-                renderPage(currentPage);
-              });
-
-              paginationDiv.appendChild(btn);
-            }
-
-            // Nút "Sau ›"
-            let nextBtn = document.createElement("button");
-            nextBtn.innerText = "›";
-            nextBtn.classList.add("btn", "btn-secondary", "m-1");
-            nextBtn.disabled = currentPage === totalPages;
-            nextBtn.addEventListener("click", function () {
-              if (currentPage < totalPages) {
-                currentPage++;
-                renderPage(currentPage);
-              }
-            });
-            paginationDiv.appendChild(nextBtn);
-          }
-
-          renderPage(currentPage);
-        } catch (error) {
-          console.error("Error parsing JSON:", error, text);
-          productList.innerHTML = `<p class="text-danger">Lỗi khi xử lý dữ liệu.</p>`;
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        productList.innerHTML = `<p class="text-danger">Lỗi khi tải dữ liệu.</p>`;
-      });
+  function createPaginationButton(label, enabled, onClick, isActive = false) {
+    const button = document.createElement("button");
+    button.textContent = label;
+    button.className = `btn ${
+      isActive ? "btn-success active" : "btn-secondary"
+    } m-1`;
+    button.disabled = !enabled;
+    if (enabled) button.addEventListener("click", onClick);
+    return button;
   }
 });

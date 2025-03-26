@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <h5 class="card-title">${product.ProductName}</h5>
                                         <p class="card-text">${product.DescriptionBrief}</p>
                                         <p class="card-text"><strong>Giá:</strong> ${product.Price} VNĐ</p>
-                                        <img style="height: 40px; witdh: 40px" src="../${product.ImageURL}" class="img-fluid" alt="${product.ProductName}">
+                                        <img style="height: 40px; witdh: 40px" src="../../../${product.ImageURL}" class="img-fluid" alt="${product.ProductName}">
                                     </div>
                                 `;
                 productList.appendChild(productItem);
