@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Danh sách loại cây
   const categoryMap = {
-    1: "Cây dễ chăm",
-    2: "Cây văn phòng",
-    3: "Cây để bàn",
-    4: "Cây dưới nước",
+    3: "Cây dễ chăm",
+    1: "Cây văn phòng",
+    4: "Cây để bàn",
+    2: "Cây dưới nước",
   };
 
   const typeTree = document.getElementById("type-tree");
