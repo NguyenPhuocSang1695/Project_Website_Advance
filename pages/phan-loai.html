@@ -16,8 +16,10 @@
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script src="../src/js/main.js"></script>
-  <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
+  <!-- Lọc sản phẩm theo phân loại  -->
+  <!-- <script src="../src/js/filter-product.js"></script> -->
+  <script src="../src/js/phan-loai.js"></script>
   <title>Phân loại</title>
 </head>
 
@@ -387,7 +389,7 @@
       <div class="brand">
         <div class="brand-logo">
           <!-- Quay về trang chủ  -->
-          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.png" alt="LOGO" /></a>
+          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
         </div>
         <div class="brand-name">THE TREE</div>
       </div>
@@ -405,16 +407,16 @@
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="phan-loai1.html">Cây dễ chăm</a>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="phan-loai1.html">Cây văn phòng</a>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="phan-loai1.html">Cây để bàn</a>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="phan-loai1.html">Cây dưới nước</a>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
                 </li>
               </ul>
             </div>
@@ -433,132 +435,16 @@
     </div>
   </div>
 
-  <section id="product1" class="section-p1">
-    <!-- SẢN PHẨM MỚI -->
-    <h2 class="font_size">CÂY DỄ CHĂM</h2>
-
-    <!-- filter -->
-
-    <!-- cont -->
-
-    <div class="pro-container">
-      <div class="pro" onclick="window.location.href='user-san-pham1.html';">
-        <img src="../assets/images/CAY5.jpg" alt="Cây phát tài" />
-        <div class="item_name__price">
-          <p>CÂY PHÁT TÀI</p>
-          <span>750.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham2.html';">
-        <img src="../assets/images/CAY6.jpg" alt="CÂY KIM NGÂN" />
-        <div class="item_name__price">
-          <p>CÂY KIM NGÂN</p>
-          <span>280.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham1.html';">
-        <img src="../assets/images/CAY7.jpg" alt="CÂY TRẦU BÀ" />
-        <div class="item_name__price">
-          <p>CÂY TRẦU BÀ</p>
-          <span>120.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham2.html';">
-        <img src="../assets/images/CAY8.jpg" alt="CÂY LAN CHI" />
-        <div class="item_name__price">
-          <p>CÂY LAN CHI</p>
-          <span>120.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham1.html';">
-        <img src="../assets/images/CAY9.jpg" alt="ÂY TRẦU BÀ ĐỎ" />
-        <div class="item_name__price">
-          <p>CÂY TRẦU BÀ ĐỎ</p>
-          <span>320.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham2.html';">
-        <img src="../assets/images/CAY10.jpg" alt="CÂY PHÁT TÀI" />
-        <div class="item_name__price">
-          <p>CÂY PHÁT TÀI</p>
-          <span>750.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham1.html';">
-        <img src="../assets/images/CAY11.jpg" alt="CÂY LƯỠI HỔ VÀNG" />
-        <div class="item_name__price">
-          <p>CÂY LƯỠI HỔ VÀNG</p>
-          <span>160.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham2.html';">
-        <img src="../assets/images/CAY12.jpg" alt="CÂY PHẠNH PHÚC" />
-        <div class="item_name__price">
-          <p>CÂY PHẠNH PHÚC</p>
-          <span>1.200.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham1.html';">
-        <img src="../assets/images/CAY13.jpg" alt="CÂY TRẦU BÀ CHẬU LỚN" />
-        <div class="item_name__price">
-          <p>CÂY TRẦU BÀ CHẬU LỚN</p>
-          <span>1.100.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham2.html';">
-        <img src="../assets/images/CAY14.jpg" alt="CÂY PHÁT TÀI DORADO" />
-        <div class="item_name__price">
-          <p>CÂY PHÁT TÀI DORADO</p>
-          <span>220.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham2.html';">
-        <img src="../assets/images/CAY16.jpg" alt="CÂY VẠN LỘC" />
-        <div class="item_name__price">
-          <p>CÂY VẠN LỘC</p>
-          <span>1.150.000 vnđ</span>
-        </div>
-      </div>
-
-      <div class="pro" onclick="window.location.href='user-san-pham2.html';">
-        <img src="../assets/images/CAY17.jpg" alt="CÂY NGỌC VỪNG" />
-        <div class="item_name__price">
-          <p>CÂY NGỌC VỪNG</p>
-          <span>1.1750.000 vnđ</span>
-        </div>
-      </div>
+  <main>
+    <h2 style="color: rgb(59, 161, 59); text-align: center;">
+      <div id="product_type_list">Loại cây</div>
+    </h2>
+    <div id="type-tree"></div>
+    <div class="container-product">
+      <div id="product-list">Kết quả ở đây</div>
     </div>
-  </section>
-
-  <nav aria-label="Page navigation">
-    <ul class="pagination d-flex justify-content-center">
-      <li class="page-item disabled" id="prev">
-        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Quay lại</a>
-      </li>
-      <li class="page-item" id="page-1">
-        <a class="page-link" href="phan-loai1.html">1</a>
-      </li>
-      <li class="page-item" id="page-2">
-        <a class="page-link" href="phan-loai2.html">2</a>
-      </li>
-      <li class="page-item" id="page-3">
-        <a class="page-link" href="phan-loai3.html">3</a>
-      </li>
-      <li class="page-item" id="next">
-        <a class="page-link" href="#">Tiếp</a>
-      </li>
-    </ul>
-  </nav>
+    <div id="pagination-button"></div>
+  </main>
 
   <footer class="footer">
     <div class="footer-column">
@@ -626,8 +512,6 @@
     </div>
     <!-- xong footer  -->
   </footer>
-  <script src="../src/js/phan-loai.js"></script>
-  <script src="../src/js/Trang_chu.js"></script>
 </body>
 
 </html>
