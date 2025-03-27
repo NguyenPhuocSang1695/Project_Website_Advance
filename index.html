@@ -12,13 +12,15 @@
   <link rel="stylesheet" href="./src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="./src/css/footer.css">
   <!-- JS  -->
-  <script src="./src/js/tim-kiem-nang-cao.js"></script>
   <script src="./src/js/main.js"></script>
   <script src="./assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script src="./src/js/onOffSeacrhAdvance.js"></script>
-  <script src="./src/js/search.js"></script>
+  <!-- <script src="./src/js/search.js"></script> -->
+  <!-- <script src="./src/js/tim-kiem-nang-cao.js"></script> -->
   <!-- Tìm kiếm cơ bản  -->
   <script src="./src/js/search-common.js"></script>
+  <!-- Lọc sản phẩm  -->
+  <script src="./src/js/filter-product.js"></script>
   <title>Trang Chủ</title>
 
   <!-- AVCCVSA -->
@@ -112,123 +114,6 @@
                     <i class="fas fa-lightbulb"></i> Mẹo: Kết hợp nhiều điều
                     kiện để tìm kiếm chính xác hơn
                   </p>
-                </div>
-              </div>
-
-              <div id="productList" class="product-list">
-                <!-- Thêm div thông báo không tìm thấy sản phẩm -->
-                <div id="noResultsMessage" class="no-results-message" style="display: none">
-                  <i class="fas fa-search"></i>
-                  <p>
-                    Không tìm thấy sản phẩm phù hợp với điều kiện tìm kiếm
-                  </p>
-                  <button type="button" class="btn-reset-search" onclick="resetFilters()">
-                    <i class="fas fa-redo-alt"></i> Đặt lại bộ lọc
-                  </button>
-                </div>
-
-                <div class="product" data-category="cay-de-cham">
-                  <img src="./assets/images/CAY4.jpg" alt="Cây phát tài" />
-                  <div class="p-details">
-                    <h2>Cây phát tài</h2>
-                    <h3>750.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-de-cham">
-                  <img src="./assets/images/CAY5.jpg" alt="Cây phát tài" />
-                  <div class="p-details">
-                    <h2>Cây phát tài</h2>
-                    <h3>750.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <!-- OK  -->
-                <div class="product" data-category="cay-van-phong">
-                  <img src="./assets/images/CAY6.jpg" alt="Cây kim ngân" />
-                  <div class="p-details">
-                    <h2>Cây kim ngân</h2>
-                    <h3>280.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY7.jpg" alt="Cây trầu bà" />
-                  <div class="p-details">
-                    <h2>Cây trầu bà</h2>
-                    <h3>120.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-duoi-nuoc">
-                  <img src="./assets/images/CAY8.jpg" alt="Cây lan chi" />
-                  <div class="p-details">
-                    <h2>Cây lan chi</h2>
-                    <h3>120.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY9.jpg" alt="Cây trầu bà đỏ" />
-                  <div class="p-details">
-                    <h2>Cây trầu bà đỏ</h2>
-                    <h3>320.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY10.jpg" alt="Cây lưỡi hổ" />
-                  <div class="p-details">
-                    <h2>Cây lưỡi hổ</h2>
-                    <h3>750.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY11.jpg" alt="Cây lưỡi hổ vàng" />
-                  <div class="p-details">
-                    <h2>Cây lưỡi hổ vàng</h2>
-                    <h3>160.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY12.jpg" alt="Cây hạnh phúc" />
-                  <div class="p-details">
-                    <h2>Cây hạnh phúc</h2>
-                    <h3>1.200.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY13.jpg" alt="Cây trầu bà châu lớn" />
-                  <div class="p-details">
-                    <h2>Cây trầu bà châu lớn</h2>
-                    <h3>1.100.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-van-phong">
-                  <img src="./assets/images/CAY14.jpg" alt="Cây phát tài DORADO" />
-                  <div class="p-details">
-                    <h2>Cây phát tài DORADO</h2>
-                    <h3>220.000 vnđ</h3>
-                  </div>
-                </div>
-                <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY16.jpg" alt="Cây vạn lộc" />
-                  <div class="p-details">
-                    <h2>Cây vạn lộc</h2>
-                    <h3>1.150.000 vnđ</h3>
-                  </div>
-                </div>
-
-                <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY17.jpg" alt="Cây ngọc vừng" />
-                  <div class="p-details">
-                    <h2>Cây ngọc vừng</h2>
-                    <h3>1.750.000 vnđ</h3>
-                  </div>
                 </div>
               </div>
             </div>
@@ -399,7 +284,7 @@
       <div class="brand">
         <div class="brand-logo">
           <!-- Quay về trang chủ  -->
-          <a href="index.html"><img class="img-fluid" src="./assets/images/LOGO-2.png" alt="LOGO" /></a>
+          <a href="index.html"><img class="img-fluid" src="./assets/images/LOGO-2.jpg" alt="LOGO" /></a>
         </div>
         <div class="brand-name">THE TREE</div>
       </div>
@@ -417,16 +302,16 @@
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai1.html">Cây dễ chăm</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=3">Cây dễ chăm</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai1.html">Cây văn phòng</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=1">Cây văn phòng</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai1.html">Cây để bàn</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=4">Cây để bàn</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai1.html">Cây dưới nước</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=2">Cây dưới nước</a>
                 </li>
               </ul>
             </div>
@@ -455,7 +340,7 @@
         <div class="img__TREE">
           <!-- LINK SẢN PHẨM -->
 
-          <img class="THE-TREE" src="./assets/images/CAY1.PNG" alt="Cây dễ Chăm" />
+          <img class="THE-TREE" src="./assets/images/CAY1.jpg" alt="Cây dễ Chăm" />
           <p class="content_TREE-1">CÂY DỄ CHĂM</p>
         </div>
 
