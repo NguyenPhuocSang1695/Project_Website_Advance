@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", async function () {
+  // Lấy tham số từ URL
   const params = new URLSearchParams(window.location.search);
   const categoryId = params.get("category_id");
   const categoryName = params.get("category_name");
 
+  // Danh sách loại cây
   const categoryMap = {
     1: "Cây dễ chăm",
     2: "Cây văn phòng",
@@ -14,6 +16,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const productList = document.getElementById("product-list");
   const paginationDiv = document.getElementById("pagination-button");
 
+  // Nếu đúng phân loại thì hiển thị tên phân loại
   if (categoryName) typeTree.textContent = categoryName;
   if (categoryId) {
     document.getElementById("product_type_list").textContent =
@@ -21,6 +24,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     await loadProducts(categoryId);
   }
 
+  // Lấy dữ liệu từ php để xử lý
   async function loadProducts(categoryId) {
     try {
       const response = await fetch(
@@ -42,11 +46,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
+  // Xử lý dữ liệu từ API, kiểm tra số lượng sản phẩm ở 1 trang
   function paginateProducts(data) {
-    let currentPage = 1;
-    const itemsPerPage = 8;
+    let currentPage = 1; // Vị trí mặc định là trang đầu tiên
+    const itemsPerPage = 8; // Số lượng sản phẩm tối đa ở 1 trang
+    // Tính tổng số trang cần thiết
     const totalPages = Math.ceil(data.length / itemsPerPage);
 
+    // Chuyển trang
     function renderPage(page) {
       productList.innerHTML = "";
       const start = (page - 1) * itemsPerPage;
@@ -58,6 +65,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       renderPagination();
     }
 
+    // Nút phân trang
     function renderPagination() {
       paginationDiv.innerHTML = "";
       paginationDiv.appendChild(
@@ -90,6 +98,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     renderPage(currentPage);
   }
 
+  // Tạo danh sách sản phẩm
   function createProductCard(product) {
     const card = document.createElement("div");
     card.className = "card mb-3";
@@ -118,6 +127,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     return card;
   }
 
+  // Tạo nút phân trang
   function createPaginationButton(label, enabled, onClick, isActive = false) {
     const button = document.createElement("button");
     button.textContent = label;

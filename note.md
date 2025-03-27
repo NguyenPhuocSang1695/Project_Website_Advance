@@ -2,19 +2,18 @@ sửa lại đoạn này ở các file dòng 407
 
 <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=1">Cây dễ chăm</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=3">Cây dễ chăm</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=2">Cây văn phòng</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=1">Cây văn phòng</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=3">Cây để bàn</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=4">Cây để bàn</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=4">Cây dưới nước</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=2">Cây dưới nước</a>
                 </li>
               </ul>
-              \
 
 <!-- sửa lại sản phẩm mới cho đúng theo phân loại  -->
 <!-- Thông tin cây  -->
