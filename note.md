@@ -1,3 +1,4 @@
+
 sửa lại đoạn này ở các file dòng 407
 
 <ul class="dropdown-menu">
@@ -16,6 +17,41 @@ sửa lại đoạn này ở các file dòng 407
               </ul>
 
 <!-- sửa lại sản phẩm mới cho đúng theo phân loại  -->
+sửa lại phần này ở các file css khác
+
+.product-list {
+display: none;
+position: absolute;
+top: 100%;
+background-color: #fff;
+width: 100%;
+border: 1px solid #ddd;
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+z-index: 1000;
+max-height: 300px;
+overflow-y: auto;
+
+}
+
+.product-list .product {
+display: flex;
+padding: 10px;
+border-bottom: 1px solid #dddf;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+
+.product-list .product:hover {
+background-color: #f4f4f4;
+}
+
+.product-list .product img {
+width: 21%;
+height: auto;
+object-fit: cover;
+margin-right: 10px;
+}
+
 <!-- Thông tin cây  -->
 
 🌿 Cây văn phòng
@@ -65,28 +101,3 @@ Cây 38: Cây hạnh phúc mini - 400.000đ** ✅ [Thêm mới]
 Cây 39: Cây tùng bồng lai - 350.000đ** ✅ [Thêm mới]
 Cây 40: Cây trường sinh - 200.000đ\*\* ✅ [Thêm mới]
 
-// <?php
-// require_once './connectdb.php'; // Kết nối database
-// $conn = connect_db();
-
-// if (isset($_GET['category_id'])) {
-//     $category_id = intval($\_GET['category_id']);
-
-// $sql = "SELECT * FROM products WHERE CategoryID = ?";
-//     $stmt = $conn->prepare($sql);
-// $stmt->bind_param("i", $category_id);
-// $stmt->execute();
-// $result = $stmt->get_result();
-
-// $products = [];
-//     while ($row = $result->fetch_assoc()) {
-// // Chuẩn hóa đường dẫn ảnh, chỉ giữ lại phần `/assets/...`
-// $row['ImageURL'] = preg_replace('/^(\.\.\/)+/', '/', $row['ImageURL']);
-
-// $products[] = $row;
-// }
-
-// echo json_encode($products);
-// } else {
-// echo json_encode(["error" => "Không tìm thấy sản phẩm!"]);
-// }
