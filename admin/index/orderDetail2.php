@@ -66,7 +66,7 @@
               <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
             </div>
           </a>
-          <a href="orderPage1.php" style="text-decoration: none; color: black;">
+          <a href="orderPage.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173; color: black;">
                 <i class="fa-solid fa-list-check" style="
@@ -201,7 +201,7 @@
         <p>Khách hàng</p>
       </div>
     </a>
-    <a href="orderPage1.php" style="text-decoration: none; color: black;">
+    <a href="orderPage.html" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection" style="background-color: #6aa173;">
           <i class="fa-solid fa-list-check" style="
@@ -240,7 +240,7 @@
     <div class="order-container">
       <div class="order-header">
         <div class="breadcrumb">
-          <a href="orderPage1.php">Đơn hàng</a> > <span>DH003</span>
+          <a href="orderPage.html">Đơn hàng</a> > <span>DH003</span>
         </div>
         <table class="status-bar">
           <thead>

@@ -1,16 +1,11 @@
 <?php
-$server="localhost";
-$user="root";
-$password="";
-$database="business_analysis";//quanlydonhang
-
-$myconn =new mysqli($server,$user,$password,$database);
-if($myconn){
-  mysqli_query($myconn,"SET NAMES 'UTF8' ");
-  echo "connect successful";
+$server = "localhost";
+$user = "root";
+$password = "";
+$database = "webdb"; 
+$myconn = new mysqli($server, $user, $password, $database);
+if ($myconn->connect_error) {
+    die("Connection failed: " . $myconn->connect_error);
 }
-else {
-  echo "Try again";
-};
-
-?>  
+$myconn->set_charset("utf8mb4");
+?>
