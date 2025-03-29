@@ -464,6 +464,7 @@ if ($product_id > 0) {
 } else {
   die("ID sản phẩm không hợp lệ!");
 }
+
 ?>
 
 <div class="sanpham">
@@ -478,16 +479,54 @@ if ($product_id > 0) {
     </div>
 
     <!-- Nút tăng chỉnh số lượng -->
+
     <div class="order">
       <div class="wrapper">
         <span class="minus">-</span>
         <span class="num">01</span>
         <span class="plus">+</span>
-        <script src="../src/js/san-pham.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            const plus = document.querySelector(".plus");
+            const minus = document.querySelector(".minus");
+            const num = document.querySelector(".num");
+            const quantityInput = document.getElementById("quantity");
+
+            let a = parseInt(quantityInput.value);
+
+            // Xử lý giá trị ban đầu không hợp lệ
+            if (isNaN(a) || a < 1) {
+              a = 1;
+              quantityInput.value = 1;
+            }
+
+            num.innerText = a;
+
+            plus.addEventListener("click", () => {
+              a++;
+              num.innerText = a;
+              quantityInput.value = a; // Cập nhật input hidden
+              console.log("Số lượng sau khi tăng: ", quantityInput.value);
+            });
+
+            minus.addEventListener("click", () => {
+              if (a > 1) {
+                a--;
+                num.innerText = a;
+                quantityInput.value = a; // Cập nhật input hidden
+                console.log("Số lượng sau khi giảm: ", quantityInput.value);
+              }
+            });
+          });
+      </script>
       </div>
-      <button type="button" class="btn btn-primary btn-lg">
-        Thêm vào giỏ hàng
-      </button>
+      <form action="gio-hang.php" method="POST">
+        <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+        <input type="hidden" name="quantity" id="quantity" value="1">
+        <button type="submit" class="btn btn-primary btn-lg">
+          Thêm vào giỏ hàng
+        </button>
+      </form>
     </div>
   </div>
 </div>

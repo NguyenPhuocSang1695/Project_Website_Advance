@@ -214,7 +214,6 @@ body {
   z-index: 1000;
   max-height: 300px;
   overflow-y: auto;
-
 }
 
 .product-list .product {
@@ -423,9 +422,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .wrapper span {
@@ -483,7 +479,6 @@ body {
 }
 
 /* FOOTER  */
-
 
 /* PC  */
 @media only screen and (min-width: 1023.98px) {
@@ -592,6 +587,43 @@ body {
     justify-content: flex-start;
     align-items: flex-start;
   }
+  /* khoi */
+  .cart-table {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .cart-table th,
+  .cart-table td {
+    font-size: 13px;
+    padding: 6px;
+  }
+
+  .cart-table img.cart-image {
+    width: 80px;
+  }
+
+  .cart-quantity .update-form {
+    gap: 3px;
+  }
+
+  .cart-quantity .quantity-input {
+    width: 35px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .cart-quantity .quantity-btn {
+    width: 25px;
+    height: 25px;
+    font-size: 13px;
+  }
+
+  .btn-delete {
+    padding: 5px 8px;
+    font-size: 13px;
+  }
 }
 
 /* TABLET  */
@@ -641,6 +673,31 @@ body {
 
   .frame-2 {
     width: 80%;
+  }
+  /* khoi */
+  .cart-table th,
+  .cart-table td {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .cart-table img.cart-image {
+    width: 90px;
+  }
+
+  .cart-quantity .quantity-input {
+    width: 40px;
+  }
+
+  .cart-quantity .quantity-btn {
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+  }
+
+  .btn-delete {
+    padding: 6px 10px;
+    font-size: 14px;
   }
 }
 
@@ -719,5 +776,45 @@ body {
   .col-03 {
     justify-content: start;
     align-items: flex-start;
+  }
+  /* khoi */
+  .cart-table th,
+  .cart-table td {
+    font-size: 10px; /* Điều chỉnh kích thước chữ */
+  }
+
+  /* Ẩn các tiêu đề cột */
+  .cart-table th:nth-child(1),
+  .cart-table th:nth-child(2),
+  .cart-table th:nth-child(3),
+  .cart-table th:nth-child(4),
+  .cart-table th:nth-child(5),
+  .cart-table th:nth-child(6) {
+    display: none;
+  }
+
+  /* Điều chỉnh các ô trong bảng để dễ đọc hơn */
+  .cart-table td {
+    padding: 5px; /* Giảm khoảng cách padding */
+  }
+
+  .cart-table td .cart-image {
+    width: 60px; /* Giảm kích thước ảnh */
+  }
+
+  .cart-table td .quantity-input {
+    width: 30px; /* Điều chỉnh độ rộng của input số lượng */
+  }
+
+  .cart-table td .total-price {
+    font-size: 12px; /* Giảm kích thước chữ cho tổng tiền */
+  }
+
+  .cart-table td .btn-delete {
+    font-size: 18px; /* Điều chỉnh kích thước nút xóa */
+  }
+
+  .cart-table td .btn-delete i {
+    font-size: 18px; /* Điều chỉnh kích thước icon thùng rác */
   }
 }
