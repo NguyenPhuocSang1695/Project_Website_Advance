@@ -62,6 +62,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       pageData.forEach((product) => {
         productList.appendChild(createProductCard(product));
       });
+
+      // Cuộn lên đầu trang sau khi chuyển trang (sau khi render)
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
       renderPagination();
     }
 

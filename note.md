@@ -90,3 +90,26 @@ Cây 40: Cây trường sinh - 200.000đ\*\* ✅ [Thêm mới]
 // } else {
 // echo json_encode(["error" => "Không tìm thấy sản phẩm!"]);
 // }
+
+<main>
+            <div class="search-results-page">
+                <div class="breadcrumbs">
+                    <a href="index.html">Trang chủ</a> &gt;
+                    <span>Kết quả tìm kiếm</span>
+                </div>
+
+                <!-- Search params container will be created by JS -->
+                <div id="searchParams" class="search-params-container"></div>
+
+                <!-- Search results container will be filled by JS -->
+                <div id="searchResults" class="search-results-container">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                    </div>
+                </div>
+            </div>
+        </main>
+
+<!-- chỉnh lại -->
+
+item-header ở trang phân loại, đăng kí
