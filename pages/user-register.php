@@ -1,4 +1,76 @@
 <!DOCTYPE html>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "webdb";
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error) {
+        die("Kết nối thất bại: " . $conn->connect_error);
+    }
+
+    $fullname = $_POST['fullname'];
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $city = $_POST['inputCity'];
+    $district = $_POST['inputDistrict'];
+    $ward = $_POST['inputWard'];
+    $address = $_POST['address'];
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirm-password'];
+
+    $errors = [];
+    // Kiểm tra tên đăng nhập đã tồn tại
+    $checkUsername = $conn->prepare("SELECT UserName FROM users WHERE UserName = ?");
+    $checkUsername->bind_param("s", $username);
+    $checkUsername->execute();
+    $checkUsername->store_result();
+    if ($checkUsername->num_rows > 0) {
+        $errors['username'] = "Tên đăng nhập đã tồn tại!";
+    }
+    $checkUsername->close();
+    // Kiểm tra email đã tồn tại
+    $checkEmail = $conn->prepare("SELECT Email FROM users WHERE Email = ?");
+    $checkEmail->bind_param("s", $email);
+    $checkEmail->execute();
+    $checkEmail->store_result();
+    if ($checkEmail->num_rows > 0) {
+        $errors['email'] = "Email đã tồn tại!";
+    }
+    $checkEmail->close();
+
+    if ($password !== $confirmPassword) {
+        $errors['confirm-password'] = "Mật khẩu xác nhận không khớp!";
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = "Email đã tồn tại";
+    }
+    if (!preg_match("/^[a-z0-9_-]{3,16}$/", $username)) {
+        $errors['username'] = "Tên đăng nhập không hợp lệ!";
+    }
+    if (!preg_match("/^[0-9]{10,11}$/", $phone)) {
+        $errors['phone'] = "Số điện thoại không hợp lệ!";
+    }
+    if (!preg_match("/(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,}/", $password)) {
+        $errors['password'] = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
+    }
+
+    if (empty($errors)) {
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("INSERT INTO users (FullName, UserName, Email, Phone, Province, District, Ward, Address, PasswordHash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssssss", $fullname, $username, $email, $phone, $city, $district, $ward, $address, $passwordHash);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: ../index.html");
+        exit;
+    }
+    $conn->close();
+}
+?>
+
 <html>
 
 <head>
@@ -18,6 +90,15 @@
   <script src="../src/js/main.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <title>Đăng kí</title>
+  <style>
+    /* hiện lỗi */
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  </style>
 </head>
 
 <body>
@@ -221,7 +302,7 @@
             </div>
 
             <div class="cart-icon">
-              <a href="user-register.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="user-register.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
@@ -241,7 +322,7 @@
 
 
                     <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
+                      <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
                     </li>
 
                     <li class="nav-item">
@@ -444,92 +525,95 @@
         <ul class="feature-list">
           <li>Giao diện trực quan, dễ sử dụng</li>
           <li>Bảo mật thông tin tuyệt đối</li>
-          <li>Trải nghiệm đồng bộ trên mọi thiết bị</li>
           <li>Hỗ trợ khách hàng 24/7</li>
         </ul>
       </div>
 
-      <div class="form-content">
-        <div class="form-header">
-          <h1>Tạo tài khoản mới</h1>
-          <p>Điền thông tin dưới đây để bắt đầu</p>
+      <div class="form-card">
+        <div class="form-content">
+            <div class="form-header">
+                <h1>Tạo tài khoản mới</h1>
+                <p>Điền thông tin dưới đây để bắt đầu</p>
+            </div>
+            <form method="POST" action="">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullname">Họ và tên</label>
+                        <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Nhập họ và tên" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Tên đăng nhập</label>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Tạo tên đăng nhập" required>
+                        <p class="error-message"><?php echo $errors['username'] ?? ''; ?></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Địa chỉ email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="example@email.com" required>
+                    <p class="error-message"><?php echo $errors['email'] ?? ''; ?></p>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Số điện thoại</label>
+                    <input type="text" id="phone" name="phone" class="form-control" placeholder="Nhập số điện thoại" required>
+                    <p class="error-message"><?php echo $errors['phone'] ?? ''; ?></p>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputCity">Tỉnh/Thành phố</label>
+                        <input type="text" id="inputCity" name="inputCity" class="form-control" placeholder="Nhập tỉnh/thành phố" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDistrict">Quận/Huyện</label>
+                        <input type="text" id="inputDistrict" name="inputDistrict" class="form-control" placeholder="Nhập quận/huyện" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputWard">Xã/Phường</label>
+                    <input type="text" id="inputWard" name="inputWard" class="form-control" placeholder="Nhập xã/phường" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Địa chỉ</label>
+                    <input type="text" id="address" name="address" class="form-control" placeholder="Nhập địa chỉ cụ thể" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Mật khẩu</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Tạo mật khẩu mới" required>
+                        <p class="error-message"><?php echo $errors['password'] ?? ''; ?> </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Xác nhận mật khẩu</label>
+                        <input type="password" id="confirm-password" name="confirm-password" class="form-control" placeholder="Nhập lại mật khẩu" required>
+                        <p class="error-message"><?php echo $errors['confirm-password'] ?? ''; ?></p>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Đăng ký ngay</button><br><br>
+                <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button>
+            </form>
         </div>
-
-        <form>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="fullname">Họ và tên</label>
-              <input type="text" id="fullname" class="form-control" placeholder="Nhập họ và tên của bạn">
-            </div>
-
-            <div class="form-group">
-              <label for="username">Tên đăng nhập</label>
-              <input type="text" id="username" class="form-control" placeholder="Tạo tên đăng nhập">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="email">Địa chỉ email</label>
-            <input type="email" id="email" class="form-control" placeholder="example@email.com">
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="phone">Số điện thoại</label>
-              <input type="tel" id="phone" class="form-control" placeholder="Nhập số điện thoại">
-            </div>
-
-            <div class="form-group">
-              <label for="city">Tỉnh/Thành phố</label>
-              <input type="text" class="form-control" name="inputCity" id="inputCity" placeholder="Tỉnh/ Thành phố">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="city">Quận/ huyện</label>
-            <input type="text" class="form-control" name="inputDistrict" id="inputDistrict" placeholder="Quận/ huyện">
-          </div>
-
-          <div class="form-group">
-            <label for="city">Xã/ phường</label>
-            <input type="text" class="form-control" name="inputWard" id="inputWard" placeholder="Xã/ phường">
-          </div>
-
-          <div class="form-group">
-            <label for="address">Địa chỉ</label>
-            <input type="text" id="address" class="form-control" placeholder="Số nhà/ tên đường">
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="password">Mật khẩu</label>
-              <input type="password" id="password" class="form-control" placeholder="Tạo mật khẩu mới">
-            </div>
-
-            <div class="form-group">
-              <label for="confirm-password">Xác nhận mật khẩu</label>
-              <input type="password" id="confirm-password" class="form-control" placeholder="Nhập lại mật khẩu">
-            </div>
-          </div>
-
-          <div class="checkbox-container">
-            <input type="checkbox" id="terms">
-            <label for="terms">Tôi đã đọc và đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo
-                mật</a></label>
-          </div>
-
-          <button type="submit" class="btn">Đăng ký ngay</button>
-
-          <div class="divider">
-            <span>hoặc</span>
-          </div>
-
-          <div class="login-link">
-            Bạn đã có tài khoản? <a href="../pages/user-login.html">Đăng nhập</a>
-          </div>
-        </form>
-      </div>
     </div>
+    <script>
+  function validateForm() {
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirm-password").value;
+    if (password !== confirmPassword) {
+        document.getElementById("confirm-password-error").innerText = "Mật khẩu xác nhận không khớp!";
+        return false;
+    }
+    return true;
+  }
+  function resetForm() {
+    document.querySelector("form").reset(); // Reset các ô nhập liệu
+
+    // Xóa luôn các thông báo lỗi
+    let errorMessages = document.querySelectorAll(".error-message");
+    errorMessages.forEach(msg => {
+        msg.innerText = ""; // Xóa nội dung lỗi
+        msg.style.display = "none"; // Ẩn lỗi luôn
+    });
+}
+  </script>
+  </div>
   </div>
 
   <!-- FOOTER  -->

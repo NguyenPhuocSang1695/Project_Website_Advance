@@ -431,41 +431,64 @@
   </div>
 </div>
 
-<!-- nội dung -->
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "webdb";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "user_db";
 
-$conn = new mysqli($servername, $username, $password, $database);
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error) {
+        die("Kết nối thất bại: " . $conn->connect_error);
+    }
 
-if ($conn->connect_error) {
-  die("Kết nối thất bại: " . $conn->connect_error);
-}
+    $fullname = $_POST['fullname'];
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $city = $_POST['inputCity'];
+    $district = $_POST['inputDistrict'];
+    $ward = $_POST['inputWard'];
+    $address = $_POST['address'];
+    $password = $_POST['password'];
 
-// Lấy ProductID từ URL
-$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    // Kiểm tra định dạng email
+    if (!preg_match("/^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/", $email)) {
+        echo "Email không hợp lệ!";
+    } elseif (!preg_match("/^[a-z0-9_-]{3,16}$/", $username)) {
+        echo "Tên đăng nhập không hợp lệ!";
+    } elseif (!preg_match("/^\+?[0-9]{7,15}$/", $phone)) {
+        echo "Số điện thoại không hợp lệ!";
+    } elseif (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}$/", $password)) {
+        echo "Mật khẩu không hợp lệ! Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
+    } else {
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $checkUser = $conn->prepare("SELECT * FROM users WHERE UserName = ? OR Email = ?");
+        $checkUser->bind_param("ss", $username, $email);
+        $checkUser->execute();
+        $result = $checkUser->get_result();
 
-// Kiểm tra nếu có ID hợp lệ
-if ($product_id > 0) {
-  $sql = "SELECT * FROM products WHERE ProductID = ?";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("i", $product_id);
-  $stmt->execute();
-  $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            echo "Tên đăng nhập hoặc Email đã tồn tại!";
+        } else {
+            $stmt = $conn->prepare("INSERT INTO users (FullName, UserName, Email, Phone, Province, District, Ward, Address, PasswordHash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssssss", $fullname, $username, $email, $phone, $city, $district, $ward, $address, $passwordHash);
 
-  // Nếu tìm thấy sản phẩm
-  if ($result->num_rows > 0) {
-    $product = $result->fetch_assoc();
-  } else {
-    die("Không tìm thấy sản phẩm!");
-  }
-} else {
-  die("ID sản phẩm không hợp lệ!");
+            if ($stmt->execute()) {
+                header("Location: index.php");
+                exit;
+            } else {
+                echo "Lỗi: " . $stmt->error;
+            }
+
+            $stmt->close();
+        }
+        $checkUser->close();
+    }
+    $conn->close();
 }
 ?>
-
 <div class="sanpham">
   <!-- Ảnh sản phẩm -->
   <img src="<?php echo ".." . $product['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>" class="single-image" />
