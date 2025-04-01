@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         
         // Kiểm tra số lượng nhập vào có hợp lệ hay không
         if (!isset($_POST['quantity']) || !is_numeric($_POST['quantity']) || intval($_POST['quantity']) < 1) {
-            header("Location: test.php?error=Số lượng không hợp lệ. Vui lòng nhập số lượng lớn hơn hoặc bằng 1.");
+            header("Location: gio-hang.php?error=Số lượng không hợp lệ. Vui lòng nhập số lượng lớn hơn hoặc bằng 1.");
             exit();
         }
         $new_quantity = intval($_POST['quantity']);
@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
         }
         $stmt_update->bind_param("ii", $new_quantity, $product_id);
         if ($stmt_update->execute()) {
-            header("Location: test.php?success=Cập nhật số lượng thành công");
+            header("Location: gio-hang.php?success=Cập nhật số lượng thành công");
             exit();
         } else {
             die("Lỗi khi cập nhật: " . $stmt_update->error);

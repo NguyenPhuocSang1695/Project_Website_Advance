@@ -12,7 +12,7 @@ function changeQuantity(button, amount) {
   input.value = newValue;
 
   // Tự động submit form để gửi dữ liệu cập nhật lên server
-  form.submit();
+  form.requestSubmit();
 }
 
 // Hàm tính lại tổng giỏ hàng
