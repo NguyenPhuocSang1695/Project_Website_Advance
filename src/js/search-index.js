@@ -114,7 +114,7 @@ function performSearchMobile() {
 
 // Chuyển hướng đến trang kết quả tìm kiếm
 function redirectToSearchPage(search, category, minPrice, maxPrice) {
-  let url = "./pages/search-result.html?q=" + encodeURIComponent(search);
+  let url = "./search-result.html?q=" + encodeURIComponent(search);
 
   if (
     category &&
@@ -203,9 +203,15 @@ function displaySearchParams(search, category, minPrice, maxPrice) {
     searchParamsList.appendChild(priceParam);
   }
 
-  // Hiển thị hoặc ẩn container tùy thuộc vào việc có tham số nào không
-  searchParamsContainer.style.display =
-    searchParamsList.children.length > 0 ? "block" : "none";
+  // Luôn hiển thị container, thêm thông báo mặc định nếu không có tham số
+  if (searchParamsList.children.length === 0) {
+    const defaultParam = document.createElement("li");
+    defaultParam.innerHTML = `<span class="param-label">Tất cả sản phẩm</span>`;
+    searchParamsList.appendChild(defaultParam);
+  }
+
+  // Luôn hiển thị container
+  searchParamsContainer.style.display = "block";
 }
 
 // Định dạng giá tiền
@@ -327,7 +333,7 @@ function displayProducts(products, container) {
   // Khởi tạo cấu trúc HTML cho danh sách sản phẩm
   let productsHTML = `
     <div class="search-results-count">Tìm thấy ${products.length} sản phẩm</div>
-    <div class="product-grid">
+    <div class="products-grid">
   `;
 
   // Thêm mỗi sản phẩm vào grid
