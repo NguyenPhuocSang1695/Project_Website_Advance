@@ -10,118 +10,11 @@
   <link href="../icon/css/all.css" rel="stylesheet">
   <link href="../style/generall.css" rel="stylesheet">
   <link href="../style/main1.css" rel="stylesheet">
-  <link href="../style/orderStyle1.css" rel="stylesheet">
+  <link href="../style/orderStyle.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/reponsiveOrder1.css">
-  <style>
-    .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-}
 
-.popup {
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  width: 300px;
-  text-align: center;
-}
-.status-options {
-    width: 50%;
-    margin: 20px 65px;
-    display: flex;
-    flex-direction: column;
-}
-
-.status-options button {
-  margin: 5px;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.status-options button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.close-btn {
-  background: #f44336;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-    #suggestions {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: white;
-      border: 1px solid #ccc;
-      max-height: 200px;
-      overflow-y: auto;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      z-index: 1000;
-      display: none;
-    }
-
-    #suggestions li {
-      padding: 8px;
-      cursor: pointer;
-    }
-
-    #suggestions li:hover {
-      background: #f0f0f0;
-    }
-
-    #district-input {
-      width: 100%;
-      padding: 5px;
-      box-sizing: border-box;
-    }
-
-    #district-suggestions {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: white;
-      border: 1px solid #ccc;
-      max-height: 200px;
-      overflow-y: auto;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      z-index: 1000;
-    }
-
-    #district-suggestions li {
-      padding: 8px;
-      cursor: pointer;
-    }
-
-    #district-suggestions li:hover {
-      background: #f0f0f0;
-    }
-    .update-status-btn {
-      cursor: pointer;
-    }
-  </style>
 </head>
 
 <body>
@@ -225,7 +118,7 @@
             <p>Đơn hàng</p>
           </div>
         </a>
-        <a href="analyzePage.php" style="text-decoration: none; color: black;">
+        <a href="analyzePage.html" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection">
               <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -281,7 +174,7 @@
           <p>Đơn hàng</p>
         </div>
       </a>
-      <a href="analyzePage.php" style="text-decoration: none; color: black;">
+      <a href="analyzePage.html" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -305,39 +198,49 @@
         </div>
         <div class="filter-section">
           <form id="filter-form">
-            <table style="width: 100%;">
-              <tr>
-                <td>
-                  <label for="date-from" style="font-weight: bold;">Từ ngày:</label>
-                  <input type="date" id="date-from" name="date_from">
-                </td>
-                <td>
-                  <label for="date-to" style="font-weight: bold;">Đến ngày:</label>
-                  <input type="date" id="date-to" name="date_to">
-                </td>
-                <td>
-                  <label for="order-status" style="font-weight: bold;">Tình trạng:</label>
-                  <select id="order-status" name="order_status">
-                    <option value="all">Tất cả</option>
-                    <option value="pending">Đang xử lý</option>
-                    <option value="processing">Đã xác nhận</option>
-                    <option value="shipped">Đang giao</option>
-                    <option value="completed">Đã giao</option>
-                    <option value="canceled">Đã hủy</option>
-                  </select>
-                </td>
-                <td>
-                  <label for="district-input" style="font-weight: bold;">Quận/Huyện</label>
-                  <div style="position: relative;">
-                    <input type="text" id="district-input" name="district" placeholder="Nhập địa chỉ">
-                    <ul id="district-suggestions" style="display: none;"></ul>
-                  </div>
-                </td>
-                <td>
-                  <button type="button" class="filter-button" onclick="applyFilters()">Lọc</button>
-                </td>
-              </tr>
-            </table>
+            <div class="filter-grid">
+              <div class="filter-item">
+                <label for="date-from">Từ ngày:</label>
+                <input type="date" id="date-from" name="date_from" class="form-control">
+              </div>
+              <div class="filter-item">
+                <label for="date-to">Đến ngày:</label>
+                <input type="date" id="date-to" name="date_to" class="form-control">
+              </div>
+              <div class="filter-item">
+                <label for="order-status">Tình trạng:</label>
+                <select id="order-status" name="order_status" class="form-control">
+                  <option value="all">Tất cả</option>
+                  <option value="pending">Đang xử lý</option>
+                  <option value="processing">Đã xác nhận</option>
+                  <option value="shipped">Đang giao</option>
+                  <option value="completed">Đã giao</option>
+                  <option value="canceled">Đã hủy</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label for="city-input">Thành phố</label>
+                <div class="input-with-suggestions">
+                  <input type="text" id="city-input" name="city" placeholder="Nhập thành phố" class="form-control">
+                  <ul id="city-suggestions" class="suggestions-list"></ul>
+                </div>
+              </div>
+              <div class="filter-item">
+                <label for="district-input">Quận/Huyện</label>
+                <div class="input-with-suggestions">
+                  <input type="text" id="district-input" name="district" placeholder="Nhập quận/huyện" class="form-control">
+                  <ul id="district-suggestions" class="suggestions-list"></ul>
+                </div>
+              </div>
+              <div class="filter-item filter-button-container">
+                <button type="button" id="filter-button" class="filter-button" onclick="applyFilters()">
+                  <i class="fa-solid fa-filter"></i> Lọc đơn hàng
+                </button>
+                <button type="button" id="reset-button" class="reset-button" onclick="resetFilters()">
+                  <i class="fa-solid fa-rotate"></i> Đặt lại
+                </button>
+              </div>
+            </div>
           </form>
         </div>
         <div class="statistic-section">
@@ -354,7 +257,22 @@
               </tr>
             </thead>
             <tbody id="order-table-body">
-              <!-- Dữ liệu sẽ được JavaScript chèn vào đây -->
+              <td>
+                <button class="${getStatusInfo(order.trangthai).class} status-tooltip">
+                  ${getStatusInfo(order.trangthai).text}
+                  <span class="tooltip-popup">${getStatusInfo(order.trangthai).tooltip}</span>
+                </button>
+              </td>
+              <td class="detail-info">
+                <a href="orderDetail2.php?code_Product=${order.madonhang}" class="action-btn view-btn icon-tooltip">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <span class="tooltip-popup">Xem chi tiết đơn hàng</span>
+                </a>
+                <a class="update-status-btn action-btn edit-btn icon-tooltip" data-order-id="${order.madonhang}" data-status="${order.trangthai}">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                  <span class="tooltip-popup">Cập nhật trạng thái đơn hàng</span>
+                </a>
+              </td>
             </tbody>
           </table>
         </div>
@@ -375,11 +293,6 @@
 
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../js/orderPage.js"></script>
-  <script>
-      function closeUpdateStatusPopup() {
-    document.getElementById('updateStatusOverlay').style.display = 'none';
-  }
 
-  </script>
 </body>
 </html>

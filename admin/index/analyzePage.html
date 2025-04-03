@@ -1,4 +1,3 @@
-<?php include '../pages/thongke.php' ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,7 +11,7 @@
   <link rel="stylesheet" href="../style/generall.css">
   <!-- Add style-->
   <link rel="stylesheet" href="../style/analyzeStyle.css">
-  <link rel="stylesheet" href="../style/main.css">
+  <link rel="stylesheet" href="../style/main1.css">
   <link rel="stylesheet" href="../icon/css/fontawesome.min.css">
   <!-- Add reponsive -->
   <link rel="stylesheet" href="../style/reponsiveAnalyze1.css">
@@ -20,11 +19,8 @@
   <link rel="stylesheet" href="./asset/bootstrap/css/bootstrap.min.css">
   <!-- Add login function -->
   <link rel="stylesheet" href="../style/LogInfo.css">
-  <!-- Add charts -->
-  <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
-
 <body>
   <div class="header">
     <div class="index-menu">
@@ -83,7 +79,7 @@
               <p style="color:black">Đơn hàng</p>
             </div>
           </a>
-          <a href="analyzePage.php" style="text-decoration: none; color: black;">
+          <a href="analyzePage.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173;">
                 <i class="fa-solid fa-chart-simple" style="
@@ -217,7 +213,7 @@
           <p>Đơn hàng</p>
         </div>
       </a>
-      <a href="analyzePage.php" style="text-decoration: none; color: black;">
+      <a href="analyzePage.html" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection" style="background-color: #6aa173;">
             <i class="fa-solid fa-chart-simple" style="
@@ -240,46 +236,51 @@
         </div>
       </a>
     </div>
-    <!-- Phần Body -->
+
+    <!-- Container 1: Khách hàng -->
     <div class="container">
       <h1>Thống Kê Khách Hàng Mua Hàng Nhiều Nhất</h1>
       <div class="filter-section">
-        <form method="POST" action="">
+        <form id="analyze-form" method="POST" action="">
           <label for="start-date">Từ ngày:</label>
-          <input type="date" id="start-date" name="start_date" value="<?php echo $start_date; ?>" required>
+          <input type="date" id="start-date" name="start_date" required>
           <label for="end-date">Đến ngày:</label>
-          <input type="date" id="end-date" name="end_date" value="<?php echo $end_date; ?>" required>
-          <button type="submit">Lọc <i class="fa-solid fa-filter"></i></button>
+          <input type="date" id="end-date" name="end_date" required>
+          <button type="submit" name="submit">Lọc <i class="fa-solid fa-filter"></i></button>
         </form>
       </div>
+
       <table>
         <thead>
           <tr>
             <th>STT</th>
             <th>Tên khách hàng</th>
-            <th>Đơn hàng</th>
-            <th>Tổng tiền (VND)</th>
+            <th>Số lượng đơn đã mua</th>
+            <th>Ngày tạo</th>
+            <th>Tổng tiền (VNĐ)</th>
+            <th>Chi tiết đơn</th>
           </tr>
         </thead>
         <tbody id="customer-table">
-          <?php if (empty($customers)): ?>
-            <tr>
-              <td colspan="4" style="text-align: center;">Vui lòng chọn khoảng thời gian phù hợp </td>
-            </tr>
-          <?php else: ?>
-            <?php foreach ($customers as $index => $customer): ?>
-              <tr>
-                <td data-label="STT"><?php echo $index + 1; ?></td>
-                <td data-label="Tên khách hàng"><?php echo htmlspecialchars($customer['name']); ?></td>
-                <td data-label="Đơn hàng"><?php echo $customer['orders']; ?></td>
-                <td data-label="Tổng tiền (VND)" class="total"><?php echo number_format($customer['total_spent'], 0, ',', '.'); ?></td>
-              </tr>
-            <?php endforeach; ?>
-          <?php endif; ?>
+          <tr>
+            <td colspan="6" style="text-align: center;">Vui lòng chọn khoảng thời gian phù hợp</td>
+          </tr>
         </tbody>
       </table>
+      <!-- Tổng doanh thu  -->
+      <div class="revenue-summary">
+        <h2>Tổng quan doanh thu</h2>
+        <div class="summary-card revenue-card">
+          <i class="fa-solid fa-money-bill-wave"></i>
+          <h3>Tổng doanh thu</h3>
+          <p id="total-revenue">0 VNĐ</p>
+          <span class="period">Trong khoảng thời gian đã chọn</span>
+        </div>
+      </div>
     </div>
-    <div class="container" style="   margin-top: 3rem;">
+
+    <!-- Container 2: Mặt hàng và các mục bán chạy/ế -->
+    <div class="container" style="margin-top: 3rem;">
       <h1>Thống Kê Mặt Hàng Bán Ra</h1>
       <table>
         <thead>
@@ -288,36 +289,38 @@
             <th>Tên mặt hàng</th>
             <th>Số lượng bán</th>
             <th>Tổng tiền (VND)</th>
-            <th>Hóa đơn</th>
+            <th>Chi tiết đơn</th>
           </tr>
         </thead>
-        <tbody>
-          <?php if (empty($items)): ?>
-            <tr>
-              <td colspan="5" style="text-align: center;">Vui lòng chọn khoảng thời gian phù hợp</td>
-            </tr>
-          <?php else: ?>
-            <?php foreach ($items as $index => $item): ?>
-              <tr>
-                <td data-label="STT"><?php echo $index + 1; ?></td>
-                <td data-label="Tên mặt hàng"><?php echo htmlspecialchars($item['name']); ?></td>
-                <td data-label="Số lượng bán"><?php echo $item['total_quantity']; ?></td>
-                <td data-label="Tổng tiền (VND)" class="total"><?php echo number_format($item['total_revenue'], 0, ',', '.'); ?></td>
-                <td data-label="Hóa đơn"><?php echo $item['orders']; ?></td>
-              </tr>
-            <?php endforeach; ?>
-          <?php endif; ?>
+        <tbody id="product-table">
+          <tr>
+            <td colspan="6" style="text-align: center;">Vui lòng chọn khoảng thời gian phù hợp</td>
+          </tr>
         </tbody>
       </table>
-      <h3>Tổng doanh thu: <?php echo number_format($total_revenue, 0, ',', '.'); ?> VND</h3>
-      <?php if ($best_selling_item): ?>
-        <p><strong>Mặt hàng bán chạy nhất:</strong> <?php echo htmlspecialchars($best_selling_item['name']); ?> (<?php echo $best_selling_item['total_quantity']; ?> sản phẩm)</p>
-      <?php endif; ?>
-      <?php if ($least_selling_item): ?>
-        <p><strong>Mặt hàng bán ế nhất:</strong> <?php echo htmlspecialchars($least_selling_item['name']); ?> (<?php echo $least_selling_item['total_quantity']; ?> sản phẩm)</p>
-      <?php endif; ?>
+      <!-- Mặt hàng bán chạy và ế -->
+      <div class="summary-section">
+        <div class="summary-card best-selling-card">
+          <i class="fa-solid fa-arrow-trend-up"></i>
+          <h3>Mặt hàng bán chạy nhất</h3>
+          <div class="product-info">
+            <p id="best-selling">Chưa có dữ liệu</p>
+            <span id="best-selling-quantity" class="product-quantity"></span>
+          </div>
+        </div>
+
+        <div class="summary-card worst-selling-card">
+          <i class="fa-solid fa-arrow-trend-down"></i>
+          <h3>Mặt hàng bán ế nhất</h3>
+          <div class="product-info">
+            <p id="worst-selling">Chưa có dữ liệu</p>
+            <span id="worst-selling-quantity" class="product-quantity"></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <script src="../js/analyzePage.js"></script>
 </body>
 
 </html>
