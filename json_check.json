@@ -1,0 +1,62 @@
+[
+  {
+    "ProductID": 8,
+    "ProductName": "Cây dây nhện",
+    "Price": "35000.00",
+    "ImageURL": "/assets/images/CAY8.jpg"
+  },
+  {
+    "ProductID": 10,
+    "ProductName": "Lưỡi hổ vàng",
+    "Price": "200000.00",
+    "ImageURL": "/assets/images/CAY10.jpg"
+  },
+  {
+    "ProductID": 13,
+    "ProductName": "Thiết mộc lan sọc vàng",
+    "Price": "500000.00",
+    "ImageURL": "/assets/images/CAY13.jpg"
+  },
+  {
+    "ProductID": 14,
+    "ProductName": "Cây lưỡi hổ xanh",
+    "Price": "220000.00",
+    "ImageURL": "/assets/images/CAY14.jpg"
+  },
+  {
+    "ProductID": 18,
+    "ProductName": "Lưỡi hổ búp sen",
+    "Price": "45000.00",
+    "ImageURL": "/assets/images/CAY18.jpg"
+  },
+  {
+    "ProductID": 31,
+    "ProductName": "Cây cau tiểu trâm",
+    "Price": "70000.00",
+    "ImageURL": "/assets/images/CAY31.jpg"
+  },
+  {
+    "ProductID": 32,
+    "ProductName": "Cây phú quý",
+    "Price": "320000.00",
+    "ImageURL": "/assets/images/CAY32.jpg"
+  },
+  {
+    "ProductID": 33,
+    "ProductName": "Cây vạn niên thanh",
+    "Price": "250000.00",
+    "ImageURL": "/assets/images/CAY33.jpg"
+  },
+  {
+    "ProductID": 34,
+    "ProductName": "Cây sen đá",
+    "Price": "90000.00",
+    "ImageURL": "/assets/images/CAY34.jpg"
+  },
+  {
+    "ProductID": 35,
+    "ProductName": "Cây cỏ lan chi",
+    "Price": "50000.00",
+    "ImageURL": "/assets/images/CAY35.jpg"
+  }
+]

@@ -407,8 +407,12 @@ main #product-list .card:hover {
     display: none;
   }
 
-  .search-group {
+  .search-container {
     display: none;
+  }
+
+  .search-group {
+    gap: 20px;
   }
 
   .search-group button {
