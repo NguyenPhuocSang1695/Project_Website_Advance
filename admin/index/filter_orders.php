@@ -1,28 +1,31 @@
 <?php
 header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 include 'connect.php';
 
 if ($myconn->connect_error) {
-    die(json_encode(['error' => 'Connection failed: ' . $myconn->connect_error]));
+    echo json_encode(['success' => false, 'error' => 'Connection failed: ' . $myconn->connect_error]);
+    exit;
 }
 
-// Lấy tham số từ query string
+$myconn->set_charset("utf8");
+
 $address = isset($_GET['address']) ? $myconn->real_escape_string($_GET['address']) : '';
 $date_from = isset($_GET['date_from']) && !empty($_GET['date_from']) ? $myconn->real_escape_string($_GET['date_from']) : '';
 $date_to = isset($_GET['date_to']) && !empty($_GET['date_to']) ? $myconn->real_escape_string($_GET['date_to']) : '';
 $order_status = isset($_GET['order_status']) ? $myconn->real_escape_string($_GET['order_status']) : 'all';
 $district = isset($_GET['district']) ? $myconn->real_escape_string($_GET['district']) : 'all';
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Số trang hiện tại
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5; // Số đơn hàng trên mỗi trang
+$province = isset($_GET['city']) ? $myconn->real_escape_string($_GET['city']) : 'all'; 
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
 
-// Đảm bảo page và limit là số dương
 $page = max(1, $page);
 $limit = max(1, $limit);
 
 $offset = ($page - 1) * $limit;
 
-// Tạo điều kiện lọc
 $conditions = [];
 if ($address) {
     $conditions[] = "u.Address LIKE '%$address%'";
@@ -39,57 +42,71 @@ if ($order_status !== 'all') {
 if ($district !== 'all') {
     $conditions[] = "u.District = '$district'";
 }
+if ($province !== 'all') {
+    $conditions[] = "u.Province = '$province'";
+}
 
-$whereClause = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
+$whereClause = !empty($conditions) ? 'AND ' . implode(' AND ', $conditions) : '';
 
-// Đếm tổng số đơn hàng phù hợp với điều kiện lọc
 $countSql = "SELECT COUNT(*) as total 
              FROM orders o 
              JOIN users u ON o.UserID = u.UserID 
-             $whereClause";
+             WHERE EXISTS (
+                 SELECT 1 
+                 FROM orderdetails od 
+                 WHERE od.OrderID = o.OrderID
+             ) $whereClause";
 $countResult = $myconn->query($countSql);
 $totalOrders = $countResult ? $countResult->fetch_assoc()['total'] : 0;
 
-// Tính tổng số trang
 $totalPages = ceil($totalOrders / $limit);
 
-// Truy vấn đơn hàng với phân trang
-$sql = "SELECT o.OrderID, o.UserID, o.TotalAmount, o.OrderStatus, o.CreatedAt, 
-               u.FullName, u.Address 
+$sql = "SELECT o.OrderID, o.TotalAmount, o.OrderStatus, o.CreatedAt, 
+               u.FullName, u.Address, u.Province, u.District 
         FROM orders o 
-        JOIN users u ON o.UserID = u.UserID 
-        $whereClause 
+        JOIN users u ON o.UserID = u.UserID
+        WHERE EXISTS (
+            SELECT 1 
+            FROM orderdetails od 
+            WHERE od.OrderID = o.OrderID
+        ) $whereClause 
         ORDER BY o.CreatedAt DESC 
         LIMIT $limit OFFSET $offset";
 
 $result = $myconn->query($sql);
-
-// Mảng chứa danh sách đơn hàng
 $orders = [];
+
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $orders[] = [
-            'madonhang' => $row['OrderID'],
-            'tenkhachhang' => $row['FullName'],
-            'ngaytao' => $row['CreatedAt'],
+            'fullname' => $row['FullName'],
+            'address' => $row['Address'],
+            'city' => $row['Province'], 
+            'district' => $row['District'],
             'giatien' => number_format($row['TotalAmount'], 0, ',', '.'),
+            'madonhang' => $row['OrderID'],
+            'ngaytao' => $row['CreatedAt'],
             'trangthai' => $row['OrderStatus'],
-            'diachi' => $row['Address']
         ];
-    }
+    } 
+    $response = [
+        'success' => true,
+        'orders' => $orders,
+        'total_orders' => $totalOrders,
+        'total_pages' => $totalPages,
+        'current_page' => $page
+    ];
 } else {
-    $orders = ['error' => 'Query failed: ' . $myconn->error];
+    $response = [
+        'success' => false,
+        'error' => 'Query failed: ' . $myconn->error,
+        'orders' => [],
+        'total_orders' => 0,
+        'total_pages' => 0,
+        'current_page' => $page
+    ];
 }
 
-// Trả về dữ liệu với thông tin phân trang
-$response = [
-    'orders' => $orders,
-    'total_orders' => $totalOrders,
-    'total_pages' => $totalPages,
-    'current_page' => $page
-];
-
 echo json_encode($response);
-
 $myconn->close();
 ?>
