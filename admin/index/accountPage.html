@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../style/LogInfo.css">
   <link rel="stylesheet" href="../style/reponsiveAccount.css">
 </head>
-
+ 
 <body>
   <div class="header">
     <div class="index-menu">
@@ -63,7 +63,7 @@
               <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
             </div>
           </a>
-          <a href="orderPage1.php" style="text-decoration: none; color: black;">
+          <a href="orderPage.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-list-check" style="
@@ -74,7 +74,7 @@
               <p style="color:black">Đơn hàng</p>
             </div>
           </a>
-          <a href="analyzePage.php" style="text-decoration: none; color: black;">
+          <a href="analyzePage.html" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-chart-simple" style="
@@ -197,7 +197,7 @@
           <p>Khách hàng</p>
         </div>
       </a>
-      <a href="orderPage1.php" style="text-decoration: none; color: black;">
+      <a href="orderPage.html" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-list-check" style="
@@ -208,7 +208,7 @@
           <p>Đơn hàng</p>
         </div>
       </a>
-      <a href="analyzePage.php" style="text-decoration: none; color: black;">
+      <a href="analyzePage.html" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-chart-simple" style="
@@ -283,9 +283,6 @@
               <span>Toàn quyền (chỉnh sửa thông tin sản phẩm, khách hàng, đơn hàng, nhân viên)</span>
             </div>
           </div>
-
-          <!-- Nút chỉnh sửa thông tin -->
-          <button class="edit-info-btn" id="editInfoBtn"><i class="fa-regular fa-pen-to-square"></i> Chỉnh sửa thông tin</button>
         </div>
       </div>
     </div>
@@ -294,7 +291,7 @@
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- Thay thế chỗ dữ liệu tĩnh này bằng dữ liệu database + PHP -->
   <script>
-    const userRole = "Chủ cửa hàng"; // Thay đổi giá trị này tùy theo người đăng nhập
+    const userRole = "Chủ cửa hàng"; 
 
     // Ẩn nút chỉnh sửa nếu không có quyền
     const editBtn = document.getElementById("editInfoBtn");

@@ -616,15 +616,15 @@ body {
     gap: 20px;
   }
 
-  .item-header input[type="search"] {
-    display: none;
+  .search-group {
+    gap: 20px;
   }
 
   .search-group button {
-    display: none !important;
+    display: none;
   }
 
-  .search-group {
+  .search-container {
     display: none;
   }
 

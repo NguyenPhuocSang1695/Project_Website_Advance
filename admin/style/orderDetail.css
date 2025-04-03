@@ -74,18 +74,6 @@ body {
   color: #495057;
 }
 
-.status.delivered {
-  color: #21923c;
-  font-weight: bold;
-  position: relative;
-}
-
-.status.delivered::before {
-  content: "✔";
-  margin-right: 5px;
-  color: #21923c;
-}
-
 .status.paid {
   color: rgb(141, 4, 122);
   font-weight: bold;
@@ -280,21 +268,6 @@ td img {
 
 }
 
-.update-btn {
-  width: 30%;
-  background-color: cornflowerblue;
-
-}
-
-.delete-btn {
-  width: 30%;
-  background-color: hsla(0, 84%, 53%, 0.866);
-}
-
-.update-btn:hover,
-.confirm-btn:hover {
-  background-color: #0056b3;
-}
 
 
 .source-details,
@@ -387,4 +360,104 @@ td img {
   position: relative;
   left: -60px;
 }
+}
+
+.status {
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.status i {
+  font-size: 16px;
+}
+
+.status-pending {
+  color:rgb(237, 228, 63);
+  border: 1px solid #ffeeba;
+  font-weight:bold;
+}
+
+.status-processing {
+
+  color: #004085;
+  border: 1px solid #b8daff;
+  font-weight:bold;
+}
+
+.status-shipping {
+
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+  font-weight:bold;
+}
+
+.status-completed {
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  font-weight:bold;
+}
+
+.status-canceled {
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  font-weight:bold;
+}
+
+.status-unknown {
+  color: #383d41;
+  border: 1px solid #d6d8db;
+  font-weight:bold;
+}
+/* Hiệu ứng hover cho trạng thái */
+.status:hover {
+    opacity: 0.9;
+    transition: opacity 0.2s ease-in-out;
+}
+.payment-cod-1,.payment-pending-1 {
+  color: rgb(215, 48, 48);
+
+}
+.payment-banking-1 {
+  color: rgb(55, 188, 55);
+}
+
+/* Styles cho trạng thái thanh toán */
+.payment-status-completed,
+.payment-status-pending,
+.payment-status-canceled,
+.payment-status-unknown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.payment-status-completed {
+  font-weight:bold;
+    color: #155724;
+}
+
+.payment-status-pending {
+  font-weight:bold;
+    color: #856404;
+}
+
+.payment-status-canceled {
+  font-weight:bold;
+    color: #721c24;
+}
+
+.payment-status-unknown {
+  font-weight:bold;
+    color: #383d41;
+}
+
+.payment-row i {
+    font-size: 16px;
+    margin-right: 5px;
 }
