@@ -2,22 +2,24 @@
 <html>
 
 <head>
-  <title>Chi tiết sản phẩm</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <!-- CSS  -->
-  <link rel="stylesheet" href="../src/css/san-pham.css" />
+  <link rel="stylesheet" type="text/css" href="../src/css/user-history-details.css" />
+  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
   <link rel="stylesheet" href="../src/css/search-styles.css" />
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="../src/css/footer.css">
   <!-- JS  -->
   <script src="../src/js/search-common.js"></script>
-  <script src="../src/js/Trang_chu.js"></script>
-  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../src/js/Trang_chu.js"></script>
+  <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
   <script src="../src/js/main.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
+  <title>Lịch sử người dùng</title>
 </head>
 
 <body>
@@ -221,7 +223,7 @@
             </div>
 
             <div class="cart-icon">
-              <a href="gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="./gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
@@ -290,18 +292,19 @@
                       aria-expanded="false">
                       Sản phẩm
                     </a>
+
                     <ul class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="phan-loai1.html">Cây dễ chăm</a>
+                        <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="phan-loai1.html">Cây văn phòng</a>
+                        <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="phan-loai1.html">Cây để bàn</a>
+                        <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="phan-loai1.html">Cây dưới nước</a>
+                        <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
                       </li>
                     </ul>
                   </li>
@@ -312,6 +315,7 @@
                     <a class="nav-link" href="#">Liên hệ</a>
                   </li>
                 </ul>
+
                 <form class="d-flex mt-3" role="search">
                   <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search" />
                   <!-- Nút tìm kiếm nâng cao trên mobile  -->
@@ -319,6 +323,7 @@
                     title="Tìm kiếm nâng cao">
                     <i class="fas fa-sliders-h"></i>
                   </button>
+
                   <button class="btn btn-outline-success" type="submit">
                     Search
                   </button>
@@ -348,6 +353,7 @@
                         <input type="number" id="maxPriceMobile" placeholder="Đến" min="0" />
                       </div>
                       <div class="price-ranges">
+
                         <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
                           Dưới 200k
                         </button>
@@ -365,7 +371,9 @@
                   </div>
 
                   <div class="filter-actions">
-                    <button type="button" class="btn-search" onclick="performSearchmobile()">
+
+                    <button type="button" class="btn-search" onclick="performSearch()">
+
                       <i class="fas fa-search"></i> Tìm kiếm
                     </button>
                     <button type="button" class="btn-reset" onclick="resetMobileFilters()">
@@ -385,7 +393,7 @@
       <div class="brand">
         <div class="brand-logo">
           <!-- Quay về trang chủ  -->
-          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.png" alt="LOGO" /></a>
+          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
         </div>
         <div class="brand-name">THE TREE</div>
       </div>
@@ -403,16 +411,16 @@
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="phan-loai1.html">Cây dễ chăm</a>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="phan-loai1.html">Cây văn phòng</a>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="phan-loai1.html">Cây để bàn</a>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="phan-loai1.html">Cây dưới nước</a>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
                 </li>
               </ul>
             </div>
@@ -423,76 +431,78 @@
       </div>
     </div>
   </div>
+
   <!-- SECTION  -->
-  <div class="section">
+  <div class="section1">
     <div class="img-21">
       <img src="../assets/images/CAY21.jpg" alt="CAY21" />
     </div>
   </div>
 
-  <!-- nội dung -->
-  <div class="sanpham">
-    <!-- ảnh sản phẩm -->
-    <img src="../assets/images/CAY6.jpg" alt="caykimngan" width="100%" class="single-image" />
-
-    <!-- tên cây, số lượng, giá -->
-    <div class="details">
-      <!-- mô tả nhỏ về cây -->
-      <div class="nametree">
-        <h2>Cây kim ngân</h2>
-        <h3 id="giá">280.000 vnđ</h3>
-        <p>
-          Cây Kim Ngân là loại cây cảnh trong nhà được trồng phổ biến trên
-          khắp thế giới, nó có sức ảnh hưởng tới mức mà hầu như ai cũng tin
-          rằng khi trồng có thể mang lại nhiều may mắn trong cuộc sống, công
-          việc hoặc làm ăn.
-        </p>
-      </div>
-
-      <!-- nút tăng chỉnh số lượng -->
-      <div class="order">
-        <div class="wrapper">
-          <span class="minus">-</span>
-          <span class="num">01</span>
-          <span class="plus">+</span>
-          <script src="../src/js/san-pham.js"></script>
-        </div>
-        <button type="button" class="btn btn-primary btn-lg">
-          Thêm vào giỏ hàng
-        </button>
+  <section>
+    <div class="information-client">
+      <h2>Hồ sơ khách hàng</h2>
+      <hr>
+      <div class="thongtin">
+        <h5>Họ tên:</h5>
+        <h5>Số điện thoại:</h5>
+        <h5>Địa chỉ:</h5>
       </div>
     </div>
-  </div>
-  <div class="description">
-    <!-- <hr style=" width:10%; text-align: left;margin-left: 0;size: 10px"> -->
-    <hr style="
-          height: 3px;
-          border-width: 0;
-          background-color: #1c8e2e;
-          width: 20%;
-        " />
-    <h3>MÔ TẢ</h3>
-    <p>
-      Cây Lim Ngân bộ còn được biết đến với tên gọi khác là cây thiết mộc lan,
-      là một loại cây cảnh phổ biến được nhiều người yêu thích bởi vẻ đẹp
-      thanh tao, sang trọng và ý nghĩa phong thủy tốt đẹp. Cây có tên khoa học
-      là Dracaena fragrans, thuộc họ Dracaenaceae. Cây có nguồn gốc từ Tây
-      Phi, hiện nay được trồng phổ biến ở nhiều nước trên thế giới, trong đó
-      có Việt Nam. Cây phát tài bộ là cây thân gỗ nhỏ, có chiều cao trung bình
-      từ 0,5 đến 1,5m. Lá cây dài, xanh bóng. Hoa phát tài bộ có màu trắng,
-      nhỏ và có mùi thơm dịu. Cây thường ra hoa vào mùa hè. Cây phát tài bộ là
-      cây có ý nghĩa phong thủy rất tốt. Trong phong thủy, cây phát tài bộ
-      được coi là biểu tượng của sự may mắn, tài lộc và thịnh vượng. Cây cũng
-      được coi là biểu tượng của sự bền vững và trường tồn. Cây phát tài bộ là
-      cây rất dễ trồng và chăm sóc. Cây có thể sống trong điều kiện ánh sáng
-      yếu, tuy nhiên cây sẽ phát triển tốt nhất trong điều kiện ánh sáng trung
-      bình. Cây không cần nhiều nước, chỉ cần tưới nước 2-3 lần/tuần. Cây cũng
-      không cần bón phân nhiều, chỉ cần bón phân 1-2 lần/tháng. Cây phát tài
-      bộ là cây cảnh rất đẹp và có ý nghĩa phong thủy tốt đẹp. Cây là lựa chọn
-      tuyệt vời để trang trí cho ngôi nhà, văn phòng hoặc cơ sở kinh doanh của
-      bạn.
-    </p>
-  </div>
+    <div class="history">
+      <div class="main-content">
+        <!-- Left Section -->
+        <div class="left-section">
+          <div class="section products">
+            <div class="section-header">
+              <span style="color:#21923c;"><i class="fa-regular fa-circle" style="  margin-right: 5px;"></i>Đơn
+                hàng đã đặt</span>
+              <button class="more-btn">...</button>
+            </div>
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Mã hóa đơn</th>
+                  <th>Số đơn hàng</th>
+                  <th>Tổng tiền(đ)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="product-info">
+                      <span class="product-name">#f111</span><br>
+                    </div>
+                  </td>
+                  <td>1</td>
+                  <td>1,100,000</td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="product-info">
+                      <span class="product-name">#f112</span><br>
+                    </div>
+                  </td>
+                  <td>1</td>
+                  <td>550,000</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <script>
+    $("#menu-btn").click(function () {
+      $("#menu").toggleClass("active");
+    });
+  </script>
 
   <footer class="footer">
     <div class="footer-column">
@@ -560,7 +570,6 @@
     </div>
     <!-- xong footer  -->
   </footer>
-  <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

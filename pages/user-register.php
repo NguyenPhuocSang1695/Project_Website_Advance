@@ -4,7 +4,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $servername = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "webdb";
+    $dbname = "c01db";
 
     $conn = new mysqli($servername, $username, $password, $dbname);
     if ($conn->connect_error) {
@@ -97,6 +97,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     font-size: 12px;
     margin-top: 5px;
   }
+  .container1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 900px; /* Điều chỉnh kích thước theo nhu cầu */
+    margin: auto;
+    margin-top: 35px;
+}
+
+.form-card {
+    flex: 1;
+    width: 50%;
+    box-sizing: border-box;
+}
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .form-card {
+        width: 100%;
+    }
+}
+
 
   </style>
 </head>
@@ -517,7 +541,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 
   <!-- MAIN -->
-  <div class="container">
+  <div class="container1">
     <div class="form-card">
       <div class="form-image">
         <h2>Tham gia ngay với chúng tôi</h2>
