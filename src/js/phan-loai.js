@@ -117,10 +117,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       product.ProductName
     }">
         </a>
-        <h5 class="card-title">
+        <h5 class="card-title" style="margin: 10px 0; font-weight: bold;">
           <a href="user-sanpham.php?id=${
             product.ProductID
-          }" class="text-decoration-none text-dark style="margin: 10px 0; font-weight: bold;">">
+          }" class="text-decoration-none text-dark" >
             ${product.ProductName}
           </a>
         </h5>
