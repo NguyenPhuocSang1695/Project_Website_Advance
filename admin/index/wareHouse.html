@@ -29,15 +29,11 @@
       z-index: 1000;
       justify-content: center;
       align-items: center;
-    }
-
-    .add-product-overlay.active {
-      display: flex;
+      margin: auto;
     }
 
     .add-product-content {
       background: #fff;
-      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
       width: 400px;
@@ -61,9 +57,9 @@
       align-items: center;
     }
 
-    .product-details-overlay.active {
+    /* .product-details-overlay.active {
       display: flex;
-    }
+    } */
 
     .product-details-content {
       background: #fff;
@@ -146,6 +142,10 @@
     }
 
     /* Form thêm sản phẩm  */
+    #add-product-btn {
+      width: 150px;
+    }
+
     .card {
       background: white;
       padding: 20px;
@@ -327,7 +327,7 @@
       <p class="header-left-title">Kho hàng</p>
     </div>
     <div class="header-middle-section">
-      <img class="logo-store" src="../../assets/images/LOGO-2.png">
+      <img class="logo-store" src="../../assets/images/LOGO-2.jpg">
     </div>
     <div class="header-right-section">
       <div class="bell-notification">
@@ -445,18 +445,17 @@
         <div class="products-section">
           <div class="section-header">
             <h2 class="section-title">Quản Lý Kho Hàng</h2>
-            <button class="add-product-btn" onclick="showAddProductPopup()">Thêm Sản Phẩm</button>
+            <button class="btn btn-success add-product-btn" id="add-product-btn" onclick="showAddProductOverlay()">Thêm
+              Sản Phẩm</button>
           </div>
 
-          <table class="products-table" id="productsTable">
+          <table class=" products-table" id="productsTable">
             <thead>
               <tr>
                 <th>Ảnh</th>
                 <th>Tên sản phẩm</th>
-                <th>Hạn sử dụng</th>
-                <th>Số lượng</th>
+                <th>Danh mục</th>
                 <th>Giá</th>
-                <th>Hành động</th>
               </tr>
             </thead>
             <tbody id="productsBody">
@@ -475,8 +474,12 @@
     </div>
 
     <!-- Popup overlay cho add product-->
-    <div class="add-product-overlay active" id="addProductOverlay">
+    <div class="add-product-overlay" id="addProductOverlay">
       <div class="add-product-content">
+        <!-- Đóng form  -->
+        <button type="button" id="closeButton" class="btn btn-secondary"
+          style="margin: 0 0 10px 0;width: 30px; height: 30px; display: flex; justify-content: center; align-items: center;"
+          id="closeButton"><i class="fa-solid fa-xmark"></i></button>
         <!-- Form thêm sản phẩm  -->
         <div class="card">
           <h2>Thêm Sản Phẩm</h2>
@@ -524,16 +527,6 @@
               <label for="attribute">Thuộc tính</label>
               <input type="text" id="attribute" name="attribute" placeholder="Ví dụ: lọc không khí, hút ẩm...">
             </div>
-
-            <div class="form-group">
-              <label for="levelDifficulty">Độ khó chăm sóc</label>
-              <select id="levelDifficulty" name="levelDifficulty" required>
-                <option value="1">Dễ</option>
-                <option value="2">Trung bình</option>
-                <option value="3">Khó</option>
-              </select>
-            </div>
-
             <button type="submit" class="btn btn-success">Thêm Sản Phẩm</button>
           </form>
 
@@ -563,8 +556,19 @@
               };
               reader.readAsDataURL(file);
             });
-
-
+            // Hàm hiển thị overlay
+            function showAddProductOverlay() {
+              const overlay = document.getElementById("addProductOverlay");
+              if (overlay) {
+                overlay.style.display = "flex";
+              }
+            }
+            document.getElementById('closeButton').addEventListener('click', function () {
+              const overlay = document.getElementById('addProductOverlay');
+              if (overlay.style.display === 'flex') {
+                overlay.style.display = 'none'; // Ẩn overlay khi nhấn nút đóng
+              }
+            });
 
           </script>
 

@@ -117,7 +117,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             ${product.ProductName}
           </a>
         </h5>
-        <p class="card-text">${product.DescriptionBrief}</p>
         <p class="card-text"><strong>Giá:</strong> ${Number(
           product.Price
         ).toLocaleString()} VNĐ</p>
