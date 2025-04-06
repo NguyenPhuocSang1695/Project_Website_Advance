@@ -110,17 +110,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     card.className = "card mb-3";
     card.innerHTML = `
       <div class="card-body">
-        <h5 class="card-title">
-          <a href="user-sanpham.php?id=${
-            product.ProductID
-          }" class="text-decoration-none text-dark">
-            ${product.ProductName}
-          </a>
-        </h5>
-        <p class="card-text">${product.DescriptionBrief}</p>
-        <p class="card-text"><strong>Giá:</strong> ${Number(
-          product.Price
-        ).toLocaleString()} VNĐ</p>
         <a href="user-sanpham.php?id=${product.ProductID}">
           <img src="..${
             product.ImageURL
@@ -128,6 +117,16 @@ document.addEventListener("DOMContentLoaded", async function () {
       product.ProductName
     }">
         </a>
+        <h5 class="card-title" style="margin: 10px 0; font-weight: bold;">
+          <a href="user-sanpham.php?id=${
+            product.ProductID
+          }" class="text-decoration-none text-dark" >
+            ${product.ProductName}
+          </a>
+        </h5>
+        <p class="card-text"><strong>Giá:</strong> ${Number(
+          product.Price
+        ).toLocaleString()} VNĐ</p>
       </div>
     `;
     return card;
