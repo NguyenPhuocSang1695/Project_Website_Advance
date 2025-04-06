@@ -486,7 +486,7 @@ if ($product_id > 0) {
         <span class="num">01</span>
         <span class="plus">+</span>
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
+            document.addEventLisgner("DOMContentLoaded", function () {
             const plus = document.querySelector(".plus");
             const minus = document.querySelector(".minus");
             const num = document.querySelector(".num");
