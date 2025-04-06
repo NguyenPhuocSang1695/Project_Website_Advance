@@ -24,7 +24,7 @@ if (!empty($category) && !ctype_digit($category)) { // Chỉ tìm nếu không p
 }
 
 // Tạo câu truy vấn
-$sql = "SELECT ProductID, ProductName, Price, ImageURL FROM products WHERE 1";
+$sql = "SELECT ProductID, ProductName, Price, ImageURL FROM products WHERE 1 AND Status = 'appear'";
 
 $params = [];
 $types = "";
