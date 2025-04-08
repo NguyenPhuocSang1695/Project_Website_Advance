@@ -1,3 +1,31 @@
+<?php
+include ('connect.php');
+if ($myconn->connect_error) {
+    die("Connection failed: " . $myconn->connect_error);
+}
+// session_start();
+// if (!isset($_SESSION['username'])) {
+//     header("Location: ../index.html"); 
+//     exit();
+// }
+$username= '';
+$email= '';
+$role= '';
+$phone= '';
+$address= '';
+$FullName= '';
+$sql = "SELECT * FROM users WHERE Role = 'admin'
+        ";
+$result = $myconn->query($sql);
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $username = $row['Username'];
+        $FullName = $row['FullName'];
+        $email = $row['Email'];
+        $role = $row['Role'];
+        $phone = $row['Phone'];
+        $address = $row['Address'] . ' , ' . $row['District'] . ', ' . $row['Province'];
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,7 +113,7 @@
               <p>Thống kê</p>
             </div>
           </a>
-          <a href="accountPage.html" style="text-decoration: none; color: black;">
+          <a href="accountPage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173;">
                 <i class="fa-solid fa-circle-user" style="
@@ -103,7 +131,7 @@
       <p class="header-left-title">Tài khoản</p>
     </div>
     <div class="header-middle-section">
-      <img class="logo-store" src="../../assets/images/LOGO-2.png">
+      <img class="logo-store" src="../../assets/images/LOGO-2.jpg">
     </div>
     <div class="header-right-section">
       <div class="bell-notification">
@@ -219,7 +247,7 @@
           <p>Thống kê</p>
         </div>
       </a>
-      <a href="accountPage.html" style="text-decoration: none; color: black;">
+      <a href="accountPage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection" style="background-color: #6aa173;">
             <i class="fa-solid fa-circle-user" style="
@@ -242,8 +270,8 @@
           <div class="user-info">
             <span class="user-icon">NC</span>
             <div style="display: flex; flex-direction: column;">
-              <span class="user-name">Nguyen Chuong</span>
-              <span class="user-email">📧 nguyen.chuong@gmail.com</span>
+              <span class="user-name"><?php echo $username ?></span>
+              <span class="user-email">📧 <?php echo $email ?></span>
             </div>
           </div>
         </div>
@@ -256,38 +284,33 @@
           <div class="info-container">
             <div class="info-row">
               <label>Họ và tên:</label>
-              <span>Nguyen Chuong</span>
+              <span><?php echo $FullName ?></span>
             </div>
             <div class="info-row">
-              <label>Ngày tháng năm sinh:</label>
-              <span>15/03/2005</span>
+              <label>Ngày/ tháng / năm sinh:</label>
+              <span>29/02/2005</span>
             </div>
             <div class="info-row">
               <label>Số điện thoại:</label>
-              <span>0123 456 789</span>
+              <span><?php echo $phone?></span>
             </div>
             <div class="info-row">
               <label>Email:</label>
-              <span>nguyen.chuong@gmail.com</span>
+              <span><?php echo $email?></span>
             </div>
             <div class="info-row">
-              <label>Ca làm việc:</label>
-              <span>08:00 - 17:00</span>
-            </div>
-            <div class="info-row">
-              <label>Chức vụ:</label>
-              <span>Chủ cửa hàng</span>
-            </div>
-            <div class="info-row">
-              <label>Quyền truy cập:</label>
-              <span>Toàn quyền (chỉnh sửa thông tin sản phẩm, khách hàng, đơn hàng, nhân viên)</span>
-            </div>
+              <label>Địa chỉ:</label>
+              <span><?php echo $address?></span>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  <?php   }
+} else {
+    echo "0 results";
+}
+?>
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- Thay thế chỗ dữ liệu tĩnh này bằng dữ liệu database + PHP -->
   <script>

@@ -15,55 +15,68 @@ document.addEventListener('DOMContentLoaded', function() {
     currentPage = 1;
     filterOrders();
   };
+  function filterOrders(formData = null) {
+    const dateFrom = formData?.get('date_from') || document.getElementById('date-from')?.value || '';
+    const dateTo = formData?.get('date_to') || document.getElementById('date-to')?.value || '';
+    const orderStatus = formData?.get('order_status') || document.getElementById('order-status')?.value || 'all';
+    const citySelect = formData?.get('city') || document.getElementById('city-select')?.value || '';
+    const districtSelect = formData?.get('district') || document.getElementById('district-select')?.value || '';
   
-  function filterOrders() {
-    const dateFrom = document.getElementById('date-from')?.value || '';
-    const dateTo = document.getElementById('date-to')?.value || '';
-    const orderStatus = document.getElementById('order-status')?.value || 'all';
-    const district = document.getElementById('district-input')?.value.trim() || '';
-    const province = document.getElementById('city-input')?.value.trim() || '';
-
     const params = new URLSearchParams({
-        page: currentPage,
-        limit: limit
+      page: currentPage,
+      limit: limit
     });
-
+  
     if (dateFrom) params.set('date_from', dateFrom);
     if (dateTo) params.set('date_to', dateTo);
     if (orderStatus && orderStatus !== 'all') params.set('order_status', orderStatus);
-    if (district) params.set('district', district);
-    if (province) params.set('city', province);
-
+    if (citySelect) params.set('province_id', citySelect);
+    if (districtSelect) params.set('district_id', districtSelect);
+  
     window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
-
+  
     fetch(`filter_orders.php?${params.toString()}`)
       .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text();
-      })
-      .then(text => {
-        console.log('Raw response from filter_orders:', text);
-        return JSON.parse(text);
-      })
+        return response.text().then(text => {
+          console.log('Raw response from filter_orders:', text);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}, Response: ${text}`);
+          }
+          try {
+            return JSON.parse(text);
+          } catch (e) {
+            throw new Error(`Invalid JSON: ${e.message}, Response: ${text}`);
+          }
+        });
+      }) 
       .then(data => {
         if (!orderTableBody) {
           console.error('Element order-table-body not found');
           return;
         }
-        
         orderTableBody.innerHTML = '';
         if (data.success && data.orders && data.orders.length > 0) {
           data.orders.forEach(order => {
+            const buyerName = order.buyer_name || 'Không xác định';
+            const receiverName = order.receiver_name || 'Không xác định';
+            const address = order.receiver_address || 'Chưa có địa chỉ';
+            
             const row = document.createElement('tr');
             row.innerHTML = `
-              <td>${order.madonhang}</td>
-              <td class="hide-index-tablet">${order.fullname}</td>
-              <td>${formatDate(order.ngaytao)}</td>
-              <td class="hide-index-mobile">${order.giatien}</td>
-              <td><button class="${getStatusInfo(order.trangthai).class}">${getStatusInfo(order.trangthai).text}</button></td>
-              <td>${formatAddress(order.address)}</td>
+              <td>${order.madonhang || ''}</td>
+              <td class="hide-index-tablet">${buyerName}</td>
+              <td class="hide-index-tablet">
+                ${receiverName}
+                ${buyerName === receiverName ? ' (Người mua)' : ''}
+              </td>
+              <td>${formatDate(order.ngaytao) || ''}</td>
+              <td class="hide-index-mobile">${formatCurrency(order.giatien || 0)}</td>
+              <td>
+                <button class="${getStatusInfo(order.trangthai || 'unknown').class}">
+                  ${getStatusInfo(order.trangthai || 'unknown').text}
+                </button>
+              </td>
+              <td>${address}</td>
               <td class="detail-info">
                 <a href="orderDetail2.php?code_Product=${order.madonhang}" class="action-btn view-btn">
                   <i class="fa-solid fa-circle-info"></i>
@@ -75,16 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             orderTableBody.appendChild(row);
           });
-
-          document.querySelectorAll('.update-status-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-              const orderId = btn.getAttribute('data-order-id');
-              const status = btn.getAttribute('data-status');
-              showUpdateStatusPopup(orderId, status);
-            });
-          });
         } else {
-          orderTableBody.innerHTML = `<tr><td colspan="7" class="no-data">Không có đơn hàng nào phù hợp</td></tr>`;
+          orderTableBody.innerHTML = '<tr><td colspan="8" class="no-data">Không có đơn hàng nào phù hợp</td></tr>';
         }
         const totalPages = data.total_pages !== undefined ? data.total_pages : 1;
         updatePagination(totalPages);
@@ -108,11 +113,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  function formatCurrency(amount) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  }
+
   function formatAddress(address, district, province) {
-    let fullAddress = address || '';
-    if (district) fullAddress += district ? `, ${district}` : '';
-    if (province) fullAddress += city ? `, ${province}` : '';
-    return fullAddress;
+    return `${address}, ${district}, ${province}`;
   }
 
   function updatePagination(totalPages) {
@@ -302,58 +308,72 @@ document.addEventListener('DOMContentLoaded', function() {
  
   function getStatusInfo(status) {
     switch (status) {
-      case 'processing': return { text: 'Đã xác nhận', class: 'status processing', tooltip: 'Đơn hàng đã được xác nhận' };
-      case 'pending': return { text: 'Đang xử lý', class: 'status pending', tooltip: 'Đơn hàng đang chờ xử lý' };
-      case 'shipped': return { text: 'Đang giao', class: 'status shipped', tooltip: 'Đơn hàng đang được giao' };
-      case 'completed': return { text: 'Đã giao', class: 'status completed', tooltip: 'Đơn hàng đã được giao thành công' };
-      case 'canceled': return { text: 'Đã hủy', class: 'status canceled', tooltip: 'Đơn hàng đã bị hủy' };
-      default: return { text: 'Không xác định', class: 'status unknown', tooltip: 'Trạng thái không xác định' };
+      case 'execute':
+        return { 
+          text: 'Đang xử lý', 
+          class: 'status-btn status-pending',
+          tooltip: 'Đơn hàng đang chờ xử lý' 
+        };
+      case 'ship':
+        return { 
+          text: 'Đang giao', 
+          class: 'status-btn status-shipping',
+          tooltip: 'Đơn hàng đang được giao' 
+        };
+      case 'success':
+        return { 
+          text: 'Thành công', 
+          class: 'status-btn status-success',
+          tooltip: 'Đơn hàng đã giao thành công' 
+        };
+      case 'fail':
+        return { 
+          text: 'Thất bại', 
+          class: 'status-btn status-failed',
+          tooltip: 'Đơn hàng bị hủy hoặc thất bại' 
+        };
+      default:
+        return { 
+          text: 'Không xác định', 
+          class: 'status-btn status-unknown',
+          tooltip: 'Trạng thái không xác định' 
+        };
     }
   }
 
   function showUpdateStatusPopup(orderId, currentStatus) {
     const overlay = document.getElementById('updateStatusOverlay');
-    if (!overlay) {
-      console.error('Element updateStatusOverlay not found');
-      return;
-    }
-    
+    if (!overlay) return;
+
     const statusOptions = document.getElementById('statusOptions');
-    if (!statusOptions) {
-      console.error('Element statusOptions not found');
-      return;
-    }
-    
+    if (!statusOptions) return;
+
     const statusFlow = {
-        'pending': ['processing', 'canceled'], // Đang xử lý → Đã xác nhận hoặc Đã hủy
-        'processing': ['shipped', 'canceled'], // Đã xác nhận → Đang giao hoặc Đã hủy
-        'shipped': ['completed', 'canceled'], // Đang giao → Đã giao hoặc Đã hủy
-        'completed': [], // Đã giao → Kết thúc
-        'canceled': [] // Đã hủy → Kết thúc
+      'execute': ['ship', 'fail'], // Đang xử lý → Đang giao hoặc Thất bại
+      'ship': ['success', 'fail'], // Đang giao → Thành công hoặc Thất bại
+      'success': [], // Thành công → Kết thúc
+      'fail': [] // Thất bại → Kết thúc
     };
 
     const statusLabels = {
-        'pending': 'Đang xử lý',
-        'processing': 'Đã xác nhận',
-        'shipped': 'Đang giao',
-        'completed': 'Đã giao',
-        'canceled': 'Đã hủy'
+      'execute': 'Đang xử lý',
+      'ship': 'Đang giao',
+      'success': 'Thành công',
+      'fail': 'Thất bại'
     };
 
     statusOptions.innerHTML = '';
 
-    statusFlow[currentStatus].forEach((status) => {
-        const button = document.createElement('button');
-        button.textContent = statusLabels[status];
-        button.disabled = false; // Enable only allowed transitions
-        button.addEventListener('click', () => {
-            updateOrderStatus(orderId, status);
-            overlay.style.display = 'none';
-        });
-        statusOptions.appendChild(button);
+    statusFlow[currentStatus]?.forEach((status) => {
+      const button = document.createElement('button');
+      button.textContent = statusLabels[status];
+      button.addEventListener('click', () => {
+        updateOrderStatus(orderId, status);
+        overlay.style.display = 'none';
+      });
+      statusOptions.appendChild(button);
     });
 
-    // Disable the current status button
     const currentStatusButton = document.createElement('button');
     currentStatusButton.textContent = statusLabels[currentStatus];
     currentStatusButton.disabled = true;
@@ -361,24 +381,9 @@ document.addEventListener('DOMContentLoaded', function() {
     statusOptions.appendChild(currentStatusButton);
 
     const orderIdDisplay = document.getElementById('orderIdDisplay');
-    if (orderIdDisplay) {
-        orderIdDisplay.textContent = orderId;
-    }
+    if (orderIdDisplay) orderIdDisplay.textContent = orderId;
 
     overlay.style.display = 'flex';
-
-    const closeButton = document.getElementById('closeUpdateStatus');
-    if (closeButton) {
-        closeButton.addEventListener('click', () => {
-            overlay.style.display = 'none';
-        });
-    }
-
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            overlay.style.display = 'none';
-        }
-    });
   }
 
   function updateOrderStatus(orderId, newStatus) {
@@ -436,34 +441,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function initPage() {
     const filterForm = document.getElementById('filter-form');
+    const filterModal = new bootstrap.Modal(document.getElementById('filterModal'));
+
     if (filterForm) {
       filterForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        currentPage = 1;
         filterOrders();
+        filterModal.hide(); // Đóng modal sau khi lọc
       });
     }
     
-    const resetButton = document.getElementById('reset-filters');
-    if (resetButton) {
-      resetButton.addEventListener('click', function() {
-        const dateFrom = document.getElementById('date-from');
-        const dateTo = document.getElementById('date-to');
-        const orderStatus = document.getElementById('order-status');
-        
-        if (dateFrom) dateFrom.value = '';
-        if (dateTo) dateTo.value = '';
-        if (orderStatus) orderStatus.value = 'all';
-        if (districtInput) districtInput.value = '';
-        if (cityInput) cityInput.value = '';
-        
-        currentPage = 1;
-        filterOrders();
-      });
-    }
+    // Thêm event delegation cho nút cập nhật trạng thái
+    document.addEventListener('click', function(e) {
+      const updateBtn = e.target.closest('.update-status-btn');
+      if (updateBtn) {
+        const orderId = updateBtn.dataset.orderId;
+        const currentStatus = updateBtn.dataset.status;
+        showUpdateStatusPopup(orderId, currentStatus);
+      }
+    });
     
     handleDistrictInput();
-    handleProvinceInput();
+    handleProvinceInput(); 
     
     filterOrders();
   }
@@ -471,45 +470,247 @@ document.addEventListener('DOMContentLoaded', function() {
   initPage();
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Ensure tooltips are displayed on hover
-  const statusElements = document.querySelectorAll(".status-tooltip");
-  statusElements.forEach((element) => {
-    element.addEventListener("mouseenter", () => {
-      const tooltip = element.querySelector(".tooltip-popup");
-      if (tooltip) tooltip.style.display = "block";
-    });
+function initFilters() {
+  const desktopForm = document.getElementById('filter-form-desktop');
+  const mobileForm = document.getElementById('filter-form-mobile');
+  const filterModal = new bootstrap.Modal(document.getElementById('filterModal'));
 
-    element.addEventListener("mouseleave", () => {
-      const tooltip = element.querySelector(".tooltip-popup");
-      if (tooltip) tooltip.style.display = "none";
+  // Xử lý form desktop
+  if (desktopForm) {
+    desktopForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      filterOrders(new FormData(desktopForm));
     });
-  });
+  }
 
-  const iconElements = document.querySelectorAll(".icon-tooltip");
-  iconElements.forEach((element) => {
-    element.addEventListener("mouseenter", () => {
-      const tooltip = element.querySelector(".tooltip-popup");
-      if (tooltip) tooltip.style.display = "block";
+  // Xử lý form mobile
+  if (mobileForm) {
+    mobileForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      filterOrders(new FormData(mobileForm));
+      filterModal.hide();
     });
+  }
 
-    element.addEventListener("mouseleave", () => {
-      const tooltip = element.querySelector(".tooltip-popup");
-      if (tooltip) tooltip.style.display = "none";
+  // Đồng bộ dữ liệu giữa hai form
+  function syncFormData(sourceForm, targetForm) {
+    const formData = new FormData(sourceForm);
+    for (let [name, value] of formData.entries()) {
+      const targetInput = targetForm.querySelector(`[name="${name}"]`);
+      if (targetInput) targetInput.value = value;
+    }
+  }
+
+  // Đồng bộ khi thay đổi form desktop
+  if (desktopForm) {
+    desktopForm.addEventListener('change', function() {
+      if (mobileForm) syncFormData(desktopForm, mobileForm);
     });
-  });
+  }
+
+  // Đồng bộ khi thay đổi form mobile
+  if (mobileForm) {
+    mobileForm.addEventListener('change', function() {
+      if (desktopForm) syncFormData(mobileForm, desktopForm);
+    });
+  }
+}
+
+// Khởi tạo khi trang đã load
+document.addEventListener('DOMContentLoaded', function() {
+  initFilters();
+  loadCities();
 });
+
+window.resetFilter = function(formType) {
+  const form = document.getElementById(`filter-form-${formType}`);
+  if (!form) return;
+
+  const dateFrom = form.querySelector('[name="date_from"]');
+  const dateTo = form.querySelector('[name="date_to"]');
+  const orderStatus = form.querySelector('[name="order_status"]');
+  const citySelect = form.querySelector('[name="city"]');
+  const districtSelect = form.querySelector('[name="district"]');
+
+  if (dateFrom) dateFrom.value = '';
+  if (dateTo) dateTo.value = '';
+  if (orderStatus) orderStatus.value = 'all';
+  if (citySelect) citySelect.value = '';
+  if (districtSelect) {
+    districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+    districtSelect.value = '';
+  }
+
+  showNotification('Đã đặt lại bộ lọc', 'info');
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  const citySelect = document.getElementById('city-select');
+  if (citySelect) {
+    citySelect.addEventListener('change', function() {
+      const provinceId = this.value;
+      if (provinceId) {
+        loadDistricts(provinceId);
+      } else {
+        const districtSelect = document.getElementById('district-select');
+        if (districtSelect) {
+          districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+        }
+      }
+    });
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  loadCities();
+});
+window.loadCities = function () {
+  fetch('get_Cities.php')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch cities: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (!data.success) {
+        throw new Error(data.error || 'Unknown error');
+      }
+      const citySelect = document.getElementById('city-select');
+      if (!citySelect) {
+        console.error('Element city-select not found');
+        return;
+      }
+      citySelect.innerHTML = '<option value="">Chọn thành phố</option>';
+      data.data.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city.id; 
+        option.textContent = city.name;
+        citySelect.appendChild(option);
+      });
+    })
+    .catch(error => {
+      console.error('Error loading cities:', error);
+      const citySelect = document.getElementById('city-select');
+      if (citySelect) {
+        citySelect.innerHTML = '<option value="">Error loading cities</option>';
+      }
+    });
+};
+
+window.loadDistricts = function(provinceId) {
+  const districtSelect = document.getElementById('district-select');
+  if (!districtSelect) {
+    console.error('Element district-select not found');
+    return;
+  }
+
+  districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+  
+  if (!provinceId) return;
+
+  fetch(`get_District.php?province_id=${provinceId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.success && data.data) {
+        data.data.forEach(district => {
+          const option = document.createElement('option');
+          option.value = district.id;
+          option.textContent = district.name;
+          districtSelect.appendChild(option);
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Error loading districts:', error);
+      districtSelect.innerHTML = '<option value="">Lỗi tải quận/huyện</option>';
+    });
+};
+
 function closeUpdateStatusPopup() {
   document.getElementById('updateStatusOverlay').style.display = 'none';
 }
-  function resetFilters() {
-  document.getElementById('date-from').value = '';
-  document.getElementById('date-to').value = '';
-  document.getElementById('order-status').value = 'all';
 
-  document.getElementById('city-input').value = '';
-  document.getElementById('district-input').value = '';
-document.getElementById('city-suggestions').style.display = 'none';
-  document.getElementById('district-suggestions').style.display = 'none';
-  location.reload();
-}
+document.addEventListener('DOMContentLoaded', function() {
+  function setupResponsiveFilters() {
+    const filterSection = document.querySelector('.filter-section');
+    const filterGrid = document.querySelector('.filter-grid');
+    
+    if (filterSection && filterGrid && window.innerWidth <= 992) {
+      if (!document.querySelector('.filter-toggle-btn')) {
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'filter-toggle-btn';
+        toggleBtn.innerHTML = 'Bộ lọc <i class="fa-solid fa-chevron-down"></i>';
+        
+        toggleBtn.addEventListener('click', function() {
+          this.classList.toggle('active');
+          filterGrid.classList.toggle('show');
+        });
+        
+        filterSection.insertBefore(toggleBtn, filterGrid);
+      }
+    } else if (filterSection && window.innerWidth > 992) {
+      const toggleBtn = document.querySelector('.filter-toggle-btn');
+      if (toggleBtn) {
+        toggleBtn.remove();
+        filterGrid.classList.remove('show');
+      }
+    }
+  }
+  setupResponsiveFilters();
+  
+  // Watch for screen size changes
+  window.addEventListener('resize', setupResponsiveFilters);
+  
+  // Handle clicking outside filter dropdown
+  document.addEventListener('click', function(event) {
+    const filterGrid = document.querySelector('.filter-grid.show');
+    const toggleBtn = document.querySelector('.filter-toggle-btn');
+    
+    if (filterGrid && toggleBtn && 
+        !filterGrid.contains(event.target) && 
+        !toggleBtn.contains(event.target)) {
+      filterGrid.classList.remove('show');
+      toggleBtn.classList.remove('active');
+    }
+  });
+
+  // Update form submission behavior
+  const filterForm = document.getElementById('filter-form');
+  if (filterForm) {
+    filterForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      currentPage = 1;
+      filterOrders();
+      
+      // Keep dropdown open after filtering on mobile/tablet
+      if (window.innerWidth <= 992) {
+        const filterGrid = document.querySelector('.filter-grid');
+        const toggleBtn = document.querySelector('.filter-toggle-btn');
+        if (filterGrid && toggleBtn) {
+          filterGrid.classList.add('show');
+          toggleBtn.classList.add('active');
+        }
+      }
+    });
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const filterCollapse = document.getElementById('filterCollapse');
+  const filterToggleBtn = document.querySelector('.filter-toggle-btn');
+
+  if (filterCollapse && filterToggleBtn) {
+    filterCollapse.addEventListener('show.bs.collapse', function () {
+      filterToggleBtn.querySelector('i').style.transform = 'translateY(-50%) rotate(180deg)';
+    });
+
+    filterCollapse.addEventListener('hide.bs.collapse', function () {
+      filterToggleBtn.querySelector('i').style.transform = 'translateY(-50%) rotate(0)';
+    });
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  initFilters();
+});

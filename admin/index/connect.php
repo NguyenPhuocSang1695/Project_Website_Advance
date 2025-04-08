@@ -2,7 +2,7 @@
 $server = "localhost";
 $user = "root";
 $password = "";
-$database = "webdb"; 
+$database = "c01db"; 
 $myconn = new mysqli($server, $user, $password, $database);
 if ($myconn->connect_error) {
     die("Connection failed: " . $myconn->connect_error);

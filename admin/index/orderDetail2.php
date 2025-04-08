@@ -1,14 +1,13 @@
 <?php
- include('../php/connect.php');
+ include('connect.php');
 
 // Lấy mã đơn hàng từ URL
 $orderID = isset($_GET['code_Product']) ? $_GET['code_Product'] : null;
 
 if ($orderID) {
     // 1. Lấy thông tin tổng quan đơn hàng
-    $sql_order = "SELECT o.OrderID, o.CreatedAt, o.OrderStatus, o.PaymentMethod, s.EstimatedDeliveryDate
+    $sql_order = "SELECT o.OrderID, o.DateGeneration, o.Status, o.PaymentMethod
                   FROM orders o
-                  LEFT JOIN shipments s ON o.OrderID = s.OrderID
                   WHERE o.OrderID = ?";
     $stmt_order = $myconn->prepare($sql_order);
     $stmt_order->bind_param("i", $orderID);
@@ -18,14 +17,15 @@ if ($orderID) {
 
     if ($orderInfo) {
         $orderDetailID = $orderInfo['OrderID'];
-        $orderDate = $orderInfo['CreatedAt'];
-        $orderStatus = $orderInfo['OrderStatus'];
+        $orderDate = $orderInfo['DateGeneration'];
+        $orderDate = date('d/m/Y', strtotime($orderDate));
+        $orderStatus = $orderInfo['Status'];
         $paymentMethod = $orderInfo['PaymentMethod'];
         $estimatedDeliveryDate = date('d/m/Y', strtotime($orderDate . ' + 4 days'));
 
 
         // 2. Lấy chi tiết đơn hàng (có thể có nhiều sản phẩm)
-        $sql_details = "SELECT od.OrderDetailID, od.ProductID, od.Quantity, od.UnitPrice, od.TotalPrice, 
+        $sql_details = "SELECT od.OrderID, od.ProductID, od.Quantity, od.UnitPrice, od.TotalPrice, 
                                p.ProductName, p.ImageURL
                         FROM orderdetails od
                         JOIN products p ON od.ProductID = p.ProductID
@@ -44,7 +44,7 @@ if ($orderID) {
                         SUM(od.Quantity) AS TotalQuantity, o.TotalAmount
                         FROM orderdetails od
                         JOIN orders o ON od.OrderID = o.OrderID
-                        JOIN users u ON o.UserID= u.UserID
+                        JOIN users u ON o.Username= u.Username
                         WHERE od.OrderID = ?";
         $stmt_payment = $myconn->prepare($sql_payment);
         $stmt_payment->bind_param("i", $orderID);
@@ -56,11 +56,32 @@ if ($orderID) {
         $totalProductAmount = $paymentInfo['TotalAmount'];
         $total = $totalProductAmount;
 
-        // 4. Lấy thông tin người mua và địa chỉ giao hàng
-        $sql_user = "SELECT u.FullName, u.Phone, u.Address, u.Ward, u.District, u.Province
-                     FROM orders o
-                     JOIN users u ON o.UserID = u.UserID
-                     WHERE o.OrderID = ?";
+        // 4. Lấy thông tin người mua (từ bảng users) và người nhận (từ bảng orders)
+        $sql_user = "SELECT 
+            -- Thông tin người mua từ bảng users
+            u.Email as buyer_email,
+            u.Address as buyer_address,
+            u.FullName as buyer_name,
+            u.Phone as buyer_phone,
+            p1.name as buyer_province,
+            d1.name as buyer_district,
+            u.Ward as buyer_ward,
+            
+            -- Thông tin người nhận từ bảng orders
+            o.CustomerName as receiver_name,
+            o.Phone as receiver_phone,
+            o.Address as receiver_address,
+            o.Ward as receiver_ward,
+            p2.name as receiver_province,
+            d2.name as receiver_district
+        FROM orders o
+        JOIN users u ON o.Username = u.Username
+        LEFT JOIN province p1 ON u.Province = p1.province_id
+        LEFT JOIN district d1 ON u.District = d1.district_id
+        LEFT JOIN province p2 ON o.Province = p2.province_id
+        LEFT JOIN district d2 ON o.District = d2.district_id
+        WHERE o.OrderID = ?";
+
         $stmt_user = $myconn->prepare($sql_user);
         $stmt_user->bind_param("i", $orderID);
         $stmt_user->execute();
@@ -68,9 +89,22 @@ if ($orderID) {
         $userInfo = $result_user->fetch_assoc();
 
         if ($userInfo) {
-            $fullName = $userInfo['FullName'];
-            $phone = $userInfo['Phone'];
-            $address = $userInfo['Address'] . ', ' . $userInfo['Ward'] . ', ' . $userInfo['District'] . ', ' . $userInfo['Province'];
+            // Thông tin người mua
+            $buyerName = $userInfo['buyer_name'];
+            $buyerEmail = $userInfo['buyer_email'];
+            $buyerAddress = $userInfo['buyer_address'] . ', ' . 
+                            $userInfo['buyer_ward'] . ', ' . 
+                            $userInfo['buyer_district'] . ', ' . 
+                            $userInfo['buyer_province'];
+            $buyerPhone = $userInfo['buyer_phone'];
+
+            // Thông tin người nhận
+            $receiverName = $userInfo['receiver_name'];
+            $receiverPhone = $userInfo['receiver_phone'];
+            $receiverAddress = $userInfo['receiver_address'] . ', ' . 
+                              $userInfo['receiver_ward'] . ', ' . 
+                              $userInfo['receiver_district'] . ', ' . 
+                              $userInfo['receiver_province'];
         } else {
             echo "Không tìm thấy thông tin người mua";
             exit;
@@ -84,33 +118,27 @@ if ($orderID) {
 // Hàm để lấy thông tin trạng thái
 function getStatusInfo($status) {
     switch ($status) {
-        case 'pending':
+        case 'execute':
             return [
                 'text' => 'Đang xử lý',
                 'class' => 'status-pending',
                 'icon' => '<i class="fa-solid fa-spinner"></i>'
             ];
-        case 'processing':
+        case 'ship':
             return [
-                'text' => 'Đã xác nhận',
-                'class' => 'status-processing',
-                'icon' => '<i class="fa-solid fa-circle-check"></i>'
-            ];
-        case 'shipped':
-            return [
-                'text' => 'Đang giao',
-                'class' => 'status-shipping',
+                'text' => 'Đang giao hàng',
+                'class' => ' status-shipping',
                 'icon' => '<i class="fa-solid fa-truck"></i>'
             ];
-        case 'completed':
+        case 'success':
             return [
-                'text' => 'Đã giao',
+                'text' => 'Đã hoàn thành',
                 'class' => 'status-completed',
                 'icon' => '<i class="fa-solid fa-circle-check"></i>'
             ];
-        case 'canceled':
+        case 'fail':
             return [
-                'text' => 'Đã hủy',
+                'text' => 'Thất bại',
                 'class' => 'status-canceled',
                 'icon' => '<i class="fa-solid fa-ban"></i>'
             ];
@@ -126,17 +154,23 @@ function getStatusInfo($status) {
 // Thêm hàm này cạnh hàm getStatusInfo
 function getPaymentStatusInfo($method) {
     switch ($method) {
-        case 'cod':
+        case 'COD':
             return [
                 'text' => 'Thanh toán khi nhận hàng',
                 'class' => 'payment-cod',
                 'icon' => '<i class="fa-solid fa-money-bill"></i>'
             ];
-        case 'credit card':
+        case 'Banking':
             return [
                 'text' => 'Chuyển khoản',
                 'class' => 'payment-banking',
                 'icon' => '<i class="fa-solid fa-building-columns"></i>'
+            ];
+        case 'MOMO':
+            return [
+                'text' => 'Thanh toán qua ví điện tử',
+                'class' => 'payment-momo',
+                'icon' => '<i class="fa-solid fa-mobile-screen"></i>'
             ];
         default:
             return [
@@ -149,7 +183,7 @@ function getPaymentStatusInfo($method) {
 
 function returnFinishPayment($method, $orderStatus) {
     // Nếu đơn hàng đã hủy
-    if ($orderStatus === 'canceled') {
+    if ($orderStatus === 'fail') {
         return [
             'text' => 'Đơn hàng đã hủy',
             'class' => 'payment-status-canceled',
@@ -160,8 +194,8 @@ function returnFinishPayment($method, $orderStatus) {
 
     // Xử lý theo phương thức thanh toán
     switch($method) {
-        case 'cod':
-            if ($orderStatus === 'completed') {
+        case 'COD':
+            if ($orderStatus === 'success') {
                 return [
                     'text' => 'Đã thanh toán COD',
                     'class' => 'payment-status-completed',
@@ -177,9 +211,16 @@ function returnFinishPayment($method, $orderStatus) {
                 ];
             }
         
-        case 'credit card':
+        case 'Banking':
             return [
                 'text' => 'Đã thanh toán (Chuyển khoản)',
+                'class' => 'payment-status-completed',
+                'icon' => '<i class="fa-solid fa-circle-check"></i>',
+                'showAmount' => true
+            ];
+        case 'MOMO':
+            return [
+                'text' => 'Đã thanh toán (Ví điện tử)',
                 'class' => 'payment-status-completed',
                 'icon' => '<i class="fa-solid fa-circle-check"></i>',
                 'showAmount' => true
@@ -286,7 +327,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
               <p>Thống kê</p>
             </div>
           </a>
-          <a href="accountPage.html" style="text-decoration: none; color: black;">
+          <a href="accountPage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-circle-user" style="
@@ -307,7 +348,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
        left: -25px;">Đơn số <?php echo $orderDetailID; ?></p>
     </div>
     <div class="header-middle-section">
-      <img class="logo-store" src="../../assets/images/LOGO-2.png">
+      <img class="logo-store" src="../../assets/images/LOGO-2.jpg">
     </div>
     <div class="header-right-section">
       <div class="bell-notification">
@@ -341,7 +382,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="accountPage.html" class="navbar_user">
+          <a href="accountPage.php" class="navbar_user">
             <i class="fa-solid fa-user"></i>
             <p>Thông tin cá nhân </p>
           </a>
@@ -421,7 +462,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
         <p>Thống kê</p>
       </div>
     </a>
-    <a href="accountPage.html" style="text-decoration: none; color: black;">
+    <a href="accountPage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-circle-user" style="
@@ -534,29 +575,31 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
         </div>
 
         <div class="right-section">
+          <!-- Thông tin người mua hàng -->
           <div class="section source">
             <div class="section-header">
-              <span>Thông Tin Người Mua</span>
+              <span>Thông Tin Người Mua Hàng</span>
             </div>
-            <div class="section-header">
-              <p style="color:#007bff"><?php echo $fullName; ?></p>
-            </div>
-            <div class="source-details">
-              <div>
-                <span style="font-size: 16px; font-weight: bold;
-                 padding-bottom: 15px; padding-right: 4rem; display:flex;">Người Liên Hệ</span>
-                <p style="color:#007bff;font-weight: bold;padding-bottom:10px"><?php echo $fullName; ?></p>
-              </div>
-              <span>SĐT:</span>
-              <span class="highlight"><?php echo $phone; ?></span>
+            <div class="buyer-info">
+              <p style="color:#007bff"><?php echo $buyerName; ?></p>
+              <p style="font-size:13px">Email: <?php echo $buyerEmail; ?></p>
+              <p style="font-size:13px">Địa chỉ: <?php echo $buyerAddress; ?></p>
+              <p style="font-size:13px">SĐT: <?php echo $buyerPhone; ?></p>
             </div>
           </div>
+
+          <!-- Thông tin người nhận hàng -->
           <div class="section shipping">
             <div class="section-header">
-              <span>Địa Chỉ Giao Hàng</span>
+              <span style="font-size: 16px; font-weight: bold;">Người Nhận Hàng</span>
             </div>
             <div class="shipping-details">
-              <span><?php echo $address; ?></span>
+              <p style="color:#007bff;font-weight: bold;padding-bottom:10px">
+                <?php echo $receiverName; ?>
+                <?php if ($receiverName === $buyerName) echo ' (Người mua)'; ?>
+              </p>
+              <span>SĐT: <span class="highlight"><?php echo $receiverPhone; ?></span></span>
+              <span>Địa chỉ: <span class="highlight"><?php echo $receiverAddress; ?></span></span>
             </div>
           </div>
         </div>

@@ -10,20 +10,26 @@
   <link href="../icon/css/all.css" rel="stylesheet">
   <link href="../style/generall.css" rel="stylesheet">
   <link href="../style/main1.css" rel="stylesheet">
-  <link href="../style/orderStyle.css" rel="stylesheet">
+  <link href="../style/orderStyle1.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/reponsiveOrder1.css">
 
 </head>
-
+<style>
+  /* Default display for responsive columns */
+  .hide-index-tablet, 
+  .hide-index-mobile {
+    display: table-cell;
+  }
+</style>
 <body>
   <div class="header">
     <div class="header-left-section">
       <p class="header-left-title">Đơn Hàng</p>
     </div>
     <div class="header-middle-section">
-      <img class="logo-store" src="../../assets/images/LOGO-2.png" alt="Logo">
+      <img class="logo-store" src="../../assets/images/LOGO-2.jpg" alt="Logo">
     </div>
     <div class="header-right-section">
       <div class="bell-notification">
@@ -53,7 +59,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="accountPage.html" class="navbar_user">
+          <a href="accountPage.php" class="navbar_user">
             <i class="fa-solid fa-user"></i>
             <p>Thông tin cá nhân</p>
           </a>
@@ -126,7 +132,7 @@
             <p>Thống kê</p>
           </div>
         </a>
-        <a href="accountPage.html" style="text-decoration: none; color: black;">
+        <a href="accountPage.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection">
               <i class="fa-solid fa-circle-user" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -182,7 +188,7 @@
           <p>Thống kê</p>
         </div>
       </a>
-      <a href="accountPage.html" style="text-decoration: none; color: black;">
+      <a href="accountPage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-circle-user" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -197,82 +203,145 @@
           <p style="font-size: 30px; font-weight: 700;">Quản lý đơn hàng</p>
         </div>
         <div class="filter-section">
-          <form id="filter-form">
-            <div class="filter-grid">
-              <div class="filter-item">
-                <label for="date-from">Từ ngày:</label>
-                <input type="date" id="date-from" name="date_from" class="form-control">
-              </div>
-              <div class="filter-item">
-                <label for="date-to">Đến ngày:</label>
-                <input type="date" id="date-to" name="date_to" class="form-control">
-              </div>
-              <div class="filter-item">
-                <label for="order-status">Tình trạng:</label>
-                <select id="order-status" name="order_status" class="form-control">
-                  <option value="all">Tất cả</option>
-                  <option value="pending">Đang xử lý</option>
-                  <option value="processing">Đã xác nhận</option>
-                  <option value="shipped">Đang giao</option>
-                  <option value="completed">Đã giao</option>
-                  <option value="canceled">Đã hủy</option>
-                </select>
-              </div>
-              <div class="filter-item">
-                <label for="city-input">Thành phố</label>
-                <div class="input-with-suggestions">
-                  <input type="text" id="city-input" name="city" placeholder="Nhập thành phố" class="form-control">
-                  <ul id="city-suggestions" class="suggestions-list"></ul>
+          <!-- Desktop filter form (hiển thị trên màn hình lớn) -->
+          <div class="desktop-filter d-none d-md-block">
+            <form id="filter-form-desktop" class="filter-form">
+              <div class="filter-grid">
+                <div class="filter-item">
+                  <label for="date-from-desktop">Từ ngày:</label>
+                  <input type="date" id="date-from-desktop" name="date_from" class="form-control">
+                </div>
+                
+                <div class="filter-item">
+                  <label for="date-to-desktop">Đến ngày:</label>
+                  <input type="date" id="date-to-desktop" name="date_to" class="form-control">
+                </div>
+                
+                <div class="filter-item">
+                  <label for="order-status-desktop">Trạng thái:</label>
+                  <select id="order-status-desktop" name="order_status" class="form-control">
+                    <option value="all">Tất cả</option>
+                    <option value="execute">Đang xử lý</option>
+                    <option value="ship">Đang giao</option>
+                    <option value="success">Thành công</option>
+                    <option value="fail">Thất bại</option>
+                  </select>
+                </div>
+
+                <div class="filter-item">
+                  <label for="city-select-desktop">Tỉnh/Thành phố:</label>
+                  <select id="city-select-desktop" name="city" class="form-control">
+                    <option value="">Chọn thành phố</option>
+                  </select>
+                </div>
+
+                <div class="filter-item">
+                  <label for="district-select-desktop">Quận/Huyện:</label>
+                  <select id="district-select-desktop" name="district" class="form-control">
+                    <option value="">Chọn quận/huyện</option>
+                  </select>
+                </div>
+
+                <div class="filter-button-container">
+                  <button type="submit" class="filter-button">
+                    <i class="fas fa-filter"></i>
+                    Lọc
+                  </button>
+                  <button type="button" class="reset-button" onclick="resetFilter('desktop')">
+                    <i class="fas fa-undo"></i>
+                    Đặt lại
+                  </button>
                 </div>
               </div>
-              <div class="filter-item">
-                <label for="district-input">Quận/Huyện</label>
-                <div class="input-with-suggestions">
-                  <input type="text" id="district-input" name="district" placeholder="Nhập quận/huyện" class="form-control">
-                  <ul id="district-suggestions" class="suggestions-list"></ul>
+            </form>
+          </div>
+
+          <!-- Mobile/Tablet filter button -->
+          <div class="mobile-filter d-md-none">
+            <button type="button" class="filter-trigger-btn" data-bs-toggle="modal" data-bs-target="#filterModal">
+              <i class="fas fa-filter"></i>
+              Bộ lọc
+            </button>
+          </div>
+
+          <!-- Filter Modal cho mobile/tablet -->
+          <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="filterModalLabel">Bộ lọc đơn hàng</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-              </div>
-              <div class="filter-item filter-button-container">
-                <button type="button" id="filter-button" class="filter-button" onclick="applyFilters()">
-                  <i class="fa-solid fa-filter"></i> Lọc đơn hàng
-                </button>
-                <button type="button" id="reset-button" class="reset-button" onclick="resetFilters()">
-                  <i class="fa-solid fa-rotate"></i> Đặt lại
-                </button>
+                <div class="modal-body">
+                  <form id="filter-form-mobile" class="filter-form">
+                    <div class="filter-grid">
+                      <div class="filter-item">
+                        <label for="date-from-mobile">Từ ngày:</label>
+                        <input type="date" id="date-from-mobile" name="date_from" class="form-control">
+                      </div>
+                      
+                      <div class="filter-item">
+                        <label for="date-to-mobile">Đến ngày:</label>
+                        <input type="date" id="date-to-mobile" name="date_to" class="form-control">
+                      </div>
+                      
+                      <div class="filter-item">
+                        <label for="order-status-mobile">Trạng thái:</label>
+                        <select id="order-status-mobile" name="order_status" class="form-control">
+                          <option value="all">Tất cả</option>
+                          <option value="execute">Đang xử lý</option>
+                          <option value="ship">Đang giao</option>
+                          <option value="success">Thành công</option>
+                          <option value="fail">Thất bại</option>
+                        </select>
+                      </div>
+
+                      <div class="filter-item">
+                        <label for="city-select-mobile">Tỉnh/Thành phố:</label>
+                        <select id="city-select-mobile" name="city" class="form-control">
+                          <option value="">Chọn thành phố</option>
+                        </select>
+                      </div>
+
+                      <div class="filter-item">
+                        <label for="district-select-mobile">Quận/Huyện:</label>
+                        <select id="district-select-mobile" name="district" class="form-control">
+                          <option value="">Chọn quận/huyện</option>
+                        </select>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="reset-button" onclick="resetFilter('mobile')">
+                    <i class="fas fa-undo"></i>
+                    Đặt lại
+                  </button>
+                  <button type="submit" form="filter-form-mobile" class="filter-button">
+                    <i class="fas fa-filter"></i>
+                    Áp dụng
+                  </button>
+                </div>
               </div>
             </div>
-          </form>
+          </div>
         </div>
         <div class="statistic-section">
           <table class="statistic-table">
             <thead>
               <tr>
                 <th>Mã đơn hàng</th>
-                <th class="hide-index-tablet">Tên khách hàng</th>
+                <th class="hide-index-tablet">Người mua</th>
+                <th class="hide-index-tablet">Người nhận</th>
                 <th>Ngày tạo</th>
                 <th class="hide-index-mobile">Giá tiền (VND)</th>
                 <th>Trạng thái</th>
-                <th>Địa chỉ</th>
+                <th>Địa chỉ giao hàng</th>
                 <th></th>
               </tr>
             </thead>
             <tbody id="order-table-body">
-              <td>
-                <button class="${getStatusInfo(order.trangthai).class} status-tooltip">
-                  ${getStatusInfo(order.trangthai).text}
-                  <span class="tooltip-popup">${getStatusInfo(order.trangthai).tooltip}</span>
-                </button>
-              </td>
-              <td class="detail-info">
-                <a href="orderDetail2.php?code_Product=${order.madonhang}" class="action-btn view-btn icon-tooltip">
-                  <i class="fa-solid fa-circle-info"></i>
-                  <span class="tooltip-popup">Xem chi tiết đơn hàng</span>
-                </a>
-                <a class="update-status-btn action-btn edit-btn icon-tooltip" data-order-id="${order.madonhang}" data-status="${order.trangthai}">
-                  <i class="fa-solid fa-pen-to-square"></i>
-                  <span class="tooltip-popup">Cập nhật trạng thái đơn hàng</span>
-                </a>
-              </td>
+              <!-- Dynamic content will be inserted here by JavaScript -->
             </tbody>
           </table>
         </div>
@@ -293,6 +362,5 @@
 
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../js/orderPage.js"></script>
-
 </body>
 </html>
