@@ -1,3 +1,37 @@
+<?php
+session_start();
+if (!isset($_SESSION['Username'])) {
+    header('Location: ../index.php');
+    exit();
+}
+
+$avatarPath = ($_SESSION['Role'] === 'admin') 
+    ? "../../assets/images/admin.jpg" 
+    : "../../assets/images/sang.jpg";
+
+include('../php/login_check.php');
+include ('connect.php');
+if ($myconn->connect_error) {
+    die("Connection failed: " . $myconn->connect_error);
+}
+$username= '';
+$email= '';
+$role= '';
+$phone= '';
+$address= '';
+$FullName= '';
+$sql = "SELECT * FROM users WHERE Role = 'admin'
+        ";
+$result = $myconn->query($sql);
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $username = $row['Username'];
+        $FullName = $row['FullName'];
+        $email = $row['Email'];
+        $role = $row['Role'];
+        $phone = $row['Phone'];
+        $address = $row['Address'] . ' , ' . $row['District'] . ', ' . $row['Province'];
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +49,10 @@
   <link rel="stylesheet" href="../style/LogInfo.css">
   <link rel="stylesheet" href="../style/reponsiveAccount.css">
 </head>
- 
+ <style>
+
+
+ </style>
 <body>
   <div class="header">
     <div class="index-menu">
@@ -85,7 +122,7 @@
               <p>Thống kê</p>
             </div>
           </a>
-          <a href="accountPage.html" style="text-decoration: none; color: black;">
+          <a href="accountPage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173;">
                 <i class="fa-solid fa-circle-user" style="
@@ -103,7 +140,7 @@
       <p class="header-left-title">Tài khoản</p>
     </div>
     <div class="header-middle-section">
-      <img class="logo-store" src="../../assets/images/LOGO-2.png">
+      <img class="logo-store" src="../../assets/images/LOGO-2.jpg">
     </div>
     <div class="header-right-section">
       <div class="bell-notification">
@@ -115,14 +152,14 @@
       </div>
       <div>
         <div class="position-employee">
-          <p>Nhân viên</p>
+          <p><?php echo $_SESSION['Role'] ?></p>
         </div>
         <div class="name-employee">
-          <p>Nguyen Chuong</p>
+          <p><?php  echo $_SESSION['FullName']?></p>
         </div>
       </div>
       <div>
-        <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
+        <img class="avatar" src="<?php echo $avatarPath; ?>" alt="Avatar" data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
       </div>
       <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
@@ -131,10 +168,10 @@
             border-bottom-width: 1px;
             border-bottom-style: solid;
             border-bottom-color: rgb(176, 176, 176);" class="offcanvas-header">
-          <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="">
-          <div style="display: flex; flex-direction: column; height: 95px;">
-            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">NgNguyenChuong</h4>
-            <h5>Ng_Nguyen_Chuong</h5>
+          <img class="avatar" src="<?php echo $avatarPath; ?>" alt="Avatar">
+          <div class="admin">
+            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel"><?php echo $_SESSION['FullName']?></h4>
+            <h5><?php echo $_SESSION['Username']?></h5>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
@@ -152,7 +189,7 @@
               <h2>Xác nhận đăng xuất</h2>
               <p>Bạn có chắc chắn muốn đăng xuất không?</p>
               <div class="modal_actions">
-                <a href="../index.html" class="btn_2 confirm">Đăng xuất</a>
+                <a href="../php/logout.php" class="btn_2 confirm">Đăng xuất</a>
                 <a href="#" class="btn_2 cancel">Hủy</a>
               </div>
             </div>
@@ -219,7 +256,7 @@
           <p>Thống kê</p>
         </div>
       </a>
-      <a href="accountPage.html" style="text-decoration: none; color: black;">
+      <a href="accountPage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection" style="background-color: #6aa173;">
             <i class="fa-solid fa-circle-user" style="
@@ -232,7 +269,6 @@
       </a>
     </div>
     <div class="content-area">
-      <!-- Phần tiêu đề và thông tin tài khoản -->
       <div class="header-section">
         <div class="header-left">
           <h1>Thông tin tài khoản</h1>
@@ -242,8 +278,8 @@
           <div class="user-info">
             <span class="user-icon">NC</span>
             <div style="display: flex; flex-direction: column;">
-              <span class="user-name">Nguyen Chuong</span>
-              <span class="user-email">📧 nguyen.chuong@gmail.com</span>
+              <span class="user-name"><?php echo $username ?></span>
+              <span class="user-email">📧 <?php echo $email ?></span>
             </div>
           </div>
         </div>
@@ -256,48 +292,34 @@
           <div class="info-container">
             <div class="info-row">
               <label>Họ và tên:</label>
-              <span>Nguyen Chuong</span>
+              <span><?php echo $FullName ?></span>
             </div>
             <div class="info-row">
-              <label>Ngày tháng năm sinh:</label>
-              <span>15/03/2005</span>
+              <label>Ngày/ tháng / năm sinh:</label>
+              <span>29/02/2005</span>
             </div>
             <div class="info-row">
               <label>Số điện thoại:</label>
-              <span>0123 456 789</span>
+              <span><?php echo $phone?></span>
             </div>
             <div class="info-row">
               <label>Email:</label>
-              <span>nguyen.chuong@gmail.com</span>
+              <span><?php echo $email?></span>
             </div>
             <div class="info-row">
-              <label>Ca làm việc:</label>
-              <span>08:00 - 17:00</span>
-            </div>
-            <div class="info-row">
-              <label>Chức vụ:</label>
-              <span>Chủ cửa hàng</span>
-            </div>
-            <div class="info-row">
-              <label>Quyền truy cập:</label>
-              <span>Toàn quyền (chỉnh sửa thông tin sản phẩm, khách hàng, đơn hàng, nhân viên)</span>
-            </div>
+              <label>Địa chỉ:</label>
+              <span><?php echo $address?></span>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  <?php   }
+} else {
+    echo "0 results";
+}
+?>
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- Thay thế chỗ dữ liệu tĩnh này bằng dữ liệu database + PHP -->
-  <script>
-    const userRole = "Chủ cửa hàng"; 
 
-    // Ẩn nút chỉnh sửa nếu không có quyền
-    const editBtn = document.getElementById("editInfoBtn");
-    if (userRole !== "Chủ cửa hàng") {
-      editBtn.style.display = "none"; // Ẩn nút nếu không phải chủ
-    }
-  </script>
 </body>
 </html>
