@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 
 include 'connect.php';
 
@@ -15,7 +15,7 @@ $myconn->set_charset("utf8");
 $type = isset($_GET['type']) ? $myconn->real_escape_string($_GET['type']) : 'district';
 $query = isset($_GET['query']) ? $myconn->real_escape_string($_GET['query']) : '';
 
-if ($type === 'city') { // Thay 'city' bằng 'province' trong logic
+if ($type === 'city') { 
     $sql = "SELECT DISTINCT Province 
             FROM users 
             WHERE Province IS NOT NULL";

@@ -6,34 +6,47 @@ ini_set('display_errors', 1);
 include 'connect.php';
 
 if ($myconn->connect_error) {
-    echo json_encode(['success' => false, 'error' => 'Connection failed: ' . $myconn->connect_error]);
-    exit;
+    die(json_encode(['success' => false, 'error' => 'Connection failed: ' . $myconn->connect_error]));
 }
 
 $myconn->set_charset("utf8");
 
-$data = json_decode(file_get_contents('php://input'), true);
+// Đọc và kiểm tra input
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
+
 if (!$data || !isset($data['orderId']) || !isset($data['status'])) {
-    echo json_encode(['success' => false, 'error' => 'Invalid input data']);
-    exit;
+    die(json_encode(['success' => false, 'error' => 'Invalid input data']));
 }
 
 $orderId = $myconn->real_escape_string($data['orderId']);
 $newStatus = $myconn->real_escape_string($data['status']);
 
-// Kiểm tra xem $newStatus có nằm trong danh sách enum hợp lệ không
-$validStatuses = ['pending', 'processing', 'shipped', 'completed', 'canceled'];
+// Kiểm tra trạng thái hợp lệ
+$validStatuses = ['execute', 'ship', 'success', 'fail'];
 if (!in_array($newStatus, $validStatuses)) {
-    echo json_encode(['success' => false, 'error' => 'Invalid status value']);
-    exit;
+    die(json_encode(['success' => false, 'error' => 'Invalid status value']));
 }
 
-$sql = "UPDATE orders SET OrderStatus = '$newStatus' WHERE OrderID = '$orderId'";
-if ($myconn->query($sql) === TRUE) {
-    echo json_encode(['success' => true]);
+// Cập nhật trạng thái
+$sql = "UPDATE orders SET Status = ? WHERE OrderID = ?";
+$stmt = $myconn->prepare($sql);
+if (!$stmt) {
+    die(json_encode(['success' => false, 'error' => 'Prepare failed: ' . $myconn->error]));
+}
+
+$stmt->bind_param('ss', $newStatus, $orderId);
+
+if ($stmt->execute()) {
+    if ($stmt->affected_rows > 0) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'No order found with ID: ' . $orderId]);
+    }
 } else {
-    echo json_encode(['success' => false, 'error' => 'Update failed: ' . $myconn->error]);
+    echo json_encode(['success' => false, 'error' => 'Update failed: ' . $stmt->error]);
 }
 
+$stmt->close();
 $myconn->close();
 ?>
