@@ -60,12 +60,32 @@ document.addEventListener("DOMContentLoaded", async function () {
       const pageData = data.slice(start, start + itemsPerPage);
 
       pageData.forEach((product) => {
-        productList.appendChild(createProductCard(product));
-      });
+        let productItem = document.createElement("div");
+        productItem.classList.add("card", "mb-3");
 
-      // Cuộn lên đầu trang sau khi chuyển trang (sau khi render)
-      requestAnimationFrame(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        productItem.innerHTML = `
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="user-sanpham.php?id=${
+            product.ProductID
+          }" class="text-decoration-none text-dark">
+            ${product.ProductName}
+          </a>
+        </h5>
+        <p class="card-text">${product.DescriptionBrief}</p>
+        <p class="card-text"><strong>Giá:</strong> ${Number(
+          product.Price
+        ).toLocaleString()} VNĐ</p>
+        <a href="user-sanpham.php?id=${product.ProductID}">
+          <img src="../../${
+            product.ImageURL
+          }" class="img-fluid" style="height: 275px;" alt="${
+          product.ProductName
+        }">
+        </a>
+      </div>
+    `;
+        productList.appendChild(productItem);
       });
 
       renderPagination();
