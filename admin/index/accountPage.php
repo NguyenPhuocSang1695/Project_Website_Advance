@@ -1,13 +1,19 @@
 <?php
+session_start();
+if (!isset($_SESSION['Username'])) {
+    header('Location: ../index.php');
+    exit();
+}
+
+$avatarPath = ($_SESSION['Role'] === 'admin') 
+    ? "../../assets/images/admin.jpg" 
+    : "../../assets/images/sang.jpg";
+
+include('../php/login_check.php');
 include ('connect.php');
 if ($myconn->connect_error) {
     die("Connection failed: " . $myconn->connect_error);
 }
-// session_start();
-// if (!isset($_SESSION['username'])) {
-//     header("Location: ../index.html"); 
-//     exit();
-// }
 $username= '';
 $email= '';
 $role= '';
@@ -43,7 +49,10 @@ if ($result->num_rows > 0) {
   <link rel="stylesheet" href="../style/LogInfo.css">
   <link rel="stylesheet" href="../style/reponsiveAccount.css">
 </head>
- 
+ <style>
+
+
+ </style>
 <body>
   <div class="header">
     <div class="index-menu">
@@ -143,14 +152,14 @@ if ($result->num_rows > 0) {
       </div>
       <div>
         <div class="position-employee">
-          <p>Nhân viên</p>
+          <p><?php echo $_SESSION['Role'] ?></p>
         </div>
         <div class="name-employee">
-          <p>Nguyen Chuong</p>
+          <p><?php  echo $_SESSION['FullName']?></p>
         </div>
       </div>
       <div>
-        <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
+        <img class="avatar" src="<?php echo $avatarPath; ?>" alt="Avatar" data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
       </div>
       <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
@@ -159,10 +168,10 @@ if ($result->num_rows > 0) {
             border-bottom-width: 1px;
             border-bottom-style: solid;
             border-bottom-color: rgb(176, 176, 176);" class="offcanvas-header">
-          <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="">
-          <div style="display: flex; flex-direction: column; height: 95px;">
-            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">NgNguyenChuong</h4>
-            <h5>Ng_Nguyen_Chuong</h5>
+          <img class="avatar" src="<?php echo $avatarPath; ?>" alt="Avatar">
+          <div class="admin">
+            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel"><?php echo $_SESSION['FullName']?></h4>
+            <h5><?php echo $_SESSION['Username']?></h5>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
@@ -180,7 +189,7 @@ if ($result->num_rows > 0) {
               <h2>Xác nhận đăng xuất</h2>
               <p>Bạn có chắc chắn muốn đăng xuất không?</p>
               <div class="modal_actions">
-                <a href="../index.html" class="btn_2 confirm">Đăng xuất</a>
+                <a href="../php/logout.php" class="btn_2 confirm">Đăng xuất</a>
                 <a href="#" class="btn_2 cancel">Hủy</a>
               </div>
             </div>
@@ -260,7 +269,6 @@ if ($result->num_rows > 0) {
       </a>
     </div>
     <div class="content-area">
-      <!-- Phần tiêu đề và thông tin tài khoản -->
       <div class="header-section">
         <div class="header-left">
           <h1>Thông tin tài khoản</h1>
@@ -312,15 +320,6 @@ if ($result->num_rows > 0) {
 }
 ?>
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- Thay thế chỗ dữ liệu tĩnh này bằng dữ liệu database + PHP -->
-  <script>
-    const userRole = "Chủ cửa hàng"; 
 
-    // Ẩn nút chỉnh sửa nếu không có quyền
-    const editBtn = document.getElementById("editInfoBtn");
-    if (userRole !== "Chủ cửa hàng") {
-      editBtn.style.display = "none"; // Ẩn nút nếu không phải chủ
-    }
-  </script>
 </body>
 </html>

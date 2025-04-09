@@ -210,24 +210,23 @@
           </div>
           <div>
             <div class="position-employee">
-              <p>Nhân viên</p>
+              <p id="employee-role">Chức vụ</p>
             </div>
             <div class="name-employee">
-              <p>Nguyen Chuong</p>
+              <p id="employee-name">Ẩn danh</p>
             </div>
           </div>
           <div>
-            <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
+            <img class="avatar" src="../../assets/images/admin.jpg" alt="" data-bs-toggle="offcanvas"
               data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
           </div>
           <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
             aria-labelledby="offcanvasWithBothOptionsLabel">
-            <div style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(176, 176, 176);" 
-                 class="offcanvas-header">
-              <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="">
-              <div style="display: flex; flex-direction: column; height: 95px;">
-                <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">NgNguyenChuong</h4>
-                <h5>Ng_Nguyen_Chuong</h5>
+            <div style="border-bottom: 1px solid rgb(176, 176, 176);" class="offcanvas-header">
+              <img class="avatar" src="../../assets/images/admin.jpg" alt="">
+              <div class="admin">
+                <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Username</h4>
+                <h5 id="employee-displayname">Họ tên</h5>  <!-- Thêm id ở đây -->
               </div>
               <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
@@ -245,7 +244,7 @@
                   <h2>Xác nhận đăng xuất</h2>
                   <p>Bạn có chắc chắn muốn đăng xuất không?</p>
                   <div class="modal_actions">
-                    <a href="../index.html" class="btn_2 confirm">Đăng xuất</a>
+                    <a href="../php/logout.php" class="btn_2 confirm">Đăng xuất</a>
                     <a href="#" class="btn_2 cancel">Hủy</a>
                   </div>
                 </div>
@@ -380,7 +379,7 @@
             </div>
         </div>
     </div>
-  
+    <script src ="../js/checklog.js"></script>
         <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="../js/hienthisanpham_khohang.js"></script> 
     </body>

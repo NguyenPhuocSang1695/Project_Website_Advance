@@ -22,6 +22,20 @@
   .hide-index-mobile {
     display: table-cell;
   }
+
+  #filter-button {
+    margin-bottom: 20px;
+  }
+
+  .modal .modal-header {
+    background-color: #6aa173;
+    color: white;
+  }
+
+  .modal .modal-footer .btn-primary {
+    background-color: #6aa173;
+    border-color: #6aa173;
+  }
 </style>
 <body>
   <div class="header">
@@ -37,24 +51,23 @@
       </div>
       <div>
         <div class="position-employee">
-          <p>Nhân viên</p>
+          <p id="employee-role">Chức vụ</p>
         </div>
         <div class="name-employee">
-          <p>Nguyen Chuong</p>
+          <p id="employee-name">Ẩn danh</p>
         </div>
       </div>
       <div>
-        <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="Avatar" data-bs-toggle="offcanvas"
+        <img class="avatar" src="../../assets/images/admin.jpg" alt="Avatar" data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
       </div>
       <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
         aria-labelledby="offcanvasWithBothOptionsLabel">
-        <div style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(176, 176, 176);"
-          class="offcanvas-header">
-          <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="Avatar">
-          <div style="display: flex; flex-direction: column; height: 95px;">
-            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">NgNguyenChuong</h4>
-            <h5>Ng_Nguyen_Chuong</h5>
+        <div style="border-bottom: 1px solid rgb(176, 176, 176);" class="offcanvas-header">
+          <img class="avatar" src="../../assets/images/admin.jpg" alt="">
+          <div class="admin">
+            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Username</h4>
+            <h5 id="employee-displayname">Họ tên</h5>  
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
@@ -72,7 +85,7 @@
               <h2>Xác nhận đăng xuất</h2>
               <p>Bạn có chắc chắn muốn đăng xuất không?</p>
               <div class="modal_actions">
-                <a href="../index.html" class="btn_2 confirm">Đăng xuất</a>
+                <a href="../php/logout.php" class="btn_2 confirm">Đăng xuất</a>
                 <a href="#" class="btn_2 cancel">Hủy</a>
               </div>
             </div>
@@ -203,129 +216,62 @@
           <p style="font-size: 30px; font-weight: 700;">Quản lý đơn hàng</p>
         </div>
         <div class="filter-section">
-          <!-- Desktop filter form (hiển thị trên màn hình lớn) -->
-          <div class="desktop-filter d-none d-md-block">
-            <form id="filter-form-desktop" class="filter-form">
-              <div class="filter-grid">
-                <div class="filter-item">
-                  <label for="date-from-desktop">Từ ngày:</label>
-                  <input type="date" id="date-from-desktop" name="date_from" class="form-control">
-                </div>
-                
-                <div class="filter-item">
-                  <label for="date-to-desktop">Đến ngày:</label>
-                  <input type="date" id="date-to-desktop" name="date_to" class="form-control">
-                </div>
-                
-                <div class="filter-item">
-                  <label for="order-status-desktop">Trạng thái:</label>
-                  <select id="order-status-desktop" name="order_status" class="form-control">
-                    <option value="all">Tất cả</option>
-                    <option value="execute">Đang xử lý</option>
-                    <option value="ship">Đang giao</option>
-                    <option value="success">Thành công</option>
-                    <option value="fail">Thất bại</option>
-                  </select>
-                </div>
+          <button type="button" class="btn btn-primary" id="filter-button" data-bs-toggle="modal" data-bs-target="#filterModal">
+            <i class="fas fa-filter"></i> Bộ lọc
+          </button>
+        </div>
 
-                <div class="filter-item">
-                  <label for="city-select-desktop">Tỉnh/Thành phố:</label>
-                  <select id="city-select-desktop" name="city" class="form-control">
-                    <option value="">Chọn thành phố</option>
-                  </select>
-                </div>
-
-                <div class="filter-item">
-                  <label for="district-select-desktop">Quận/Huyện:</label>
-                  <select id="district-select-desktop" name="district" class="form-control">
-                    <option value="">Chọn quận/huyện</option>
-                  </select>
-                </div>
-
-                <div class="filter-button-container">
-                  <button type="submit" class="filter-button">
-                    <i class="fas fa-filter"></i>
-                    Lọc
-                  </button>
-                  <button type="button" class="reset-button" onclick="resetFilter('desktop')">
-                    <i class="fas fa-undo"></i>
-                    Đặt lại
-                  </button>
-                </div>
+        <!-- Modal hiển thị thông tin cần lọc -->
+        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="filterModalLabel">Bộ lọc đơn hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-            </form>
-          </div>
-
-          <!-- Mobile/Tablet filter button -->
-          <div class="mobile-filter d-md-none">
-            <button type="button" class="filter-trigger-btn" data-bs-toggle="modal" data-bs-target="#filterModal">
-              <i class="fas fa-filter"></i>
-              Bộ lọc
-            </button>
-          </div>
-
-          <!-- Filter Modal cho mobile/tablet -->
-          <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="filterModalLabel">Bộ lọc đơn hàng</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form id="filter-form-mobile" class="filter-form">
-                    <div class="filter-grid">
-                      <div class="filter-item">
-                        <label for="date-from-mobile">Từ ngày:</label>
-                        <input type="date" id="date-from-mobile" name="date_from" class="form-control">
-                      </div>
-                      
-                      <div class="filter-item">
-                        <label for="date-to-mobile">Đến ngày:</label>
-                        <input type="date" id="date-to-mobile" name="date_to" class="form-control">
-                      </div>
-                      
-                      <div class="filter-item">
-                        <label for="order-status-mobile">Trạng thái:</label>
-                        <select id="order-status-mobile" name="order_status" class="form-control">
-                          <option value="all">Tất cả</option>
-                          <option value="execute">Đang xử lý</option>
-                          <option value="ship">Đang giao</option>
-                          <option value="success">Thành công</option>
-                          <option value="fail">Thất bại</option>
-                        </select>
-                      </div>
-
-                      <div class="filter-item">
-                        <label for="city-select-mobile">Tỉnh/Thành phố:</label>
-                        <select id="city-select-mobile" name="city" class="form-control">
-                          <option value="">Chọn thành phố</option>
-                        </select>
-                      </div>
-
-                      <div class="filter-item">
-                        <label for="district-select-mobile">Quận/Huyện:</label>
-                        <select id="district-select-mobile" name="district" class="form-control">
-                          <option value="">Chọn quận/huyện</option>
-                        </select>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="reset-button" onclick="resetFilter('mobile')">
-                    <i class="fas fa-undo"></i>
-                    Đặt lại
-                  </button>
-                  <button type="submit" form="filter-form-mobile" class="filter-button">
-                    <i class="fas fa-filter"></i>
-                    Áp dụng
-                  </button>
-                </div>
+              <div class="modal-body">
+                <form id="filter-form">
+                  <div class="mb-3">
+                    <label for="date-from" class="form-label">Từ ngày:</label>
+                    <input type="date" id="date-from" name="date_from" class="form-control">
+                  </div>
+                  <div class="mb-3">
+                    <label for="date-to" class="form-label">Đến ngày:</label>
+                    <input type="date" id="date-to" name="date_to" class="form-control">
+                  </div>
+                  <div class="mb-3">
+                    <label for="order-status" class="form-label">Trạng thái:</label>
+                    <select id="order-status" name="order_status" class="form-control">
+                      <option value="all">Tất cả</option>
+                      <option value="execute">Đang xử lý</option>
+                      <option value="ship">Đang giao</option>
+                      <option value="success">Thành công</option>
+                      <option value="fail">Thất bại</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="city-select" class="form-label">Tỉnh/Thành phố:</label>
+                    <select id="city-select" name="city" class="form-control">
+                      <option value="">Chọn thành phố</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="district-select" class="form-label">Quận/Huyện:</label>
+                    <select id="district-select" name="district" class="form-control">
+                      <option value="">Chọn quận/huyện</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" id="reset-filter" class="btn btn-warning">Đặt lại</button>
+                <button type="submit" form="filter-form" class="btn btn-primary">Áp dụng</button>
               </div>
             </div>
           </div>
         </div>
+
         <div class="statistic-section">
           <table class="statistic-table">
             <thead>
@@ -359,8 +305,9 @@
       </div>
     </div>
   </div>
-
+  <script src ="../js/checklog.js"></script>
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../js/orderPage.js"></script>
 </body>
 </html>
+

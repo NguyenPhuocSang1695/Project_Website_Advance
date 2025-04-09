@@ -19,7 +19,7 @@ $orderStatus = isset($_GET['order_status']) ? $_GET['order_status'] : '';
 $provinceId = isset($_GET['province_id']) ? intval($_GET['province_id']) : 0;
 $districtId = isset($_GET['district_id']) ? intval($_GET['district_id']) : 0;
 
-// Sửa phần query SELECT
+// Sửa phần query SELECT 
 $selectQuery = "SELECT 
     o.OrderID AS madonhang,
     o.DateGeneration AS ngaytao,

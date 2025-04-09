@@ -15,26 +15,27 @@ document.addEventListener('DOMContentLoaded', function() {
     currentPage = 1;
     filterOrders();
   };
-  function filterOrders(formData = null) {
+
+  window.filterOrders = function(formData = null) {
     const dateFrom = formData?.get('date_from') || document.getElementById('date-from')?.value || '';
     const dateTo = formData?.get('date_to') || document.getElementById('date-to')?.value || '';
     const orderStatus = formData?.get('order_status') || document.getElementById('order-status')?.value || 'all';
     const citySelect = formData?.get('city') || document.getElementById('city-select')?.value || '';
     const districtSelect = formData?.get('district') || document.getElementById('district-select')?.value || '';
-  
+
     const params = new URLSearchParams({
       page: currentPage,
       limit: limit
     });
-  
+
     if (dateFrom) params.set('date_from', dateFrom);
     if (dateTo) params.set('date_to', dateTo);
     if (orderStatus && orderStatus !== 'all') params.set('order_status', orderStatus);
     if (citySelect) params.set('province_id', citySelect);
     if (districtSelect) params.set('district_id', districtSelect);
-  
+
     window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
-  
+
     fetch(`filter_orders.php?${params.toString()}`)
       .then(response => {
         return response.text().then(text => {
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error(`Invalid JSON: ${e.message}, Response: ${text}`);
           }
         });
-      }) 
+      })
       .then(data => {
         if (!orderTableBody) {
           console.error('Element order-table-body not found');
@@ -60,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const buyerName = order.buyer_name || 'Không xác định';
             const receiverName = order.receiver_name || 'Không xác định';
             const address = order.receiver_address || 'Chưa có địa chỉ';
-            
+
             const row = document.createElement('tr');
             row.innerHTML = `
               <td>${order.madonhang || ''}</td>
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
           orderTableBody.innerHTML = `<tr><td colspan="7" class="error-message">Đã xảy ra lỗi: ${error.message}</td></tr>`;
         }
       });
-  }
+  };
 
   function formatDate(dateString) {
     const date = new Date(dateString);
@@ -562,8 +563,53 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+  const filterForm = document.getElementById('filter-form');
+  const filterModal = new bootstrap.Modal(document.getElementById('filterModal'));
+  const resetFilterButton = document.getElementById('reset-filter');
+
+  // Xử lý sự kiện submit form bộ lọc
+  if (filterForm) {
+    filterForm.addEventListener('submit', function (e) {
+      e.preventDefault(); // Ngăn chặn reload trang
+      filterOrders(new FormData(filterForm)); // Gọi hàm filterOrders với dữ liệu từ form
+      filterModal.hide(); // Đóng modal sau khi áp dụng bộ lọc
+    });
+  }
+
+  // Xử lý sự kiện đặt lại bộ lọc
+  if (resetFilterButton) {
+    resetFilterButton.addEventListener('click', function () {
+      // Đặt lại các giá trị trong form
+      filterForm.reset();
+
+      // Đặt lại danh sách quận/huyện
+      const districtSelect = document.getElementById('district-select');
+      if (districtSelect) {
+        districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+      }
+    });
+  }
+
+  // Load danh sách tỉnh/thành phố khi trang load
   loadCities();
+
+  // Gắn sự kiện thay đổi cho city-select để load quận/huyện
+  const citySelect = document.getElementById('city-select');
+  if (citySelect) {
+    citySelect.addEventListener('change', function () {
+      const provinceId = this.value;
+      if (provinceId) {
+        loadDistricts(provinceId);
+      } else {
+        const districtSelect = document.getElementById('district-select');
+        if (districtSelect) {
+          districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+        }
+      }
+    });
+  }
 });
+
 window.loadCities = function () {
   fetch('get_Cities.php')
     .then(response => {
