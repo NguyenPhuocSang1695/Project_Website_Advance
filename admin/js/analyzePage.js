@@ -74,14 +74,10 @@ document.addEventListener('DOMContentLoaded', function() {
       worstSellingQuantity.textContent = '';
     }
   }
-
-  // Cập nhật phần xử lý và hiển thị dữ liệu
   function updateStatistics(data) {
-    // Cập nhật tổng doanh thu
+
     if (totalRevenue) {
       totalRevenue.innerHTML = `<span class="value">${formatCurrency(data.total_revenue || 0)}</span>`;
-      
-      // Thêm % thay đổi so với kỳ trước nếu có
       if (data.revenue_change) {
         const changeClass = data.revenue_change > 0 ? 'positive-change' : 'negative-change';
         const changeIcon = data.revenue_change > 0 ? 'fa-arrow-up' : 'fa-arrow-down';
@@ -166,13 +162,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const formData = new FormData(form);
     
-    fetch('analyze_data.php', {
+    fetch('../php/analyze_data.php', {
       method: 'POST',
       body: formData
     })
     .then(response => {
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        return response.json().then(err => Promise.reject(err));
       }
       return response.json();
     })
@@ -276,10 +272,9 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => {
       console.error('Error:', error);
-      showError('Có lỗi xảy ra khi tải dữ liệu: ' + error.message);
+      showError('Có lỗi xảy ra khi tải dữ liệu: ' + (error.error || error.message));
     });
   });
-
   restoreFilterValues();
   form.dispatchEvent(new Event('submit'));
 });

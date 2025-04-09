@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
 
-    fetch(`filter_orders.php?${params.toString()}`)
+    fetch(`../php/filter_orders.php?${params.toString()}`)
       .then(response => {
         return response.text().then(text => {
           console.log('Raw response from filter_orders:', text);
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
     districtInput.addEventListener('input', function() {
       const query = this.value.trim();
       if (query.length >= 1) {
-        fetch(`get_Address.php?type=district&query=${encodeURIComponent(query)}`)
+        fetch(`../php/get_Address.php?type=district&query=${encodeURIComponent(query)}`)
           .then(response => {
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
     cityInput.addEventListener('input', function() {
       const query = this.value.trim();
       if (query.length >= 1) {
-        fetch(`get_Address.php?type=city&query=${encodeURIComponent(query)}`)
+        fetch(`../php/get_Address.php?type=city&query=${encodeURIComponent(query)}`)
           .then(response => {
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function updateOrderStatus(orderId, newStatus) {
-    fetch('updateStatus.php', {
+    fetch('../php/updateStatus.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -589,11 +589,8 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
-
-  // Load danh sách tỉnh/thành phố khi trang load
   loadCities();
 
-  // Gắn sự kiện thay đổi cho city-select để load quận/huyện
   const citySelect = document.getElementById('city-select');
   if (citySelect) {
     citySelect.addEventListener('change', function () {
@@ -611,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 window.loadCities = function () {
-  fetch('get_Cities.php')
+  fetch('../php/get_Cities.php')
     .then(response => {
       if (!response.ok) {
         throw new Error(`Failed to fetch cities: ${response.status}`);
@@ -655,7 +652,7 @@ window.loadDistricts = function(provinceId) {
   
   if (!provinceId) return;
 
-  fetch(`get_District.php?province_id=${provinceId}`)
+  fetch(`../php/get_District.php?province_id=${provinceId}`)
     .then(response => response.json())
     .then(data => {
       if (data.success && data.data) {
@@ -704,11 +701,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   setupResponsiveFilters();
-  
-  // Watch for screen size changes
   window.addEventListener('resize', setupResponsiveFilters);
-  
-  // Handle clicking outside filter dropdown
   document.addEventListener('click', function(event) {
     const filterGrid = document.querySelector('.filter-grid.show');
     const toggleBtn = document.querySelector('.filter-toggle-btn');
@@ -721,15 +714,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Update form submission behavior
   const filterForm = document.getElementById('filter-form');
   if (filterForm) {
     filterForm.addEventListener('submit', function(e) {
       e.preventDefault();
       currentPage = 1;
       filterOrders();
-      
-      // Keep dropdown open after filtering on mobile/tablet
       if (window.innerWidth <= 992) {
         const filterGrid = document.querySelector('.filter-grid');
         const toggleBtn = document.querySelector('.filter-toggle-btn');

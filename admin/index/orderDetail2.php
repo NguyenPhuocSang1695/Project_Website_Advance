@@ -1,5 +1,5 @@
 <?php
-include('connect.php');
+include('../php/connect.php');
 include('../php/login_check.php');
 $avatarPath = ($_SESSION['Role'] === 'admin') 
     ? "../../assets/images/admin.jpg" 
