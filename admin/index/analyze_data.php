@@ -14,20 +14,20 @@ $end_date = isset($_POST['end_date']) ? $_POST['end_date'] : date('Y-m-d');
 // Truy vấn khách hàng mua nhiều nhất
 $customer_query = "SELECT 
     u.FullName AS customer_name,
-    MAX(o.CreatedAt) AS latest_order_date,
+    MAX(o.DateGeneration) AS latest_order_date,
     COUNT(o.OrderID) AS order_count,
     MAX(o.OrderID) AS latest_order_id,
     SUM(o.TotalAmount) AS total_amount,
     GROUP_CONCAT(DISTINCT o.OrderID) AS order_ids
 FROM users u
-JOIN orders o ON u.UserID = o.UserID
-WHERE o.CreatedAt BETWEEN ? AND ?
-    AND o.OrderStatus = 'completed'
+JOIN orders o ON u.Username = o.Username
+WHERE o.DateGeneration BETWEEN ? AND ?
+    AND o.Status = 'success' 
     AND o.TotalAmount > 0
-GROUP BY u.UserID, u.FullName
+GROUP BY u.Username, u.FullName
 HAVING COUNT(o.OrderID) > 0
     AND SUM(o.TotalAmount) > 0
-ORDER BY order_count DESC, total_amount DESC
+ORDER BY order_count DESC, total_amount DESC 
 LIMIT 5";
 
 $stmt = $myconn->prepare($customer_query);
@@ -65,8 +65,8 @@ $product_query = "SELECT
 FROM products p
 JOIN orderdetails od ON p.ProductID = od.ProductID
 JOIN orders o ON od.OrderID = o.OrderID
-WHERE o.CreatedAt BETWEEN ? AND ?
-    AND o.OrderStatus = 'completed'
+WHERE o.DateGeneration BETWEEN ? AND ?
+    AND o.Status = 'success'
     AND od.Quantity > 0
     AND od.TotalPrice > 0
 GROUP BY p.ProductID, p.ProductName
@@ -102,10 +102,10 @@ while ($row = $product_result->fetch_assoc()) {
 $total_revenue_query = "SELECT 
     SUM(TotalAmount) AS total_revenue,
     COUNT(DISTINCT OrderID) as total_orders,
-    COUNT(DISTINCT UserID) as total_customers 
+    COUNT(DISTINCT Username) as total_customers 
 FROM orders 
-WHERE CreatedAt BETWEEN ? AND ?
-    AND OrderStatus = 'completed'
+WHERE DateGeneration BETWEEN ? AND ?
+    AND Status = 'success'
     AND TotalAmount > 0";
 
 $stmt = $myconn->prepare($total_revenue_query);

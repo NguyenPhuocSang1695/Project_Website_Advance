@@ -1,4 +1,5 @@
-body {
+
+  body {
   font-family: Arial, sans-serif;
   background-color: #f7f8fc;
   margin: 0;
@@ -131,11 +132,13 @@ body {
   gap: 6px;
 
 }
-
 .section-header {
   font-size: 16px;
   border-bottom: 1px solid #ddd;
   padding-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .section-header-2 {
@@ -337,6 +340,10 @@ td img {
 }
 .shipping-details {
   font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: bold;
 }
 }
 
@@ -460,4 +467,16 @@ td img {
 .payment-row i {
     font-size: 16px;
     margin-right: 5px;
+}
+.buyer-info {
+  display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-weight: bold;
+}
+.shipping-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: bold;
 }
