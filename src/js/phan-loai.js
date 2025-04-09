@@ -1,118 +1,146 @@
-const rangeInput = document.querySelectorAll(".range-input input"),
-priceInput = document.querySelectorAll(".price-input input"),
-range = document.querySelector(".slider .progress");
-let priceGap = 100000;
+document.addEventListener("DOMContentLoaded", async function () {
+  // Lấy tham số từ URL
+  const params = new URLSearchParams(window.location.search);
+  const categoryId = params.get("category_id");
+  const categoryName = params.get("category_name");
 
-priceInput.forEach(input =>{
-    input.addEventListener("input", e =>{
-        let minPrice = parseInt(priceInput[0].value),
-        maxPrice = parseInt(priceInput[1].value);
-        
-        if((maxPrice - minPrice >= priceGap) && maxPrice <= rangeInput[1].max){
-            if(e.target.className === "input-min"){
-                rangeInput[0].value = minPrice;
-                range.style.left = ((minPrice / rangeInput[0].max) * 100) + "%";
-            }else{
-                rangeInput[1].value = maxPrice;
-                range.style.right = 100 - (maxPrice / rangeInput[1].max) * 100 + "%";
-            }
-        }
-    });
+  // Danh sách loại cây
+  const categoryMap = {
+    3: "Cây dễ chăm",
+    1: "Cây văn phòng",
+    4: "Cây để bàn",
+    2: "Cây dưới nước",
+  };
+
+  const typeTree = document.getElementById("type-tree");
+  const productList = document.getElementById("product-list");
+  const paginationDiv = document.getElementById("pagination-button");
+
+  // Nếu đúng phân loại thì hiển thị tên phân loại
+  if (categoryName) typeTree.textContent = categoryName;
+  if (categoryId) {
+    document.getElementById("product_type_list").textContent =
+      categoryMap[categoryId] || "Danh mục khác";
+    await loadProducts(categoryId);
+  }
+
+  // Lấy dữ liệu từ php để xử lý
+  async function loadProducts(categoryId) {
+    try {
+      const response = await fetch(
+        `../php-api/filter-product.php?category_id=${categoryId}`
+      );
+      const text = await response.text();
+      console.log("Raw API Response:", text);
+
+      const data = JSON.parse(text);
+      if (data.error) {
+        productList.innerHTML = `<p class="text-danger">${data.error}</p>`;
+        return;
+      }
+
+      paginateProducts(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      productList.innerHTML = `<p class="text-danger">Lỗi khi tải dữ liệu.</p>`;
+    }
+  }
+
+  // Xử lý dữ liệu từ API, kiểm tra số lượng sản phẩm ở 1 trang
+  function paginateProducts(data) {
+    let currentPage = 1; // Vị trí mặc định là trang đầu tiên
+    const itemsPerPage = 8; // Số lượng sản phẩm tối đa ở 1 trang
+    // Tính tổng số trang cần thiết
+    const totalPages = Math.ceil(data.length / itemsPerPage);
+
+    // Chuyển trang
+    function renderPage(page) {
+      productList.innerHTML = "";
+      const start = (page - 1) * itemsPerPage;
+      const pageData = data.slice(start, start + itemsPerPage);
+
+      pageData.forEach((product) => {
+        productList.appendChild(createProductCard(product));
+      });
+
+      // Cuộn lên đầu trang sau khi chuyển trang (sau khi render)
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      renderPagination();
+    }
+
+    // Nút phân trang
+    function renderPagination() {
+      paginationDiv.innerHTML = "";
+      paginationDiv.appendChild(
+        createPaginationButton("‹", currentPage > 1, () =>
+          renderPage(--currentPage)
+        )
+      );
+
+      for (let i = 1; i <= totalPages; i++) {
+        paginationDiv.appendChild(
+          createPaginationButton(
+            i,
+            true,
+            () => {
+              currentPage = i;
+              renderPage(currentPage);
+            },
+            i === currentPage
+          )
+        );
+      }
+
+      paginationDiv.appendChild(
+        createPaginationButton("›", currentPage < totalPages, () =>
+          renderPage(++currentPage)
+        )
+      );
+    }
+
+    renderPage(currentPage);
+  }
+
+  // Tạo danh sách sản phẩm
+  function createProductCard(product) {
+    const card = document.createElement("div");
+    card.className = "card mb-3";
+    card.innerHTML = `
+      <div class="card-body">
+        <a href="user-sanpham.php?id=${product.ProductID}">
+          <img src="..${
+            product.ImageURL
+          }" class="img-fluid" style="height: 275px;" alt="${
+      product.ProductName
+    }">
+        </a>
+        <h5 class="card-title" style="margin: 10px 0; font-weight: bold;">
+          <a href="user-sanpham.php?id=${
+            product.ProductID
+          }" class="text-decoration-none text-dark" >
+            ${product.ProductName}
+          </a>
+        </h5>
+        <p class="card-text"><strong>Giá:</strong> ${Number(
+          product.Price
+        ).toLocaleString()} VNĐ</p>
+      </div>
+    `;
+    return card;
+  }
+
+  // Tạo nút phân trang
+  function createPaginationButton(label, enabled, onClick, isActive = false) {
+    const button = document.createElement("button");
+    button.textContent = label;
+    button.className = `btn ${
+      isActive ? "btn-success active" : "btn-secondary"
+    } m-1`;
+    button.disabled = !enabled;
+    if (enabled) button.addEventListener("click", onClick);
+    return button;
+  }
 });
-
-rangeInput.forEach(input =>{
-    input.addEventListener("input", e =>{
-        let minVal = parseInt(rangeInput[0].value),
-        maxVal = parseInt(rangeInput[1].value);
-
-        if((maxVal - minVal) < priceGap){
-            if(e.target.className === "range-min"){
-                rangeInput[0].value = maxVal - priceGap
-            }else{
-                rangeInput[1].value = minVal + priceGap;
-            }
-        }else{
-            priceInput[0].value = minVal;
-            priceInput[1].value = maxVal;
-            range.style.left = ((minVal / rangeInput[0].max) * 100) + "%";
-            range.style.right = 100 - (maxVal / rangeInput[1].max) * 100 + "%";
-        }
-    });
-});
-
-
-
-
-let currentPage = 1; // Giá trị mặc định
-
-// Xác định trang hiện tại từ URL
-function detectCurrentPage() {
-  const path = window.location.pathname;
-  if (path.includes("phan-loai1.html")) {
-    currentPage = 1;
-  } else if (path.includes("phan-loai2.html")) {
-    currentPage = 2;
-  } else if (path.includes("phan-loai3.html")) {
-    currentPage = 3;
-  }
-}
-
-// Cập nhật trạng thái nút và giao diện
-function updatePagination() {
-  // Bỏ active khỏi tất cả trang
-  for (let i = 1; i <= 3; i++) {
-    document.getElementById(`page-${i}`).classList.remove("active");
-  }
-
-  // Thêm active cho trang hiện tại
-  document.getElementById(`page-${currentPage}`).classList.add("active");
-
-  // Vô hiệu hóa hoặc kích hoạt nút Previous
-  if (currentPage === 1) {
-    document.getElementById("prev").classList.add("disabled");
-    document.getElementById("prev").querySelector("a").setAttribute("aria-disabled", "true");
-  } else {
-    document.getElementById("prev").classList.remove("disabled");
-    document.getElementById("prev").querySelector("a").removeAttribute("aria-disabled");
-  }
-
-  // Vô hiệu hóa hoặc kích hoạt nút Next
-  if (currentPage === 3) {
-    document.getElementById("next").classList.add("disabled");
-    document.getElementById("next").querySelector("a").setAttribute("aria-disabled", "true");
-  } else {
-    document.getElementById("next").classList.remove("disabled");
-    document.getElementById("next").querySelector("a").removeAttribute("aria-disabled");
-  }
-}
-
-// Xử lý sự kiện Next
-document.getElementById("next").addEventListener("click", function (event) {
-  event.preventDefault();
-  if (currentPage < 3) {
-    currentPage++;
-    window.location.href = `phan-loai${currentPage}.html`;
-  }
-});
-
-// Xử lý sự kiện Previous
-document.getElementById("prev").addEventListener("click", function (event) {
-  event.preventDefault();
-  if (currentPage > 1) {
-    currentPage--;
-    window.location.href = `phan-loai${currentPage}.html`;
-  }
-});
-
-// Xử lý khi người dùng nhấn trực tiếp vào số trang
-for (let i = 1; i <= 3; i++) {
-  document.getElementById(`page-${i}`).addEventListener("click", function (event) {
-    event.preventDefault();
-    currentPage = i;
-    window.location.href = `phan-loai${currentPage}.html`;
-  });
-}
-
-// Khởi tạo trạng thái ban đầu
-detectCurrentPage();
-updatePagination();

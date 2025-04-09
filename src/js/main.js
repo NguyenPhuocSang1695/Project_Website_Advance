@@ -1,14 +1,15 @@
+// Kiểm tra xem có đang đăng nhập hay không và hiển thị tên người dùng tương ứng
 function singIn(e) {
   event.preventDefault();
-  var email = document.getElementById("email").value;
+  var username = document.getElementById("username").value;
   var password = document.getElementById("password").value;
   var user = {
-    email: email,
+    username: username,
     password: password,
   };
 
   var json = JSON.stringify(user);
-  localStorage.setItem(email, json);
+  localStorage.setItem(username, json);
   localStorage.setItem("isLogin", true);
   document.getElementById("offcanvasExampleLabel").innerHTML =
     "Nguyễn Phước Sang";

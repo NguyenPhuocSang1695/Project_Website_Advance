@@ -42,21 +42,28 @@ body {
 
 /*============================================================= STICKY=========================================================== */
 .Sticky {
-  position: -webkit-sticky; /* Để hỗ trợ cho các trình duyệt cũ hơn */
-  position: sticky; /* Dính khi cuộn */
-  top: 0; /* Đặt khoảng cách từ trên cùng của cửa sổ */
-  z-index: 1000; /* Đảm bảo sticky phần tử nằm trên các phần tử khác */
+  position: -webkit-sticky;
+  /* Để hỗ trợ cho các trình duyệt cũ hơn */
+  position: sticky;
+  /* Dính khi cuộn */
+  top: 0;
+  /* Đặt khoảng cách từ trên cùng của cửa sổ */
+  z-index: 1000;
+  /* Đảm bảo sticky phần tử nằm trên các phần tử khác */
 }
 
 .header,
 .nav {
-  background-color: white; /* Đảm bảo có nền để phần tử có thể dính */
-  z-index: 1; /* Đảm bảo chúng hiển thị trên các phần tử dưới */
+  background-color: white;
+  /* Đảm bảo có nền để phần tử có thể dính */
+  z-index: 1;
+  /* Đảm bảo chúng hiển thị trên các phần tử dưới */
 }
 
 /* Kiểm tra overflow cho phần tử cha */
 .Sticky .container-fluid {
-  overflow: visible; /* Đảm bảo không có thuộc tính overflow */
+  overflow: visible;
+  /* Đảm bảo không có thuộc tính overflow */
 }
 
 /*  */
@@ -69,8 +76,10 @@ body {
 
 /* Hiệu ứng hover chỉ thay đổi màu chữ */
 .choose ul li a:hover {
-  color: #1c8e2e; /* Màu xanh lục nhẹ khi hover */
+  color: #1c8e2e;
+  /* Màu xanh lục nhẹ khi hover */
 }
+
 /* =========================================================================== */
 .header {
   height: var(--header-height);
@@ -169,6 +178,7 @@ body {
 .user-icon {
   position: relative;
 }
+
 /*  */
 .search-group {
   position: relative;
@@ -188,13 +198,12 @@ input[type="search"] {
   top: 100%;
   left: 0;
   background-color: #fff;
-  width: 83%;
+  width: 100%;
   border: 1px solid #ddd;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   max-height: 300px;
   overflow-y: auto;
-  left: 15%;
 }
 
 .product-list .product {
@@ -230,32 +239,44 @@ input[type="search"] {
   font-size: 19px;
   color: #888;
 }
+
 /*  */
 .dropdown-menu {
-  display: none !important; /* Ẩn mặc định */
+  display: none !important;
+  /* Ẩn mặc định */
 }
 
 .nav-item.dropdown:hover .dropdown-menu {
-  display: block !important; /* Hiển thị khi hover hoặc focus */
+  display: block !important;
+  /* Hiển thị khi hover hoặc focus */
 }
 
 /* ============================================ */
 /* Thêm padding dày cho dropdown menu */
 
 .dropdown-menu {
-  padding: 20px !important; /* Padding lớn cho menu */
-  border: 1px solid rgba(0, 0, 0, 0.1); /* Viền nhẹ */
-  background-color: #fff; /* Màu nền */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
+  padding: 20px !important;
+  /* Padding lớn cho menu */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  /* Viền nhẹ */
+  background-color: #fff;
+  /* Màu nền */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  /* Hiệu ứng bóng */
 }
 
 .dropdown-item {
-  padding: 10px 15px !important; /* Khoảng cách nội dung trong từng mục */
-  margin-bottom: 10px; /* Khoảng cách giữa các mục */
-  border-radius: 10px !important; /* Bo góc nhẹ cho từng item */
+  padding: 10px 15px !important;
+  /* Khoảng cách nội dung trong từng mục */
+  margin-bottom: 10px;
+  /* Khoảng cách giữa các mục */
+  border-radius: 10px !important;
+  /* Bo góc nhẹ cho từng item */
   transition: background-color 0.2s ease, transform 0.2s ease;
-  color: #333; /* Màu chữ */
-  border: none; /* Xóa viền bên trong */
+  color: #333;
+  /* Màu chữ */
+  border: none;
+  /* Xóa viền bên trong */
 }
 
 /* Xóa khoảng cách cuối cùng */
@@ -265,10 +286,13 @@ input[type="search"] {
 
 /* Hiệu ứng hover */
 .dropdown-item:hover {
-  background-color: rgba(144, 238, 144, 0.2); /* Nền xanh nhạt khi hover */
-  transform: scale(1.05); /* Phóng to nhẹ khi hover */
+  background-color: rgba(144, 238, 144, 0.2);
+  /* Nền xanh nhạt khi hover */
+  transform: scale(1.05);
+  /* Phóng to nhẹ khi hover */
   color: #000;
 }
+
 /*  */
 /* NAV */
 .nav {
@@ -308,7 +332,7 @@ input[type="search"] {
 /* SECTION */
 .section img {
   width: 100%;
-  height: 17vw;
+  height: 29vw;
   object-fit: cover;
   object-position: 50% 50%;
   display: flex;
@@ -387,6 +411,7 @@ input[type="search"] {
 .order button:hover {
   background-color: #1c8e2e;
 }
+
 .order button:active {
   background-color: #0d5918;
 }
@@ -414,6 +439,7 @@ p {
     display: flex;
     flex-direction: column;
   }
+
   .single-image {
     width: 90%;
     /* margin: 20px; */
@@ -424,86 +450,18 @@ p {
     width: 100%;
     margin: 20px;
   }
+
   .description {
     width: 90%;
     margin: 30px 20px 30px 20px;
   }
+
   .nametree {
     margin-right: 15px;
   }
 }
 
-/* footer */
-footer {
-  width: 100%;
-  height: 55em;
-  display: block;
-  overflow: hidden;
-  position: relative;
-  background-image: url("../../assets/images/LAST_HOME.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 4rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-}
 
-.col-01 {
-  flex: 0 0 auto;
-  width: 28.333333%;
-  margin-top: 5%;
-}
-
-.row-1 img {
-  width: 88%;
-  height: auto;
-}
-
-.row-2 hr {
-  border: 3px solid white;
-  width: 55%;
-}
-
-.row-3 p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  width: 100%;
-  color: white;
-  font-size: 21px;
-  text-align: justify;
-}
-
-.icon-socialnet img {
-  width: 3rem;
-}
-
-.icon-socialnet {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6%;
-  width: 100%;
-}
-
-.col-02 {
-  margin-top: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  height: 31%;
-}
-
-.col-03 {
-  color: white;
-  width: 20%;
-  margin-top: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 /* PC  */
 @media only screen and (min-width: 1023.98px) {
@@ -560,13 +518,6 @@ footer {
     justify-content: center;
   }
 
-  footer {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    height: 61em;
-  }
 
   .row-1 {
     display: flex;
@@ -702,9 +653,6 @@ footer {
     align-items: center;
   }
 
-  footer p {
-    margin-bottom: 0rem;
-  }
 
   .row-1 img {
     width: 53%;

@@ -25,13 +25,6 @@
   width: 50%;
 }
 
-.form-select,
-.form-control {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
 .search-container {
   position: relative;
   width: 100%;
@@ -232,6 +225,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -343,15 +337,14 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.advanced-search-panel.show {
-  animation: fadeIn 0.3s ease forwards;
-}
+
 
 /* Responsive */
 @media screen and (max-width: 768px) {
@@ -389,7 +382,7 @@
 
 /* Thông báo không tìm thấy kết quả */
 .no-results-message {
-  position: absolute;
+  position: static !important;
   top: 0;
   left: 0;
   width: 100%;
@@ -734,6 +727,7 @@
 @media (max-width: 768px) {
   .search-container {
     padding: 2px 6px 2px 12px;
+    display: none;
   }
 
   .search-input {
