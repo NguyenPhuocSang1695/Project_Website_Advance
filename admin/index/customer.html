@@ -268,5 +268,16 @@
         <script src="../js/hienthikhachhang.js"></script>
         <script src ="../js/checklog.js"></script>
         <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cachedUserInfo = localStorage.getItem('userInfo');
+            if (cachedUserInfo) {
+                const userInfo = JSON.parse(cachedUserInfo);
+                document.querySelector('.name-employee p').textContent = userInfo.fullname;
+                document.querySelector('.position-employee p').textContent = userInfo.role;
+                document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
+            }
+        });
+        </script>
     </body>
 </html>
