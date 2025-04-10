@@ -13,7 +13,7 @@
   <link href="../style/orderStyle1.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../style/reponsiveOrder1.css">
+  <link rel="stylesheet" href="../style/reponsiveOrder.css">
 
 </head>
 <style>
@@ -105,7 +105,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
-        <a href="homePage.html" style="text-decoration: none; color: black;">
+        <a href="homePage.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection">
               <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -113,7 +113,7 @@
             <p>Trang chủ</p>
           </div>
         </a>
-        <a href="wareHouse.html" style="text-decoration: none; color: black;">
+        <a href="wareHouse.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection">
               <i class="fa-solid fa-warehouse" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -121,7 +121,7 @@
             <p>Kho hàng</p>
           </div>
         </a>
-        <a href="customer.html" style="text-decoration: none; color: black;">
+        <a href="customer.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection">
               <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -129,7 +129,7 @@
             <p>Khách hàng</p>
           </div>
         </a>
-        <a href="orderPage.html" style="text-decoration: none; color: black;">
+        <a href="orderPage.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection" style="background-color: #6aa173;">
               <i class="fa-solid fa-list-check" style="font-size: 18px; color: #FAD4AE;"></i>
@@ -137,7 +137,7 @@
             <p>Đơn hàng</p>
           </div>
         </a>
-        <a href="analyzePage.html" style="text-decoration: none; color: black;">
+        <a href="analyzePage.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection">
               <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -160,7 +160,7 @@
   <div class="main-container">
     <div class="side-bar">
       <div class="backToHome">
-        <a href="homePage.html" style="text-decoration: none; color: black;">
+        <a href="homePage.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection" style="margin-top: 35px;">
               <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -169,7 +169,7 @@
           </div>
         </a>
       </div>
-      <a href="wareHouse.html" style="text-decoration: none; color: black;">
+      <a href="wareHouse.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-warehouse" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -177,7 +177,7 @@
           <p>Kho hàng</p>
         </div>
       </a>
-      <a href="customer.html" style="text-decoration: none; color: black;">
+      <a href="customer.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -185,7 +185,7 @@
           <p>Khách hàng</p>
         </div>
       </a>
-      <a href="orderPage.html" style="text-decoration: none; color: black;">
+      <a href="orderPage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection" style="background-color: #6aa173;">
             <i class="fa-solid fa-list-check" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -193,7 +193,7 @@
           <p>Đơn hàng</p>
         </div>
       </a>
-      <a href="analyzePage.html" style="text-decoration: none; color: black;">
+      <a href="analyzePage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
