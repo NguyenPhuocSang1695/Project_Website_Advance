@@ -1,5 +1,5 @@
 <?php
-include('connect.php');
+include('../php/connect.php');
 include('../php/login_check.php');
 $avatarPath = ($_SESSION['Role'] === 'admin') 
     ? "../../assets/images/admin.jpg" 
@@ -267,7 +267,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="../index/homePage.html" style="text-decoration: none; color: black;">
+          <a href="../index/homePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-house" style="
@@ -278,7 +278,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
               <p>Trang chủ</p>
             </div>
           </a>
-          <a href="../index/wareHouse.html" style="text-decoration: none; color: black;">
+          <a href="../index/wareHouse.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-warehouse" style="font-size: 20px;
@@ -287,7 +287,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
               <p>Kho hàng</p>
             </div>
           </a>
-          <a href="customer.html" style="text-decoration: none; color: black;">
+          <a href="customer.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-users" style="
@@ -298,7 +298,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
               <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
             </div>
           </a>
-          <a href="orderPage.html" style="text-decoration: none; color: black;">
+          <a href="orderPage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173; color: black;">
                 <i class="fa-solid fa-list-check" style="
@@ -309,7 +309,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
               <p style="color:black">Đơn hàng</p>
             </div>
           </a>
-          <a href="analyzePage.html" style="text-decoration: none; color: black;">
+          <a href="analyzePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-chart-simple" style="
@@ -401,7 +401,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
   <!-- Sidebar -->
   <div class="side-bar">
     <div class="backToHome">
-      <a href="homePage.html" style="text-decoration: none; color: black;">
+      <a href="homePage.php" style="text-decoration: none; color: black;">
         <div class="backToHome">
           <button class="button-function-selection">
             <i class="fa-solid fa-house" style="
@@ -413,7 +413,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
         </div>
       </a>
     </div>
-    <a href="wareHouse.html" style="text-decoration: none; color: black;">
+    <a href="wareHouse.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-warehouse" style="font-size: 20px;
@@ -422,7 +422,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
         <p>Kho hàng</p>
       </div>
     </a>
-    <a href="customer.html" style="text-decoration: none; color: black;">
+    <a href="customer.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-users" style="
@@ -433,7 +433,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
         <p>Khách hàng</p>
       </div>
     </a>
-    <a href="orderPage.html" style="text-decoration: none; color: black;">
+    <a href="orderPage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection" style="background-color: #6aa173;">
           <i class="fa-solid fa-list-check" style="
@@ -444,7 +444,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
         <p>Đơn hàng</p>
       </div>
     </a>
-    <a href="analyzePage.html" style="text-decoration: none; color: black;">
+    <a href="analyzePage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-chart-simple" style="
@@ -472,7 +472,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
     <div class="order-container">
       <div class="order-header">
         <div class="breadcrumb">
-          <a href="orderPage.html">Đơn hàng</a> > <span><?php echo $orderDetailID; ?></span>
+          <a href="orderPage.php">Đơn hàng</a> > <span><?php echo $orderDetailID; ?></span>
         </div>
         <table class="status-bar">
           <thead>

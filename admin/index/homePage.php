@@ -29,7 +29,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="homePage.html" style="text-decoration: none; color: black;">
+          <a href="homePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173;">
                 <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -37,7 +37,7 @@
               <p>Trang chủ</p>
             </div>
           </a>
-          <a href="wareHouse.html" style="text-decoration: none; color: black;">
+          <a href="wareHouse.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-warehouse" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -45,7 +45,7 @@
               <p>Kho hàng</p>
             </div>
           </a>
-          <a href="customer.html" style="text-decoration: none; color: black;">
+          <a href="customer.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -53,7 +53,7 @@
               <p style="color: black; text-align: center; font-size: 10x;">Khách hàng</p>
             </div>
           </a>
-          <a href="orderPage.html" style="text-decoration: none; color: black;">
+          <a href="orderPage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-list-check" style="font-size: 18px; color: #FAD4AE;"></i>
@@ -61,7 +61,7 @@
               <p style="color:black">Đơn hàng</p>
             </div>
           </a>
-          <a href="analyzePage.html" style="text-decoration: none; color: black;">
+          <a href="analyzePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -138,7 +138,7 @@
 
   <div class="side-bar">
     <div class="backToHome">
-      <a href="homePage.html" style="text-decoration: none; color: black;">
+      <a href="homePage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection" style="background-color: #6aa173; margin-top: 35px;">
             <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -147,7 +147,7 @@
         </div>
       </a>
     </div>
-    <a href="wareHouse.html" style="text-decoration: none; color: black;">
+    <a href="wareHouse.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-warehouse" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -155,7 +155,7 @@
         <p>Kho hàng</p>
       </div>
     </a>
-    <a href="customer.html" style="text-decoration: none; color: black;">
+    <a href="customer.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -163,7 +163,7 @@
         <p>Khách hàng</p>
       </div>
     </a>
-    <a href="orderPage.html" style="text-decoration: none; color: black;">
+    <a href="orderPage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-list-check" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -171,7 +171,7 @@
         <p>Đơn hàng</p>
       </div>
     </a>
-    <a href="analyzePage.html" style="text-decoration: none; color: black;">
+    <a href="analyzePage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -213,14 +213,14 @@
     <div class="order-section">
 
       <p class="section-title">Đơn hàng chưa xử lý</p>
-      <a class="more-detail" href="orderPage.html"> Xem thêm</a>
+      <a class="more-detail" href="orderPage.php"> Xem thêm</a>
       <div class="overview-order">
         <div><img class="avatar-customer" src="../image/sontung.webp" alt="Customer"></div>
         <div class="info-overview-order">
           <p>Sơn Tùng <span class="label customer">Customer</span></p>
           <p>Ngày đặt hàng: 15/03/2025</p>
         </div>
-        <div><a href="customer.html" style="text-decoration: none; color: black;"><button class="button-handle">Xử
+        <div><a href="customer.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
               lý</button></a></div>
       </div>
       <div class="overview-order">
@@ -229,7 +229,7 @@
           <p>Diễm <span class="label customer">Customer</span></p>
           <p>Ngày đặt hàng: 16/03/2025</p>
         </div>
-        <div><a href="customer3.html" style="text-decoration: none; color: black;"><button class="button-handle">Xử
+        <div><a href="customer3.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
               lý</button></a></div>
       </div>
       <div class="overview-order">
@@ -238,7 +238,7 @@
           <p>HieuThuHai <span class="label customer">Customer</span></p>
           <p>Ngày đặt hàng: 17/03/2025</p>
         </div>
-        <div><a href="customer2.html" style="text-decoration: none; color: black;"><button class="button-handle">Xử
+        <div><a href="customer2.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
               lý</button></a></div>
       </div>
     </div>
@@ -246,7 +246,7 @@
     <!-- Phần hàng cần chú ý -->
     <div class="inventory-section">
       <p class="section-title">Hàng cần chú ý</p>
-      <a class="more-detail" href="wareHouse.html"> Xem thêm</a>
+      <a class="more-detail" href="wareHouse.php"> Xem thêm</a>
       <div class="overview-order">
         <div><img class="avatar-customer" src="../image/product1.webp" alt="Product"></div>
         <div class="info-overview-order">
@@ -254,7 +254,7 @@
           <p>Ngày hết hạn: 20/03/2025</p>
           <p>Kho: 34</p>
         </div>
-        <div><a href="wareHouse.html" style="text-decoration: none; color: black;"><button class="button-handle">Xử
+        <div><a href="wareHouse.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
               lý</button></a></div>
       </div>
       <div class="overview-order">
@@ -264,7 +264,7 @@
           <p>Ngày hết hạn: 21/03/2025</p>
           <p>Kho: 40</p>
         </div>
-        <div><a href="wareHouse.html" style="text-decoration: none; color: black;"><button class="button-handle">Xử
+        <div><a href="wareHouse.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
               lý</button></a></div>
       </div>
       <div class="overview-order">
@@ -274,7 +274,7 @@
           <p>Ngày hết hạn: 22/03/2025</p>
           <p>Kho: 3</p>
         </div>
-        <div><a href="wareHouse.html" style="text-decoration: none; color: black;"><button class="button-handle">Xử lý</button></a></div>
+        <div><a href="wareHouse.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử lý</button></a></div>
       </div>
     </div>
   </div>
@@ -282,6 +282,17 @@
   <!-- Bootstrap JS -->
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src ="../js/checklog.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cachedUserInfo = localStorage.getItem('userInfo');
+        if (cachedUserInfo) {
+            const userInfo = JSON.parse(cachedUserInfo);
+            document.querySelector('.name-employee p').textContent = userInfo.fullname;
+            document.querySelector('.position-employee p').textContent = userInfo.role;
+            document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
+        }
+    });
+  </script>
 </body>
 
 </html>

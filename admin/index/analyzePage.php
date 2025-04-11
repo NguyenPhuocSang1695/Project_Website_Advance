@@ -37,7 +37,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="homePage.html" style="text-decoration: none; color: black;">
+          <a href="homePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-house" style="
@@ -48,7 +48,7 @@
               <p>Trang chủ</p>
             </div>
           </a>
-          <a href="wareHouse.html" style="text-decoration: none; color: black;">
+          <a href="wareHouse.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-warehouse" style="font-size: 20px;
@@ -57,7 +57,7 @@
               <p>Kho hàng</p>
             </div>
           </a>
-          <a href="customer.html" style="text-decoration: none; color: black;">
+          <a href="customer.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-users" style="
@@ -68,7 +68,7 @@
               <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
             </div>
           </a>
-          <a href="orderPage.html" style="text-decoration: none; color: black;">
+          <a href="orderPage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-list-check" style="
@@ -79,7 +79,7 @@
               <p style="color:black">Đơn hàng</p>
             </div>
           </a>
-          <a href="analyzePage.html" style="text-decoration: none; color: black;">
+          <a href="analyzePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173;">
                 <i class="fa-solid fa-chart-simple" style="
@@ -170,7 +170,7 @@
   <div class="main-container">
     <div class="side-bar">
       <div class="backToHome">
-        <a href="homePage.html" style="text-decoration: none; color: black;">
+        <a href="homePage.php" style="text-decoration: none; color: black;">
           <div class="container-function-selection">
             <button class="button-function-selection" style="margin-top: 35px;">
               <i class="fa-solid fa-house" style="
@@ -182,7 +182,7 @@
           </div>
         </a>
       </div>
-      <a href="wareHouse.html" style="text-decoration: none; color: black;">
+      <a href="wareHouse.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-warehouse" style="font-size: 20px;
@@ -191,7 +191,7 @@
           <p>Kho hàng</p>
         </div>
       </a>
-      <a href="customer.html" style="text-decoration: none; color: black;">
+      <a href="customer.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-users" style="
@@ -202,7 +202,7 @@
           <p>Khách hàng</p>
         </div>
       </a>
-      <a href="orderPage.html" style="text-decoration: none; color: black;">
+      <a href="orderPage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection">
             <i class="fa-solid fa-list-check" style="
@@ -213,7 +213,7 @@
           <p>Đơn hàng</p>
         </div>
       </a>
-      <a href="analyzePage.html" style="text-decoration: none; color: black;">
+      <a href="analyzePage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection" style="background-color: #6aa173;">
             <i class="fa-solid fa-chart-simple" style="
@@ -322,6 +322,17 @@
   </div>
   <script src="../js/analyzePage.js"></script>
   <script src ="../js/checklog.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const cachedUserInfo = localStorage.getItem('userInfo');
+    if (cachedUserInfo) {
+        const userInfo = JSON.parse(cachedUserInfo);
+        document.querySelector('.name-employee p').textContent = userInfo.fullname;
+        document.querySelector('.position-employee p').textContent = userInfo.role;
+        document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
+    }
+});
+</script>
 </body>
 
 </html>

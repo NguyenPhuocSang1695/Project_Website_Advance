@@ -1,5 +1,5 @@
 <?php 
-include '../admin/index/connect.php';
+include '../admin/php/connect.php';
 session_start();
 
 if (isset($_POST['submit'])) {
@@ -117,7 +117,7 @@ function showSuccessPopup(userName) {
     popup.style.display = 'block';
 
     setTimeout(() => {
-        window.location.href = '../admin/index/homePage.html';
+        window.location.href = '../admin/index/homePage.php';
     }, 1000);
 }
 </script>
