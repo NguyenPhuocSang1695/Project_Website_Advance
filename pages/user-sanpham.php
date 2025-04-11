@@ -253,14 +253,14 @@ if ($result && $result->num_rows > 0) {
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                    <?= $username ? "Xin chào, " . htmlspecialchars($username) : "Xin vui lòng đăng nhập" ?>
+                    <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
                   </h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <?php if (!$username): ?>
+                    <?php if (!$loggedInUsername): ?>
                       <li class="nav-item">
                         <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
                       </li>
