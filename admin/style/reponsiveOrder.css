@@ -60,8 +60,8 @@
       }
 
       .avatar {
-        width: 58px;
-        height: auto;
+        width: 65px;
+        height: 65px;
       }
 
       .offcanvas.offcanvas-start {
@@ -76,7 +76,7 @@
 
       .index-menu {
         display: inline-block;
-        position: absolute;
+        position: relative;
         height: 6rem;
         top: 2px;
         left: 0px;
@@ -101,9 +101,7 @@
         margin-left: -2px;
       }
 
-      /* .backToHome {
-  margin-left: 2px;
-} */
+
       /* -------------------- */
       /* Phan body */
       .container-search {
@@ -141,7 +139,20 @@
     /* smartphone & tablet < 748px */
     @media only screen and (max-width: 47.9375em) {
 
-      .filter-section,
+      .modal-footer {
+        display: flex;
+       flex-direction: row;
+      flex-shrink: 0;
+                align-items: center;
+                justify-content: flex-end;
+                flex-wrap: nowrap;
+      }
+      .filter-section{
+        display: flex;
+        flex-direction: column;
+        margin-top: 1rem;
+        width: 40%;
+      }
       .name-employee p,
       .position-employee,
       .bell-notification {
