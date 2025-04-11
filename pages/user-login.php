@@ -1,47 +1,48 @@
 <?php
+require_once('../src/php/token.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
 use Firebase\JWT\JWT;
 
 $error = '';
 
 if (isset($_POST["login"])) {
-    $connect = new PDO("mysql:host=localhost;dbname=c01db", "root", "");
-    $username = trim($_POST["username"] ?? '');
-    $password = $_POST["password"] ?? '';
+  $connect = new PDO("mysql:host=localhost;dbname=c01db", "root", "");
+  $username = trim($_POST["username"] ?? '');
+  $password = $_POST["password"] ?? '';
 
-    if (empty($username)) {
-        $error = 'Vui lòng nhập tên đăng nhập.';
-    } elseif (empty($password)) {
-        $error = 'Vui lòng nhập mật khẩu.';
+  if (empty($username)) {
+    $error = 'Vui lòng nhập tên đăng nhập.';
+  } elseif (empty($password)) {
+    $error = 'Vui lòng nhập mật khẩu.';
+  } else {
+    $query = "SELECT * FROM users WHERE Username = ?";
+    $statement = $connect->prepare($query);
+    $statement->execute([$username]);
+    $user = $statement->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['PasswordHash'])) {
+      $key = '1a3LM3W966D6QTJ5BJb9opunkUcw_d09NCOIJb9QZTsrneqOICoMoeYUDcd_NfaQyR787PAH98Vhue5g938jdkiyIZyJICytKlbjNBtebaHljIR6-zf3A2h3uy6pCtUFl1UhXWnV6madujY4_3SyUViRwBUOP-UudUL4wnJnKYUGDKsiZePPzBGrF4_gxJMRwF9lIWyUCHSh-PRGfvT7s1mu4-5ByYlFvGDQraP4ZiG5bC1TAKO_CnPyd1hrpdzBzNW4SfjqGKmz7IvLAHmRD-2AMQHpTU-hN2vwoA-iQxwQhfnqjM0nnwtZ0urE6HjKl6GWQW-KLnhtfw5n_84IRQ';
+
+      // Tạo JWT chỉ với Username
+      $payload = [
+        'iat' => time(),
+        'nbf' => time(),
+        'exp' => time() + 3600, // Token có hiệu lực trong 1 giờ
+        'data' => [
+          'Username' => $user['Username']
+        ]
+      ];
+
+      $token = JWT::encode($payload, $key, 'HS256');
+
+      // Gửi token dưới dạng cookie
+      setcookie("token", $token, time() + 3600, "/", "", true, true);
+      header("Location: ../index.php");
+      exit();
     } else {
-        $query = "SELECT * FROM users WHERE Username = ?";
-        $statement = $connect->prepare($query);
-        $statement->execute([$username]);
-        $user = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && password_verify($password, $user['PasswordHash'])) {
-            $key = '1a3LM3W966D6QTJ5BJb9opunkUcw_d09NCOIJb9QZTsrneqOICoMoeYUDcd_NfaQyR787PAH98Vhue5g938jdkiyIZyJICytKlbjNBtebaHljIR6-zf3A2h3uy6pCtUFl1UhXWnV6madujY4_3SyUViRwBUOP-UudUL4wnJnKYUGDKsiZePPzBGrF4_gxJMRwF9lIWyUCHSh-PRGfvT7s1mu4-5ByYlFvGDQraP4ZiG5bC1TAKO_CnPyd1hrpdzBzNW4SfjqGKmz7IvLAHmRD-2AMQHpTU-hN2vwoA-iQxwQhfnqjM0nnwtZ0urE6HjKl6GWQW-KLnhtfw5n_84IRQ';
-
-            // Tạo JWT chỉ với Username
-            $payload = [
-                'iat' => time(),
-                'nbf' => time(),
-                'exp' => time() + 3600, // Token có hiệu lực trong 1 giờ
-                'data' => [
-                    'Username' => $user['Username']
-                ]
-            ];
-
-            $token = JWT::encode($payload, $key, 'HS256');
-
-            // Gửi token dưới dạng cookie
-            setcookie("token", $token, time() + 3600, "/", "", true, true);
-            header("Location: ../index.php");
-            exit();
-        } else {
-            $error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
-        }
+      $error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
     }
+  }
 }
 ?>
 
@@ -61,9 +62,16 @@ if (isset($_POST["login"])) {
   <!-- JS  -->
   <script src="../src/js/search-common.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../src/js/main.js"></script>
+  <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <title>Đăng nhập</title>
+  <style>
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+  </style>
 </head>
 
 <body>
@@ -270,37 +278,40 @@ if (isset($_POST["login"])) {
               <a href="user-login.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
-              <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
+              <label for="tick" style="cursor: pointer">
+                <img src="../assets/images/user.svg" alt="" />
+              </label>
               <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
                 aria-controls="offcanvasExample" />
               <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                    Xin vui lòng đăng nhập!
+                  <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
                   </h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng xuất</a>
-                    </li>
+                    <?php if (!$loggedInUsername): ?>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                      </li>
+                    <?php else: ?>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="../src/php/logout.php">Đăng xuất</a>
+                      </li>
+                    <?php endif; ?>
                   </ul>
                 </div>
               </div>
@@ -488,15 +499,25 @@ if (isset($_POST["login"])) {
       <form id="form-02" method="post">
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" id="username" name="username" class="form-control" placeholder="Nhập username của bạn" required>
+          <input type="text" id="username" name="username" class="form-control" placeholder="Nhập username của bạn"
+            required value="<?= htmlspecialchars($_POST['username'] ?? '') ?>">
+          <?php if ($error === 'Tên đăng nhập hoặc mật khẩu không đúng.' || $error === 'Vui lòng nhập tên đăng nhập.'): ?>
+            <div class="error-message"><?= $error ?></div>
+          <?php endif; ?>
         </div>
+
         <div class="form-group">
           <label for="password">Mật khẩu</label>
-          <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu"
+            required>
+          <?php if ($error === 'Vui lòng nhập mật khẩu.'): ?>
+            <div class="error-message"><?= $error ?></div>
+          <?php endif; ?>
         </div>
 
         <button type="submit" name="login" class="btn-login">Đăng nhập</button>
       </form>
+
     </div>
   </main>
 

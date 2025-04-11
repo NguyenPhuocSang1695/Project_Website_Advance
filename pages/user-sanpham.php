@@ -1,32 +1,7 @@
 <!DOCTYPE html>
 <?php
-require '../src/Jwt/vendor/autoload.php';
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
-$key = '1a3LM3W966D6QTJ5BJb9opunkUcw_d09NCOIJb9QZTsrneqOICoMoeYUDcd_NfaQyR787PAH98Vhue5g938jdkiyIZyJICytKlbjNBtebaHljIR6-zf3A2h3uy6pCtUFl1UhXWnV6madujY4_3SyUViRwBUOP-UudUL4wnJnKYUGDKsiZePPzBGrF4_gxJMRwF9lIWyUCHSh-PRGfvT7s1mu4-5ByYlFvGDQraP4ZiG5bC1TAKO_CnPyd1hrpdzBzNW4SfjqGKmz7IvLAHmRD-2AMQHpTU-hN2vwoA-iQxwQhfnqjM0nnwtZ0urE6HjKl6GWQW-KLnhtfw5n_84IRQ';
-
-$username = null;
-
-if (isset($_COOKIE['token'])) {
-    try {
-        $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
-        $username = $decoded->data->Username;
-    } catch (Exception $e) {
-        $username = null;
-    }
-}
-?>
-
-<?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "c01db";
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-  die("Kết nối thất bại: " . $conn->connect_error);
-}
+require_once('../src/php/token.php');
+require_once('../src/php/connect.php');
 
 // Lấy ID từ URL
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -62,7 +37,7 @@ if ($result && $result->num_rows > 0) {
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../src/js/main.js"></script>
+  <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
 </head>
 
@@ -266,47 +241,47 @@ if ($result && $result->num_rows > 0) {
           </div>
 
           <div class="cart-icon">
-            <a href="gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
+            <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
           </div>
           <div class="user-icon">
-            <label for="tick" style="cursor: pointer">
-              <img src="../assets/images/user.svg" alt="" />
-            </label>
-            <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
-              aria-controls="offcanvasExample" />
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
-              aria-labelledby="offcanvasExampleLabel">
-              <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                  <?= $username ? htmlspecialchars($username) : "Khách" ?>
-                </h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                  aria-label="Close"></button>
-              </div>
-              <div class="offcanvas-body">
-                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                  <?php if (!$username): ?>
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
-                    </li>
-                  <?php else: ?>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../index.php" onclick="logOut()">Đăng xuất</a>
-                    </li>
-                  <?php endif; ?>
-                </ul>
+              <label for="tick" style="cursor: pointer">
+                <img src="../assets/images/user.svg" alt="" />
+              </label>
+              <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
+                aria-controls="offcanvasExample" />
+              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
+                aria-labelledby="offcanvasExampleLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+                    <?= $username ? "Xin chào, " . htmlspecialchars($username) : "Xin vui lòng đăng nhập" ?>
+                  </h5>
+                  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                  <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <?php if (!$username): ?>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                      </li>
+                    <?php else: ?>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
+                      </li>
+                      <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="../src/php/logout.php">Đăng xuất</a>
+                      </li>
+                    <?php endif; ?>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
 
         </div>
       </div>
@@ -329,7 +304,7 @@ if ($result && $result->num_rows > 0) {
             <div class="offcanvas-body offcanvas-fullscreen mt-20">
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="../index.html">Trang chủ</a>
+                  <a class="nav-link active" aria-current="page" href="../index.php">Trang chủ</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#">Giới thiệu</a>
@@ -341,16 +316,16 @@ if ($result && $result->num_rows > 0) {
                   </a>
                   <ul class="dropdown-menu">
                     <li>
-                      <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                      <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                      <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                      <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                      <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
                     </li>
                   </ul>
                 </li>
@@ -434,14 +409,14 @@ if ($result && $result->num_rows > 0) {
     <div class="brand">
       <div class="brand-logo">
         <!-- Quay về trang chủ  -->
-        <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
+        <a href="../index.php"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
       </div>
       <div class="brand-name">THE TREE</div>
     </div>
     <div class="choose">
       <ul>
         <li>
-          <a href="../index.html" style="font-weight: bold">Trang chủ</a>
+          <a href="../index.php" style="font-weight: bold">Trang chủ</a>
         </li>
         <li><a href="#">Giới thiệu</a></li>
         <li>
@@ -451,16 +426,16 @@ if ($result && $result->num_rows > 0) {
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
               </li>
               <li>
-                <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
               </li>
               <li>
-                <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
               </li>
               <li>
-                <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
               </li>
             </ul>
           </div>

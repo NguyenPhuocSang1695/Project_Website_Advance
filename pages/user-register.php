@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <?php
+require_once('../src/php/token.php');
 $errors = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $conn = new mysqli("localhost", "root", "", "c01db");
-  if ($conn->connect_error) {
-    die("Kết nối thất bại: " . $conn->connect_error);
-  }
+  require_once('../src/php/connect.php');
 
   // Lấy dữ liệu từ form
   $fullname = $_POST['fullname'];
@@ -70,18 +68,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: user-login.php");
     exit;
   }
-
-  $conn->close();
+$conn->close();
 }
-
 // Kết nối để load danh sách tỉnh/thành (đặt ở cuối để luôn chạy được cả GET)
 $conn = new mysqli("localhost", "root", "", "c01db");
 if ($conn->connect_error) {
   die("Kết nối thất bại: " . $conn->connect_error);
 }
 
+
 $provinceQuery = "SELECT province_id, name FROM province ORDER BY name ASC";
 $provinceResult = $conn->query($provinceQuery);
+
 ?>
 
 <html>
@@ -100,7 +98,7 @@ $provinceResult = $conn->query($provinceQuery);
   <script src="../src/js/search-common.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script></script>
-  <script src="../src/js/main.js"></script>
+  <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <title>Đăng kí</title>
   <style>
@@ -343,40 +341,41 @@ $provinceResult = $conn->query($provinceQuery);
             <div class="cart-icon">
               <a href="user-register.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
-            <div class="user-icon">
-              <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
+          <div class="user-icon">
+              <label for="tick" style="cursor: pointer">
+                <img src="../assets/images/user.svg" alt="" />
+              </label>
               <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
                 aria-controls="offcanvasExample" />
               <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                    Xin vui lòng đăng nhâp!
+                  <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
                   </h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-
-
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng xuất</a>
-                    </li>
+                    <?php if (!$loggedInUsername): ?>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                      </li>
+                    <?php else: ?>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
+                      </li>
+                      <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="../src/php/logout.php">Đăng xuất</a>
+                      </li>
+                    <?php endif; ?>
                   </ul>
                 </div>
               </div>

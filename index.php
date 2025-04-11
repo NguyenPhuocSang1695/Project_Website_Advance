@@ -16,7 +16,7 @@ require_once './src/php/token.php';
   <link rel="stylesheet" href="./src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="./src/css/footer.css">
   <!-- JS  -->
-  <script src="./src/js/main.js"></script>
+  <!-- <script src="./src/js/main.js"></script> -->
   <script src="./assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script src="./src/js/onOffSeacrhAdvance.js"></script>
   <!-- <script src="./src/js/search.js"></script> -->
@@ -133,7 +133,7 @@ require_once './src/php/token.php';
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
-                <img src="../assets/images/user.svg" alt="" />
+                <img src="assets/images/user.svg" alt="" />
               </label>
               <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
                 aria-controls="offcanvasExample" />
@@ -141,14 +141,14 @@ require_once './src/php/token.php';
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                    <?= $username ? "Xin chào, " . htmlspecialchars($username) : "Xin vui lòng đăng nhập" ?>
+                    <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
                   </h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <?php if (!$username): ?>
+                    <?php if (!$loggedInUsername): ?>
                       <li class="nav-item">
                         <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
                       </li>
@@ -163,7 +163,7 @@ require_once './src/php/token.php';
                         <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="../index.php" onclick="logOut()">Đăng xuất</a>
+                      <a class="nav-link hs-ls-dx" href="./src/php/logout.php">Đăng xuất</a>
                       </li>
                     <?php endif; ?>
                   </ul>
