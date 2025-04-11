@@ -6,21 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <!-- CSS  -->
-  <link rel="stylesheet" type="text/css" href="../src/css/user-history-details.css" />
+  <link rel="stylesheet" type="text/css" href="../src/css/phan-loai.css" />
   <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
   <link rel="stylesheet" href="../src/css/search-styles.css" />
+  <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="../src/css/footer.css">
   <!-- JS  -->
-  <script src="../src/js/search-common.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../src/js/Trang_chu.js"></script>
-  <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
   <script src="../src/js/main.js"></script>
+  <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
-  <script src="../src/js/search-index.js"></script>
-  <title>Lịch sử người dùng</title>
+  <script src="../src/js/phan-loai.js"></script>
+  <script src="../src/js/search.js"></script>
+  <title>Phân loại</title>
 </head>
 
 <body>
@@ -82,7 +82,7 @@
                           <span class="price-separator">-</span>
                           <input type="number" id="maxPrice" name="maxPrice" placeholder="Đến" min="0" />
                         </div>
-                        <div class="price-ranges">
+                        <!-- <div class="price-ranges">
                           <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
                             Dưới 200k
                           </button>
@@ -95,7 +95,7 @@
                           <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
                             Trên 1tr
                           </button>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
 
@@ -120,15 +120,15 @@
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function (e) {
+              document.getElementById("searchForm").addEventListener("submit", function(e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
-                window.location.href = "./search-result.html?q=" + encodeURIComponent(searchInput);
+                window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
               });
             </script>
 
             <div class="cart-icon">
-              <a href="./gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
@@ -146,21 +146,21 @@
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
+                      <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
                     </li>
 
                     <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
+                      <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
                     </li>
 
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
+                      <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
+                      <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng xuất</a>
+                      <a class="nav-link hs-ls-dx" href="../index.php" onclick="logOut()">Đăng xuất</a>
                     </li>
                   </ul>
                 </div>
@@ -187,7 +187,7 @@
               <div class="offcanvas-body offcanvas-fullscreen mt-20">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="../index.html">Trang chủ</a>
+                    <a class="nav-link active" aria-current="page" href="../index.php">Trang chủ</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Giới thiệu</a>
@@ -197,19 +197,18 @@
                       aria-expanded="false">
                       Sản phẩm
                     </a>
-
                     <ul class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
                       </li>
                     </ul>
                   </li>
@@ -220,7 +219,6 @@
                     <a class="nav-link" href="#">Liên hệ</a>
                   </li>
                 </ul>
-
                 <form class="searchFormMobile mt-3" role="search" id="searchFormMobile">
                   <div class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search"
@@ -299,14 +297,14 @@
       <div class="brand">
         <div class="brand-logo">
           <!-- Quay về trang chủ  -->
-          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
+          <a href="../index.php"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
         </div>
         <div class="brand-name">THE TREE</div>
       </div>
       <div class="choose">
         <ul>
           <li>
-            <a href="../index.html" style="font-weight: bold">Trang chủ</a>
+            <a href="../index.php" style="font-weight: bold">Trang chủ</a>
           </li>
           <li><a href="#">Giới thiệu</a></li>
           <li>
@@ -317,16 +315,16 @@
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
                 </li>
               </ul>
             </div>
@@ -339,106 +337,22 @@
   </div>
 
   <!-- SECTION  -->
-  <div class="section1">
+  <div class="section">
     <div class="img-21">
       <img src="../assets/images/CAY21.jpg" alt="CAY21" />
     </div>
   </div>
 
-  <section>
-    <div class="information-client">
-      <h2>Hồ sơ khách hàng</h2>
-      <hr>
-      <div class="thongtin">
-        <h5>Họ tên:</h5>
-        <h5>Số điện thoại:</h5>
-        <h5>Địa chỉ:</h5>
-      </div>
+  <main>
+    <h2 style="color: rgb(59, 161, 59); text-align: center;">
+      <div id="product_type_list">Loại cây</div>
+    </h2>
+    <div id="type-tree"></div>
+    <div class="container-product">
+      <div id="product-list">Kết quả ở đây</div>
     </div>
-    <div class="history">
-      <div class="main-content">
-        <!-- Left Section -->
-        <div class="left-section">
-          <div class="section products">
-            <div class="section-header">
-              <span style="color:#21923c;"><i class="fa-regular fa-circle" style="  margin-right: 5px;"></i>Chi tiết đơn
-                hàng</span>
-              <button class="more-btn">...</button>
-            </div>
-            <table>
-
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>SỐ LƯỢNG</th>
-                  <th>THÀNH TIỀN (đ)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <img src="../../assets/images/CAY2.jpg" alt="Product Image">
-                    <div class="product-info">
-                      <span class="product-name">Cay j ko bt ten</span><br>
-                      <span class="sku">SKU: QJ-0001</span><br>
-                    </div>
-                  </td>
-                  <td>1</td>
-                  <td>1,100,000 đ</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <img src="../../assets/images/CAY1.jpg" alt="Product Image">
-                    <div class="product-info">
-                      <span class="product-name">Chac cay xuong rong</span><br>
-                      <span class="sku">SKU: JJ-0001</span><br>
-                    </div>
-                  </td>
-                  <td>1</td>
-
-                  <td>550,000 đ</td>
-                </tr>
-              </tbody>
-            </table>
-
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="section payment">
-      <div class="section-header">
-        <span>Thanh Toán: </span>
-      </div>
-      <div class="payment-details">
-        <div class="payment-row">
-          <span>Số lượng sản phẩm: </span>
-          <span>2</span>
-        </div>
-        <div class="payment-row">
-          <span>Tổng tiền hàng:</span>
-          <span>1,650,000 đ</span>
-        </div>
-        <div class="payment-row">
-          <span>Vận chuyển:</span>
-          <span>20,000 đ</span>
-        </div>
-        <div class="payment-row paid">
-          <span>Đã thanh toán</span>
-          <span>1,505,000 đ</span>
-        </div>
-
-
-      </div>
-    </div>
-    </div>
-  </section>
-
-  <script>
-    $("#menu-btn").click(function () {
-      $("#menu").toggleClass("active");
-    });
-  </script>
+    <div id="pagination-button"></div>
+  </main>
 
   <footer class="footer">
     <div class="footer-column">

@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   // Kiểm tra nếu đang ở trang kết quả tìm kiếm
-  if (window.location.pathname.includes("search-result.html")) {
+  if (window.location.pathname.includes("search-result.php")) {
     loadSearchResults();
   }
 
@@ -114,7 +114,7 @@ function performSearchMobile() {
 
 // Chuyển hướng đến trang kết quả tìm kiếm
 function redirectToSearchPage(search, category, minPrice, maxPrice) {
-  let url = "./search-result.html?q=" + encodeURIComponent(search);
+  let url = "./search-result.php?q=" + encodeURIComponent(search);
 
   if (
     category &&

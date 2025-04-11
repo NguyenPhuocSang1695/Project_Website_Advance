@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html>
-<!-- Sửa infor-for-banking ở dòng 584  -->
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- CSS  -->
-  <link rel="stylesheet" href="../src/css/thanh-toan.css" />
-  <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
-  <link rel="stylesheet" href="../src/css/search-styles.css" />
-  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
+  <link rel="stylesheet" href="../src/css/gio-hang.css">
+  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../src/css/search-styles.css">
+  <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css">
   <link rel="stylesheet" href="../src/css/footer.css">
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../src/js/Trang_chu.js"></script>
   <script src="../src/js/main.js"></script>
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
-  <script src="../src/js/thanh-toan.js"></script>
+  <!-- Lọc sản phẩm theo phân loại  -->
+  <!-- <script src="../src/js/filter-product.js"></script> -->
   <script src="../src/js/search-index.js"></script>
-  <title>Hoàn tất thanh toán</title>
+  <title>Giỏ hàng</title>
 </head>
 
 <body>
@@ -118,18 +119,8 @@
               </form>
             </div>
 
-            <script>
-              document.getElementById("searchForm").addEventListener("submit", function (e) {
-                e.preventDefault(); // Ngăn chặn reload trang
-                let searchInput = document.getElementById("searchInput").value;
-                window.location.href = "./search-result.html?q=" + encodeURIComponent(searchInput);
-              });
-            </script>
-
-
-
             <div class="cart-icon">
-              <a href="gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
@@ -146,24 +137,28 @@
                 </div>
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+
                     <li class="nav-item">
-                      <a class="nav-link login-logout" href="../pages/user-register.html">Đăng kí</a>
+                      <a class="nav-link login-logout" href="../pages/user-register.php">Đăng kí</a>
                     </li>
 
                     <li class="nav-item">
-                      <a class="nav-link login-logout" href="../pages/user-login.html">Đăng nhập</a>
+                      <a class="nav-link login-logout" href="../pages/user-login.php">Đăng nhập</a>
                     </li>
 
+
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../pages/ho-so.html">Hồ sơ</a>
+                      <a class="nav-link hs-ls-dx" href="../pages/ho-so.php">Hồ sơ</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../pages/user-History.html">Lịch sử mua hàng</a>
+                      <a class="nav-link hs-ls-dx" href="../pages/user-History.php">Lịch sử mua hàng</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng xuất</a>
+                      <a class="nav-link hs-ls-dx" href="../index.php" onclick="logOut()">Đăng xuất</a>
                     </li>
+
                   </ul>
+
                 </div>
               </div>
             </div>
@@ -188,7 +183,7 @@
               <div class="offcanvas-body offcanvas-fullscreen mt-20">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="../index.html">Trang chủ</a>
+                    <a class="nav-link active" aria-current="page" href="../index.php">Trang chủ</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Giới thiệu</a>
@@ -200,16 +195,16 @@
                     </a>
                     <ul class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
                       </li>
                     </ul>
                   </li>
@@ -220,6 +215,7 @@
                     <a class="nav-link" href="#">Liên hệ</a>
                   </li>
                 </ul>
+                <!-- form tìm kiếm trên mobile  -->
                 <form class="searchFormMobile mt-3" role="search" id="searchFormMobile">
                   <div class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search"
@@ -259,7 +255,7 @@
                           <span class="price-separator">-</span>
                           <input type="number" id="maxPriceMobile" name="maxPrice" placeholder="Đến" min="0" />
                         </div>
-                        <div class="price-ranges">
+                        <!-- <div class="price-ranges">
                           <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
                             Dưới 200k
                           </button>
@@ -272,7 +268,7 @@
                           <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
                             Trên 1tr
                           </button>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
 
@@ -298,14 +294,14 @@
       <div class="brand">
         <div class="brand-logo">
           <!-- Quay về trang chủ  -->
-          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
+          <a href="../index.php"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
         </div>
         <div class="brand-name">THE TREE</div>
       </div>
       <div class="choose">
         <ul>
           <li>
-            <a href="../index.html" style="font-weight: bold">Trang chủ</a>
+            <a href="../index.php" style="font-weight: bold">Trang chủ</a>
           </li>
           <li><a href="#">Giới thiệu</a></li>
           <li>
@@ -316,16 +312,16 @@
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
                 </li>
               </ul>
             </div>
@@ -337,165 +333,105 @@
     </div>
   </div>
 
+
+
   <!-- SECTION  -->
   <div class="section">
     <div class="img-21">
-      <img src="../assets/images/CAY21.jpg" alt="CAY21" />
+      <img src="../assets/images/CAY21.jpg" alt="CAY21">
     </div>
   </div>
 
-  <main>
-    <div class="container-payment">
-      <h2>THANH TOÁN</h2>
-      <div class="content">
-        <div class="status-order">
-          <i class="fa-solid fa-cart-shopping"></i>
-          <hr style="border: 1px dashed black; width: 21%;">
-          <i style="color: green;" class="fa-solid fa-id-card"></i>
-          <hr style="border: 1px dashed black; width: 21%;">
-          <i class="fa-solid fa-circle-check"></i>
+
+  <!-- ARTICLE -->
+  <div class="article">
+    <div class="title-cart">
+      <p class="text-success h1 text-center text-uppercase">Giỏ hàng</p>
+    </div>
+    <div class="infor-order bg-light">
+      <div class="status-order">
+        <img class="cart-2" src="../assets/images/cart.svg" alt="cart">
+        <hr>
+        <img src="../assets/images/id-card.svg" alt="id-card">
+        <hr>
+        <img src="../assets/images/circle-check.svg" alt="ccheck">
+      </div>
+      <div class="order">
+
+
+        <div class="order-img">
+          <img src="../assets/images/CAY5.jpg" alt="Phat tai">
         </div>
-        <div class="option-address">
-          <label for="">
-            <input type="radio" name="chon" id="default-information" checked> <span>Sử dụng thông tin mặc
-              định</span>
-          </label>
-          <label for="">
-            <input type="radio" name="chon" id="new-information"> <span>Nhập thông tin mới</span>
-          </label>
-        </div>
 
-        <form action="" id="default-information-form">
-          <label for=""><strong>Họ và tên</strong></label>
-          <input type="text" name="name" id="name" placeholder="Nguyễn Phước Sang" disabled>
-          <label for=""><strong>Email</strong></label>
-          <input type="email" name="email" id="email" placeholder="sangnguyen20050916@gmail.com" disabled>
-          <label for=""><strong>Số điện thoại</strong></label>
-          <input type="text" name="sdt" id="sdt" placeholder="0366679203" disabled>
-          <label for=""><strong>Địa chỉ</strong></label>
-          <input type="text" name="diachi" id="diachi" placeholder="103a Phan Huy Ích, Phường 11, Quận 12, TP.HCM"
-            disabled>
-        </form>
 
-        <form action="" id="new-information-form">
-          <label for=""><strong>Họ và tên</strong></label>
-          <input type="text" name="name" id="new-name" placeholder="Họ và tên">
-          <label for=""><strong>Email</strong></label>
-          <input type="email" name="email" id="new-email" placeholder="Email">
-          <label for=""><strong>Số điện thoại</strong></label>
-          <input type="text" name="sdt" id="new-sdt" placeholder="Số điện thoại">
-          <label for=""><strong>Địa chỉ</strong></label>
-          <input type="text" name="diachi" id="new-diachi" placeholder="Địa chỉ">
-        </form>
-
-        <div class="infor-goods">
-          <hr style="border: 3px dashed green; width: 100%" />
-          <div class="order">
-            <div class="order-img">
-              <img src="../assets/images/CAY5.jpg" alt="Phat tai" />
-            </div>
-            <div class="frame">
-              <div class="name-price">
-                <p><strong>Cây phát tài</strong></p>
-                <p><strong>750.000đ</strong></p>
-              </div>
-
-              <div class="function">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                  style="width: 53px">
-                  <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
-                </button>
-
-                <!-- Modal -->
-                <div class="modal fade w-100" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                  aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">
-                          Thông báo
-                        </h1>
-                        <button type="button" class="btn-close" style="width: 10%" data-bs-dismiss="modal"
-                          aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body d-flex justify-content-center align-items-center">
-                        Bạn có chắc muốn xóa sản phẩm chứ!
-                      </div>
-                      <div class="modal-footer d-flex flex-row">
-                        <button type="button" class="btn btn-secondary" style="width: 20%" data-bs-dismiss="modal">
-                          Đóng
-                        </button>
-                        <button type="button" class="btn btn-primary" style="width: 45%">
-                          Xóa
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Nút xóa và thêm số lượng sản phẩm  -->
-                <div class="add-del">
-                  <div class="oder">
-                    <div class="wrapper">
-                      <span class="minus">-</span>
-                      <span class="num">01</span>
-                      <span class="plus">+</span>
-                    </div>
-                    <script src="../src/js/san-pham.js"></script>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div class="frame">
+          <div class="name-price">
+            <p><strong>Cây phát tài</strong></p>
+            <p><strong>750.000đ</strong></p>
           </div>
-          <hr style="border: 3px dashed green; width: 100%" />
-        </div>
+          <div class="function">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
+              style="width: 53px; height: 33px;">
+              <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
+            </button>
 
-        <div class="payment-method">
-          <label for="">
-            <input type="radio" name="paymentMehtod" id="cod-button" checked> <span>Thanh toán khi nhận hàng</span>
-          </label>
-          <label for="">
-            <input type="radio" name="paymentMehtod" id="banking-button"> <span>Chuyển khoản</span>
-          </label>
-        </div>
+            <!-- Modal -->
+            <div class="modal fade w-100" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Thông báo</h1>
+                    <button type="button" class="btn-close" style="width: 10%;" data-bs-dismiss="modal"
+                      aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body d-flex justify-content-center align-items-center">
+                    Bạn có chắc muốn xóa sản phẩm chứ!
+                  </div>
+                  <div class="modal-footer d-flex flex-row">
+                    <button type="button" class="btn btn-secondary" style="width: 20%;"
+                      data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" style="width: 45%;">Xóa</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="add-del">
+              <div class="oder">
+                <div class="wrapper">
+                  <span class="minus">-</span>
+                  <span class="num">01</span>
+                  <span class="plus">+</span>
+                </div>
+                <script src="../src/js/san-pham.js"></script>
+              </div>
+            </div>
 
+          </div>
+        </div>
+      </div>
 
-        <div class="card-type" id="card-type">
-          <i class="fa-brands fa-cc-visa" alter="thẻ visa" id="visa-card"></i>
-          <i class="fa-solid fa-credit-card" alter="thẻ tín dụng"></i>
+      <div class="frame-2">
+        <div class="thanh-tien">
+          Tạm tính: 750.000đ
         </div>
-        <!-- Form chuyển khoản  -->
-        <form action="" id="banking-form">
-          <h2>Liên kết thẻ</h2>
-          <label>Thông tin thẻ</label>
-          <input type="text" placeholder="1234 1234 1234 1234">
-          <input type="text" placeholder="MM / YY">
-          <input type="text" placeholder="CVC">
-          <label>Tên chủ thẻ</label>
-          <input type="text" placeholder="Full name on card">
-          <label>Địa chỉ</label>
-          <select>
-            <option>Vietnam</option>
-          </select>
-          <input type="text" placeholder="Địa chỉ 1">
-          <input type="text" placeholder="Địa chỉ 2">
-          <input type="text" placeholder="Thành phố">
-          <input type="text" placeholder="Tỉnh">
-          <input type="text" placeholder="Mã bưu điện">
-          <button class="subscribe-btn">Đăng ký</button>
-        </form>
-        <div class="payment-button">
-          <a href="../pages/hoan-tat.html"><button type="button" class="btn btn-success" id="payment-button" style="width: 185px;
-    height: 50px;">THANH TOÁN</button></a>
-        </div>
-        <a href="../index.html" style="text-decoration: none;
-        margin-bottom: 10px;">Tiếp tục mua hàng</a>
+      </div>
+      <div class="dat-hang">
+        <button onclick="clickCart()" type="button" class="btn btn-success" style="width: 185px;
+    height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
+      </div>
+      <div class="text" style="margin-bottom: 10px;">
+        <!-- quay về trang chủ  -->
+        <a style="text-decoration: none;" href="../index.php">Tiếp tục mua hàng</a>
       </div>
     </div>
 
-    </div>
-  </main>
+
+  </div>
+
+  <!-- <div class="type-tree" id="type-tree"></div>
+  <div id="product-list">Kết quả ở đây</div> -->
 
   <!-- FOOTER  -->
   <footer class="footer">
@@ -564,7 +500,7 @@
     </div>
     <!-- xong footer  -->
   </footer>
-  <script src="../src/js/thanh-toan.js"></script>
+  </div>
 </body>
 
 </html>
