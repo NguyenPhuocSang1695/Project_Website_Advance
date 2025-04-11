@@ -1,3 +1,50 @@
+<?php
+require __DIR__ . '/../src/Jwt/vendor/autoload.php';
+use Firebase\JWT\JWT;
+
+$error = '';
+
+if (isset($_POST["login"])) {
+    $connect = new PDO("mysql:host=localhost;dbname=c01db", "root", "");
+    $username = trim($_POST["username"] ?? '');
+    $password = $_POST["password"] ?? '';
+
+    if (empty($username)) {
+        $error = 'Vui lòng nhập tên đăng nhập.';
+    } elseif (empty($password)) {
+        $error = 'Vui lòng nhập mật khẩu.';
+    } else {
+        $query = "SELECT * FROM users WHERE Username = ?";
+        $statement = $connect->prepare($query);
+        $statement->execute([$username]);
+        $user = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['PasswordHash'])) {
+            $key = '1a3LM3W966D6QTJ5BJb9opunkUcw_d09NCOIJb9QZTsrneqOICoMoeYUDcd_NfaQyR787PAH98Vhue5g938jdkiyIZyJICytKlbjNBtebaHljIR6-zf3A2h3uy6pCtUFl1UhXWnV6madujY4_3SyUViRwBUOP-UudUL4wnJnKYUGDKsiZePPzBGrF4_gxJMRwF9lIWyUCHSh-PRGfvT7s1mu4-5ByYlFvGDQraP4ZiG5bC1TAKO_CnPyd1hrpdzBzNW4SfjqGKmz7IvLAHmRD-2AMQHpTU-hN2vwoA-iQxwQhfnqjM0nnwtZ0urE6HjKl6GWQW-KLnhtfw5n_84IRQ';
+
+            // Tạo JWT chỉ với Username
+            $payload = [
+                'iat' => time(),
+                'nbf' => time(),
+                'exp' => time() + 3600, // Token có hiệu lực trong 1 giờ
+                'data' => [
+                    'Username' => $user['Username']
+                ]
+            ];
+
+            $token = JWT::encode($payload, $key, 'HS256');
+
+            // Gửi token dưới dạng cookie
+            setcookie("token", $token, time() + 3600, "/", "", true, true);
+            header("Location: ../index.php");
+            exit();
+        } else {
+            $error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -438,25 +485,18 @@
       <div class="login-header">
         <h1>Đăng nhập</h1>
       </div>
-      <form id="form-02" onsubmit="event.preventDefault(); window.location.href='../index.html'; singIn()">
+      <form id="form-02" method="post">
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" id="username" class="form-control" placeholder="Nhập username của bạn" required>
+          <input type="text" id="username" name="username" class="form-control" placeholder="Nhập username của bạn" required>
         </div>
         <div class="form-group">
           <label for="password">Mật khẩu</label>
-          <input type="password" id="password" class="form-control" placeholder="Nhập mật khẩu" required>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
         </div>
-        <div class="checkbox-group">
-          <input type="checkbox" id="remember" name="remember">
-          <label for="remember">Lưu mật khẩu</label>
-        </div>
-        <button type="submit" class="btn-login">Đăng nhập</button>
-        <div class="helper-text">
-          <a href="#">Quên mật khẩu?</a>
-        </div>
-      </form>
 
+        <button type="submit" name="login" class="btn-login">Đăng nhập</button>
+      </form>
     </div>
   </main>
 

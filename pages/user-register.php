@@ -1,74 +1,87 @@
 <!DOCTYPE html>
 <?php
+$errors = [];
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "c01db";
+  $conn = new mysqli("localhost", "root", "", "c01db");
+  if ($conn->connect_error) {
+    die("Kết nối thất bại: " . $conn->connect_error);
+  }
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) {
-        die("Kết nối thất bại: " . $conn->connect_error);
-    }
+  // Lấy dữ liệu từ form
+  $fullname = $_POST['fullname'];
+  $username = $_POST['username'];
+  $email = $_POST['email'];
+  $phone = $_POST['phone'];
+  $province = $_POST['province'];
+  $district = $_POST['district'];
+  $ward = $_POST['wards'];
+  $address = $_POST['address'];
+  $password = $_POST['password'];
+  $confirmPassword = $_POST['confirm-password'];
 
-    $fullname = $_POST['fullname'];
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $city = $_POST['inputCity'];
-    $district = $_POST['inputDistrict'];
-    $ward = $_POST['inputWard'];
-    $address = $_POST['address'];
-    $password = $_POST['password'];
-    $confirmPassword = $_POST['confirm-password'];
+  // Kiểm tra trùng username
+  $checkUsername = $conn->prepare("SELECT UserName FROM users WHERE UserName = ?");
+  $checkUsername->bind_param("s", $username);
+  $checkUsername->execute();
+  $checkUsername->store_result();
+  if ($checkUsername->num_rows > 0) {
+    $errors['username'] = "Tên đăng nhập đã tồn tại!";
+  }
+  $checkUsername->close();
 
-    $errors = [];
-    // Kiểm tra tên đăng nhập đã tồn tại
-    $checkUsername = $conn->prepare("SELECT UserName FROM users WHERE UserName = ?");
-    $checkUsername->bind_param("s", $username);
-    $checkUsername->execute();
-    $checkUsername->store_result();
-    if ($checkUsername->num_rows > 0) {
-        $errors['username'] = "Tên đăng nhập đã tồn tại!";
-    }
-    $checkUsername->close();
-    // Kiểm tra email đã tồn tại
-    $checkEmail = $conn->prepare("SELECT Email FROM users WHERE Email = ?");
-    $checkEmail->bind_param("s", $email);
-    $checkEmail->execute();
-    $checkEmail->store_result();
-    if ($checkEmail->num_rows > 0) {
-        $errors['email'] = "Email đã tồn tại!";
-    }
-    $checkEmail->close();
+  // Kiểm tra trùng email
+  $checkEmail = $conn->prepare("SELECT Email FROM users WHERE Email = ?");
+  $checkEmail->bind_param("s", $email);
+  $checkEmail->execute();
+  $checkEmail->store_result();
+  if ($checkEmail->num_rows > 0) {
+    $errors['email'] = "Email đã tồn tại!";
+  }
+  $checkEmail->close();
 
-    if ($password !== $confirmPassword) {
-        $errors['confirm-password'] = "Mật khẩu xác nhận không khớp!";
-    }
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = "Email đã tồn tại";
-    }
-    if (!preg_match("/^[a-z0-9_-]{3,16}$/", $username)) {
-        $errors['username'] = "Tên đăng nhập không hợp lệ!";
-    }
-    if (!preg_match("/^[0-9]{10,11}$/", $phone)) {
-        $errors['phone'] = "Số điện thoại không hợp lệ!";
-    }
-    if (!preg_match("/(?=.*[0-9])(?=.*[!@#$%^&*()])[A-Za-z\d!@#$%^&*()]{8,}/", $password)) {
-        $errors['password'] = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
-    }
+  // Các kiểm tra đầu vào
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors['email'] = "Email không hợp lệ!";
+  }
+  if (!preg_match("/^[a-z0-9_-]{3,16}$/", $username)) {
+    $errors['username'] = "Tên đăng nhập không hợp lệ!";
+  }
+  if (!preg_match("/^[0-9]{10,11}$/", $phone)) {
+    $errors['phone'] = "Số điện thoại không hợp lệ!";
+  }
+  if ($password !== $confirmPassword) {
+    $errors['confirm-password'] = "Mật khẩu xác nhận không khớp!";
+  }
+  if (!preg_match("/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,}/", $password)) {
+    $errors['password'] = "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
+  }
 
-    if (empty($errors)) {
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO users (FullName, UserName, Email, Phone, Province, District, Ward, Address, PasswordHash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssssss", $fullname, $username, $email, $phone, $city, $district, $ward, $address, $passwordHash);
-        $stmt->execute();
-        $stmt->close();
-        header("Location: ../index.html");
-        exit;
-    }
+  // Nếu không có lỗi thì thêm vào CSDL
+  if (empty($errors)) {
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare("INSERT INTO users (FullName, UserName, Email, Phone, Province, District, Ward, Address, PasswordHash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssssss", $fullname, $username, $email, $phone, $province, $district, $ward, $address, $passwordHash);
+    $stmt->execute();
+    $stmt->close();
     $conn->close();
+
+    // Chuyển trang sau khi đăng ký thành công
+    header("Location: user-login.php");
+    exit;
+  }
+
+  $conn->close();
 }
+
+// Kết nối để load danh sách tỉnh/thành (đặt ở cuối để luôn chạy được cả GET)
+$conn = new mysqli("localhost", "root", "", "c01db");
+if ($conn->connect_error) {
+  die("Kết nối thất bại: " . $conn->connect_error);
+}
+
+$provinceQuery = "SELECT province_id, name FROM province ORDER BY name ASC";
+$provinceResult = $conn->query($provinceQuery);
 ?>
 
 <html>
@@ -92,36 +105,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <title>Đăng kí</title>
   <style>
     /* hiện lỗi */
-  .error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  .container1 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 900px; /* Điều chỉnh kích thước theo nhu cầu */
-    margin: auto;
-    margin-top: 35px;
-}
-
-.form-card {
-    flex: 1;
-    width: 50%;
-    box-sizing: border-box;
-}
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
     }
+
+    .container1 {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 900px;
+      /* Điều chỉnh kích thước theo nhu cầu */
+      margin: auto;
+      margin-top: 35px;
+    }
+
     .form-card {
-        width: 100%;
+      flex: 1;
+      width: 50%;
+      box-sizing: border-box;
     }
-}
 
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
 
+      .form-card {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
@@ -555,89 +570,110 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <div class="form-card">
         <div class="form-content">
-            <div class="form-header">
-                <h1>Tạo tài khoản mới</h1>
-                <p>Điền thông tin dưới đây để bắt đầu</p>
+          <div class="form-header">
+            <h1>Tạo tài khoản mới</h1>
+            <p>Điền thông tin dưới đây để bắt đầu</p>
+          </div>
+          <form method="POST" action="">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fullname">Họ và tên</label>
+                <input type="text" id="fullname" name="fullname" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="username">Tên đăng nhập</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+                <p class="error-message"><?php echo $errors['username'] ?? ''; ?></p>
+              </div>
             </div>
-            <form method="POST" action="">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="fullname">Họ và tên</label>
-                        <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Nhập họ và tên" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="username">Tên đăng nhập</label>
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Tạo tên đăng nhập" required>
-                        <p class="error-message"><?php echo $errors['username'] ?? ''; ?></p>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="email">Địa chỉ email</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="example@email.com" required>
-                    <p class="error-message"><?php echo $errors['email'] ?? ''; ?></p>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Số điện thoại</label>
-                    <input type="text" id="phone" name="phone" class="form-control" placeholder="Nhập số điện thoại" required>
-                    <p class="error-message"><?php echo $errors['phone'] ?? ''; ?></p>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="inputCity">Tỉnh/Thành phố</label>
-                        <input type="text" id="inputCity" name="inputCity" class="form-control" placeholder="Nhập tỉnh/thành phố" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="inputDistrict">Quận/Huyện</label>
-                        <input type="text" id="inputDistrict" name="inputDistrict" class="form-control" placeholder="Nhập quận/huyện" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputWard">Xã/Phường</label>
-                    <input type="text" id="inputWard" name="inputWard" class="form-control" placeholder="Nhập xã/phường" required>
-                </div>
-                <div class="form-group">
-                    <label for="address">Địa chỉ</label>
-                    <input type="text" id="address" name="address" class="form-control" placeholder="Nhập địa chỉ cụ thể" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="password">Mật khẩu</label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Tạo mật khẩu mới" required>
-                        <p class="error-message"><?php echo $errors['password'] ?? ''; ?> </p>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm-password">Xác nhận mật khẩu</label>
-                        <input type="password" id="confirm-password" name="confirm-password" class="form-control" placeholder="Nhập lại mật khẩu" required>
-                        <p class="error-message"><?php echo $errors['confirm-password'] ?? ''; ?></p>
-                    </div>
-                </div>
-                <button type="submit" class="btn">Đăng ký ngay</button><br><br>
-                <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button>
-            </form>
-        </div>
-    </div>
-    <script>
-  function validateForm() {
-    var password = document.getElementById("password").value;
-    var confirmPassword = document.getElementById("confirm-password").value;
-    if (password !== confirmPassword) {
-        document.getElementById("confirm-password-error").innerText = "Mật khẩu xác nhận không khớp!";
-        return false;
-    }
-    return true;
-  }
-  function resetForm() {
-    document.querySelector("form").reset(); // Reset các ô nhập liệu
 
-    // Xóa luôn các thông báo lỗi
-    let errorMessages = document.querySelectorAll(".error-message");
-    errorMessages.forEach(msg => {
-        msg.innerText = ""; // Xóa nội dung lỗi
-        msg.style.display = "none"; // Ẩn lỗi luôn
-    });
-}
-  </script>
-  </div>
+            <div class="form-group">
+              <label for="email">Địa chỉ email</label>
+              <input type="email" id="email" name="email" class="form-control" required>
+              <p class="error-message"><?php echo $errors['email'] ?? ''; ?></p>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Số điện thoại</label>
+              <input type="text" id="phone" name="phone" class="form-control" required>
+              <p class="error-message"><?php echo $errors['phone'] ?? ''; ?></p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="province">Tỉnh/Thành phố</label>
+                <select id="province" name="province" class="form-control">
+                  <option value="">Chọn một tỉnh</option>
+                  <?php
+                  if ($provinceResult->num_rows > 0) {
+                    while ($row = $provinceResult->fetch_assoc()) {
+                      echo '<option value="' . $row['province_id'] . '">' . $row['name'] . '</option>';
+                    }
+                  }
+                  ?>
+                </select>
+
+              </div>
+              <div class="form-group">
+                <label for="district">Quận/Huyện</label>
+                <select id="district" name="district" class="form-control">
+                  <option value="">Chọn một quận/huyện</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="wards">Phường/Xã</label>
+              <select id="wards" name="wards" class="form-control">
+                <option value="">Chọn một xã</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="address">Địa chỉ</label>
+              <input type="text" id="address" name="address" class="form-control" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+                <p class="error-message"><?php echo $errors['password'] ?? ''; ?></p>
+              </div>
+              <div class="form-group">
+                <label for="confirm-password">Xác nhận mật khẩu</label>
+                <input type="password" id="confirm-password" name="confirm-password" class="form-control" required>
+                <p class="error-message"><?php echo $errors['confirm-password'] ?? ''; ?></p>
+              </div>
+            </div>
+
+            <button type="submit" class="btn">Đăng ký ngay</button>
+            <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button>
+          </form>
+        </div>
+      </div>
+      <script>
+        function validateForm() {
+          var password = document.getElementById("password").value;
+          var confirmPassword = document.getElementById("confirm-password").value;
+          if (password !== confirmPassword) {
+            document.getElementById("confirm-password-error").innerText = "Mật khẩu xác nhận không khớp!";
+            return false;
+          }
+          return true;
+        }
+        function resetForm() {
+          document.querySelector("form").reset(); // Reset các ô nhập liệu
+
+          // Xóa luôn các thông báo lỗi
+          let errorMessages = document.querySelectorAll(".error-message");
+          errorMessages.forEach(msg => {
+            msg.innerText = ""; // Xóa nội dung lỗi
+            msg.style.display = "none"; // Ẩn lỗi luôn
+          });
+        }
+      </script>
+    </div>
   </div>
 
   <!-- FOOTER  -->
@@ -710,6 +746,138 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   <script src="../src/js/user-register.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      // Listen for changes in the "province" select box
+      $('#province').on('change', function () {
+        var province_id = $(this).val();
+        // console.log(province_id);
+        if (province_id) {
+          // If a province is selected, fetch the districts for that province using AJAX
+          $.ajax({
+            url: 'ajax_get_district.php',
+            method: 'GET',
+            dataType: "json",
+            data: {
+              province_id: province_id
+            },
+            success: function (data) {
+              // Clear the current options in the "district" select box
+              $('#district').empty();
+
+              // Add the new options for the districts for the selected province
+              $.each(data, function (i, district) {
+                // console.log(district);
+                $('#district').append($('<option>', {
+                  value: district.id,
+                  text: district.name
+                }));
+              });
+              // Clear the options in the "wards" select box
+              $('#wards').empty();
+            },
+            error: function (xhr, textStatus, errorThrown) {
+              console.log('Error: ' + errorThrown);
+            }
+          });
+          $('#wards').empty();
+        } else {
+          // If no province is selected, clear the options in the "district" and "wards" select boxes
+          $('#district').empty();
+        }
+      });
+
+      // Listen for changes in the "district" select box
+      $('#district').on('change', function () {
+        var district_id = $(this).val();
+        // console.log(district_id);
+        if (district_id) {
+          // If a district is selected, fetch the awards for that district using AJAX
+          $.ajax({
+            url: 'ajax_get_wards.php',
+            method: 'GET',
+            dataType: "json",
+            data: {
+              district_id: district_id
+            },
+            success: function (data) {
+              // console.log(data);
+              // Clear the current options in the "wards" select box
+              $('#wards').empty();
+              // Add the new options for the awards for the selected district
+              $.each(data, function (i, wards) {
+                $('#wards').append($('<option>', {
+                  value: wards.id,
+                  text: wards.name
+                }));
+              });
+            },
+            error: function (xhr, textStatus, errorThrown) {
+              console.log('Error: ' + errorThrown);
+            }
+          });
+        } else {
+          // If no district is selected, clear the options in the "award" select box
+          $('#wards').empty();
+        }
+      });
+    });
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#province').on('change', function () {
+        var province_id = $(this).val();
+        if (province_id) {
+          $.ajax({
+            url: 'ajax_get_district.php',
+            method: 'GET',
+            dataType: "json",
+            data: { province_id: province_id },
+            success: function (data) {
+              $('#district').empty().append('<option value="">Chọn quận/huyện</option>');
+              $.each(data, function (i, district) {
+                $('#district').append($('<option>', {
+                  value: district.id,
+                  text: district.name
+                }));
+              });
+              $('#wards').empty().append('<option value="">Chọn phường/xã</option>');
+            }
+          });
+        } else {
+          $('#district').empty().append('<option value="">Chọn quận/huyện</option>');
+          $('#wards').empty().append('<option value="">Chọn phường/xã</option>');
+        }
+      });
+
+      $('#district').on('change', function () {
+        var district_id = $(this).val();
+        if (district_id) {
+          $.ajax({
+            url: 'ajax_get_wards.php',
+            method: 'GET',
+            dataType: "json",
+            data: { district_id: district_id },
+            success: function (data) {
+              $('#wards').empty().append('<option value="">Chọn phường/xã</option>');
+              $.each(data, function (i, wards) {
+                $('#wards').append($('<option>', {
+                  value: wards.id,
+                  text: wards.name
+                }));
+              });
+            }
+          });
+        } else {
+          $('#wards').empty().append('<option value="">Chọn phường/xã</option>');
+        }
+      });
+    });
+  </script>
+
 </body>
 
 </html>

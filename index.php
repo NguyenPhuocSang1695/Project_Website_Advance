@@ -1,3 +1,7 @@
+<?php
+require_once './src/php/token.php';
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -17,14 +21,15 @@
   <script src="./src/js/onOffSeacrhAdvance.js"></script>
   <!-- <script src="./src/js/search.js"></script> -->
   <!-- <script src="./src/js/tim-kiem-nang-cao.js"></script> -->
-  <!-- Tìm kiếm cơ bản  -->
   <script src="./src/js/search-common.js"></script>
-  <!-- Lọc sản phẩm  -->
-  <script src="./src/js/filter-product.js"></script>
+  <script src="./src/js/search-index.js"></script>
+  <!-- Tìm kiếm  -->
   <title>Trang Chủ</title>
-
+  <!-- <script src="./src/js/search.js"></script> -->
   <!-- AVCCVSA -->
 </head>
+
+<!-- <script src="./src/js/search.js"></script> -->
 
 <body>
   <div class="Sticky">
@@ -36,123 +41,131 @@
           <div class="aaa"></div>
           <div class="item-header">
             <div class="search-group">
-              <div class="search-container">
-                <div class="search-input-wrapper">
-                  <input type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput" class="search-input" />
-                  <button class="advanced-search-toggle" onclick="toggleAdvancedSearch()" title="Tìm kiếm nâng cao">
-                    <i class="fas fa-sliders-h"></i>
-                  </button>
-                  <button type="button" class="search-button" onclick="performSearch()" title="Tìm kiếm">
-                    <i class="fas fa-search"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Form tìm kiếm nâng cao được thiết kế lại -->
-              <div id="advancedSearchForm" class="advanced-search-panel" style="display: none">
-                <div class="advanced-search-header">
-                  <h5>Tìm kiếm nâng cao</h5>
-                  <button type="button" class="close-advanced-search" onclick="toggleAdvancedSearch()">
-                    <i class="fas fa-times"></i>
-                  </button>
+              <form id="searchForm" method="get">
+                <div class="search-container">
+                  <div class="search-input-wrapper">
+                    <input type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput" name="search"
+                      class="search-input" />
+                    <button type="button" class="advanced-search-toggle" id="advanced-search-toggle"
+                      onclick="toggleAdvancedSearch()" title="Tìm kiếm nâng cao">
+                      <i class="fas fa-sliders-h"></i>
+                    </button>
+                    <button type="submit" class="search-button" onclick="performSearch()" title="Tìm kiếm">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
                 </div>
 
-                <!-- Panel tìm kiếm nâng cao  -->
-                <div class="search-filter-container" id="search-filter-container">
-                  <div class="filter-group">
-                    <label for="categoryFilter">
-                      <i class="fas fa-leaf"></i> Phân loại sản phẩm
-                    </label>
-                    <select id="categoryFilter" class="form-select">
-                      <option value="">Tất cả phân loại</option>
-                      <option value="cay-de-cham">Cây dễ chăm</option>
-                      <option value="cay-van-phong">Cây văn phòng</option>
-                      <option value="cay-de-ban">Cây để bàn</option>
-                      <option value="cay-duoi-nuoc">Cây dưới nước</option>
-                    </select>
+                <!-- Form tìm kiếm nâng cao được thiết kế lại -->
+                <div id="advancedSearchForm" class="advanced-search-panel" style="display: none">
+                  <div class="advanced-search-header">
+                    <h5>Tìm kiếm nâng cao</h5>
+                    <button type="button" class="close-advanced-search" onclick="toggleAdvancedSearch()">
+                      <i class="fas fa-times"></i>
+                    </button>
                   </div>
 
-                  <div class="filter-group">
-                    <label for="priceRange">
-                      <i class="fas fa-tag"></i> Khoảng giá
-                    </label>
-                    <div class="price-range-slider">
-                      <div class="price-input-group">
-                        <input type="number" id="minPrice" placeholder="Từ" min="0" />
-                        <span class="price-separator">-</span>
-                        <input type="number" id="maxPrice" placeholder="Đến" min="0" />
+                  <!-- Panel tìm kiếm nâng cao  -->
+                  <div class="search-filter-container" id="search-filter-container">
+                    <div class="filter-group">
+                      <label for="categoryFilter">
+                        <i class="fas fa-leaf"></i> Phân loại sản phẩm
+                      </label>
+                      <select id="categoryFilter" name="category" class="form-select">
+                        <option value="Chọn phân loại">Chọn phân loại</option>
+                        <option value="Cây dễ chăm">Cây dễ chăm</option>
+                        <option value="Cây văn phòng">Cây văn phòng</option>
+                        <option value="Cây để bàn">Cây để bàn</option>
+                        <option value="Cây dưới nước">Cây dưới nước</option>
+                      </select>
+                    </div>
+
+                    <div class="filter-group">
+                      <label for="priceRange">
+                        <i class="fas fa-tag"></i> Khoảng giá
+                      </label>
+                      <div class="price-range-slider">
+                        <div class="price-input-group">
+                          <input type="number" id="minPrice" name="minPrice" placeholder="Từ" min="0" />
+                          <span class="price-separator">-</span>
+                          <input type="number" id="maxPrice" name="maxPrice" placeholder="Đến" min="0" />
+                        </div>
+                        <div class="price-ranges">
+                          <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
+                            Dưới 200k
+                          </button>
+                          <button type="button" class="price-preset" onclick="setPrice(200000, 500000)">
+                            200k - 500k
+                          </button>
+                          <button type="button" class="price-preset" onclick="setPrice(500000, 1000000)">
+                            500k - 1tr
+                          </button>
+                          <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
+                            Trên 1tr
+                          </button>
+                        </div>
                       </div>
-                      <div class="price-ranges">
-                        <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
-                          Dưới 200k
-                        </button>
-                        <button type="button" class="price-preset" onclick="setPrice(200000, 500000)">
-                          200k - 500k
-                        </button>
-                        <button type="button" class="price-preset" onclick="setPrice(500000, 1000000)">
-                          500k - 1tr
-                        </button>
-                        <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
-                          Trên 1tr
-                        </button>
-                      </div>
+                    </div>
+
+                    <div class="filter-actions">
+                      <button type="submit" class="btn-search" onclick="performSearch()">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                      </button>
+                      <button type="button" class="btn-reset" onclick="resetFilters()">
+                        <i class="fas fa-redo-alt"></i> Đặt lại
+                      </button>
                     </div>
                   </div>
 
-                  <div class="filter-actions">
-                    <button type="button" class="btn-search" onclick="performSearch()">
-                      <i class="fas fa-search"></i> Tìm kiếm
-                    </button>
-                    <button type="button" class="btn-reset" onclick="resetFilters()">
-                      <i class="fas fa-redo-alt"></i> Đặt lại
-                    </button>
+                  <div class="search-tips">
+                    <p>
+                      <i class="fas fa-lightbulb"></i> Mẹo: Kết hợp nhiều điều
+                      kiện để tìm kiếm chính xác hơn
+                    </p>
                   </div>
                 </div>
-
-                <div class="search-tips">
-                  <p>
-                    <i class="fas fa-lightbulb"></i> Mẹo: Kết hợp nhiều điều
-                    kiện để tìm kiếm chính xác hơn
-                  </p>
-                </div>
-              </div>
+              </form>
             </div>
 
+            <!-- Header, Giỏ hàng và user -->
             <div class="cart-icon">
               <a href="./pages/gio-hang.html"><img src="./assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
-              <label for="tick" style="cursor: pointer"><img src="./assets/images/user.svg" alt="" /></label>
+              <label for="tick" style="cursor: pointer">
+                <img src="../assets/images/user.svg" alt="" />
+              </label>
               <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
                 aria-controls="offcanvasExample" />
               <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                    Xin vui lòng đăng nhập
+                    <?= $username ? "Xin chào, " . htmlspecialchars($username) : "Xin vui lòng đăng nhập" ?>
                   </h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="./pages/user-register.html">Đăng kí</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="./pages/user-login.html">Đăng nhập</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="./pages/ho-so.html">Hồ sơ</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="./pages/ho-so.html">Lịch sử mua hàng</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="index.html" onclick="logOut()">Đăng xuất</a>
-                    </li>
+                    <?php if (!$username): ?>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                      </li>
+                    <?php else: ?>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="../index.php" onclick="logOut()">Đăng xuất</a>
+                      </li>
+                    <?php endif; ?>
                   </ul>
                 </div>
               </div>

@@ -1,4 +1,49 @@
 <!DOCTYPE html>
+<?php
+require '../src/Jwt/vendor/autoload.php';
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+$key = '1a3LM3W966D6QTJ5BJb9opunkUcw_d09NCOIJb9QZTsrneqOICoMoeYUDcd_NfaQyR787PAH98Vhue5g938jdkiyIZyJICytKlbjNBtebaHljIR6-zf3A2h3uy6pCtUFl1UhXWnV6madujY4_3SyUViRwBUOP-UudUL4wnJnKYUGDKsiZePPzBGrF4_gxJMRwF9lIWyUCHSh-PRGfvT7s1mu4-5ByYlFvGDQraP4ZiG5bC1TAKO_CnPyd1hrpdzBzNW4SfjqGKmz7IvLAHmRD-2AMQHpTU-hN2vwoA-iQxwQhfnqjM0nnwtZ0urE6HjKl6GWQW-KLnhtfw5n_84IRQ';
+
+$username = null;
+
+if (isset($_COOKIE['token'])) {
+    try {
+        $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
+        $username = $decoded->data->Username;
+    } catch (Exception $e) {
+        $username = null;
+    }
+}
+?>
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "c01db";
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+  die("Kết nối thất bại: " . $conn->connect_error);
+}
+
+// Lấy ID từ URL
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+// Truy vấn sản phẩm theo ID
+$sql = "SELECT * FROM products WHERE ProductID = $id";
+$result = $conn->query($sql);
+
+// Nếu có sản phẩm
+if ($result && $result->num_rows > 0) {
+  $product = $result->fetch_assoc();
+} else {
+  echo "Không tìm thấy sản phẩm.";
+  exit;
+}
+?>
+
 <html>
 
 <head>
@@ -224,41 +269,45 @@
             <a href="gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
           </div>
           <div class="user-icon">
-            <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
+            <label for="tick" style="cursor: pointer">
+              <img src="../assets/images/user.svg" alt="" />
+            </label>
             <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
               aria-controls="offcanvasExample" />
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
               aria-labelledby="offcanvasExampleLabel">
               <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                  Nguyễn Phước Sang
+                  <?= $username ? htmlspecialchars($username) : "Khách" ?>
                 </h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                   aria-label="Close"></button>
               </div>
               <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                  <li class="nav-item">
-                    <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
-                  </li>
-
-                  <li class="nav-item">
-                    <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
-                  </li>
-
-                  <li class="nav-item">
-                    <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng xuất</a>
-                  </li>
+                  <?php if (!$username): ?>
+                    <li class="nav-item">
+                      <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
+                    </li>
+                  <?php else: ?>
+                    <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="../index.php" onclick="logOut()">Đăng xuất</a>
+                    </li>
+                  <?php endif; ?>
                 </ul>
               </div>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -397,8 +446,7 @@
         <li><a href="#">Giới thiệu</a></li>
         <li>
           <div class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Sản phẩm
             </a>
             <ul class="dropdown-menu">
@@ -431,73 +479,17 @@
   </div>
 </div>
 
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "c01db";
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) {
-        die("Kết nối thất bại: " . $conn->connect_error);
-    }
-
-    $fullname = $_POST['fullname'];
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $city = $_POST['inputCity'];
-    $district = $_POST['inputDistrict'];
-    $ward = $_POST['inputWard'];
-    $address = $_POST['address'];
-    $password = $_POST['password'];
-
-    // Kiểm tra định dạng email
-    if (!preg_match("/^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/", $email)) {
-        echo "Email không hợp lệ!";
-    } elseif (!preg_match("/^[a-z0-9_-]{3,16}$/", $username)) {
-        echo "Tên đăng nhập không hợp lệ!";
-    } elseif (!preg_match("/^\+?[0-9]{7,15}$/", $phone)) {
-        echo "Số điện thoại không hợp lệ!";
-    } elseif (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,}$/", $password)) {
-        echo "Mật khẩu không hợp lệ! Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
-    } else {
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $checkUser = $conn->prepare("SELECT * FROM users WHERE UserName = ? OR Email = ?");
-        $checkUser->bind_param("ss", $username, $email);
-        $checkUser->execute();
-        $result = $checkUser->get_result();
-
-        if ($result->num_rows > 0) {
-            echo "Tên đăng nhập hoặc Email đã tồn tại!";
-        } else {
-            $stmt = $conn->prepare("INSERT INTO users (FullName, UserName, Email, Phone, Province, District, Ward, Address, PasswordHash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssssss", $fullname, $username, $email, $phone, $city, $district, $ward, $address, $passwordHash);
-
-            if ($stmt->execute()) {
-                header("Location: index.php");
-                exit;
-            } else {
-                echo "Lỗi: " . $stmt->error;
-            }
-
-            $stmt->close();
-        }
-        $checkUser->close();
-    }
-    $conn->close();
-}
-?>
 <div class="sanpham">
   <!-- Ảnh sản phẩm -->
-  <img src="<?php echo ".." . $product['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>" class="single-image" />
-  <!-- Tên cây, số lượng, giá -->
+  <img src="<?php echo ".." . $product['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>"
+    class="single-image" />
+
+  <!-- Tên cây, giá, mô tả -->
   <div class="details">
     <div class="nametree">
       <h2><?php echo $product['ProductName']; ?></h2>
       <h3 id="giá"><?php echo number_format($product['Price'], 0, ',', '.') . " VNĐ"; ?></h3>
-      <p><?php echo $product['DescriptionBrief']; ?></p>
     </div>
 
     <!-- Nút tăng chỉnh số lượng -->
@@ -514,12 +506,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
   </div>
 </div>
-
 <div class="description">
   <hr style="height: 3px; border-width: 0; background-color: #1c8e2e; width: 20%;" />
   <h3>MÔ TẢ</h3>
-  <p><?php echo nl2br($product['DescriptionDetail']); ?></p>
+  <p><?php echo ($product['Description'] !== 'None') ? $product['Description'] : 'Không có mô tả'; ?></p>
 </div>
+<?php $conn->close(); ?>
+</div>
+
 
 
 
@@ -590,6 +584,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <!-- xong footer  -->
 </footer>
 <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function logOut() {
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  }
+</script>
+
 </body>
 
 </html>
