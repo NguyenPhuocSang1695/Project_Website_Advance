@@ -1,10 +1,5 @@
 <?php
 session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -13,137 +8,50 @@ $database = "webdb";
 $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) die("Kết nối thất bại: " . $conn->connect_error);
 
+// Lấy OrderID từ session
+$orderID = $_SESSION['order_id'] ?? 0;
+if (!$orderID) die("Không tìm thấy đơn hàng.");
 
-// Giả định người dùng đã đăng nhập
-$username = $_SESSION['username'] ?? 'user1'; // Giả lập nếu chưa có session
-
-$stmt = $conn->prepare("SELECT * FROM users WHERE Username = ?");
-$stmt->bind_param("s", $username);
+// Lấy thông tin đơn hàng
+$stmt = $conn->prepare("SELECT * FROM orders WHERE OrderID = ?");
+$stmt->bind_param("i", $orderID);
 $stmt->execute();
-$userResult = $stmt->get_result();
-$user = $userResult->fetch_assoc();
+$order = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-
-// Kiểm tra giỏ hàng
-$cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
-//tính tổng
-$total_amount = 0;
-foreach ($cart_items as $item) {
-    $total_amount += $item['Price'] * $item['Quantity'];
-}
-$total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
-    // Lấy thông tin người dùng
-    $stmt = $conn->prepare("SELECT * FROM users WHERE Username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $userResult = $stmt->get_result();
-    $user = $userResult->fetch_assoc();
-    $stmt->close();
-
-    if (!$user) die("Không tìm thấy người dùng.");
-
-    $dateNow = date('Y-m-d H:i:s');
-    // Tạo đơn hàng
-  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_checkout'])) {
-      $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
-      $stmt = $conn->prepare("INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address)
-                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-      $stmt->bind_param("ssssssssss", 
-          $username,
-          $paymentMethod,
-          $user['FullName'],
-          $user['Phone'],
-          $user['Province'],
-          $user['District'],
-          $user['Ward'],
-          $dateNow,
-          $total_amount,
-          $user['Address']
-      );
-      $stmt->execute();
-      $orderID = $stmt->insert_id;
-      $_SESSION['order_id'] = $orderID; // ✅ đặt ở đây, ngay sau khi có orderID
-
-      $stmt->close();
-      // thêm chi tiết đơn hàng
-      $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
-      foreach ($cart_items as $item) {
-          $productID = $item['ProductID'];
-          $quantity = $item['Quantity'];
-          $unitPrice = $item['Price'];
-          $totalPrice = $quantity * $unitPrice;
-
-          $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
-          $stmt->execute();
-      }
-      $stmt->close();
-
-  }
-
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info'])) {
-            // Debug: kiểm tra dữ liệu nhận được
-        echo "<pre>";
-        print_r($_POST);
-        echo "</pre>";
-        // Lấy thông tin từ form
-        $orderID = $_POST['order_id']; // lấy từ input hidden
-        $newName = $_POST['new_name'];
-        $newSdt = $_POST['new_sdt'];
-        $newDiachi = $_POST['new_diachi'];
-        $province = $_POST['province'];
-        $district = $_POST['district'];
-        $ward = $_POST['ward'];
-        //     // Debug: kiểm tra giá trị orderID và các trường
-        // echo "Order ID nhận được: " . $orderID . "<br>";
-        // 🆕 Lấy thêm phương thức thanh toán nếu có
-        $paymentMethod = isset($_POST['paymentMethod']) ? $_POST['paymentMethod'] : 'COD';
-
-       // Cập nhật thông tin người nhận trong bảng orders
-        $stmt = $conn->prepare("UPDATE orders 
-        SET CustomerName = ?, Phone = ?, Address = ?, Province = ?, District = ?, Ward = ?,PaymentMethod = ?
-        WHERE OrderID = ?");
-          $stmt->bind_param("sssssssi", $newName, $newSdt, $newDiachi, $province, $district, $ward, $paymentMethod,$orderID,);
-          echo "SQL Query: " . "UPDATE orders SET CustomerName = '$newName', Phone = '$newSdt', Address = '$newDiachi', Province = '$province', District = '$district', Ward = '$ward', PaymentMethod = '$paymentMethod' WHERE OrderID = '$orderID'";
-
-          if ($stmt->execute()) {
-          // echo "<script>alert('Cập nhật thông tin giao hàng thành công!');</script>";
-          } else {
-          // echo "<script>alert('Cập nhật thông tin thất bại!');</script>";
-          }
-             // Debug: kiểm tra số dòng bị ảnh hưởng
-          echo "Số dòng được cập nhật: " . $stmt->affected_rows;
-          $stmt->close();
-    } 
+// Lấy chi tiết sản phẩm từ đơn hàng
+$stmt = $conn->prepare("
+  SELECT p.ProductName, p.ImageURL, od.Quantity, od.UnitPrice, (od.Quantity * od.UnitPrice) AS TotalPrice
+  FROM orderdetails od
+  JOIN products p ON od.ProductID = p.ProductID
+  WHERE od.OrderID = ?
+");
+$stmt->bind_param("i", $orderID);
+$stmt->execute();
+$details = $stmt->get_result();
 ?>
-
 
 <!DOCTYPE html>
 <html>
-<!-- Sửa infor-for-banking ở dòng 584  -->
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- CSS  -->
-  <link rel="stylesheet" href="../src/css/thanh-toan.css" />
+  <!-- css  -->
+  <link rel="stylesheet" href="../src/css/hoan-tat.css" />
+  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
   <link rel="stylesheet" href="../src/css/search-styles.css" />
-  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="../src/css/footer.css">
-  <link rel="stylesheet" href="../src/css/gio-hang-php.css">
-  <link rel="stylesheet" href="../src/css/thanh-toan-php.css">
-
-
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../src/js/Trang_chu.js"></script>
   <script src="../src/js/main.js"></script>
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
-  <script src="../src/js/thanh-toan.js"></script>
-  <script src="../src/js/gio-hang.js"></script>
-  <title>Hoàn tất thanh toán</title>
+  <script src="../src/js/Hoa-Don.js"></script>
+  <title>Hoàn tất đặt hàng</title>
 </head>
 
 <body>
@@ -249,7 +157,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-cham">
-                  <img src="../assets/images/CAY5.jpg" alt="Cây phát tài" />
+                  <img src="./assets/images/CAY5.jpg" alt="Cây phát tài" />
                   <div class="p-details">
                     <h2>Cây phát tài</h2>
                     <h3>750.000 vnđ</h3>
@@ -258,7 +166,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
 
                 <!-- OK  -->
                 <div class="product" data-category="cay-van-phong">
-                  <img src="../assets/images/CAY6.jpg" alt="Cây kim ngân" />
+                  <img src="./assets/images/CAY6.jpg" alt="Cây kim ngân" />
                   <div class="p-details">
                     <h2>Cây kim ngân</h2>
                     <h3>280.000 vnđ</h3>
@@ -266,7 +174,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="../assets/images/CAY7.jpg" alt="Cây trầu bà" />
+                  <img src="./assets/images/CAY7.jpg" alt="Cây trầu bà" />
                   <div class="p-details">
                     <h2>Cây trầu bà</h2>
                     <h3>120.000 vnđ</h3>
@@ -274,7 +182,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-duoi-nuoc">
-                  <img src="../assets/images/CAY8.jpg" alt="Cây lan chi" />
+                  <img src="./assets/images/CAY8.jpg" alt="Cây lan chi" />
                   <div class="p-details">
                     <h2>Cây lan chi</h2>
                     <h3>120.000 vnđ</h3>
@@ -282,7 +190,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="../assets/images/CAY9.jpg" alt="Cây trầu bà đỏ" />
+                  <img src="./assets/images/CAY9.jpg" alt="Cây trầu bà đỏ" />
                   <div class="p-details">
                     <h2>Cây trầu bà đỏ</h2>
                     <h3>320.000 vnđ</h3>
@@ -290,7 +198,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="../assets/images/CAY10.jpg" alt="Cây lưỡi hổ" />
+                  <img src="./assets/images/CAY10.jpg" alt="Cây lưỡi hổ" />
                   <div class="p-details">
                     <h2>Cây lưỡi hổ</h2>
                     <h3>750.000 vnđ</h3>
@@ -298,7 +206,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="../assets/images/CAY11.jpg" alt="Cây lưỡi hổ vàng" />
+                  <img src="./assets/images/CAY11.jpg" alt="Cây lưỡi hổ vàng" />
                   <div class="p-details">
                     <h2>Cây lưỡi hổ vàng</h2>
                     <h3>160.000 vnđ</h3>
@@ -306,7 +214,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="../assets/images/CAY12.jpg" alt="Cây hạnh phúc" />
+                  <img src="./assets/images/CAY12.jpg" alt="Cây hạnh phúc" />
                   <div class="p-details">
                     <h2>Cây hạnh phúc</h2>
                     <h3>1.200.000 vnđ</h3>
@@ -314,7 +222,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="../assets/images/CAY13.jpg" alt="Cây trầu bà châu lớn" />
+                  <img src="./assets/images/CAY13.jpg" alt="Cây trầu bà châu lớn" />
                   <div class="p-details">
                     <h2>Cây trầu bà châu lớn</h2>
                     <h3>1.100.000 vnđ</h3>
@@ -322,14 +230,14 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-van-phong">
-                  <img src="../assets/images/CAY14.jpg" alt="Cây phát tài DORADO" />
+                  <img src="./assets/images/CAY14.jpg" alt="Cây phát tài DORADO" />
                   <div class="p-details">
                     <h2>Cây phát tài DORADO</h2>
                     <h3>220.000 vnđ</h3>
                   </div>
                 </div>
                 <div class="product" data-category="cay-de-ban">
-                  <img src="../assets/images/CAY16.jpg" alt="Cây vạn lộc" />
+                  <img src="./assets/images/CAY16.jpg" alt="Cây vạn lộc" />
                   <div class="p-details">
                     <h2>Cây vạn lộc</h2>
                     <h3>1.150.000 vnđ</h3>
@@ -337,7 +245,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="../assets/images/CAY17.jpg" alt="Cây ngọc vừng" />
+                  <img src="./assets/images/CAY17.jpg" alt="Cây ngọc vừng" />
                   <div class="p-details">
                     <h2>Cây ngọc vừng</h2>
                     <h3>1.750.000 vnđ</h3>
@@ -347,7 +255,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
             </div>
 
             <div class="cart-icon">
-              <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
@@ -365,18 +273,18 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <li class="nav-item">
-                      <a class="nav-link login-logout" href="../pages/user-register.html">Đăng kí</a>
+                      <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
                     </li>
 
                     <li class="nav-item">
-                      <a class="nav-link login-logout" href="../pages/user-login.html">Đăng nhập</a>
+                      <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
                     </li>
 
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../pages/ho-so.html">Hồ sơ</a>
+                      <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../pages/user-History.html">Lịch sử mua hàng</a>
+                      <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng xuất</a>
@@ -475,16 +383,16 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                         <input type="number" id="maxPriceMobile" placeholder="Đến" min="0" />
                       </div>
                       <div class="price-ranges">
-                        <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
+                        <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
                           Dưới 200k
                         </button>
-                        <button type="button" class="price-preset" onclick="setPriceMobile(200000, 500000)">
+                        <button type="button" class="price-preset" onclick="setPrice(200000, 500000)">
                           200k - 500k
                         </button>
-                        <button type="button" class="price-preset" onclick="setPriceMobile(500000, 1000000)">
+                        <button type="button" class="price-preset" onclick="setPrice(500000, 1000000)">
                           500k - 1tr
                         </button>
-                        <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
+                        <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
                           Trên 1tr
                         </button>
                       </div>
@@ -492,7 +400,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                   </div>
 
                   <div class="filter-actions">
-                    <button type="button" class="btn-search" onclick="performSearchMobile()">
+                    <button type="button" class="btn-search" onclick="performSearch()">
                       <i class="fas fa-search"></i> Tìm kiếm
                     </button>
                     <button type="button" class="btn-reset" onclick="resetMobileFilters()">
@@ -558,212 +466,74 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
     </div>
   </div>
 
-  <main>
-    <div class="container-payment">
-      <h2>THANH TOÁN</h2>
-      <div class="content">
-        <div class="status-order">
-          <i class="fa-solid fa-cart-shopping"></i>
-          <hr style="border: 1px dashed black; width: 21%;">
-          <i style="color: green;" class="fa-solid fa-id-card"></i>
-          <hr style="border: 1px dashed black; width: 21%;">
-          <i class="fa-solid fa-circle-check"></i>
-        </div>
-        <div class="option-address">
-          <label for="">
-            <input type="radio" name="chon" id="default-information" checked> <span>Sử dụng thông tin mặc
-              định</span>
-          </label>
-          <label for="">
-            <input type="radio" name="chon" id="new-information"> <span>Nhập thông tin mới</span>
-          </label>
-        </div>
-
-        <div id="default-information-form">
-        <label><strong>Họ và tên</strong></label>
-        <input type="text" value="<?= htmlspecialchars($user['FullName']) ?>" disabled>
-        <input type="hidden" name="FullName" value="<?= htmlspecialchars($user['FullName']) ?>">
-
-        <label><strong>Email</strong></label>
-        <input type="email" value="<?= htmlspecialchars($user['Email']) ?>" disabled>
-        <input type="hidden" name="Email" value="<?= htmlspecialchars($user['Email']) ?>">
-
-        <label><strong>Số điện thoại</strong></label>
-        <input type="text" value="<?= htmlspecialchars($user['Phone']) ?>" disabled>
-        <input type="hidden" name="Phone" value="<?= htmlspecialchars($user['Phone']) ?>">
-
-        <label><strong>Địa chỉ</strong></label>
-        <input type="text" value="<?= htmlspecialchars($user['Address'] . ', ' . $user['Ward'] . ', ' . $user['District'] . ', ' . $user['Province']) ?>" disabled>
-
-        <input type="hidden" name="Address" value="<?= htmlspecialchars($user['Address']) ?>">
-        <input type="hidden" name="Ward" value="<?= htmlspecialchars($user['Ward']) ?>">
-        <input type="hidden" name="District" value="<?= htmlspecialchars($user['District']) ?>">
-        <input type="hidden" name="Province" value="<?= htmlspecialchars($user['Province']) ?>">
-        </div>
-
-        <form action="thanh-toan.php" id="new-information-form" method="POST">
-        <input type="hidden" name="order_id" value="<?php echo $_SESSION['order_id'] ?? ''; ?>">
-
-          <label for=""><strong>Họ và tên</strong></label>
-          <input type="text" name="new_name" id="new-name" placeholder="Họ và tên">
-          <label for=""><strong>Số điện thoại</strong></label>
-          <input type="text" name="new_sdt" id="new-sdt" placeholder="Số điện thoại">
-          <label for=""><strong>Địa chỉ</strong></label>
-          <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ cụ thể" >
-
-          <label for=""><strong>Tỉnh/Thành phố</strong></label>
-          <select name="province" id="province" class="form-select">
-            <option value="">Chọn tỉnh/thành phố</option>
-            <?php
-            // Lấy danh sách tỉnh từ cơ sở dữ liệu
-            $stmt = $conn->prepare("SELECT province_id, name FROM province");
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                echo '<option value="' . $row['province_id'] . '">' . htmlspecialchars($row['name']) . '</option>';
-            }
-            $stmt->close();
-            ?>
-          </select>
-
-          <label for=""><strong>Quận/Huyện</strong></label>
-          <select name="district" id="district" class="form-select">
-            <option value="">Chọn quận/huyện</option>
-
-          </select>
-
-          <label for=""><strong>Phường/Xã</strong></label>
-          <select name="ward" id="ward" class="form-select">
-            <option value="">Chọn phường/xã</option>
-            
-          </select>
-          <div class="payment-method-container">
-          <div class="payment-method">
-              <label>
-                <input type="radio" name="paymentMethod" value="COD" id="cod-button" checked>
-                <span>Thanh toán khi nhận hàng</span>
-              </label>
-              <label>
-                <input type="radio" name="paymentMethod" value="Banking" id="banking-button">
-                <span>Chuyển khoản</span>
-              </label>
-            </div>
-          </div>
-          
-        
-          <button type="submit" name="submit_order_info">Xác nhận thông tin mới này</button>
-          <script src="../src/js/DiaChi.js"></script>
-        </form>
-
-      
-        <div class="infor-goods">
-          <hr style="border: 3px dashed green; width: 100%" />
-          <?php if (count($cart_items) > 0): ?>
-            <?php foreach ($cart_items as $item): ?>
-              <div class="order">
-                  <div class="order-img">
-                    <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>" />
-                  </div>
-                  <div class="frame">
-                    <div class="name-price">
-                    <p><strong><?php echo htmlspecialchars($item['ProductName']); ?></strong></p>
-                    <p class="price" data-price="<?php echo $item['Price']; ?>">
-                            <strong><?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></strong>
-                    </p>
-                  </div>
-                    <div class="function">
-                      <!-- Button trigger modal -->
-                      <form action="gio-hang.php" method="POST">
-                          <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                          <button type="button" class="btn" onclick="this.form.submit();"
-                            style="width: 53px; height: 33px;">
-                            <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
-                          </button>
-                      </form>
-                      <!-- Nútxóa và thêm số lượng sản phẩm  -->
-                      <div class="add-del">
-                          <div class="oder">
-                            <div class="wrapper" >
-                              <form action="gio-hang.php" method="POST" class="update-form">
-                                <!-- Truyền ProductID để xác định sản phẩm cần cập nhật -->
-                                <input type="hidden" name="update_product_id" value="<?php echo $item['ProductID']; ?>">                       
-                                <!-- Nút giảm số lượng -->
-                                <!-- <button type="button" class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>                       -->
-                                <!-- Trường số lượng, gán thuộc tính data-price để JS dùng cho tính toán nếu cần -->
-                                <span class="quantity-display" ><?php echo "x".$item['Quantity']; ?></span>
-                        
-                                <!-- Nút tăng số lượng -->
-                                <!-- <button type="button" class="quantity-btn" onclick="changeQuantity(this, 1)">+</button> -->
-                              </form>
-                            </div>
-                          </div>
-                      </div>
-                  </div>
-                </div>
-              </div>
-          <?php endforeach; ?>
-            <?php else:  ?>
-            <p>Giỏ hàng của bạn đang trống</p>
-            <?php endif; ?>
-          <div class="frame-2">
-            <div class="thanh-tien">
-              Tổng : <span id="total-price"><?php echo $total_price_formatted; ?></span>
-            </div>
-          </div>
-
-          <div class="payment-method">
-            <label>
-              <input type="radio" name="paymentMethod" value="COD" id="cod-button" >
-              <span>Thanh toán khi nhận hàng</span>
-            </label>
-            <label>
-              <input type="radio" name="paymentMethod" value="Banking" id="banking-button">
-              <span>Chuyển khoản</span>
-            </label>
-          </div>
-
-
-
-        <div class="card-type" id="card-type">
-          <i class="fa-brands fa-cc-visa" alter="thẻ visa" id="visa-card"></i>
-          <i class="fa-solid fa-credit-card" alter="thẻ tín dụng"></i>
-        </div>
-        <!-- Form chuyển khoản  -->
-        <!-- <form action="" id="banking-form">
-          <h2>Liên kết thẻ</h2>
-          <label>Thông tin thẻ</label>
-          <input type="text" placeholder="1234 1234 1234 1234">
-          <input type="text" placeholder="MM / YY">
-          <input type="text" placeholder="CVC">
-          <label>Tên chủ thẻ</label>
-          <input type="text" placeholder="Full name on card">
-          <label>Địa chỉ</label>
-          <select>
-            <option>Vietnam</option>
-          </select>
-          <input type="text" placeholder="Địa chỉ 1">
-          <input type="text" placeholder="Địa chỉ 2">
-          <input type="text" placeholder="Thành phố">
-          <input type="text" placeholder="Tỉnh">
-          <input type="text" placeholder="Mã bưu điện">
-          <button class="subscribe-btn">Đăng ký</button>
-        </form> -->
-
-        <form action="../pages/hoan-tat.php" method="POST">
-          <div class="payment-button">
-            <button type="submit" class="btn btn-success" id="payment-button" style="width: 185px; height: 50px;">
-              THANH TOÁN
-            </button>
-          </div>
-        </form>
-
-          <a href="../index.html" style="text-decoration: none;
-          margin-bottom: 10px;">Tiếp tục mua hàng</a>
-        </div>
+  <!-- ARTICLE -->
+  <div class="article">
+    <div class="title-cart">
+      <p class="text-success h1 text-center text-uppercase">Hoàn tất</p>
     </div>
 
+    <div class="infor-order bg-light">
+      <div class="status-order">
+        <img class="cart-2" src="../assets/images/cart.svg" alt="cart" />
+        <hr />
+        <img src="../assets/images/id-card.svg" class="id-01" alt="id-card" />
+        <hr />
+        <img src="../assets/images/circle-check.svg" class="id-02" alt="ccheck" />
+      </div>
+
+      <div class="noti-order-success">
+        <p class="text-uppercase fw-bold w-100 text-center">
+          bạn đã đặt hàng thành công
+        </p>
+      </div>
+
+      <div class="noti-thanks">
+        <p class="fs-4">
+          THE TREE xin cảm ơn các bạn đã ủng hộ chúng tôi trong suốt thời gian
+          qua.
+        </p>
+      </div>
+
+      <div class="invoice-container">
+        <h2>HÓA ĐƠN MUA HÀNG</h2>
+        <p><strong>Mã hóa đơn:</strong> <?= $order['OrderID'] ?> <span id="invoice-id"></span></p>
+        <p><strong>Ngày mua:</strong> <?= $order['DateGeneration'] ?><span id="purchase-date"></span></p>
+        <p>
+          <strong>Tên khách hàng:</strong> <?= $order['CustomerName'] ?> <span id="customer-name"></span>
+        </p>
+        <p>
+          <strong>Số điện thoại:</strong> <?= $order['Phone']?> <span id="customer-phone"></span>
+        </p>
+        <p><strong>Địa chỉ:</strong>  <?= $order['Address'] ?>, <?= $order['Ward'] ?>, <?= $order['District'] ?>, <?= $order['Province'] ?><span id="customer-address"></span></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Hình ảnh</th>
+              <th>Số lượng</th>
+              <th>Giá</th>
+              <th>Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody id="invoice-body">
+          <?php while ($row = $details->fetch_assoc()): ?>
+            <tr>
+              <td><?php echo htmlspecialchars($row['ProductName']); ?></td>
+              <td><img src="<?php echo ".." . $row['ImageURL'];?>"  alt="<?php echo $product['ProductName']; ?>" width="80"></td>
+              <td><?= $row['Quantity'] ?></td>
+              <td><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
+              <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
+            </tr>
+            <?php endwhile; ?>
+          </tbody>
+        </table>
+        <div class="total">
+          <strong>Tổng cộng: </strong> <span id="total-price"><?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ</span>
+        </div>
+        <button class="btn-back" onclick="goBack()">Quay lại giỏ hàng</button>
+      </div>
     </div>
-  </main>
+  </div>
 
   <!-- FOOTER  -->
   <footer class="footer">
@@ -832,7 +602,6 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
     </div>
     <!-- xong footer  -->
   </footer>
-  <script src="../src/js/thanh-toan.js"></script>
 </body>
 
 </html>

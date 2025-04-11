@@ -301,12 +301,11 @@ body {
   color: red;
   font-size: clamp(15px, 26px, 33px);
   display: flex;
-  /* background-color: #1c8e2e; */
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-end;
   margin-left: 0.7rem;
-  width: 70%;
+  width: 110% !important;
   height: 7rem;
 }
 .container-payment {
@@ -383,7 +382,33 @@ body {
   height: 37px;
   outline-color: 1c8e2e;
 }
+/*  */
+#new-information-form .payment-method {
+  margin-top: 10px;
+  display: flex;
+  gap: 20px;
+}
 
+#new-information-form .payment-method label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 19px;
+}
+
+#new-information-form .payment-method input[type="radio"] {
+  width: 14px;
+  height: 14px;
+  transform: scale(1);
+  cursor: pointer;
+}
+
+/*  */
+/* Thêm hiệu ứng hover (tùy chọn) cho label */
+.payment-method label:hover {
+  color: #007bff;
+}
 .infor-goods {
   width: 70%;
   margin: 35px 0px;

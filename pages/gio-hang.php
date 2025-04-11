@@ -59,14 +59,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: gio-hang.php");
         exit;
     }
+
 }
-// ✅ ✅ ✅ Phần này PHẢI nằm ngoài khối POST
-$cart_items = isset($_SESSION['cart']) ? array_values($_SESSION['cart']) : [];
-$total = 0;
-foreach ($cart_items as $item) {
-    $total += $item['Price'] * $item['Quantity'];
-}
-$total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
+  $cart_items = isset($_SESSION['cart']) ? array_values($_SESSION['cart']) : [];
+  $total = 0;
+  foreach ($cart_items as $item) {
+      $total += $item['Price'] * $item['Quantity'];
+  }
+  $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
+
+  // Nếu user nhấn nút ĐẶT HÀNG
+
+
+  
 ?>
 
 
@@ -590,9 +595,9 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
             Tổng : <span id="total-price"><?php echo $total_price_formatted; ?></span>
           </div>
         </div>
-      <form action="thanh-toan.php" method="POST" > 
+      <form action="thanh-toan.php" method="POST" name = "ThanhToan"> 
           <div class="dat-hang">
-            <button  type="submit" class="btn btn-success" style="width: 185px;
+            <button  type="submit" class="btn btn-success" name = "confirm_checkout" style="width: 185px;
             height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
           </div>
       </form>
