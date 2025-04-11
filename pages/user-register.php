@@ -198,7 +198,7 @@ $provinceResult = $conn->query($provinceQuery);
                           <span class="price-separator">-</span>
                           <input type="number" id="maxPrice" name="maxPrice" placeholder="Đến" min="0" />
                         </div>
-                        <div class="price-ranges">
+                        <!-- <div class="price-ranges">
                           <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
                             Dưới 200k
                           </button>
@@ -211,7 +211,7 @@ $provinceResult = $conn->query($provinceQuery);
                           <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
                             Trên 1tr
                           </button>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
 
@@ -239,7 +239,7 @@ $provinceResult = $conn->query($provinceQuery);
               document.getElementById("searchForm").addEventListener("submit", function(e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
-                window.location.href = "./search-result.html?q=" + encodeURIComponent(searchInput);
+                window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
               });
             </script>
 
@@ -306,7 +306,7 @@ $provinceResult = $conn->query($provinceQuery);
               <div class="offcanvas-body offcanvas-fullscreen mt-20">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="../index.html">Trang chủ</a>
+                    <a class="nav-link active" aria-current="page" href="../index.php">Trang chủ</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Giới thiệu</a>
@@ -318,16 +318,16 @@ $provinceResult = $conn->query($provinceQuery);
                     </a>
                     <ul class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
                       </li>
                     </ul>
                   </li>
@@ -416,14 +416,14 @@ $provinceResult = $conn->query($provinceQuery);
       <div class="brand">
         <div class="brand-logo">
           <!-- Quay về trang chủ  -->
-          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
+          <a href="../index.php"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
         </div>
         <div class="brand-name">THE TREE</div>
       </div>
       <div class="choose">
         <ul>
           <li>
-            <a href="../index.html" style="font-weight: bold">Trang chủ</a>
+            <a href="../index.php" style="font-weight: bold">Trang chủ</a>
           </li>
           <li><a href="#">Giới thiệu</a></li>
           <li>
@@ -434,16 +434,16 @@ $provinceResult = $conn->query($provinceQuery);
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
                 </li>
               </ul>
             </div>

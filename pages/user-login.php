@@ -1,6 +1,7 @@
 <?php
 require_once('../src/php/token.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
+
 use Firebase\JWT\JWT;
 
 $error = '';
@@ -172,14 +173,14 @@ if (isset($_POST["login"])) {
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function (e) {
+              document.getElementById("searchForm").addEventListener("submit", function(e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
-                window.location.href = "./search-result.html?q=" + encodeURIComponent(searchInput);
+                window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
               });
             </script>
             <div class="cart-icon">
-              <a href="./gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="./gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
@@ -191,7 +192,7 @@ if (isset($_POST["login"])) {
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                  <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
+                    <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
                   </h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
@@ -241,7 +242,7 @@ if (isset($_POST["login"])) {
               <div class="offcanvas-body offcanvas-fullscreen mt-20">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="../index.html">Trang chủ</a>
+                    <a class="nav-link active" aria-current="page" href="../index.php">Trang chủ</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Giới thiệu</a>
@@ -253,16 +254,16 @@ if (isset($_POST["login"])) {
                     </a>
                     <ul class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                        <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
                       </li>
                     </ul>
                   </li>
@@ -351,14 +352,14 @@ if (isset($_POST["login"])) {
       <div class="brand">
         <div class="brand-logo">
           <!-- Quay về trang chủ  -->
-          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
+          <a href="../index.php"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
         </div>
         <div class="brand-name">THE TREE</div>
       </div>
       <div class="choose">
         <ul>
           <li>
-            <a href="../index.html" style="font-weight: bold">Trang chủ</a>
+            <a href="../index.php" style="font-weight: bold">Trang chủ</a>
           </li>
           <li><a href="#">Giới thiệu</a></li>
           <li>
@@ -369,16 +370,16 @@ if (isset($_POST["login"])) {
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                  <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
                 </li>
               </ul>
             </div>

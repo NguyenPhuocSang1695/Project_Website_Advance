@@ -90,7 +90,7 @@ require_once './src/php/token.php';
                           <span class="price-separator">-</span>
                           <input type="number" id="maxPrice" name="maxPrice" placeholder="Đến" min="0" />
                         </div>
-                        <div class="price-ranges">
+                        <!-- <div class="price-ranges">
                           <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
                             Dưới 200k
                           </button>
@@ -103,7 +103,7 @@ require_once './src/php/token.php';
                           <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
                             Trên 1tr
                           </button>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
 
@@ -129,7 +129,7 @@ require_once './src/php/token.php';
 
             <!-- Header, Giỏ hàng và user -->
             <div class="cart-icon">
-              <a href="./pages/gio-hang.html"><img src="./assets/images/cart.svg" alt="cart" /></a>
+              <a href="./pages/gio-hang.php"><img src="./assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
@@ -157,10 +157,10 @@ require_once './src/php/token.php';
                       </li>
                     <?php else: ?>
                       <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
+                        <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
+                        <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link hs-ls-dx" href="./src/php/logout.php">Đăng xuất</a>
@@ -191,7 +191,7 @@ require_once './src/php/token.php';
               <div id="offcanvasbody" class="offcanvas-body offcanvas-fullscreen mt-20">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="index.html">Trang chủ</a>
+                    <a class="nav-link active" aria-current="page" href="index.php">Trang chủ</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Giới thiệu</a>
@@ -203,16 +203,16 @@ require_once './src/php/token.php';
                     </a>
                     <ul class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="./pages/phan-loai.html?category_id=3">Cây dễ chăm</a>
+                        <a class="dropdown-item" href="./pages/phan-loai.php?category_id=3">Cây dễ chăm</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./pages/phan-loai.html?category_id=1">Cây văn phòng</a>
+                        <a class="dropdown-item" href="./pages/phan-loai.php?category_id=1">Cây văn phòng</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./pages/phan-loai.html?category_id=4">Cây để bàn</a>
+                        <a class="dropdown-item" href="./pages/phan-loai.php?category_id=4">Cây để bàn</a>
                       </li>
                       <li>
-                        <a class="dropdown-item" href="./pages/phan-loai.html?category_id=2">Cây trong nước</a>
+                        <a class="dropdown-item" href="./pages/phan-loai.php?category_id=2">Cây trong nước</a>
                       </li>
                     </ul>
                   </li>
@@ -302,14 +302,14 @@ require_once './src/php/token.php';
       <div class="brand">
         <div class="brand-logo">
           <!-- Quay về trang chủ  -->
-          <a href="index.html"><img class="img-fluid" src="./assets/images/LOGO-2.jpg" alt="LOGO" /></a>
+          <a href="index.php"><img class="img-fluid" src="./assets/images/LOGO-2.jpg" alt="LOGO" /></a>
         </div>
         <div class="brand-name">THE TREE</div>
       </div>
       <div class="choose">
         <ul>
           <li>
-            <a href="index.html" style="font-weight: bold">Trang chủ</a>
+            <a href="index.php" style="font-weight: bold">Trang chủ</a>
           </li>
           <li><a href="#">Giới thiệu</a></li>
           <li>
@@ -320,16 +320,16 @@ require_once './src/php/token.php';
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=3">Cây dễ chăm</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.php?category_id=3">Cây dễ chăm</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=1">Cây văn phòng</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.php?category_id=1">Cây văn phòng</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=4">Cây để bàn</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.php?category_id=4">Cây để bàn</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.html?category_id=2">Cây dưới nước</a>
+                  <a class="dropdown-item" href="./pages/phan-loai.php?category_id=2">Cây dưới nước</a>
                 </li>
               </ul>
             </div>
@@ -567,7 +567,7 @@ require_once './src/php/token.php';
 
     document.addEventListener("DOMContentLoaded", function() {
       // Kiểm tra nếu đang ở trang kết quả tìm kiếm
-      if (window.location.pathname.includes("search-result.html")) {
+      if (window.location.pathname.includes("search-result.php")) {
         loadSearchResults();
       }
 
@@ -679,7 +679,7 @@ require_once './src/php/token.php';
 
     // Chuyển hướng đến trang kết quả tìm kiếm
     function redirectToSearchPage(search, category, minPrice, maxPrice) {
-      let url = "./pages/search-result.html?q=" + encodeURIComponent(search);
+      let url = "./pages/search-result.php?q=" + encodeURIComponent(search);
 
       if (
         category &&
