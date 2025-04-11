@@ -1,26 +1,78 @@
+<?php
+require_once('../src/php/token.php');
+require __DIR__ . '/../src/Jwt/vendor/autoload.php';
+use Firebase\JWT\JWT;
+
+$error = '';
+
+if (isset($_POST["login"])) {
+  $connect = new PDO("mysql:host=localhost;dbname=c01db", "root", "");
+  $username = trim($_POST["username"] ?? '');
+  $password = $_POST["password"] ?? '';
+
+  if (empty($username)) {
+    $error = 'Vui lòng nhập tên đăng nhập.';
+  } elseif (empty($password)) {
+    $error = 'Vui lòng nhập mật khẩu.';
+  } else {
+    $query = "SELECT * FROM users WHERE Username = ?";
+    $statement = $connect->prepare($query);
+    $statement->execute([$username]);
+    $user = $statement->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['PasswordHash'])) {
+      $key = '1a3LM3W966D6QTJ5BJb9opunkUcw_d09NCOIJb9QZTsrneqOICoMoeYUDcd_NfaQyR787PAH98Vhue5g938jdkiyIZyJICytKlbjNBtebaHljIR6-zf3A2h3uy6pCtUFl1UhXWnV6madujY4_3SyUViRwBUOP-UudUL4wnJnKYUGDKsiZePPzBGrF4_gxJMRwF9lIWyUCHSh-PRGfvT7s1mu4-5ByYlFvGDQraP4ZiG5bC1TAKO_CnPyd1hrpdzBzNW4SfjqGKmz7IvLAHmRD-2AMQHpTU-hN2vwoA-iQxwQhfnqjM0nnwtZ0urE6HjKl6GWQW-KLnhtfw5n_84IRQ';
+
+      // Tạo JWT chỉ với Username
+      $payload = [
+        'iat' => time(),
+        'nbf' => time(),
+        'exp' => time() + 3600, // Token có hiệu lực trong 1 giờ
+        'data' => [
+          'Username' => $user['Username']
+        ]
+      ];
+
+      $token = JWT::encode($payload, $key, 'HS256');
+
+      // Gửi token dưới dạng cookie
+      setcookie("token", $token, time() + 3600, "/", "", true, true);
+      header("Location: ../index.php");
+      exit();
+    } else {
+      $error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
+    }
+  }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- CSS  -->
-  <link rel="stylesheet" type="text/css" href="../src/css/user-history-details.css" />
-  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
-  <link rel="stylesheet" href="../src/css/search-styles.css" />
-  <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
+  <link rel="stylesheet" href="../src/css/user-login.css">
+  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="../src/css/search-styles.css">
+  <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css">
   <link rel="stylesheet" href="../src/css/footer.css">
   <!-- JS  -->
   <script src="../src/js/search-common.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../src/js/Trang_chu.js"></script>
-  <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
-  <script src="../src/js/main.js"></script>
+  <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
-  <title>Lịch sử người dùng</title>
+  <title>Đăng nhập</title>
+  <style>
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+  </style>
 </head>
 
 <body>
@@ -126,42 +178,44 @@
                 window.location.href = "./search-result.html?q=" + encodeURIComponent(searchInput);
               });
             </script>
-
             <div class="cart-icon">
               <a href="./gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
-              <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
+              <label for="tick" style="cursor: pointer">
+                <img src="../assets/images/user.svg" alt="" />
+              </label>
               <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
                 aria-controls="offcanvasExample" />
               <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                    Nguyễn Phước Sang
+                  <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
                   </h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-register.html">Đăng kí</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-login.html">Đăng nhập</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng xuất</a>
-                    </li>
+                    <?php if (!$loggedInUsername): ?>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                      </li>
+                    <?php else: ?>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="../src/php/logout.php">Đăng xuất</a>
+                      </li>
+                    <?php endif; ?>
                   </ul>
                 </div>
               </div>
@@ -197,7 +251,6 @@
                       aria-expanded="false">
                       Sản phẩm
                     </a>
-
                     <ul class="dropdown-menu">
                       <li>
                         <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
@@ -220,7 +273,6 @@
                     <a class="nav-link" href="#">Liên hệ</a>
                   </li>
                 </ul>
-
                 <form class="searchFormMobile mt-3" role="search" id="searchFormMobile">
                   <div class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search"
@@ -338,81 +390,47 @@
     </div>
   </div>
 
+
+
   <!-- SECTION  -->
-  <div class="section1">
+  <div class="section">
     <div class="img-21">
-      <img src="../assets/images/CAY21.jpg" alt="CAY21" />
+      <img src="../assets/images/CAY21.jpg" alt="CAY21">
     </div>
   </div>
 
-  <section>
-    <div class="information-client">
-      <h2>Hồ sơ khách hàng</h2>
-      <hr>
-      <div class="thongtin">
-        <h5>Họ tên:</h5>
-        <h5>Số điện thoại:</h5>
-        <h5>Địa chỉ:</h5>
+  <!-- ARTICLE -->
+  <main>
+    <div class="login-container">
+      <div class="login-header">
+        <h1>Đăng nhập</h1>
       </div>
-    </div>
-    <div class="history">
-      <div class="main-content">
-        <!-- Left Section -->
-        <div class="left-section">
-          <div class="section products">
-            <div class="section-header">
-              <span style="color:#21923c;"><i class="fa-regular fa-circle" style="  margin-right: 5px;"></i>Chi tiết đơn
-                hàng</span>
-              <button class="more-btn">...</button>
-            </div>
-            <table>
-
-              <thead>
-                <tr>
-                  <th>Mã hóa đơn</th>
-                  <th>Số đơn hàng</th>
-                  <th>Tổng tiền(đ)</th>
-                  <th>Ngày giao</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="product-info">
-                      <span class="product-name">#f111</span><br>
-                    </div>
-                  </td>
-                  <td>1</td>
-                  <td>1,100,000</td>
-                  <td>1/1/2025</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="product-info">
-                      <span class="product-name">#f112</span><br>
-                    </div>
-                  </td>
-                  <td>1</td>
-                  <td>550,000</td>
-                  <td>2/2/2025</td>
-                </tr>
-              </tbody>
-            </table>
-
-          </div>
+      <form id="form-02" method="post">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" class="form-control" placeholder="Nhập username của bạn"
+            required value="<?= htmlspecialchars($_POST['username'] ?? '') ?>">
+          <?php if ($error === 'Tên đăng nhập hoặc mật khẩu không đúng.' || $error === 'Vui lòng nhập tên đăng nhập.'): ?>
+            <div class="error-message"><?= $error ?></div>
+          <?php endif; ?>
         </div>
-      </div>
-    </div>
-    </div>
-  </section>
 
-  <script>
-    $("#menu-btn").click(function () {
-      $("#menu").toggleClass("active");
-    });
-  </script>
+        <div class="form-group">
+          <label for="password">Mật khẩu</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu"
+            required>
+          <?php if ($error === 'Vui lòng nhập mật khẩu.'): ?>
+            <div class="error-message"><?= $error ?></div>
+          <?php endif; ?>
+        </div>
 
+        <button type="submit" name="login" class="btn-login">Đăng nhập</button>
+      </form>
+
+    </div>
+  </main>
+
+  <!-- FOOTER  -->
   <footer class="footer">
     <div class="footer-column">
       <h3>Thee Tree</h3>
@@ -479,6 +497,8 @@
     </div>
     <!-- xong footer  -->
   </footer>
+  </div>
+  <script src="../src/js/Trang_chu.js"></script>
 </body>
 
 </html>

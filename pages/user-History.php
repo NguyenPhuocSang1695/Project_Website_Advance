@@ -3,21 +3,24 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <!-- CSS  -->
-  <link rel="stylesheet" href="../src/css/user-login.css">
-  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css">
-  <link rel="stylesheet" href="../src/css/search-styles.css">
-  <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css">
+  <link rel="stylesheet" type="text/css" href="../src/css/user-history-details.css" />
+  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
+  <link rel="stylesheet" href="../src/css/search-styles.css" />
+  <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="../src/css/footer.css">
   <!-- JS  -->
   <script src="../src/js/search-common.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../src/js/Trang_chu.js"></script>
+  <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
   <script src="../src/js/main.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
-  <title>Đăng nhập</title>
+  <title>Lịch sử người dùng</title>
 </head>
 
 <body>
@@ -123,6 +126,7 @@
                 window.location.href = "./search-result.html?q=" + encodeURIComponent(searchInput);
               });
             </script>
+
             <div class="cart-icon">
               <a href="./gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
@@ -134,7 +138,7 @@
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                    Xin vui lòng đăng nhập!
+                    Nguyễn Phước Sang
                   </h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
@@ -193,6 +197,7 @@
                       aria-expanded="false">
                       Sản phẩm
                     </a>
+
                     <ul class="dropdown-menu">
                       <li>
                         <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
@@ -215,6 +220,7 @@
                     <a class="nav-link" href="#">Liên hệ</a>
                   </li>
                 </ul>
+
                 <form class="searchFormMobile mt-3" role="search" id="searchFormMobile">
                   <div class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search"
@@ -332,44 +338,78 @@
     </div>
   </div>
 
-
-
   <!-- SECTION  -->
-  <div class="section">
+  <div class="section1">
     <div class="img-21">
-      <img src="../assets/images/CAY21.jpg" alt="CAY21">
+      <img src="../assets/images/CAY21.jpg" alt="CAY21" />
     </div>
   </div>
 
-  <!-- ARTICLE -->
-  <main>
-    <div class="login-container">
-      <div class="login-header">
-        <h1>Đăng nhập</h1>
+  <section>
+    <div class="information-client">
+      <h2>Hồ sơ khách hàng</h2>
+      <hr>
+      <div class="thongtin">
+        <h5>Họ tên:</h5>
+        <h5>Số điện thoại:</h5>
+        <h5>Địa chỉ:</h5>
       </div>
-      <form id="form-02" onsubmit="event.preventDefault(); window.location.href='../index.html'; singIn()">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" class="form-control" placeholder="Nhập username của bạn" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Mật khẩu</label>
-          <input type="password" id="password" class="form-control" placeholder="Nhập mật khẩu" required>
-        </div>
-        <div class="checkbox-group">
-          <input type="checkbox" id="remember" name="remember">
-          <label for="remember">Lưu mật khẩu</label>
-        </div>
-        <button type="submit" class="btn-login">Đăng nhập</button>
-        <div class="helper-text">
-          <a href="#">Quên mật khẩu?</a>
-        </div>
-      </form>
-
     </div>
-  </main>
+    <div class="history">
+      <div class="main-content">
+        <!-- Left Section -->
+        <div class="left-section">
+          <div class="section products">
+            <div class="section-header">
+              <span style="color:#21923c;"><i class="fa-regular fa-circle" style="  margin-right: 5px;"></i>Đơn
+                hàng đã đặt</span>
+              <button class="more-btn">...</button>
+            </div>
+            <table>
 
-  <!-- FOOTER  -->
+              <thead>
+                <tr>
+                  <th>Mã hóa đơn</th>
+                  <th>Số đơn hàng</th>
+                  <th>Tổng tiền(đ)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="product-info">
+                      <span class="product-name">#f111</span><br>
+                    </div>
+                  </td>
+                  <td>1</td>
+                  <td>1,100,000</td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="product-info">
+                      <span class="product-name">#f112</span><br>
+                    </div>
+                  </td>
+                  <td>1</td>
+                  <td>550,000</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <script>
+    $("#menu-btn").click(function () {
+      $("#menu").toggleClass("active");
+    });
+  </script>
+
   <footer class="footer">
     <div class="footer-column">
       <h3>Thee Tree</h3>
@@ -436,8 +476,6 @@
     </div>
     <!-- xong footer  -->
   </footer>
-  </div>
-  <script src="../src/js/Trang_chu.js"></script>
 </body>
 
 </html>

@@ -1,3 +1,7 @@
+<?php
+require_once './src/php/token.php';
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -12,7 +16,7 @@
   <link rel="stylesheet" href="./src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="./src/css/footer.css">
   <!-- JS  -->
-  <script src="./src/js/main.js"></script>
+  <!-- <script src="./src/js/main.js"></script> -->
   <script src="./assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script src="./src/js/onOffSeacrhAdvance.js"></script>
   <!-- <script src="./src/js/search.js"></script> -->
@@ -128,37 +132,40 @@
               <a href="./pages/gio-hang.html"><img src="./assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
-              <label for="tick" style="cursor: pointer"><img src="./assets/images/user.svg" alt="" /></label>
+              <label for="tick" style="cursor: pointer">
+                <img src="assets/images/user.svg" alt="" />
+              </label>
               <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
                 aria-controls="offcanvasExample" />
               <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
                   <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                    Xin vui lòng đăng nhập
+                    <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
                   </h5>
                   <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="./pages/user-register.html">Đăng kí</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="./pages/user-login.html">Đăng nhập</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="./pages/ho-so.html">Hồ sơ</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="./pages/ho-so.html">Lịch sử mua hàng</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="index.html" onclick="logOut()">Đăng xuất</a>
-                    </li>
+                    <?php if (!$loggedInUsername): ?>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                      </li>
+                    <?php else: ?>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="ho-so.html">Hồ sơ</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
+                      </li>
+                      <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="./src/php/logout.php">Đăng xuất</a>
+                      </li>
+                    <?php endif; ?>
                   </ul>
                 </div>
               </div>
