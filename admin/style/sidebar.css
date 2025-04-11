@@ -42,3 +42,9 @@
     margin-bottom: 20px;
     width: 54px
 }
+.admin  {
+    display: flex;
+    flex-direction: column;
+    height: 60px;
+    font-size: 20px;
+}

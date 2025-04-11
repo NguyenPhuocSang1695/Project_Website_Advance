@@ -4,7 +4,7 @@ function connect_db()
     $server = "localhost";
     $username = "root";
     $password = "";
-    $database = "webdb";
+    $database = "c01db";
 
     // Create connection
     $conn = new mysqli($server, $username, $password, $database);
