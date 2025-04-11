@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         <a href="user-sanpham.php?id=${product.ProductID}">
           <img src="..${
             product.ImageURL
-          }" class="img-fluid" style="height: 275px;" alt="${
+          }" class="img-fluid" style="height: 275px;width: 275px" alt="${
       product.ProductName
     }">
         </a>
