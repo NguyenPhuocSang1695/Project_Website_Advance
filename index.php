@@ -497,15 +497,6 @@ require_once './src/php/token.php';
       </ul>
     </div>
 
-    <div class="footer-column">
-      <h3>Dịch vụ khách hàng</h3>
-      <ul>
-        <li><a href="#">Chính sách đổi trả</a></li>
-        <li><a href="#">Giao hàng & Vận chuyển</a></li>
-        <li><a href="#">Hướng dẫn mua hàng</a></li>
-        <li><a href="#">Liên hệ hỗ trợ</a></li>
-      </ul>
-    </div>
 
     <div class="footer-column">
       <h3>Learn</h3>
