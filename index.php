@@ -163,7 +163,7 @@ require_once './src/php/token.php';
                         <a class="nav-link hs-ls-dx" href="user-History.html">Lịch sử mua hàng</a>
                       </li>
                       <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="./src/php/logout.php">Đăng xuất</a>
+                        <a class="nav-link hs-ls-dx" href="./src/php/logout.php">Đăng xuất</a>
                       </li>
                     <?php endif; ?>
                   </ul>
@@ -565,7 +565,7 @@ require_once './src/php/token.php';
   <script>
     // search.js - Xử lý tìm kiếm cho website bán cây
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
       // Kiểm tra nếu đang ở trang kết quả tìm kiếm
       if (window.location.pathname.includes("search-result.html")) {
         loadSearchResults();
@@ -580,7 +580,7 @@ require_once './src/php/token.php';
       // Xử lý form tìm kiếm desktop
       const desktopForm = document.getElementById("searchForm");
       if (desktopForm) {
-        desktopForm.addEventListener("submit", function (e) {
+        desktopForm.addEventListener("submit", function(e) {
           e.preventDefault();
           performSearch();
         });
@@ -589,7 +589,7 @@ require_once './src/php/token.php';
       // Xử lý form tìm kiếm mobile
       const mobileForm = document.getElementById("searchFormMobile");
       if (mobileForm) {
-        mobileForm.addEventListener("submit", function (e) {
+        mobileForm.addEventListener("submit", function(e) {
           e.preventDefault();
           performSearchMobile();
         });
@@ -1035,7 +1035,6 @@ require_once './src/php/token.php';
       // Cập nhật URL với sắp xếp mới
       window.location.search = urlParams.toString();
     }
-
   </script>
 </body>
 
