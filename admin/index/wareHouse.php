@@ -266,13 +266,12 @@
         aria-controls="offcanvasExample"></i>
       <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample"
         aria-labelledby="offcanvasExampleLabel">
-        <div style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(176, 176, 176);"
-          class="offcanvas-header">
+        <div style="border-bottom: 1px solid rgb(176, 176, 176);" class="offcanvas-header">
           <h5 class="offcanvas-title" id="offcanvasExampleLabel">Mục lục</h5>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="homePage.html" style="text-decoration: none; color: black;">
+          <a href="homePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -280,7 +279,7 @@
               <p>Trang chủ</p>
             </div>
           </a>
-          <a href="wareHouse.html" style="text-decoration: none; color: black;">
+          <a href="wareHouse.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection" style="background-color: #6aa173;">
                 <i class="fa-solid fa-warehouse" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -288,7 +287,7 @@
               <p>Kho hàng</p>
             </div>
           </a>
-          <a href="customer.html" style="text-decoration: none; color: black;">
+          <a href="customer.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -296,7 +295,7 @@
               <p style="color: black; text-align: center; font-size: 10x;">Khách hàng</p>
             </div>
           </a>
-          <a href="orderPage.html" style="text-decoration: none; color: black;">
+          <a href="orderPage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-list-check" style="font-size: 18px; color: #FAD4AE;"></i>
@@ -304,7 +303,7 @@
               <p style="color:black">Đơn hàng</p>
             </div>
           </a>
-          <a href="analyzePage.html" style="text-decoration: none; color: black;">
+          <a href="analyzePage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -312,7 +311,7 @@
               <p>Thống kê</p>
             </div>
           </a>
-          <a href="accountPage.html" style="text-decoration: none; color: black;">
+          <a href="accountPage.php" style="text-decoration: none; color: black;">
             <div class="container-function-selection">
               <button class="button-function-selection">
                 <i class="fa-solid fa-circle-user" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -335,31 +334,30 @@
       </div>
       <div>
         <div class="position-employee">
-          <p>Nhân viên</p>
+          <p id="employee-role">Chức vụ</p>
         </div>
         <div class="name-employee">
-          <p>Nguyen Chuong</p>
+          <p id="employee-name">Ẩn danh</p>
         </div>
       </div>
       <div>
-        <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="" data-bs-toggle="offcanvas"
+        <img class="avatar" src="../../assets/images/admin.jpg" alt="" data-bs-toggle="offcanvas"
           data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">
       </div>
       <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
         aria-labelledby="offcanvasWithBothOptionsLabel">
-        <div style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(176, 176, 176);"
-          class="offcanvas-header">
-          <img class="avatar" src="../images/image/chuong-avatar.jpg" alt="">
-          <div style="display: flex; flex-direction: column; height: 95px;">
-            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">NgNguyenChuong</h4>
-            <h5>Ng_Nguyen_Chuong</h5>
+        <div style="border-bottom: 1px solid rgb(176, 176, 176);" class="offcanvas-header">
+          <img class="avatar" src="../../assets/images/admin.jpg" alt="">
+          <div class="admin">
+            <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Username</h4>
+            <h5 id="employee-displayname">Họ tên</h5>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-          <a href="accountPage.html" class="navbar_user">
+          <a href="accountPage.php" class="navbar_user">
             <i class="fa-solid fa-user"></i>
-            <p>Thông tin cá nhân </p>
+            <p>Thông tin cá nhân</p>
           </a>
           <a href="#logoutModal" class="navbar_logout">
             <i class="fa-solid fa-right-from-bracket"></i>
@@ -370,7 +368,7 @@
               <h2>Xác nhận đăng xuất</h2>
               <p>Bạn có chắc chắn muốn đăng xuất không?</p>
               <div class="modal_actions">
-                <a href="../index.html" class="btn_2 confirm">Đăng xuất</a>
+                <a href="../php/logout.php" class="btn_2 confirm">Đăng xuất</a>
                 <a href="#" class="btn_2 cancel">Hủy</a>
               </div>
             </div>
@@ -382,7 +380,7 @@
 
   <div class="side-bar">
     <div class="backToHome">
-      <a href="homePage.html" style="text-decoration: none; color: black;">
+      <a href="homePage.php" style="text-decoration: none; color: black;">
         <div class="container-function-selection">
           <button class="button-function-selection" style="margin-top: 35px;">
             <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -391,7 +389,7 @@
         </div>
       </a>
     </div>
-    <a href="wareHouse.html" style="text-decoration: none; color: black;">
+    <a href="wareHouse.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection" style="background-color: #6aa173;">
           <i class="fa-solid fa-warehouse" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -399,7 +397,7 @@
         <p>Kho hàng</p>
       </div>
     </a>
-    <a href="customer.html" style="text-decoration: none; color: black;">
+    <a href="customer.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -407,7 +405,7 @@
         <p>Khách hàng</p>
       </div>
     </a>
-    <a href="orderPage.html" style="text-decoration: none; color: black;">
+    <a href="orderPage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-list-check" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -415,7 +413,7 @@
         <p>Đơn hàng</p>
       </div>
     </a>
-    <a href="analyzePage.html" style="text-decoration: none; color: black;">
+    <a href="analyzePage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-chart-simple" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -423,7 +421,7 @@
         <p>Thống kê</p>
       </div>
     </a>
-    <a href="accountPage.html" style="text-decoration: none; color: black;">
+    <a href="accountPage.php" style="text-decoration: none; color: black;">
       <div class="container-function-selection">
         <button class="button-function-selection">
           <i class="fa-solid fa-circle-user" style="font-size: 20px; color: #FAD4AE;"></i>
@@ -499,7 +497,6 @@
                 <option value="4">Cây để bàn</option>
               </select>
             </div>
-
             <div class="form-group">
               <label for="price">Giá</label>
               <input type="number" id="price" name="price" required placeholder="Nhập giá sản phẩm">
@@ -575,7 +572,19 @@
 
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../js/add-product.js"></script>
+  <script src="../js/checklog.js"></script>
   <!-- <script src="../js/hienthisanpham_khohang.js"></script> -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cachedUserInfo = localStorage.getItem('userInfo');
+      if (cachedUserInfo) {
+        const userInfo = JSON.parse(cachedUserInfo);
+        document.querySelector('.name-employee p').textContent = userInfo.fullname;
+        document.querySelector('.position-employee p').textContent = userInfo.role;
+        document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
+      }
+    });
+  </script>
 </body>
 
 </html>
