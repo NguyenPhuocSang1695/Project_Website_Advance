@@ -215,7 +215,6 @@ body {
   max-height: 300px;
   overflow-y: auto;
   border-radius: 6px;
-
 }
 
 .product-list .product {
@@ -298,6 +297,18 @@ body {
 }
 
 /* main  */
+.frame-2 {
+  color: red;
+  font-size: clamp(15px, 26px, 33px);
+  display: flex;
+  /* background-color: #1c8e2e; */
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-left: 0.7rem;
+  width: 70%;
+  height: 7rem;
+}
 .container-payment {
   display: flex;
   flex-direction: column;
@@ -421,9 +432,7 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: 3rem;
 }
-
 
 .payment-method {
   display: flex;
@@ -439,9 +448,6 @@ body {
 .wrapper {
   height: 32px;
   width: 86px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -490,7 +496,6 @@ body {
 h2 {
   margin-bottom: 15px;
 }
-
 
 #banking-form label {
   font-weight: bold;
@@ -544,13 +549,12 @@ h2 {
 
 /* FOOTER  */
 
-
 /* PC  */
-@media only screen and (min-width: 1023.98px) {}
+@media only screen and (min-width: 1023.98px) {
+}
 
 /* TABLET and MOBILE  */
 @media only screen and (max-width: 768.01px) {
-
   /* Header  */
   .item-header {
     gap: 20px;
@@ -577,7 +581,7 @@ h2 {
   }
 
   .status-order {
-    height: 90px
+    height: 90px;
   }
 
   .status-order,
@@ -644,18 +648,14 @@ h2 {
 
 /* TABLET  */
 @media only screen and (min-width: 425px) and (max-width: 768.01px) {
-
   /* Main  */
   .content {
     width: 110%;
   }
-
-
 }
 
 /* MOBILE  */
 @media only screen and (max-width: 425.1px) {
-
   /* Main  */
   .content {
     width: 106%;
@@ -674,7 +674,6 @@ h2 {
   }
 
   /* Footer  */
-
 
   .row-1 img {
     width: 53%;

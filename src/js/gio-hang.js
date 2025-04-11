@@ -1,18 +1,22 @@
 // Hàm thay đổi số lượng và tự động submit form để cập nhật lên database
-function changeQuantity(button, amount) {
-  // Tìm đến form update của nút vừa nhấn
-  const form = button.closest(".update-form");
-  // Lấy input số lượng trong form
-  const input = form.querySelector(".quantity-input");
-  let newValue = parseInt(input.value) + amount;
-  if (newValue < 1) {
-    newValue = 1; // Không cho số lượng nhỏ hơn 1
-  }
-  // Cập nhật giá trị mới cho input
-  input.value = newValue;
+function changeQuantity(button, delta) {
+  // Lấy phần tử input chứa số lượng
+  let quantityInput = button.parentNode.querySelector(".quantity-input");
 
-  // Tự động submit form để gửi dữ liệu cập nhật lên server
-  form.requestSubmit();
+  // Lấy giá trị hiện tại của số lượng
+  let currentQuantity = parseInt(quantityInput.value, 10);
+
+  // Tính toán số lượng mới
+  let newQuantity = currentQuantity + delta;
+
+  // Kiểm tra số lượng mới không nhỏ hơn 1
+  if (newQuantity > 0) {
+    // Cập nhật giá trị số lượng trong ô input
+    quantityInput.value = newQuantity;
+
+    // Gửi form để cập nhật giỏ hàng ngay lập tức
+    quantityInput.form.submit();
+  }
 }
 
 // Hàm tính lại tổng giỏ hàng

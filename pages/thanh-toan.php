@@ -1,8 +1,10 @@
 <?php
+session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-session_start();
+
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -11,89 +13,141 @@ $database = "webdb";
 $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) die("Kết nối thất bại: " . $conn->connect_error);
 
-// Xử lý thêm, cập nhật và xóa sản phẩm
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Thêm sản phẩm vào giỏ
-    if (isset($_POST['product_id'], $_POST['quantity'])) {
-        $product_id = intval($_POST['product_id']);
-        $quantity = max(1, intval($_POST['quantity']));
-
-        $stmt = $conn->prepare("SELECT ProductID, ProductName, Price, ImageURL FROM products WHERE ProductID = ?");
-        $stmt->bind_param("i", $product_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($product = $result->fetch_assoc()) {
-            if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
-            if (isset($_SESSION['cart'][$product_id])) {
-                $_SESSION['cart'][$product_id]['Quantity'] += $quantity;
-            } else {
-                
-                $_SESSION['cart'][$product_id] = [
-                    'ProductID'   => $product['ProductID'],
-                    'ProductName' => $product['ProductName'],
-                    'Price'       => $product['Price'],
-                    'ImageURL'    => $product['ImageURL'],
-                    'Quantity'    => $quantity
-                ];
-            }
-        }
-
-        $stmt->close();
-        header("Location: gio-hang.php");
-        exit;
-    }
-    // Cập nhật số lượng
-    if (isset($_POST['update_product_id'], $_POST['quantity'])) {
-        $pid = intval($_POST['update_product_id']);
-        $newQty = max(1, intval($_POST['quantity']));
-        if (isset($_SESSION['cart'][$pid])) {
-            $_SESSION['cart'][$pid]['Quantity'] = $newQty;
-        }
-        header("Location: gio-hang.php");
-        exit;
-    }
-    // Xóa sản phẩm
-    if (isset($_POST['remove_product_id'])) {
-        $remove_id = intval($_POST['remove_product_id']);
-        unset($_SESSION['cart'][$remove_id]);
-        header("Location: gio-hang.php");
-        exit;
-    }
+// Kiểm tra giỏ hàng
+if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+    die("Giỏ hàng trống. Không thể đặt hàng.");
 }
-// ✅ ✅ ✅ Phần này PHẢI nằm ngoài khối POST
-$cart_items = isset($_SESSION['cart']) ? array_values($_SESSION['cart']) : [];
-$total = 0;
+$username = 'user1';
+
+// Lấy thông tin người dùng từ bảng users
+$stmt = $conn->prepare("SELECT * FROM users WHERE Username = ?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$userResult = $stmt->get_result();
+$user = $userResult->fetch_assoc();
+$stmt->close();
+
+if (!$user) die("Không tìm thấy người dùng");
+
+// Tính tổng đơn hàng
+$cart_items = $_SESSION['cart'];
+$total_amount = 0;
 foreach ($cart_items as $item) {
-    $total += $item['Price'] * $item['Quantity'];
+    $total_amount += $item['Price'] * $item['Quantity'];
 }
-$total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
+
+
+$stmt = $conn->prepare("INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address)
+VALUES (?, ?, ?, ?, ?,  ?, ?, ?, ?, ?)");
+$stmt->bind_param("ssssssssss", 
+    $username,
+    $paymentMethod,
+    $user['FullName'],
+    $user['Phone'],
+    $user['Province'],
+    $user['District'],
+    $user['Ward'],
+    $dateNow,
+    $total_amount,
+    $user['Address']
+);
+$stmt->execute();
+$orderID = $stmt->insert_id;
+$stmt->close();
+
+// Chèn dữ liệu chi tiết vào `orderdetails`
+$stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
+foreach ($cart_items as $item) {
+    $productID = $item['ProductID'];
+    $quantity = $item['Quantity'];
+    $unitPrice = $item['Price'];
+    $totalPrice = $quantity * $unitPrice;
+
+    $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
+    $stmt->execute();
+}
+// Tính tổng đơn hàng
+$cart_items = $_SESSION['cart'];
+$total_amount = 0;
+foreach ($cart_items as $item) {
+    $total_amount += $item['Price'] * $item['Quantity'];
+}
+$total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ"; // ✅ Thêm dòng này
+$stmt->close();
+
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_order'])) {
+  $orderID = $_POST['order_id']; // ID đơn hàng đang cần cập nhập
+
+  // Xử lý thông tin mới từ form
+  $newName = $_POST['new_name'];
+  $newPhone = $_POST['new_phone'];
+
+
+  // lấy thông tin địa chỉ 
+  $province_id = $_POST['province'];
+  $district_id = $_POST['district'];
+  $ward_id = $_POST['ward'];
+  // Lấy tên tỉnh, quận, huyện từ ID
+    // Lấy tên từ ID
+    $stmt = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
+    $stmt->bind_param("i", $province_id);
+    $stmt->execute();
+    $stmt->bind_result($province);
+    $stmt->fetch();
+    $stmt->close();
+
+    $stmt = $conn->prepare("SELECT name FROM districts WHERE district_id = ?");
+    $stmt->bind_param("i", $district_id);
+    $stmt->execute();
+    $stmt->bind_result($district);
+    $stmt->fetch();
+    $stmt->close();
+
+    $stmt = $conn->prepare("SELECT name FROM wards WHERE wards_id = ?");
+    $stmt->bind_param("i", $ward_id);
+    $stmt->execute();
+    $stmt->bind_result($ward);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Cập nhật CustomerName trong bảng orders
+    $sqlUpdateOrder = "UPDATE orders SET CustomerName = ?, Phone = ?  WHERE OrderID = ?";
+    $stmtOrder = $conn->prepare($sqlUpdateOrder);
+    $stmtOrder->bind_param("ssi", $newName, $newPhone,  $orderID);
+    $stmtOrder->execute();
+    $stmtOrder->close();
+}
+
 ?>
 
 
 <!DOCTYPE html>
 <html>
+<!-- Sửa infor-for-banking ở dòng 584  -->
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- CSS  -->
-  <link rel="stylesheet" href="../src/css/gio-hang.css">
-  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../src/css/search-styles.css">
-  <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css">
-  <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css">
-  <link rel="stylesheet" href="../src/css/gio-hang-php.css">
-
+  <link rel="stylesheet" href="../src/css/thanh-toan.css" />
+  <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
+  <link rel="stylesheet" href="../src/css/search-styles.css" />
+  <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="../src/css/footer.css">
+  <link rel="stylesheet" href="../src/css/gio-hang-php.css">
+  <link rel="stylesheet" href="../src/css/thanh-toan-php.css">
+
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../src/js/Trang_chu.js"></script>
+  <script src="../src/js/DiaChi.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
   <script src="../src/js/main.js"></script>
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
+  <script src="../src/js/thanh-toan.js"></script>
   <script src="../src/js/gio-hang.js"></script>
-  <!-- Lọc sản phẩm theo phân loại  -->
-  <!-- <script src="../src/js/filter-product.js"></script> -->
-  <title>Giỏ hàng</title>
+  <script src="../src/js/jquery-3.7.1.min.js"></script>
+  <title>Hoàn tất thanh toán</title>
 </head>
 
 <body>
@@ -199,7 +253,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-cham">
-                  <img src="./assets/images/CAY5.jpg" alt="Cây phát tài" />
+                  <img src="../assets/images/CAY5.jpg" alt="Cây phát tài" />
                   <div class="p-details">
                     <h2>Cây phát tài</h2>
                     <h3>750.000 vnđ</h3>
@@ -208,7 +262,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
 
                 <!-- OK  -->
                 <div class="product" data-category="cay-van-phong">
-                  <img src="./assets/images/CAY6.jpg" alt="Cây kim ngân" />
+                  <img src="../assets/images/CAY6.jpg" alt="Cây kim ngân" />
                   <div class="p-details">
                     <h2>Cây kim ngân</h2>
                     <h3>280.000 vnđ</h3>
@@ -216,7 +270,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY7.jpg" alt="Cây trầu bà" />
+                  <img src="../assets/images/CAY7.jpg" alt="Cây trầu bà" />
                   <div class="p-details">
                     <h2>Cây trầu bà</h2>
                     <h3>120.000 vnđ</h3>
@@ -224,7 +278,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-duoi-nuoc">
-                  <img src="./assets/images/CAY8.jpg" alt="Cây lan chi" />
+                  <img src="../assets/images/CAY8.jpg" alt="Cây lan chi" />
                   <div class="p-details">
                     <h2>Cây lan chi</h2>
                     <h3>120.000 vnđ</h3>
@@ -232,7 +286,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY9.jpg" alt="Cây trầu bà đỏ" />
+                  <img src="../assets/images/CAY9.jpg" alt="Cây trầu bà đỏ" />
                   <div class="p-details">
                     <h2>Cây trầu bà đỏ</h2>
                     <h3>320.000 vnđ</h3>
@@ -240,7 +294,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY10.jpg" alt="Cây lưỡi hổ" />
+                  <img src="../assets/images/CAY10.jpg" alt="Cây lưỡi hổ" />
                   <div class="p-details">
                     <h2>Cây lưỡi hổ</h2>
                     <h3>750.000 vnđ</h3>
@@ -248,7 +302,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY11.jpg" alt="Cây lưỡi hổ vàng" />
+                  <img src="../assets/images/CAY11.jpg" alt="Cây lưỡi hổ vàng" />
                   <div class="p-details">
                     <h2>Cây lưỡi hổ vàng</h2>
                     <h3>160.000 vnđ</h3>
@@ -256,7 +310,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY12.jpg" alt="Cây hạnh phúc" />
+                  <img src="../assets/images/CAY12.jpg" alt="Cây hạnh phúc" />
                   <div class="p-details">
                     <h2>Cây hạnh phúc</h2>
                     <h3>1.200.000 vnđ</h3>
@@ -264,7 +318,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY13.jpg" alt="Cây trầu bà châu lớn" />
+                  <img src="../assets/images/CAY13.jpg" alt="Cây trầu bà châu lớn" />
                   <div class="p-details">
                     <h2>Cây trầu bà châu lớn</h2>
                     <h3>1.100.000 vnđ</h3>
@@ -272,14 +326,14 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-van-phong">
-                  <img src="./assets/images/CAY14.jpg" alt="Cây phát tài DORADO" />
+                  <img src="../assets/images/CAY14.jpg" alt="Cây phát tài DORADO" />
                   <div class="p-details">
                     <h2>Cây phát tài DORADO</h2>
                     <h3>220.000 vnđ</h3>
                   </div>
                 </div>
                 <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY16.jpg" alt="Cây vạn lộc" />
+                  <img src="../assets/images/CAY16.jpg" alt="Cây vạn lộc" />
                   <div class="p-details">
                     <h2>Cây vạn lộc</h2>
                     <h3>1.150.000 vnđ</h3>
@@ -287,7 +341,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
 
                 <div class="product" data-category="cay-de-ban">
-                  <img src="./assets/images/CAY17.jpg" alt="Cây ngọc vừng" />
+                  <img src="../assets/images/CAY17.jpg" alt="Cây ngọc vừng" />
                   <div class="p-details">
                     <h2>Cây ngọc vừng</h2>
                     <h3>1.750.000 vnđ</h3>
@@ -297,7 +351,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
             </div>
 
             <div class="cart-icon">
-              <a href="gio-hang.html"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
@@ -314,7 +368,6 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                 </div>
                 <div class="offcanvas-body">
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-
                     <li class="nav-item">
                       <a class="nav-link login-logout" href="../pages/user-register.html">Đăng kí</a>
                     </li>
@@ -322,7 +375,6 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                     <li class="nav-item">
                       <a class="nav-link login-logout" href="../pages/user-login.html">Đăng nhập</a>
                     </li>
-
 
                     <li class="nav-item">
                       <a class="nav-link hs-ls-dx" href="../pages/ho-so.html">Hồ sơ</a>
@@ -333,9 +385,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                     <li class="nav-item">
                       <a class="nav-link hs-ls-dx" href="../index.html" onclick="logOut()">Đăng xuất</a>
                     </li>
-
                   </ul>
-
                 </div>
               </div>
             </div>
@@ -505,108 +555,180 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
     </div>
   </div>
 
-
-
   <!-- SECTION  -->
   <div class="section">
     <div class="img-21">
-      <img src="../assets/images/CAY21.jpg" alt="CAY21">
+      <img src="../assets/images/CAY21.jpg" alt="CAY21" />
     </div>
   </div>
 
+  <main>
+    <div class="container-payment">
+      <h2>THANH TOÁN</h2>
+      <div class="content">
+        <div class="status-order">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <hr style="border: 1px dashed black; width: 21%;">
+          <i style="color: green;" class="fa-solid fa-id-card"></i>
+          <hr style="border: 1px dashed black; width: 21%;">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="option-address">
+          <label for="">
+            <input type="radio" name="chon" id="default-information" checked> <span>Sử dụng thông tin mặc
+              định</span>
+          </label>
+          <label for="">
+            <input type="radio" name="chon" id="new-information"> <span>Nhập thông tin mới</span>
+          </label>
+        </div>
 
-  <!-- ARTICLE -->
-  <div class="article">
-    <div class="title-cart">
-      <p class="text-success h1 text-center text-uppercase">Giỏ hàng</p>
-    </div>
-    <div class="infor-order bg-light">
-      <div class="status-order">
-        <img class="cart-2" src="../assets/images/cart.svg" alt="cart">
-        <hr>
-        <img src="../assets/images/id-card.svg" alt="id-card">
-        <hr>
-        <img src="../assets/images/circle-check.svg" alt="ccheck">
-      </div>
-        <?php if (count($cart_items) > 0):?>
-          <?php foreach ($cart_items as $item): ?>
+        <form action="" id="default-information-form">
+          <label for=""><strong>Họ và tên</strong></label>
+          <input type="text" name="name" id="name" value="<?php  echo htmlspecialchars($user['FullName']) ?>" disabled>
+          <label for=""><strong>Email</strong></label>
+          <input type="email" name="email" id="email"  value="<?php echo htmlspecialchars($user['Email']); ?>" disabled>
+          <label for=""><strong>Số điện thoại</strong></label>
+          <input type="text" name="sdt" id="sdt" value="<?php echo htmlspecialchars($user['Phone']);?>" disabled>
+          <label for=""><strong>Địa chỉ</strong></label>
+          <input type="text" name="diachi" id="diachi" value="<?php echo htmlspecialchars($user['Address'] . ', ' . $user['Ward'] . ', ' . $user['District'] . ', ' . $user['Province']); ?>" 
+            disabled>
+        </form>
 
-            <div class="order">
+        <form action="" id="new-information-form">
+          <label for=""><strong>Họ và tên</strong></label>
+          <input type="text" name="name" id="new-name" placeholder="Họ và tên">
+          <label for=""><strong>Số điện thoại</strong></label>
+          <input type="text" name="sdt" id="new-sdt" placeholder="Số điện thoại">
+          <label for=""><strong>Địa chỉ</strong></label>
+          <input type="text" name="diachi" id="new-diachi" placeholder="Nhập địa chỉ cụ thể" >
 
-              <div class="order-img">
-                <img src="<?php echo ".." . $item['ImageURL']; ?>" width="120" class="cart-image">
-              </div>
+          <label for=""><strong>Tỉnh/Thành phố</strong></label>
+          <select name="province" id="province" class="form-select">
+            <option value="">Chọn tỉnh/thành phố</option>
+            <?php
+            // Lấy danh sách tỉnh từ cơ sở dữ liệu
+            $stmt = $conn->prepare("SELECT province_id, name FROM province");
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                echo '<option value="' . $row['province_id'] . '">' . htmlspecialchars($row['name']) . '</option>';
+            }
+            $stmt->close();
+            ?>
+          </select>
 
-              <div class="frame">
-                <div class="name-price">
+          <label for=""><strong>Quận/Huyện</strong></label>
+          <select name="district" id="district" class="form-select">
+            <option value="">Chọn quận/huyện</option>
+          </select>
+
+          <label for=""><strong>Phường/Xã</strong></label>
+          <select name="ward" id="ward" class="form-select">
+            <option value="">Chọn phường/xã</option>
+          </select>
+          <button type="submit" name="submit_order">Xác nhận thông tin mới này</button>
+        </form>
+        <div class="infor-goods">
+          <hr style="border: 3px dashed green; width: 100%" />
+          <?php if (count($cart_items) > 0): ?>
+            <?php foreach ($cart_items as $item): ?>
+              <div class="order">
+                  <div class="order-img">
+                    <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>" />
+                  </div>
+                  <div class="frame">
+                    <div class="name-price">
                     <p><strong><?php echo htmlspecialchars($item['ProductName']); ?></strong></p>
-                    <!-- Giá sản phẩm hiển thị, gán thêm data-price để JS dễ lấy -->
                     <p class="price" data-price="<?php echo $item['Price']; ?>">
-                      <strong><?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></strong>
+                            <strong><?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></strong>
                     </p>
                   </div>
-
-                <div class="function">
-                  <!-- Button trigger modal -->
-                  <form action="gio-hang.php" method="POST">
-                    <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                    <button type="button" class="btn" onclick="this.form.submit();"
-                      style="width: 53px; height: 33px;">
-                      <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
-                    </button>
-                  </form>
-                <!-- Nútxóa và thêm số lượng sản phẩm  -->
-               
-                  <div class="add-del">
-                    <div class="oder">
-                      <div class="wrapper" >
-                      <form action="gio-hang.php" method="POST" class="update-form">
-                        <!-- Truyền ProductID để xác định sản phẩm cần cập nhật -->
-                        <input type="hidden" name="update_product_id" value="<?php echo $item['ProductID']; ?>">
-                        
-                        <!-- Nút giảm số lượng -->
-                        <button type="button" class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>
-                        
-                        <!-- Trường số lượng, gán thuộc tính data-price để JS dùng cho tính toán nếu cần -->
-                        <input type="number" name="quantity" value="<?php echo max(1, $item['Quantity']); ?>" min="1" 
-                              class="quantity-input" data-price="<?php echo $item['Price']; ?>">
-                        
-                        <!-- Nút tăng số lượng -->
-                        <button type="button" class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                    <div class="function">
+                      <!-- Button trigger modal -->
+                      <form action="gio-hang.php" method="POST">
+                          <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
+                          <button type="button" class="btn" onclick="this.form.submit();"
+                            style="width: 53px; height: 33px;">
+                            <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
+                          </button>
                       </form>
+                      <!-- Nútxóa và thêm số lượng sản phẩm  -->
+                      <div class="add-del">
+                          <div class="oder">
+                            <div class="wrapper" >
+                              <form action="gio-hang.php" method="POST" class="update-form">
+                                <!-- Truyền ProductID để xác định sản phẩm cần cập nhật -->
+                                <input type="hidden" name="update_product_id" value="<?php echo $item['ProductID']; ?>">                       
+                                <!-- Nút giảm số lượng -->
+                                <!-- <button type="button" class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>                       -->
+                                <!-- Trường số lượng, gán thuộc tính data-price để JS dùng cho tính toán nếu cần -->
+                                <span class="quantity-display" ><?php echo "x".$item['Quantity']; ?></span>
+                        
+                                <!-- Nút tăng số lượng -->
+                                <!-- <button type="button" class="quantity-btn" onclick="changeQuantity(this, 1)">+</button> -->
+                              </form>
+                            </div>
+                          </div>
                       </div>
-                    </div>
                   </div>
                 </div>
               </div>
-            </div>
           <?php endforeach; ?>
-          <?php else:  ?>
-          <p>Giỏ hàng của bạn đang trống</p>
-        <?php endif; ?>
+            <?php else:  ?>
+            <p>Giỏ hàng của bạn đang trống</p>
+            <?php endif; ?>
+          <div class="frame-2">
+            <div class="thanh-tien">
+              Tổng : <span id="total-price"><?php echo $total_price_formatted; ?></span>
+            </div>
+          </div>
 
-        <div class="frame-2">
-          <div class="thanh-tien">
-            Tổng : <span id="total-price"><?php echo $total_price_formatted; ?></span>
-          </div>
+        <div class="payment-method">
+          <label for="">
+            <input type="radio" name="paymentMehtod" id="cod-button" checked> <span>Thanh toán khi nhận hàng</span>
+          </label>
+          <label for="">
+            <input type="radio" name="paymentMehtod" id="banking-button"> <span>Chuyển khoản</span>
+          </label>
         </div>
-      <form action="thanh-toan.php" method="POST" > 
-          <div class="dat-hang">
-            <button  type="submit" class="btn btn-success" style="width: 185px;
-            height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
-          </div>
-      </form>
-      <div class="text" style="margin-bottom: 10px;">
-        <!-- quay về trang chủ  -->
-        <a style="text-decoration: none;" href="../index.html">Tiếp tục mua hàng</a>
+
+
+        <div class="card-type" id="card-type">
+          <i class="fa-brands fa-cc-visa" alter="thẻ visa" id="visa-card"></i>
+          <i class="fa-solid fa-credit-card" alter="thẻ tín dụng"></i>
+        </div>
+        <!-- Form chuyển khoản  -->
+        <form action="" id="banking-form">
+          <h2>Liên kết thẻ</h2>
+          <label>Thông tin thẻ</label>
+          <input type="text" placeholder="1234 1234 1234 1234">
+          <input type="text" placeholder="MM / YY">
+          <input type="text" placeholder="CVC">
+          <label>Tên chủ thẻ</label>
+          <input type="text" placeholder="Full name on card">
+          <label>Địa chỉ</label>
+          <select>
+            <option>Vietnam</option>
+          </select>
+          <input type="text" placeholder="Địa chỉ 1">
+          <input type="text" placeholder="Địa chỉ 2">
+          <input type="text" placeholder="Thành phố">
+          <input type="text" placeholder="Tỉnh">
+          <input type="text" placeholder="Mã bưu điện">
+          <button class="subscribe-btn">Đăng ký</button>
+        </form>
+        <div class="payment-button">
+          <a href="../pages/hoan-tat.html"><button type="button" class="btn btn-success" id="payment-button" style="width: 185px;
+    height: 50px;">THANH TOÁN</button></a>
+        </div>
+        <a href="../index.html" style="text-decoration: none;
+        margin-bottom: 10px;">Tiếp tục mua hàng</a>
       </div>
     </div>
 
-
-  </div>
-
-  <!-- <div class="type-tree" id="type-tree"></div>
-  <div id="product-list">Kết quả ở đây</div> -->
+    </div>
+  </main>
 
   <!-- FOOTER  -->
   <footer class="footer">
@@ -675,7 +797,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
     </div>
     <!-- xong footer  -->
   </footer>
-  </div>
+  <script src="../src/js/thanh-toan.js"></script>
 </body>
 
 </html>
