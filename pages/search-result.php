@@ -19,13 +19,14 @@ require_once('../src/php/token.php');
     <!-- JS  -->
     <!-- <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
     <script src="../src/js/main.js"></script> -->
+    <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
     <script src="../src/js/onOffSeacrhAdvance.js"></script>
     <!-- Lọc sản phẩm theo phân loại  -->
     <!-- <script src="../src/js/filter-product.js"></script> -->
     <script src="../src/js/phan-loai.js"></script>
     <script src="../src/js/search.js"></script>
     <script src="../src/js/search-index.js"></script>
-    <title>Phân loại</title>
+    <title>Kết quả tìm kiếm</title>
 </head>
 
 <body>
@@ -134,7 +135,7 @@ require_once('../src/php/token.php');
                         </div>
 
                         <script>
-                            document.getElementById("searchForm").addEventListener("submit", function (e) {
+                            document.getElementById("searchForm").addEventListener("submit", function(e) {
                                 e.preventDefault(); // Ngăn chặn reload trang
                                 let searchInput = document.getElementById("searchInput").value;
                                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
@@ -147,8 +148,8 @@ require_once('../src/php/token.php');
                             <label for="tick" style="cursor: pointer">
                                 <img src="../assets/images/user.svg" alt="" />
                             </label>
-                            <input id="tick" hidden type="button" data-bs-toggle="offcanvas"
-                                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" />
+                            <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
+                                aria-controls="offcanvasExample" />
                             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
                                 aria-labelledby="offcanvasExampleLabel">
                                 <div class="offcanvas-header">
