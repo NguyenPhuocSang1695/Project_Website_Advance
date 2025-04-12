@@ -435,7 +435,6 @@ if ($loggedInUsername) {
               <thead>
                 <tr>
                   <th>Mã hóa đơn</th>
-                  <th>Số đơn hàng</th>
                   <th>Tổng tiền(đ)</th>
                   <th>Tình trạng</th>
                 </tr>
@@ -444,7 +443,6 @@ if ($loggedInUsername) {
                 <?php foreach ($orderHistory as $order): ?>
                   <tr class="order-row" data-orderid="<?= $order['OrderID']; ?>">
                     <td>#f<?= $order['OrderID']; ?></td>
-                    <td><?= $order['OrderID']; ?></td>
                     <td><?= number_format($order['TotalAmount'], 0, ',', '.') . ' VNĐ'; ?></td>
                     <td>
                       <?php
