@@ -17,8 +17,8 @@ require_once('../src/php/token.php');
     <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
     <link rel="stylesheet" href="../src/css/footer.css">
     <!-- JS  -->
-    <!-- <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../src/js/main.js"></script> -->
+    <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="../src/js/main.js"></script> -->
     <script src="../src/js/onOffSeacrhAdvance.js"></script>
     <!-- Lọc sản phẩm theo phân loại  -->
     <!-- <script src="../src/js/filter-product.js"></script> -->

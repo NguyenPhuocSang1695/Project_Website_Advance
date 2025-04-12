@@ -1,6 +1,51 @@
 <?php
 require_once('../src/php/token.php');
+require_once('../src/php/connect.php');
+
+$orderID = $_GET['orderid'] ?? 0;
+
+// Lấy tổng thanh toán
+$totalAmount = 0;
+$stmt = $conn->prepare("SELECT TotalAmount FROM orders WHERE OrderID = ?");
+$stmt->bind_param("i", $orderID);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($row = $result->fetch_assoc()) {
+  $totalAmount = $row['TotalAmount'];
+}
+
+// Lấy danh sách sản phẩm trong đơn hàng
+$stmt = $conn->prepare("
+    SELECT p.ProductName, p.ImageURL, od.Quantity, od.TotalPrice
+    FROM orderdetails od
+    JOIN products p ON od.ProductID = p.ProductID
+    WHERE od.OrderID = ?
+");
+$stmt->bind_param("i", $orderID);
+$stmt->execute();
+$productResult = $stmt->get_result();
 ?>
+
+<?php
+$orderID = $_GET['orderid']; // hoặc lấy từ session nếu cần
+
+$sql = "SELECT o.CustomerName, o.Phone, o.Address,
+               p.Name AS ProvinceName, d.Name AS DistrictName, w.Name AS WardName
+        FROM orders o
+        JOIN province p ON o.Province = p.province_id
+        JOIN district d ON o.District = d.district_id
+        JOIN wards w ON o.Ward = w.wards_id
+        WHERE o.OrderID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $orderID);
+$stmt->execute();
+$result = $stmt->get_result();
+$orderInfo = $result->fetch_assoc(); // ⚠️ sửa lại tên biến thành orderInfo cho khớp
+
+?>
+
+
+
 <!DOCTYPE html>
 <html>
 
@@ -24,6 +69,20 @@ require_once('../src/php/token.php');
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
   <title>Lịch sử người dùng</title>
+  <style>
+    .section.products table tbody {
+      max-height: 400px;
+      overflow-y: auto;
+      display: block;
+    }
+
+    .section.products table thead,
+    .section.products table tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+  </style>
 </head>
 
 <body>
@@ -123,7 +182,7 @@ require_once('../src/php/token.php');
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function(e) {
+              document.getElementById("searchForm").addEventListener("submit", function (e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
@@ -134,44 +193,44 @@ require_once('../src/php/token.php');
               <a href="./gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
-            <label for="tick" style="cursor: pointer">
-              <img src="../assets/images/user.svg" alt="" />
-            </label>
-            <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
-              aria-controls="offcanvasExample" />
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
-              aria-labelledby="offcanvasExampleLabel">
-              <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                  <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
-                </h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                  aria-label="Close"></button>
-              </div>
-              <div class="offcanvas-body">
-                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                  <?php if (!$loggedInUsername): ?>
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
-                    </li>
-                  <?php else: ?>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../src/php/logout.php">Đăng xuất</a>
-                    </li>
-                  <?php endif; ?>
-                </ul>
+              <label for="tick" style="cursor: pointer">
+                <img src="../assets/images/user.svg" alt="" />
+              </label>
+              <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
+                aria-controls="offcanvasExample" />
+              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
+                aria-labelledby="offcanvasExampleLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+                    <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
+                  </h5>
+                  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                  <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <?php if (!$loggedInUsername): ?>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                      </li>
+                    <?php else: ?>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link hs-ls-dx" href="../src/php/logout.php">Đăng xuất</a>
+                      </li>
+                    <?php endif; ?>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
 
@@ -352,27 +411,34 @@ require_once('../src/php/token.php');
   </div>
 
   <section>
-    <div class="information-client">
-      <h2>Hồ sơ khách hàng</h2>
-      <hr>
-      <div class="thongtin">
-        <h5>Họ tên:</h5>
-        <h5>Số điện thoại:</h5>
-        <h5>Địa chỉ:</h5>
-      </div>
-    </div>
+  <div class="information-client">
+  <h2>Thông tin người nhận</h2>
+  <hr>
+  <div class="thongtin">
+    <h5>Họ tên: <?= htmlspecialchars($orderInfo['CustomerName']) ?></h5>
+    <h5>Số điện thoại: <?= htmlspecialchars($orderInfo['Phone']) ?></h5>
+    <h5>Địa chỉ:
+      <?= isset($orderInfo['Address']) ? htmlspecialchars($orderInfo['Address']) . ', ' : '' ?>
+      <?= htmlspecialchars($orderInfo['WardName']) ?>,
+      <?= htmlspecialchars($orderInfo['DistrictName']) ?>,
+      <?= htmlspecialchars($orderInfo['ProvinceName']) ?>
+    </h5>
+  </div>
+</div>
+
+
     <div class="history">
       <div class="main-content">
         <!-- Left Section -->
         <div class="left-section">
           <div class="section products">
             <div class="section-header">
-              <span style="color:#21923c;"><i class="fa-regular fa-circle" style="  margin-right: 5px;"></i>Chi tiết đơn
-                hàng</span>
+              <span style="color:#21923c;">
+                <i class="fa-regular fa-circle" style="margin-right: 5px;"></i>Chi tiết đơn hàng
+              </span>
               <button class="more-btn">...</button>
             </div>
             <table>
-
               <thead>
                 <tr>
                   <th></th>
@@ -381,67 +447,48 @@ require_once('../src/php/token.php');
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <img src="../../assets/images/CAY2.jpg" alt="Product Image">
-                    <div class="product-info">
-                      <span class="product-name">Cay j ko bt ten</span><br>
-                      <span class="sku">SKU: QJ-0001</span><br>
-                    </div>
-                  </td>
-                  <td>1</td>
-                  <td>1,100,000 đ</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <img src="../../assets/images/CAY1.jpg" alt="Product Image">
-                    <div class="product-info">
-                      <span class="product-name">Chac cay xuong rong</span><br>
-                      <span class="sku">SKU: JJ-0001</span><br>
-                    </div>
-                  </td>
-                  <td>1</td>
-
-                  <td>550,000 đ</td>
-                </tr>
+                <?php
+                $totalQuantity = 0; // <== Thêm dòng này
+                while ($row = $productResult->fetch_assoc()):
+                  $totalQuantity += $row['Quantity']; // <== Thêm dòng này
+                  ?>
+                  <tr>
+                    <td>
+                      <img src="..<?= htmlspecialchars($row['ImageURL']) ?>" alt="Product Image">
+                      <div class="product-info">
+                        <span class="product-name"><?= htmlspecialchars($row['ProductName']) ?></span><br>
+                      </div>
+                    </td>
+                    <td><?= $row['Quantity'] ?></td>
+                    <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?> đ</td>
+                  </tr>
+                <?php endwhile; ?>
               </tbody>
             </table>
-
+          </div>
+        </div>
+      </div>
+      <div class="section payment">
+        <div class="section-header">
+          <span>Thanh Toán: </span>
+        </div>
+        <div class="payment-details">
+          <div class="payment-row">
+            <span>Số lượng sản phẩm: </span>
+            <span><?= $totalQuantity ?></span> <!-- Đổi chỗ này -->
+          </div>
+          <div class="payment-row paid">
+            <span>Tổng thanh toán</span>
+            <span><?= number_format($totalAmount, 0, ',', '.') ?> đ</span>
           </div>
         </div>
       </div>
     </div>
-    <div class="section payment">
-      <div class="section-header">
-        <span>Thanh Toán: </span>
-      </div>
-      <div class="payment-details">
-        <div class="payment-row">
-          <span>Số lượng sản phẩm: </span>
-          <span>2</span>
-        </div>
-        <div class="payment-row">
-          <span>Tổng tiền hàng:</span>
-          <span>1,650,000 đ</span>
-        </div>
-        <div class="payment-row">
-          <span>Vận chuyển:</span>
-          <span>20,000 đ</span>
-        </div>
-        <div class="payment-row paid">
-          <span>Đã thanh toán</span>
-          <span>1,505,000 đ</span>
-        </div>
 
-
-      </div>
-    </div>
-    </div>
   </section>
 
   <script>
-    $("#menu-btn").click(function() {
+    $("#menu-btn").click(function () {
       $("#menu").toggleClass("active");
     });
   </script>
