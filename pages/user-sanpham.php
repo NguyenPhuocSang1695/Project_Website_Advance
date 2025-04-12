@@ -39,6 +39,7 @@ if ($result && $result->num_rows > 0) {
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
+  <script src="../src/js/search-index.js"></script>
 </head>
 
 <div class="Sticky">
@@ -50,194 +51,90 @@ if ($result && $result->num_rows > 0) {
         <div class="aaa"></div>
         <div class="item-header">
           <div class="search-group">
-            <div class="search-container">
-              <div class="search-input-wrapper">
-                <input type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput" class="search-input" />
-                <button class="advanced-search-toggle" onclick="toggleAdvancedSearch()" title="Tìm kiếm nâng cao">
-                  <i class="fas fa-sliders-h"></i>
-                </button>
-                <button type="button" class="search-button" onclick="performSearch()" title="Tìm kiếm">
-                  <i class="fas fa-search"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- Form tìm kiếm nâng cao được thiết kế lại -->
-            <div id="advancedSearchForm" class="advanced-search-panel" style="display: none">
-              <div class="advanced-search-header">
-                <h5>Tìm kiếm nâng cao</h5>
-                <button type="button" class="close-advanced-search" onclick="toggleAdvancedSearch()">
-                  <i class="fas fa-times"></i>
-                </button>
+            <form id="searchForm" method="get">
+              <div class="search-container">
+                <div class="search-input-wrapper">
+                  <input type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput" name="search"
+                    class="search-input" />
+                  <button type="button" class="advanced-search-toggle" id="advanced-search-toggle"
+                    onclick="toggleAdvancedSearch()" title="Tìm kiếm nâng cao">
+                    <i class="fas fa-sliders-h"></i>
+                  </button>
+                  <button type="submit" class="search-button" onclick="performSearch()" title="Tìm kiếm">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
               </div>
 
-              <div class="search-filter-container">
-                <div class="filter-group">
-                  <label for="categoryFilter">
-                    <i class="fas fa-leaf"></i> Phân loại sản phẩm
-                  </label>
-                  <select id="categoryFilter" class="form-select">
-                    <option value="">Tất cả phân loại</option>
-                    <option value="cay-de-cham">Cây dễ chăm</option>
-                    <option value="cay-van-phong">Cây văn phòng</option>
-                    <option value="cay-de-ban">Cây để bàn</option>
-                    <option value="cay-duoi-nuoc">Cây dưới nước</option>
-                  </select>
+              <!-- Form tìm kiếm nâng cao được thiết kế lại -->
+              <div id="advancedSearchForm" class="advanced-search-panel" style="display: none">
+                <div class="advanced-search-header">
+                  <h5>Tìm kiếm nâng cao</h5>
+                  <button type="button" class="close-advanced-search" onclick="toggleAdvancedSearch()">
+                    <i class="fas fa-times"></i>
+                  </button>
                 </div>
 
-                <div class="filter-group">
-                  <label for="priceRange">
-                    <i class="fas fa-tag"></i> Khoảng giá
-                  </label>
-                  <div class="price-range-slider">
-                    <div class="price-input-group">
-                      <input type="number" id="minPrice" placeholder="Từ" min="0" />
-                      <span class="price-separator">-</span>
-                      <input type="number" id="maxPrice" placeholder="Đến" min="0" />
+                <!-- Panel tìm kiếm nâng cao  -->
+                <div class="search-filter-container" id="search-filter-container">
+                  <div class="filter-group">
+                    <label for="categoryFilter">
+                      <i class="fas fa-leaf"></i> Phân loại sản phẩm
+                    </label>
+                    <select id="categoryFilter" name="category" class="form-select">
+                      <option value="Chọn phân loại">Chọn phân loại</option>
+                      <option value="Cây dễ chăm">Cây dễ chăm</option>
+                      <option value="Cây văn phòng">Cây văn phòng</option>
+                      <option value="Cây để bàn">Cây để bàn</option>
+                      <option value="Cây dưới nước">Cây dưới nước</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="priceRange">
+                      <i class="fas fa-tag"></i> Khoảng giá
+                    </label>
+                    <div class="price-range-slider">
+                      <div class="price-input-group">
+                        <input type="number" id="minPrice" name="minPrice" placeholder="Từ" min="0" />
+                        <span class="price-separator">-</span>
+                        <input type="number" id="maxPrice" name="maxPrice" placeholder="Đến" min="0" />
+                      </div>
+                      <!-- <div class="price-ranges">
+                        <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
+                          Dưới 200k
+                        </button>
+                        <button type="button" class="price-preset" onclick="setPrice(200000, 500000)">
+                          200k - 500k
+                        </button>
+                        <button type="button" class="price-preset" onclick="setPrice(500000, 1000000)">
+                          500k - 1tr
+                        </button>
+                        <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
+                          Trên 1tr
+                        </button>
+                      </div> -->
                     </div>
-                    <!-- <div class="price-ranges">
-                      <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
-                        Dưới 200k
-                      </button>
-                      <button type="button" class="price-preset" onclick="setPrice(200000, 500000)">
-                        200k - 500k
-                      </button>
-                      <button type="button" class="price-preset" onclick="setPrice(500000, 1000000)">
-                        500k - 1tr
-                      </button>
-                      <button type="button" class="price-preset" onclick="setPrice(1000000, 0)">
-                        Trên 1tr
-                      </button>
-                    </div> -->
+                  </div>
+
+                  <div class="filter-actions">
+                    <button type="submit" class="btn-search" onclick="performSearch()">
+                      <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    <button type="button" class="btn-reset" onclick="resetFilters()">
+                      <i class="fas fa-redo-alt"></i> Đặt lại
+                    </button>
                   </div>
                 </div>
 
-                <div class="filter-actions">
-                  <button type="button" class="btn-search" onclick="performSearch()">
-                    <i class="fas fa-search"></i> Tìm kiếm
-                  </button>
-                  <button type="button" class="btn-reset" onclick="resetFilters()">
-                    <i class="fas fa-redo-alt"></i> Đặt lại
-                  </button>
+                <div class="search-tips">
+                  <p>
+                    <i class="fas fa-lightbulb"></i> Mẹo: Kết hợp nhiều điều
+                    kiện để tìm kiếm chính xác hơn
+                  </p>
                 </div>
               </div>
-
-              <div class="search-tips">
-                <p>
-                  <i class="fas fa-lightbulb"></i> Mẹo: Kết hợp nhiều điều
-                  kiện để tìm kiếm chính xác hơn
-                </p>
-              </div>
-            </div>
-
-            <div id="productList" class="product-list">
-              <!-- Thêm div thông báo không tìm thấy sản phẩm -->
-              <div id="noResultsMessage" class="no-results-message" style="display: none">
-                <i class="fas fa-search"></i>
-                <p>
-                  Không tìm thấy sản phẩm phù hợp với điều kiện tìm kiếm
-                </p>
-                <button type="button" class="btn-reset-search" onclick="resetFilters()">
-                  <i class="fas fa-redo-alt"></i> Đặt lại bộ lọc
-                </button>
-              </div>
-
-              <div class="product" data-category="cay-de-cham">
-                <img src="./assets/images/CAY5.jpg" alt="Cây phát tài" />
-                <div class="p-details">
-                  <h2>Cây phát tài</h2>
-                  <h3>750.000 vnđ</h3>
-                </div>
-              </div>
-
-              <!-- OK  -->
-              <div class="product" data-category="cay-van-phong">
-                <img src="./assets/images/CAY6.jpg" alt="Cây kim ngân" />
-                <div class="p-details">
-                  <h2>Cây kim ngân</h2>
-                  <h3>280.000 vnđ</h3>
-                </div>
-              </div>
-
-              <div class="product" data-category="cay-de-ban">
-                <img src="./assets/images/CAY7.jpg" alt="Cây trầu bà" />
-                <div class="p-details">
-                  <h2>Cây trầu bà</h2>
-                  <h3>120.000 vnđ</h3>
-                </div>
-              </div>
-
-              <div class="product" data-category="cay-duoi-nuoc">
-                <img src="./assets/images/CAY8.jpg" alt="Cây lan chi" />
-                <div class="p-details">
-                  <h2>Cây lan chi</h2>
-                  <h3>120.000 vnđ</h3>
-                </div>
-              </div>
-
-              <div class="product" data-category="cay-de-ban">
-                <img src="./assets/images/CAY9.jpg" alt="Cây trầu bà đỏ" />
-                <div class="p-details">
-                  <h2>Cây trầu bà đỏ</h2>
-                  <h3>320.000 vnđ</h3>
-                </div>
-              </div>
-
-              <div class="product" data-category="cay-de-ban">
-                <img src="./assets/images/CAY10.jpg" alt="Cây lưỡi hổ" />
-                <div class="p-details">
-                  <h2>Cây lưỡi hổ</h2>
-                  <h3>750.000 vnđ</h3>
-                </div>
-              </div>
-
-              <div class="product" data-category="cay-de-ban">
-                <img src="./assets/images/CAY11.jpg" alt="Cây lưỡi hổ vàng" />
-                <div class="p-details">
-                  <h2>Cây lưỡi hổ vàng</h2>
-                  <h3>160.000 vnđ</h3>
-                </div>
-              </div>
-
-              <div class="product" data-category="cay-de-ban">
-                <img src="./assets/images/CAY12.jpg" alt="Cây hạnh phúc" />
-                <div class="p-details">
-                  <h2>Cây hạnh phúc</h2>
-                  <h3>1.200.000 vnđ</h3>
-                </div>
-              </div>
-
-              <div class="product" data-category="cay-de-ban">
-                <img src="./assets/images/CAY13.jpg" alt="Cây trầu bà châu lớn" />
-                <div class="p-details">
-                  <h2>Cây trầu bà châu lớn</h2>
-                  <h3>1.100.000 vnđ</h3>
-                </div>
-              </div>
-
-              <div class="product" data-category="cay-van-phong">
-                <img src="./assets/images/CAY14.jpg" alt="Cây phát tài DORADO" />
-                <div class="p-details">
-                  <h2>Cây phát tài DORADO</h2>
-                  <h3>220.000 vnđ</h3>
-                </div>
-              </div>
-              <div class="product" data-category="cay-de-ban">
-                <img src="./assets/images/CAY16.jpg" alt="Cây vạn lộc" />
-                <div class="p-details">
-                  <h2>Cây vạn lộc</h2>
-                  <h3>1.150.000 vnđ</h3>
-                </div>
-              </div>
-
-              <div class="product" data-category="cay-de-ban">
-                <img src="./assets/images/CAY17.jpg" alt="Cây ngọc vừng" />
-                <div class="p-details">
-                  <h2>Cây ngọc vừng</h2>
-                  <h3>1.750.000 vnđ</h3>
-                </div>
-              </div>
-            </div>
+            </form>
           </div>
 
           <div class="cart-icon">
@@ -371,7 +268,7 @@ if ($result && $result->num_rows > 0) {
                       <span class="price-separator">-</span>
                       <input type="number" id="maxPriceMobile" placeholder="Đến" min="0" />
                     </div>
-                    <div class="price-ranges">
+                    <!-- <div class="price-ranges">
                       <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
                         Dưới 200k
                       </button>
@@ -384,7 +281,7 @@ if ($result && $result->num_rows > 0) {
                       <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
                         Trên 1tr
                       </button>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
 
@@ -475,7 +372,8 @@ if ($result && $result->num_rows > 0) {
         <span class="plus">+</span>
         <script src="../src/js/san-pham.js"></script>
       </div>
-      <button type="button" class="btn btn-primary btn-lg">
+      <button type="button" class="btn btn-primary btn-lg" id="addToCartBtn"
+        data-product-id="<?php echo $product['ProductID']; ?>">
         Thêm vào giỏ hàng
       </button>
     </div>
@@ -559,11 +457,8 @@ if ($result && $result->num_rows > 0) {
   <!-- xong footer  -->
 </footer>
 <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  function logOut() {
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  }
-</script>
+
+
 
 </body>
 
