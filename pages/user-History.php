@@ -1,5 +1,32 @@
 <?php
 require_once('../src/php/token.php');
+require_once('../src/php/connect.php');
+$orderHistory = [];
+$userInfo = [];
+
+// Lấy thông tin đơn hàng
+if ($loggedInUsername) {
+  // Lấy thông tin đơn hàng
+  $stmt = $conn->prepare("SELECT OrderID, Status, TotalAmount FROM orders WHERE Username = ?");
+  $stmt->bind_param("s", $loggedInUsername);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  while ($row = $result->fetch_assoc()) {
+    $orderHistory[] = $row;
+  }
+
+  // Lấy thông tin người dùng từ bảng users
+  $stmt_user = $conn->prepare("SELECT FullName, Phone FROM users WHERE Username = ?");
+  $stmt_user->bind_param("s", $loggedInUsername);
+  $stmt_user->execute();
+  $result_user = $stmt_user->get_result();
+
+  if ($row = $result_user->fetch_assoc()) {
+    $userInfo = $row;
+  }
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -23,7 +50,39 @@ require_once('../src/php/token.php');
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
-  <title>Lịch sử mua hàng</title>
+  <title>Lịch sử người dùng</title>
+  <style>
+    .order-row {
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .order-row:hover {
+      background-color: #f2f2f2;
+      /* màu xám nhẹ */
+    }
+
+    .history .section.products table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history .section.products tbody {
+      display: block;
+      max-height: 400px;
+      /* 👈 Chiều cao tối đa của vùng hiển thị */
+      overflow-y: auto;
+      /* 👈 Cho phép cuộn dọc */
+    }
+
+    .history .section.products thead,
+    .history .section.products tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -356,18 +415,18 @@ require_once('../src/php/token.php');
       <h2>Hồ sơ khách hàng</h2>
       <hr>
       <div class="thongtin">
-        <h5>Họ tên:</h5>
-        <h5>Số điện thoại:</h5>
-        <h5>Địa chỉ:</h5>
+        <h5>Họ tên: <?php echo htmlspecialchars($userInfo['FullName'] ?? ''); ?></h5>
+        <h5>Số điện thoại: <?php echo htmlspecialchars($userInfo['Phone'] ?? ''); ?></h5>
       </div>
     </div>
+
     <div class="history">
       <div class="main-content">
         <!-- Left Section -->
         <div class="left-section">
           <div class="section products">
             <div class="section-header">
-              <span style="color:#21923c;"><i class="fa-regular fa-circle" style="  margin-right: 5px;"></i>Đơn
+              <span style="color:#21923c;"><i class="fa-regular fa-circle" style="  margin-right: 5px;"></i>Các đơn
                 hàng đã đặt</span>
               <button class="more-btn">...</button>
             </div>
@@ -378,31 +437,37 @@ require_once('../src/php/token.php');
                   <th>Mã hóa đơn</th>
                   <th>Số đơn hàng</th>
                   <th>Tổng tiền(đ)</th>
+                  <th>Tình trạng</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <div class="product-info">
-                      <span class="product-name">#f111</span><br>
-                    </div>
-                  </td>
-                  <td>1</td>
-                  <td>1,100,000</td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <div class="product-info">
-                      <span class="product-name">#f112</span><br>
-                    </div>
-                  </td>
-                  <td>1</td>
-                  <td>550,000</td>
-                </tr>
+                <?php foreach ($orderHistory as $order): ?>
+                  <tr class="order-row" data-orderid="<?= $order['OrderID']; ?>">
+                    <td>#f<?= $order['OrderID']; ?></td>
+                    <td><?= $order['OrderID']; ?></td>
+                    <td><?= number_format($order['TotalAmount'], 0, ',', '.') . ' VNĐ'; ?></td>
+                    <td>
+                      <?php
+                      switch ($order['Status']) {
+                        case 'execute':
+                          echo 'Đang xử lý';
+                          break;
+                        case 'ship':
+                          echo 'Đang giao';
+                          break;
+                        case 'success':
+                          echo 'Đã hoàn thành';
+                          break;
+                        case 'fail':
+                          echo 'Đã hủy';
+                          break;
+                      }
+                      ?>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
               </tbody>
             </table>
-
           </div>
         </div>
       </div>
@@ -482,6 +547,15 @@ require_once('../src/php/token.php');
     </div>
     <!-- xong footer  -->
   </footer>
+
 </body>
+<script>
+  document.querySelectorAll('.order-row').forEach(row => {
+    row.addEventListener('click', function() {
+      const orderId = this.dataset.orderid;
+      window.location.href = `user-history-details.php?orderid=${orderId}`;
+    });
+  });
+</script>
 
 </html>
