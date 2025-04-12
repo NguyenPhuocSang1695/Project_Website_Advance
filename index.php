@@ -263,7 +263,7 @@ require_once './src/php/token.php';
                           <span class="price-separator">-</span>
                           <input type="number" id="maxPriceMobile" name="maxPrice" placeholder="Đến" min="0" />
                         </div>
-                        <div class="price-ranges">
+                         <!-- <div class="price-ranges">
                           <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
                             Dưới 200k
                           </button>
@@ -276,7 +276,7 @@ require_once './src/php/token.php';
                           <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
                             Trên 1tr
                           </button>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
 
@@ -496,7 +496,6 @@ require_once './src/php/token.php';
         <li><a href="#">Cây để bàn</a></li>
       </ul>
     </div>
-
 
     <div class="footer-column">
       <h3>Learn</h3>

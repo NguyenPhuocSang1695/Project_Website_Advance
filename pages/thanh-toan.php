@@ -1,3 +1,6 @@
+<?php
+require_once('../src/php/token.php');
+?>
 <!DOCTYPE html>
 <html>
 <!-- Sửa infor-for-banking ở dòng 584  -->
@@ -14,7 +17,7 @@
   <link rel="stylesheet" href="../src/css/footer.css">
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../src/js/main.js"></script>
+  <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/thanh-toan.js"></script>
@@ -132,41 +135,44 @@
               <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
-              <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg" alt="" /></label>
-              <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
-                aria-controls="offcanvasExample" />
-              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
-                aria-labelledby="offcanvasExampleLabel">
-                <div class="offcanvas-header">
-                  <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                    Nguyễn Phước Sang
-                  </h5>
-                  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                    aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
-                  <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <label for="tick" style="cursor: pointer">
+              <img src="../assets/images/user.svg" alt="" />
+            </label>
+            <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
+              aria-controls="offcanvasExample" />
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
+              aria-labelledby="offcanvasExampleLabel">
+              <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+                  <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
+                </h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                  aria-label="Close"></button>
+              </div>
+              <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                  <?php if (!$loggedInUsername): ?>
                     <li class="nav-item">
-                      <a class="nav-link login-logout" href="../pages/user-register.php">Đăng kí</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link login-logout" href="../pages/user-login.php">Đăng nhập</a>
-                    </li>
-
-                    <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../pages/ho-so.php">Hồ sơ</a>
+                      <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../pages/user-History.php">Lịch sử mua hàng</a>
+                      <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                    </li>
+                  <?php else: ?>
+                    <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link hs-ls-dx" href="../index.php" onclick="logOut()">Đăng xuất</a>
+                      <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
                     </li>
-                  </ul>
-                </div>
+                    <li class="nav-item">
+                      <a class="nav-link hs-ls-dx" href="../src/php/logout.php">Đăng xuất</a>
+                    </li>
+                  <?php endif; ?>
+                </ul>
               </div>
             </div>
+          </div>
           </div>
         </div>
 
@@ -259,7 +265,7 @@
                           <span class="price-separator">-</span>
                           <input type="number" id="maxPriceMobile" name="maxPrice" placeholder="Đến" min="0" />
                         </div>
-                        <div class="price-ranges">
+                        <!-- <div class="price-ranges">
                           <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
                             Dưới 200k
                           </button>
@@ -272,7 +278,7 @@
                           <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
                             Trên 1tr
                           </button>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
 
