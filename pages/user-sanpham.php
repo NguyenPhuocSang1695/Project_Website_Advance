@@ -355,7 +355,7 @@ if ($result && $result->num_rows > 0) {
 <div class="sanpham">
   <!-- Ảnh sản phẩm -->
   <img src="<?php echo ".." . $product['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>"
-    class="single-image" />
+    class="single-image" style="width: 432px; height: 432px" />
 
   <!-- Tên cây, giá, mô tả -->
   <div class="details">

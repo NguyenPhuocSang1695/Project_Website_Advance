@@ -499,7 +499,7 @@
             </div>
             <div class="form-group">
               <label for="price">Giá</label>
-              <input type="number" id="price" name="price" required placeholder="Nhập giá sản phẩm">
+              <input type="number" id="price" name="price" required placeholder="Nhập giá sản phẩm" min="0">
             </div>
 
             <div class="form-group">
@@ -525,7 +525,7 @@
 
 
           <script>
-            document.getElementById('imageURL').addEventListener('change', function (event) {
+            document.getElementById('imageURL').addEventListener('change', function(event) {
               const file = event.target.files[0];
 
               // Kiểm tra nếu không có file
@@ -542,7 +542,7 @@
 
               // Nếu hợp lệ, hiển thị ảnh preview
               const reader = new FileReader();
-              reader.onload = function () {
+              reader.onload = function() {
                 const imagePreview = document.getElementById('imagePreview');
                 imagePreview.style.display = 'block';
                 imagePreview.src = reader.result;
@@ -556,13 +556,12 @@
                 overlay.style.display = "flex";
               }
             }
-            document.getElementById('closeButton').addEventListener('click', function () {
+            document.getElementById('closeButton').addEventListener('click', function() {
               const overlay = document.getElementById('addProductOverlay');
               if (overlay.style.display === 'flex') {
                 overlay.style.display = 'none'; // Ẩn overlay khi nhấn nút đóng
               }
             });
-
           </script>
 
         </div>
