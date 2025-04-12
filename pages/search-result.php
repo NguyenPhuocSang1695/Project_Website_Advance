@@ -1,3 +1,6 @@
+<?php
+require_once('../src/php/token.php');
+?>
 <!DOCTYPE html>
 <html>
 
@@ -14,8 +17,8 @@
     <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
     <link rel="stylesheet" href="../src/css/footer.css">
     <!-- JS  -->
-    <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../src/js/main.js"></script>
+    <!-- <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../src/js/main.js"></script> -->
     <script src="../src/js/onOffSeacrhAdvance.js"></script>
     <!-- Lọc sản phẩm theo phân loại  -->
     <!-- <script src="../src/js/filter-product.js"></script> -->
@@ -131,7 +134,7 @@
                         </div>
 
                         <script>
-                            document.getElementById("searchForm").addEventListener("submit", function(e) {
+                            document.getElementById("searchForm").addEventListener("submit", function (e) {
                                 e.preventDefault(); // Ngăn chặn reload trang
                                 let searchInput = document.getElementById("searchInput").value;
                                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
@@ -141,40 +144,40 @@
                             <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
                         </div>
                         <div class="user-icon">
-                            <label for="tick" style="cursor: pointer"><img src="../assets/images/user.svg"
-                                    alt="" /></label>
+                            <label for="tick" style="cursor: pointer">
+                                <img src="../assets/images/user.svg" alt="" />
+                            </label>
                             <input id="tick" hidden type="button" data-bs-toggle="offcanvas"
                                 data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" />
                             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
                                 aria-labelledby="offcanvasExampleLabel">
                                 <div class="offcanvas-header">
                                     <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                                        Nguyễn Phước Sang
+                                        <?= $loggedInUsername ? "Xin chào, " . htmlspecialchars($loggedInUsername) : "Xin vui lòng đăng nhập" ?>
                                     </h5>
                                     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="offcanvas-body">
                                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                                        <li class="nav-item">
-                                            <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
-                                        </li>
-
-                                        <li class="nav-item">
-                                            <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua
-                                                hàng</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link hs-ls-dx" href="../index.php" onclick="logOut()">Đăng
-                                                xuất</a>
-                                        </li>
+                                        <?php if (!$loggedInUsername): ?>
+                                            <li class="nav-item">
+                                                <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                                            </li>
+                                        <?php else: ?>
+                                            <li class="nav-item">
+                                                <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link hs-ls-dx" href="../src/php/logout.php">Đăng xuất</a>
+                                            </li>
+                                        <?php endif; ?>
                                     </ul>
                                 </div>
                             </div>

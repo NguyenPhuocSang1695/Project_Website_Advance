@@ -372,7 +372,8 @@ if ($result && $result->num_rows > 0) {
         <span class="plus">+</span>
         <script src="../src/js/san-pham.js"></script>
       </div>
-      <button type="button" class="btn btn-primary btn-lg">
+      <button type="button" class="btn btn-primary btn-lg" id="addToCartBtn"
+        data-product-id="<?php echo $product['ProductID']; ?>">
         Thêm vào giỏ hàng
       </button>
     </div>
@@ -456,11 +457,8 @@ if ($result && $result->num_rows > 0) {
   <!-- xong footer  -->
 </footer>
 <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  function logOut() {
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  }
-</script>
+
+
 
 </body>
 
