@@ -9,7 +9,7 @@ $avatarPath = ($_SESSION['Role'] === 'admin')
   ? "../../assets/images/admin.jpg"
   : "../../assets/images/sang.jpg";
 
-include('../php/login_check.php');
+// include('../php/login_check.php');
 include('../php/connect.php');
 if ($myconn->connect_error) {
   die("Connection failed: " . $myconn->connect_error);
@@ -54,16 +54,13 @@ if ($result->num_rows > 0) {
       <link rel="stylesheet" href="../style/sidebar.css">
       <link rel="stylesheet" href="../icon/css/all.css">
       <link rel="stylesheet" href="../style/generall.css">
-      <link rel="stylesheet" href="../style/main.css">
+      <link rel="stylesheet" href="../style/main1.css">
       <link rel="stylesheet" href="../style/accountStyle.css">
       <link rel="stylesheet" href="./asset/bootstrap/css/bootstrap.min.css">
       <link rel="stylesheet" href="../style/LogInfo.css">
       <link rel="stylesheet" href="../style/reponsiveAccount.css">
     </head>
-    <style>
 
-
-    </style>
 
     <body>
       <div class="header">
@@ -90,7 +87,7 @@ if ($result->num_rows > 0) {
                   "></i>
                   </button>
                   <p>Trang chủ</p>
-                </div>
+                </div> 
               </a>
               <a href="wareHouse.php" style="text-decoration: none; color: black;">
                 <div class="container-function-selection">
@@ -298,7 +295,7 @@ if ($result->num_rows > 0) {
           </div>
           <div class="main-content">
             <div class="personal-info">
-              <h1>Thông tin cá nhân</h1>
+              <h1>Thông tin cá nhân</h1><br>
               <p>Thông tin chi tiết của nhân viên hiện tại</p>
 
               <div class="info-container">

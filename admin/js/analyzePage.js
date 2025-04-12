@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <td>${customer.customer_name}</td> 
                     <td>${customer.order_count}</td>
                     <td>${formatDate(customer.latest_order_date)}</td>
-                    <td>${formatCurrency(customer.total_amount)}</td>
+                    <td class= "total-amount">${formatCurrency(customer.total_amount)}</td>
                     <td class="order-detail-link">
                         <div class="dropdown">
                             <button class="btn btn-info dropdown-toggle" 

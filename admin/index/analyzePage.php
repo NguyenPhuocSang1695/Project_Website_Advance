@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="../style/main1.css">
   <link rel="stylesheet" href="../icon/css/fontawesome.min.css">
   <!-- Add reponsive -->
-  <link rel="stylesheet" href="../style/reponsiveAnalyze1.css">
+  <link rel="stylesheet" href="../style/reponsiveAnalyze.css">
   <!-- Add bootstrap -->
   <link rel="stylesheet" href="./asset/bootstrap/css/bootstrap.min.css">
   <!-- Add login function -->
@@ -257,7 +257,7 @@
             <th>Tên khách hàng</th>
             <th>Số lượng đơn đã mua</th>
             <th>Ngày tạo</th>
-            <th>Tổng tiền (VNĐ)</th>
+            <th class="total-amount">Tổng tiền (VNĐ)</th>
             <th>Chi tiết đơn</th>
           </tr>
         </thead>
@@ -288,7 +288,7 @@
             <th>STT</th>
             <th>Tên mặt hàng</th>
             <th>Số lượng bán</th>
-            <th>Tổng tiền (VND)</th>
+            <th class="total-amount">Tổng tiền (VND)</th>
             <th>Chi tiết đơn</th>
           </tr>
         </thead>
