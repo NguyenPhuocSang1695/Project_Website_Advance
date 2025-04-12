@@ -346,8 +346,10 @@ input[type="search"] {
 
 /* ảnh sản phẩm */
 .single-image {
-  width: 30%;
+  width: 432px;
+  height: 432px;
   margin-left: 50px;
+  border-radius: 10px;
 }
 
 /* nội dung sản phẩm bên phải */
@@ -447,7 +449,6 @@ p {
   }
 
   .details {
-    width: 100%;
     margin: 20px;
   }
 
