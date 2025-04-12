@@ -346,7 +346,8 @@ input[type="search"] {
 
 /* ảnh sản phẩm */
 .single-image {
-  width: 30%;
+  width: 432px;
+  height: 432px;
   margin-left: 50px;
 }
 
