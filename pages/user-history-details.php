@@ -126,11 +126,25 @@ $orderInfo = $result->fetch_assoc(); // ⚠️ sửa lại tên biến thành or
                         <i class="fas fa-leaf"></i> Phân loại sản phẩm
                       </label>
                       <select id="categoryFilter" name="category" class="form-select">
-                        <option value="Chọn phân loại">Chọn phân loại</option>
-                        <option value="Cây dễ chăm">Cây dễ chăm</option>
-                        <option value="Cây văn phòng">Cây văn phòng</option>
-                        <option value="Cây để bàn">Cây để bàn</option>
-                        <option value="Cây dưới nước">Cây dưới nước</option>
+                        <option value="">Chọn phân loại</option>
+                        <?php
+                        require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
+
+                        $conn = connect_db();
+                        $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
+                        $result = $conn->query($sql);
+
+                        if ($result && $result->num_rows > 0) {
+                          while ($row = $result->fetch_assoc()) {
+                            $categoryName = htmlspecialchars($row['CategoryName']);
+                            echo "<option value=\"$categoryName\">$categoryName</option>";
+                          }
+                        } else {
+                          echo '<option value="">Không có phân loại</option>';
+                        }
+
+                        $conn->close();
+                        ?>
                       </select>
                     </div>
 
@@ -182,7 +196,7 @@ $orderInfo = $result->fetch_assoc(); // ⚠️ sửa lại tên biến thành or
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function (e) {
+              document.getElementById("searchForm").addEventListener("submit", function(e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
@@ -264,18 +278,25 @@ $orderInfo = $result->fetch_assoc(); // ⚠️ sửa lại tên biến thành or
                     </a>
 
                     <ul class="dropdown-menu">
-                      <li>
-                        <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
-                      </li>
+                      <?php
+                      require_once '../php-api/connectdb.php'; // hoặc đường dẫn đúng đến file connect của bạn
+                      $conn = connect_db();
+
+                      $sql = "SELECT CategoryID, CategoryName FROM categories ORDER BY CategoryID ASC";
+                      $result = $conn->query($sql);
+
+                      if ($result && $result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                          $categoryID = htmlspecialchars($row['CategoryID']);
+                          $categoryName = htmlspecialchars($row['CategoryName']);
+                          echo "<li><a class='dropdown-item' href='./phan-loai.php?category_id=$categoryID'>$categoryName</a></li>";
+                        }
+                      } else {
+                        echo "<li><span class='dropdown-item text-muted'>Không có danh mục</span></li>";
+                      }
+
+                      $conn->close();
+                      ?>
                     </ul>
                   </li>
                   <li class="nav-item">
@@ -307,11 +328,25 @@ $orderInfo = $result->fetch_assoc(); // ⚠️ sửa lại tên biến thành or
                         <i class="fas fa-leaf"></i> Phân loại sản phẩm
                       </label>
                       <select id="categoryFilter-mobile" name="category" class="form-select">
-                        <option value="">Tất cả phân loại</option>
-                        <option value="Cây dễ chăm">Cây dễ chăm</option>
-                        <option value="Cây văn phòng">Cây văn phòng</option>
-                        <option value="Cây để bàn">Cây để bàn</option>
-                        <option value="Cây dưới nước">Cây dưới nước</option>
+                        <option value="">Chọn phân loại</option>
+                        <?php
+                        require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
+
+                        $conn = connect_db();
+                        $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
+                        $result = $conn->query($sql);
+
+                        if ($result && $result->num_rows > 0) {
+                          while ($row = $result->fetch_assoc()) {
+                            $categoryName = htmlspecialchars($row['CategoryName']);
+                            echo "<option value=\"$categoryName\">$categoryName</option>";
+                          }
+                        } else {
+                          echo '<option value="">Không có phân loại</option>';
+                        }
+
+                        $conn->close();
+                        ?>
                       </select>
                     </div>
 
@@ -381,18 +416,25 @@ $orderInfo = $result->fetch_assoc(); // ⚠️ sửa lại tên biến thành or
                 Sản phẩm
               </a>
               <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
-                </li>
+                <?php
+                require_once '../php-api/connectdb.php'; // hoặc đường dẫn đúng đến file connect của bạn
+                $conn = connect_db();
+
+                $sql = "SELECT CategoryID, CategoryName FROM categories ORDER BY CategoryID ASC";
+                $result = $conn->query($sql);
+
+                if ($result && $result->num_rows > 0) {
+                  while ($row = $result->fetch_assoc()) {
+                    $categoryID = htmlspecialchars($row['CategoryID']);
+                    $categoryName = htmlspecialchars($row['CategoryName']);
+                    echo "<li><a class='dropdown-item' href='./phan-loai.php?category_id=$categoryID'>$categoryName</a></li>";
+                  }
+                } else {
+                  echo "<li><span class='dropdown-item text-muted'>Không có danh mục</span></li>";
+                }
+
+                $conn->close();
+                ?>
               </ul>
             </div>
           </li>
@@ -411,20 +453,20 @@ $orderInfo = $result->fetch_assoc(); // ⚠️ sửa lại tên biến thành or
   </div>
 
   <section>
-  <div class="information-client">
-  <h2>Thông tin người nhận</h2>
-  <hr>
-  <div class="thongtin">
-    <h5>Họ tên: <?= htmlspecialchars($orderInfo['CustomerName']) ?></h5>
-    <h5>Số điện thoại: <?= htmlspecialchars($orderInfo['Phone']) ?></h5>
-    <h5>Địa chỉ:
-      <?= isset($orderInfo['Address']) ? htmlspecialchars($orderInfo['Address']) . ', ' : '' ?>
-      <?= htmlspecialchars($orderInfo['WardName']) ?>,
-      <?= htmlspecialchars($orderInfo['DistrictName']) ?>,
-      <?= htmlspecialchars($orderInfo['ProvinceName']) ?>
-    </h5>
-  </div>
-</div>
+    <div class="information-client">
+      <h2>Thông tin người nhận</h2>
+      <hr>
+      <div class="thongtin">
+        <h5>Họ tên: <?= htmlspecialchars($orderInfo['CustomerName']) ?></h5>
+        <h5>Số điện thoại: <?= htmlspecialchars($orderInfo['Phone']) ?></h5>
+        <h5>Địa chỉ:
+          <?= isset($orderInfo['Address']) ? htmlspecialchars($orderInfo['Address']) . ', ' : '' ?>
+          <?= htmlspecialchars($orderInfo['WardName']) ?>,
+          <?= htmlspecialchars($orderInfo['DistrictName']) ?>,
+          <?= htmlspecialchars($orderInfo['ProvinceName']) ?>
+        </h5>
+      </div>
+    </div>
 
 
     <div class="history">
@@ -451,7 +493,7 @@ $orderInfo = $result->fetch_assoc(); // ⚠️ sửa lại tên biến thành or
                 $totalQuantity = 0; // <== Thêm dòng này
                 while ($row = $productResult->fetch_assoc()):
                   $totalQuantity += $row['Quantity']; // <== Thêm dòng này
-                  ?>
+                ?>
                   <tr>
                     <td>
                       <img src="..<?= htmlspecialchars($row['ImageURL']) ?>" alt="Product Image">
@@ -488,7 +530,7 @@ $orderInfo = $result->fetch_assoc(); // ⚠️ sửa lại tên biến thành or
   </section>
 
   <script>
-    $("#menu-btn").click(function () {
+    $("#menu-btn").click(function() {
       $("#menu").toggleClass("active");
     });
   </script>
