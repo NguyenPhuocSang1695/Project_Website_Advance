@@ -500,7 +500,6 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
           <hr style="border: 1px dashed black; width: 21%;">
           <i class="fa-solid fa-circle-check"></i>
         </div>
-
         <div class="option-address">
           <label for="">
             <input type="radio" name="chon" id="default-information" checked> <span>Sử dụng thông tin mặc

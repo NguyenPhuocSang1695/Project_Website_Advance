@@ -1,4 +1,3 @@
-
 sửa lại đoạn này ở các file dòng 407
 
 <ul class="dropdown-menu">
@@ -17,6 +16,7 @@ sửa lại đoạn này ở các file dòng 407
               </ul>
 
 <!-- sửa lại sản phẩm mới cho đúng theo phân loại  -->
+
 sửa lại phần này ở các file css khác
 
 .product-list {
@@ -101,7 +101,6 @@ Cây 38: Cây hạnh phúc mini - 400.000đ** ✅ [Thêm mới]
 Cây 39: Cây tùng bồng lai - 350.000đ** ✅ [Thêm mới]
 Cây 40: Cây trường sinh - 200.000đ\*\* ✅ [Thêm mới]
 
-
 // <?php
 // require_once './connectdb.php'; // Kết nối database
 // $conn = connect_db();
@@ -150,5 +149,3 @@ Cây 40: Cây trường sinh - 200.000đ\*\* ✅ [Thêm mới]
 <!-- chỉnh lại -->
 
 item-header ở trang phân loại, đăng kí
-=======
-

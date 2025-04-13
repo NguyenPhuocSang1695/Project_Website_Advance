@@ -12,5 +12,5 @@ function connect_db()
         die("Connection failed: " . mysqli_connect_error());
     }
 
-    return $conn;
+        return $conn;
 }

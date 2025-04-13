@@ -296,9 +296,6 @@ if ($result && $result->num_rows > 0) {
             </div>
           </div>
         </div>
-      </nav>
-    </div>
-  </div>
 
   <!-- NAV  -->
   <div class="nav">
@@ -335,20 +332,60 @@ if ($result && $result->num_rows > 0) {
               </li>
             </ul>
           </div>
-        </li>
-        <li><a href="">Tin tức</a></li>
-        <li><a href="">Liên hệ</a></li>
-      </ul>
+        </nav>
+      </div>
+    </div>
+
+    <!-- NAV  -->
+    <div class="nav">
+      <div class="brand">
+        <div class="brand-logo">
+          <!-- Quay về trang chủ  -->
+          <a href="../index.html"><img class="img-fluid" src="../assets/images/LOGO-2.jpg" alt="LOGO" /></a>
+        </div>
+        <div class="brand-name">THE TREE</div>
+      </div>
+      <div class="choose">
+        <ul>
+          <li>
+            <a href="../index.html" style="font-weight: bold">Trang chủ</a>
+          </li>
+          <li><a href="#">Giới thiệu</a></li>
+          <li>
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Sản phẩm
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=3">Cây dễ chăm</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=1">Cây văn phòng</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=4">Cây để bàn</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="./phan-loai.html?category_id=2">Cây dưới nước</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li><a href="">Tin tức</a></li>
+          <li><a href="">Liên hệ</a></li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- SECTION  -->
-<div class="section">
-  <div class="img-21">
-    <img src="../assets/images/CAY21.jpg" alt="CAY21" />
+  <!-- SECTION  -->
+  <div class="section">
+    <div class="img-21">
+      <img src="../assets/images/CAY21.jpg" alt="CAY21" />
+    </div>
   </div>
-</div>
 
 
 <div class="sanpham">
@@ -389,56 +426,15 @@ if ($result && $result->num_rows > 0) {
 </div>
 
 
-
-
-<footer class="footer">
-  <div class="footer-column">
-    <h3>Thee Tree</h3>
-    <ul>
-      <li><a href="#">Cây dễ chăm</a></li>
-      <li><a href="#">Cây văn phòng</a></li>
-      <li><a href="#">Cây dưới nước</a></li>
-      <li><a href="#">Cây để bàn</a></li>
-    </ul>
-  </div>
-
-  <div class="footer-column">
-    <h3>Learn</h3>
-    <ul>
-      <li><a href="#">Cách chăm sóc cây</a></li>
-      <li><a href="#">Lợi ích của cây xanh</a></li>
-      <li><a href="#">Cây phong thủy</a></li>
-    </ul>
-  </div>
-
-  <div class="footer-column">
-    <h3>More from The Tree</h3>
-    <ul>
-      <li><a href="#">Blog</a></li>
-      <li><a href="#">Affiliate</a></li>
-      <li><a href="#">Liên hệ</a></li>
-      <li><a href="#">Faq's</a></li>
-      <li><a href="#">Sign In</a></li>
-    </ul>
-  </div>
-
-  <div class="footer-column newsletter">
-
-
-    <h3>Theo dõi chúng tôi</h3>
-    <div class="social-icons">
-      <a href="#" aria-label="Pinterest">
-        <i class="fa-brands fa-pinterest"></i>
-      </a>
-      <a href="#" aria-label="Facebook">
-        <i class="fa-brands fa-facebook"></i>
-      </a>
-      <a href="#" aria-label="Instagram">
-        <i class="fa-brands fa-instagram"></i>
-      </a>
-      <a href="#" aria-label="Twitter">
-        <i class="fa-brands fa-x-twitter"></i>
-      </a>
+      <div class="policies">
+        <a href="#">Điều khoản dịch vụ</a>
+        <span>|</span>
+        <a href="#">Chính sách bảo mật</a>
+        <span>|</span>
+        <a href="#">Chính sách hoàn tiền</a>
+        <span>|</span>
+        <a href="#">Chính sách trợ năng</a>
+      </div>
     </div>
   </div>
 

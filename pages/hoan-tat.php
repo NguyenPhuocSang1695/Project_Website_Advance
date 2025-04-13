@@ -432,7 +432,6 @@ $details = $stmt->get_result();
           <strong>Số điện thoại:</strong> <?= $order['Phone']?> <span id="customer-phone"></span>
         </p>
         <p><strong>Địa chỉ:</strong>  <?= $order['Address'] ?>, <?= $order['Ward'] ?>, <?= $order['District'] ?>, <?= $order['Province'] ?><span id="customer-address"></span></p>
-
         <table>
           <thead>
             <tr>
