@@ -66,10 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
             row.innerHTML = `
               <td>${order.madonhang || ''}</td>
               <td class="hide-index-tablet">${buyerName}</td>
-              <td class="hide-index-tablet">
-                ${receiverName}
-                ${order.trangthai !== 'success' ? ' (Người mua)' : ''}
-              </td>
               <td>${formatDate(order.ngaytao) || ''}</td>
               <td class="hide-index-mobile">${formatCurrency(order.giatien || 0)}</td>
               <td>
