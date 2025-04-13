@@ -5,7 +5,6 @@ require_once('../src/php/connect.php');
 
 // Lấy ID từ URL
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-
 // Truy vấn sản phẩm theo ID
 $sql = "SELECT * FROM products WHERE ProductID = $id";
 $result = $conn->query($sql);
@@ -370,12 +369,14 @@ if ($result && $result->num_rows > 0) {
         <span class="minus">-</span>
         <span class="num">01</span>
         <span class="plus">+</span>
-        <script src="../src/js/san-pham.js"></script>
-      </div>
-      <button type="button" class="btn btn-primary btn-lg" id="addToCartBtn"
-        data-product-id="<?php echo $product['ProductID']; ?>">
-        Thêm vào giỏ hàng
-      </button>
+      </div> 
+      <script src ="../src/js/san-pham.js"></script>
+      <!-- Form thêm vào giỏ hàng -->
+      <form action="gio-hang.php" method="POST">
+        <input type="hidden" name="product_id" value="<?php echo $product['ProductID']; ?>">
+        <input type="hidden" name="quantity" id="quantity" value="1">
+        <button type="submit" class="btn btn-primary btn-lg">Thêm vào giỏ hàng</button>
+      </form>
     </div>
   </div>
 </div>

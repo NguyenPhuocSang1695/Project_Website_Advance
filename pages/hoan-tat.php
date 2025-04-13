@@ -1,5 +1,50 @@
 <?php
+session_start();
+require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
+require __DIR__ . '/../src/Jwt/vendor/autoload.php';
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+
+// Kiểm tra xem cookie 'token' có tồn tại không
+if (!isset($_COOKIE['token'])) {
+    header("Location: login.php");
+    exit;
+}
+
+try {
+    // Giải mã token
+    $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
+    $username = $decoded->data->Username;
+} catch (Exception $e) {
+    // Nếu token không hợp lệ, hết hạn, hoặc bị chỉnh sửa => chuyển hướng login
+    header("Location: login.php");
+    exit;
+}
+// Lấy OrderID từ session
+$orderID = $_SESSION['order_id'] ?? 0;
+if (!$orderID) die("Không tìm thấy đơn hàng.");
+
+// Lấy thông tin đơn hàng
+$stmt = $conn->prepare("SELECT * FROM orders WHERE OrderID = ?");
+$stmt->bind_param("i", $orderID);
+$stmt->execute();
+$order = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+// Lấy chi tiết sản phẩm từ đơn hàng
+$stmt = $conn->prepare("
+  SELECT p.ProductName, p.ImageURL, od.Quantity, od.UnitPrice, (od.Quantity * od.UnitPrice) AS TotalPrice
+  FROM orderdetails od
+  JOIN products p ON od.ProductID = p.ProductID
+  WHERE od.OrderID = ?
+");
+$stmt->bind_param("i", $orderID);
+$stmt->execute();
+$details = $stmt->get_result();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -377,16 +422,17 @@ require_once('../src/php/token.php');
       </div>
 
       <div class="invoice-container">
-        <h2>HÓA ĐƠN MUA HÀNG</h2>
-        <p><strong>Mã hóa đơn:</strong> <span id="invoice-id"></span></p>
-        <p><strong>Ngày mua:</strong> <span id="purchase-date"></span></p>
+      <h2>HÓA ĐƠN MUA HÀNG</h2>
+        <p><strong>Mã hóa đơn:</strong> <?= $order['OrderID'] ?> <span id="invoice-id"></span></p>
+        <p><strong>Ngày mua:</strong> <?= $order['DateGeneration'] ?><span id="purchase-date"></span></p>
         <p>
-          <strong>Tên khách hàng:</strong> <span id="customer-name"></span>
+          <strong>Tên khách hàng:</strong> <?= $order['CustomerName'] ?> <span id="customer-name"></span>
         </p>
         <p>
-          <strong>Số điện thoại:</strong> <span id="customer-phone"></span>
+          <strong>Số điện thoại:</strong> <?= $order['Phone']?> <span id="customer-phone"></span>
         </p>
-        <p><strong>Địa chỉ:</strong> <span id="customer-address"></span></p>
+        <p><strong>Địa chỉ:</strong>  <?= $order['Address'] ?>, <?= $order['Ward'] ?>, <?= $order['District'] ?>, <?= $order['Province'] ?><span id="customer-address"></span></p>
+
         <table>
           <thead>
             <tr>
@@ -395,14 +441,23 @@ require_once('../src/php/token.php');
               <th>Số lượng</th>
               <th>Giá</th>
               <th>Thành tiền</th>
+             
             </tr>
           </thead>
           <tbody id="invoice-body">
-            <!-- Dữ liệu sẽ được thêm từ JavaScript -->
+          <?php while ($row = $details->fetch_assoc()): ?>
+            <tr>
+              <td><?php echo htmlspecialchars($row['ProductName']); ?></td>
+              <td><img src="<?php echo ".." . $row['ImageURL'];?>"  alt="<?php echo $product['ProductName']; ?>" width="80"></td>
+              <td><?= $row['Quantity'] ?></td>
+              <td><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
+              <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
+            </tr>
+            <?php endwhile; ?>
           </tbody>
         </table>
         <div class="total">
-          <strong>Tổng cộng: </strong> <span id="total-price">0đ</span>
+        <strong>Tổng cộng: </strong> <span id="total-price"><?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ</span>
         </div>
         <button class="btn-back" onclick="goBack()">Quay lại giỏ hàng</button>
       </div>
