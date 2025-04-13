@@ -150,17 +150,17 @@ require_once './src/php/token.php';
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <?php if (!$loggedInUsername): ?>
                       <li class="nav-item">
-                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                        <a class="nav-link login-logout" href="./pages/user-register.php">Đăng kí</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
+                        <a class="nav-link login-logout" href="./pages/user-login.php">Đăng nhập</a>
                       </li>
                     <?php else: ?>
                       <li class="nav-item">
                         <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="user-History.php">Lịch sử mua hàng</a>
+                        <a class="nav-link hs-ls-dx" href="./pages/user-History.php">Lịch sử mua hàng</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link hs-ls-dx" href="./src/php/logout.php">Đăng xuất</a>
@@ -263,7 +263,7 @@ require_once './src/php/token.php';
                           <span class="price-separator">-</span>
                           <input type="number" id="maxPriceMobile" name="maxPrice" placeholder="Đến" min="0" />
                         </div>
-                         <!-- <div class="price-ranges">
+                        <!-- <div class="price-ranges">
                           <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
                             Dưới 200k
                           </button>
