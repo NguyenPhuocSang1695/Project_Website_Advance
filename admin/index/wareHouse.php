@@ -491,12 +491,31 @@
             <div class="form-group">
               <label for="categoryID">Danh mục</label>
               <select id="categoryID" name="categoryID" required>
-                <option value="1">Cây văn phòng</option>
-                <option value="2">Cây dưới nước</option>
-                <option value="3">Cây dễ chăm</option>
-                <option value="4">Cây để bàn</option>
+                <?php
+                require_once '../../php-api/connectdb.php'; // Kết nối tới CSDL
+                $conn = connect_db();
+
+                // Truy vấn lấy danh mục
+                $sql = "SELECT CategoryID, CategoryName FROM categories ORDER BY CategoryID ASC";
+                $result = $conn->query($sql);
+
+                if ($result && $result->num_rows > 0) {
+                  // Lặp qua từng danh mục và hiển thị
+                  while ($row = $result->fetch_assoc()) {
+                    $categoryID = htmlspecialchars($row['CategoryID']);
+                    $categoryName = htmlspecialchars($row['CategoryName']);
+                    echo "<option value='$categoryID'>$categoryName</option>";
+                  }
+                } else {
+                  // Nếu không có danh mục
+                  echo "<option value=''>Không có danh mục</option>";
+                }
+
+                $conn->close();
+                ?>
               </select>
             </div>
+
             <div class="form-group">
               <label for="price">Giá</label>
               <input type="number" id="price" name="price" required placeholder="Nhập giá sản phẩm" min="0">

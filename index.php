@@ -72,12 +72,27 @@ require_once './src/php/token.php';
                         <i class="fas fa-leaf"></i> Phân loại sản phẩm
                       </label>
                       <select id="categoryFilter" name="category" class="form-select">
-                        <option value="Chọn phân loại">Chọn phân loại</option>
-                        <option value="Cây dễ chăm">Cây dễ chăm</option>
-                        <option value="Cây văn phòng">Cây văn phòng</option>
-                        <option value="Cây để bàn">Cây để bàn</option>
-                        <option value="Cây dưới nước">Cây dưới nước</option>
+                        <option value="">Chọn phân loại</option>
+                        <?php
+                        require_once './php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
+
+                        $conn = connect_db();
+                        $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
+                        $result = $conn->query($sql);
+
+                        if ($result && $result->num_rows > 0) {
+                          while ($row = $result->fetch_assoc()) {
+                            $categoryName = htmlspecialchars($row['CategoryName']);
+                            echo "<option value=\"$categoryName\">$categoryName</option>";
+                          }
+                        } else {
+                          echo '<option value="">Không có phân loại</option>';
+                        }
+
+                        $conn->close();
+                        ?>
                       </select>
+
                     </div>
 
                     <div class="filter-group">
@@ -202,18 +217,25 @@ require_once './src/php/token.php';
                       Sản phẩm
                     </a>
                     <ul class="dropdown-menu">
-                      <li>
-                        <a class="dropdown-item" href="./pages/phan-loai.php?category_id=3">Cây dễ chăm</a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="./pages/phan-loai.php?category_id=1">Cây văn phòng</a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="./pages/phan-loai.php?category_id=4">Cây để bàn</a>
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="./pages/phan-loai.php?category_id=2">Cây trong nước</a>
-                      </li>
+                      <?php
+                      require_once './php-api/connectdb.php'; // hoặc đường dẫn đúng đến file connect của bạn
+                      $conn = connect_db();
+
+                      $sql = "SELECT CategoryID, CategoryName FROM categories ORDER BY CategoryID ASC";
+                      $result = $conn->query($sql);
+
+                      if ($result && $result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                          $categoryID = htmlspecialchars($row['CategoryID']);
+                          $categoryName = htmlspecialchars($row['CategoryName']);
+                          echo "<li><a class='dropdown-item' href='./pages/phan-loai.php?category_id=$categoryID'>$categoryName</a></li>";
+                        }
+                      } else {
+                        echo "<li><span class='dropdown-item text-muted'>Không có danh mục</span></li>";
+                      }
+
+                      $conn->close();
+                      ?>
                     </ul>
                   </li>
                   <li class="nav-item">
@@ -245,12 +267,27 @@ require_once './src/php/token.php';
                         <i class="fas fa-leaf"></i> Phân loại sản phẩm
                       </label>
                       <select id="categoryFilter-mobile" name="category" class="form-select">
-                        <option value="">Tất cả phân loại</option>
-                        <option value="Cây dễ chăm">Cây dễ chăm</option>
-                        <option value="Cây văn phòng">Cây văn phòng</option>
-                        <option value="Cây để bàn">Cây để bàn</option>
-                        <option value="Cây dưới nước">Cây dưới nước</option>
+                        <option value="">Chọn phân loại</option>
+                        <?php
+                        require_once './php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
+
+                        $conn = connect_db();
+                        $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
+                        $result = $conn->query($sql);
+
+                        if ($result && $result->num_rows > 0) {
+                          while ($row = $result->fetch_assoc()) {
+                            $categoryName = htmlspecialchars($row['CategoryName']);
+                            echo "<option value=\"$categoryName\">$categoryName</option>";
+                          }
+                        } else {
+                          echo '<option value="">Không có phân loại</option>';
+                        }
+
+                        $conn->close();
+                        ?>
                       </select>
+
                     </div>
 
                     <div class="filter-group">
@@ -319,18 +356,25 @@ require_once './src/php/token.php';
                 Sản phẩm
               </a>
               <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.php?category_id=3">Cây dễ chăm</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.php?category_id=1">Cây văn phòng</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.php?category_id=4">Cây để bàn</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="./pages/phan-loai.php?category_id=2">Cây dưới nước</a>
-                </li>
+                <?php
+                require_once './php-api/connectdb.php'; // hoặc đường dẫn đúng đến file connect của bạn
+                $conn = connect_db();
+
+                $sql = "SELECT CategoryID, CategoryName FROM categories ORDER BY CategoryID ASC";
+                $result = $conn->query($sql);
+
+                if ($result && $result->num_rows > 0) {
+                  while ($row = $result->fetch_assoc()) {
+                    $categoryID = htmlspecialchars($row['CategoryID']);
+                    $categoryName = htmlspecialchars($row['CategoryName']);
+                    echo "<li><a class='dropdown-item' href='./pages/phan-loai.php?category_id=$categoryID'>$categoryName</a></li>";
+                  }
+                } else {
+                  echo "<li><span class='dropdown-item text-muted'>Không có danh mục</span></li>";
+                }
+
+                $conn->close();
+                ?>
               </ul>
             </div>
           </li>
@@ -349,35 +393,57 @@ require_once './src/php/token.php';
   </div>
 
   <main>
-    <!-- DANH MUC SAN PHAM -->
+    <!-- DANH MỤC SẢN PHẨM -->
+    <?php
+    $host = 'localhost';
+    $user = 'root';
+    $password = '';
+    $dbname = 'c01db';
+
+    $conn = new mysqli($host, $user, $password, $dbname);
+    if ($conn->connect_error) {
+      die("Kết nối thất bại: " . $conn->connect_error);
+    }
+
+    // Truy vấn: Lấy sản phẩm đầu tiên (MIN ProductID) trong mỗi danh mục có ít nhất 1 sản phẩm Status = 'appear'
+    $sql = "
+  SELECT p.*, c.CategoryName
+  FROM categories c
+  JOIN (
+    SELECT CategoryID, MIN(ProductID) AS MinProductID
+    FROM products
+    WHERE Status = 'appear'
+    GROUP BY CategoryID
+  ) AS sub ON c.CategoryID = sub.CategoryID
+  JOIN products p ON p.ProductID = sub.MinProductID
+  ORDER BY c.CategoryID;
+";
+
+    $result = $conn->query($sql);
+    $products = [];
+    if ($result && $result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+        $products[] = $row;
+      }
+    }
+    $conn->close();
+    ?>
+
     <section id="container_1" class="class">
       <h2 class="font_size">DANH MỤC SẢN PHẨM</h2>
-
-      <!-- Anh -->
       <div class="IMG">
-        <div class="img__TREE">
-          <!-- LINK SẢN PHẨM -->
-
-          <img class="THE-TREE" src="./assets/images/CAY1.jpg" alt="Cây dễ Chăm" />
-          <p class="content_TREE-1">CÂY DỄ CHĂM</p>
-        </div>
-
-        <div class="img__TREE">
-          <img class="THE-TREE" src="./assets/images/CAY18.jpg" alt="CÂY VĂN PHÒNG" />
-          <p class="content_TREE-1">CÂY VĂN PHÒNG</p>
-        </div>
-
-        <div class="img__TREE">
-          <img class="THE-TREE" src="./assets/images/CAY19.jpg" alt="CÂY ĐỂ BÀN" />
-          <p class="content_TREE-1">CÂY ĐỂ BÀN</p>
-        </div>
-
-        <div class="img__TREE">
-          <img class="THE-TREE" src="./assets/images/CAY20.jpg" alt="Cây dễ Chăm" />
-          <p class="content_TREE-1">CÂY DƯỚI NƯỚC</p>
-        </div>
+        <?php foreach ($products as $product): ?>
+          <div class="img__TREE">
+            <a href="./pages/phan-loai.php?category_id=<?= $product['CategoryID'] ?>&category_name=<?= urlencode($product['CategoryName']) ?>">
+              <img class="THE-TREE" src=".<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['CategoryName']) ?>" style="height: 180px;" />
+              <p class="content_TREE-1"><?= htmlspecialchars($product['CategoryName']) ?></p>
+            </a>
+          </div>
+        <?php endforeach; ?>
       </div>
     </section>
+
+
 
     <section id="product1" class="section-p1">
       <!-- SẢN PHẨM MỚI -->
