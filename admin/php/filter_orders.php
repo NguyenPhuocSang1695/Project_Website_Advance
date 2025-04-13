@@ -26,6 +26,9 @@ $selectQuery = "SELECT
     o.Status AS trangthai,
     o.TotalAmount AS giatien,
     u.FullName AS buyer_name,
+    u.Address AS buyer_address, 
+    dr.name AS buyer_district, 
+    pr.name AS buyer_province, 
     o.CustomerName AS receiver_name,
     o.Address AS receiver_address,
     dr.name AS shipping_district,  
@@ -74,16 +77,14 @@ $params[] = $limit;
 $params[] = $offset;
 $types .= 'ii';
 
-// Sửa lại phần xử lý query đếm
 $countQuery = "SELECT COUNT(*) as total FROM orders o";
 
-// Thêm các JOIN cần thiết
 $countQuery .= " LEFT JOIN users u ON o.Username = u.Username
                  LEFT JOIN province pr ON o.Province = pr.province_id
                  LEFT JOIN district dr ON o.District = dr.district_id
                  WHERE 1=1";
 
-// Thêm điều kiện WHERE (không bao gồm LIMIT và OFFSET)
+
 if ($dateFrom) {
     $countQuery .= " AND o.DateGeneration >= ?";
 }
@@ -150,11 +151,19 @@ $result = $stmt->get_result();
 
 $orders = [];
 while ($row = $result->fetch_assoc()) {
-    $receiver_address_parts = array_filter([
+    // Xác định thông tin người nhận dựa vào trạng thái đơn hàng
+    $displayReceiverName = $row['trangthai'] === 'success' ? $row['receiver_name'] : $row['buyer_name'];
+    $displayAddress = $row['trangthai'] === 'success' ? [
         $row['receiver_address'],
         $row['shipping_district'],
         $row['shipping_province']
-    ]);
+    ] : [
+        $row['buyer_address'], // Thông tin địa chỉ từ bảng users
+        $row['buyer_district'],
+        $row['buyer_province']
+    ];
+
+    $receiver_address_parts = array_filter($displayAddress);
 
     $orders[] = [
         'madonhang' => $row['madonhang'],
@@ -162,7 +171,7 @@ while ($row = $result->fetch_assoc()) {
         'trangthai' => $row['trangthai'],
         'giatien' => $row['giatien'],
         'buyer_name' => $row['buyer_name'] ?? 'Không xác định',
-        'receiver_name' => $row['receiver_name'] ?? 'Không xác định',
+        'receiver_name' => $displayReceiverName ?? 'Không xác định',
         'shipping_district' => $row['shipping_district'] ?? '',
         'shipping_province' => $row['shipping_province'] ?? '',
         'receiver_address' => implode(', ', $receiver_address_parts)

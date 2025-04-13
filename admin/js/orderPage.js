@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
               <td class="hide-index-tablet">${buyerName}</td>
               <td class="hide-index-tablet">
                 ${receiverName}
-                ${buyerName === receiverName ? ' (Người mua)' : ''}
+                ${order.trangthai !== 'success' ? ' (Người mua)' : ''}
               </td>
               <td>${formatDate(order.ngaytao) || ''}</td>
               <td class="hide-index-mobile">${formatCurrency(order.giatien || 0)}</td>

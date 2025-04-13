@@ -60,28 +60,32 @@ if ($orderID) {
 
     // 4. Lấy thông tin người mua (từ bảng users) và người nhận (từ bảng orders)
     $sql_user = "SELECT 
-            -- Thông tin người mua từ bảng users
+            -- Thông tin người mua 
             u.Email as buyer_email,
             u.Address as buyer_address,
             u.FullName as buyer_name,
             u.Phone as buyer_phone,
             p1.name as buyer_province,
             d1.name as buyer_district,
-            u.Ward as buyer_ward,
+            w1.name as buyer_ward,
             
-            -- Thông tin người nhận từ bảng orders
+            -- Thông tin người nhận
             o.CustomerName as receiver_name,
             o.Phone as receiver_phone,
             o.Address as receiver_address,
             o.Ward as receiver_ward,
             p2.name as receiver_province,
-            d2.name as receiver_district
+            d2.name as receiver_district,
+            w2.name as receiver_ward,
+            o.Status as order_status
         FROM orders o
         JOIN users u ON o.Username = u.Username
         LEFT JOIN province p1 ON u.Province = p1.province_id
         LEFT JOIN district d1 ON u.District = d1.district_id
         LEFT JOIN province p2 ON o.Province = p2.province_id
         LEFT JOIN district d2 ON o.District = d2.district_id
+        LEFT JOIN wards w1 ON u.Ward = w1.wards_id
+        LEFT JOIN wards w2 ON o.ward= w2.wards_id
         WHERE o.OrderID = ?";
 
     $stmt_user = $myconn->prepare($sql_user);
@@ -91,7 +95,6 @@ if ($orderID) {
     $userInfo = $result_user->fetch_assoc();
 
     if ($userInfo) {
-      // Thông tin người mua
       $buyerName = $userInfo['buyer_name'];
       $buyerEmail = $userInfo['buyer_email'];
       $buyerAddress = $userInfo['buyer_address'] . ', ' .
@@ -99,14 +102,18 @@ if ($orderID) {
         $userInfo['buyer_district'] . ', ' .
         $userInfo['buyer_province'];
       $buyerPhone = $userInfo['buyer_phone'];
-
-      // Thông tin người nhận
-      $receiverName = $userInfo['receiver_name'];
-      $receiverPhone = $userInfo['receiver_phone'];
-      $receiverAddress = $userInfo['receiver_address'] . ', ' .
-        $userInfo['receiver_ward'] . ', ' .
-        $userInfo['receiver_district'] . ', ' .
-        $userInfo['receiver_province'];
+      if ($userInfo['order_status'] === 'success') {
+        $receiverName = $userInfo['receiver_name'];
+        $receiverPhone = $userInfo['receiver_phone'];
+        $receiverAddress = $userInfo['receiver_address'] . ', ' .
+          $userInfo['receiver_ward'] . ', ' .
+          $userInfo['receiver_district'] . ', ' .
+          $userInfo['receiver_province'];
+      } else {
+        $receiverName = $userInfo['buyer_name'];
+        $receiverPhone = $userInfo['buyer_phone'];
+        $receiverAddress = $buyerAddress;
+      }
     } else {
       echo "Không tìm thấy thông tin người mua";
       exit;
@@ -117,7 +124,7 @@ if ($orderID) {
   exit;
 }
 
-// Hàm để lấy thông tin trạng thái
+
 function getStatusInfo($status)
 {
   switch ($status) {
