@@ -27,12 +27,38 @@ try {
 $orderID = $_SESSION['order_id'] ?? 0;
 if (!$orderID) die("Không tìm thấy đơn hàng.");
 
+
 // Lấy thông tin đơn hàng
 $stmt = $conn->prepare("SELECT * FROM orders WHERE OrderID = ?");
 $stmt->bind_param("i", $orderID);
 $stmt->execute();
 $order = $stmt->get_result()->fetch_assoc();
 $stmt->close();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+  // Lấy phương thức thanh toán, mặc định là 'COD' nếu không có giá trị
+  $paymentMethod = isset($_POST['paymentMethod']) ? $_POST['paymentMethod'] : 'COD';
+  // echo "Payment method gửi đi: " . $paymentMethod . "<br>";  // Hiển thị phương thức thanh toán
+
+  // Kiểm tra lại giá trị của OrderID từ session
+  $orderID = $_SESSION['order_id']; // Đảm bảo bạn đã lưu OrderID trước đó
+  echo "OrderID đang dùng để update: " . $orderID . "<br>"; // Debug giá trị OrderID
+
+  // Thực hiện cập nhật phương thức thanh toán trong bảng orders
+  $stmt = $conn->prepare("UPDATE orders SET PaymentMethod = ? WHERE OrderID = ?");
+  $stmt->bind_param("si", $paymentMethod, $orderID);
+
+  if ($stmt->execute()) {
+      // echo "Cập nhật phương thức thành công!";
+  } else {
+      echo "Lỗi: " . $stmt->error;
+  }
+  $stmt->close();
+}
+
+
+
 
 // Lấy chi tiết sản phẩm từ đơn hàng
 $stmt = $conn->prepare("
@@ -44,7 +70,7 @@ $stmt = $conn->prepare("
 $stmt->bind_param("i", $orderID);
 $stmt->execute();
 $details = $stmt->get_result();
-
+$stmt->close();
 ?>
 <!DOCTYPE html>
 <html>

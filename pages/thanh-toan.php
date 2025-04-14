@@ -6,132 +6,168 @@ ini_set('display_errors', 1);
 require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
-date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
-// Kiểm tra xem cookie 'token' có tồn tại không
+// Kiểm tra token
 if (!isset($_COOKIE['token'])) {
     header("Location: login.php");
     exit;
 }
 
 try {
-    // Giải mã token
     $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
     $username = $decoded->data->Username;
+    $_SESSION['username'] = $username;
 } catch (Exception $e) {
-    // Nếu token không hợp lệ, hết hạn, hoặc bị chỉnh sửa => chuyển hướng login
     header("Location: login.php");
     exit;
 }
 
+// Gán mặc định $user = null để tránh lỗi khi không có kết quả
+$user = null;
+// Lấy thông tin user (gồm JOIN với province, district, ward)
 if (isset($_SESSION['username'])) {
-  $username = $_SESSION['username'];
+    $username = $_SESSION['username'];
 
-  $stmt = $conn->prepare("SELECT * FROM users WHERE Username = ?");
-  $stmt->bind_param("s", $username);
-  $stmt->execute();
-  $result = $stmt->get_result();
-  $user = $result->fetch_assoc();
-  $stmt->close();
-};
+    $sql_user = "
+        SELECT 
+            u.Username,
+            u.FullName,
+            u.Email,
+            u.Phone,
+            u.Address,
+            p.name AS Province,
+            d.name AS District,
+            w.name AS Ward,
+            u.Province AS ProvinceID,
+            u.District AS DistrictID,
+            u.Ward AS WardID
+        FROM users u
+        LEFT JOIN province p ON u.Province = p.province_id
+        LEFT JOIN district d ON u.District = d.district_id
+        LEFT JOIN wards w ON u.Ward = w.wards_id
+        WHERE u.Username = ?
+    ";
+
+    $stmt = $conn->prepare($sql_user);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    $stmt->close();
+}
 
 // Kiểm tra giỏ hàng
 $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
-//tính tổng
+
+// Tính tổng
 $total_amount = 0;
 foreach ($cart_items as $item) {
     $total_amount += $item['Price'] * $item['Quantity'];
 }
 $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
-    // Lấy thông tin người dùng
-    $stmt = $conn->prepare("SELECT * FROM users WHERE Username = ?");
-    $stmt->bind_param("s", $username);
+
+// Ngày hiện tại
+$dateNow = date('Y-m-d H:i:s');
+
+// Xử lý thanh toán
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_checkout'])) {
+    $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
+
+    // Insert đơn hàng
+    $stmt = $conn->prepare("
+        INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param(
+        "ssssssssss",
+        $username,
+        $paymentMethod,
+        $user['FullName'],
+        $user['Phone'],
+        $user['Province'],
+        $user['District'],
+        $user['Ward'],
+        $dateNow,
+        $total_amount,
+        $user['Address']
+    );
     $stmt->execute();
-    $userResult = $stmt->get_result();
-    $user = $userResult->fetch_assoc();
+    $orderID = $stmt->insert_id;
+    $_SESSION['order_id'] = $orderID;
     $stmt->close();
-  // Lấy ngày giờ hiện tại
-  $dateNow = date('Y-m-d H:i:s');
-  // echo "<pre>";
-  // var_dump($user);
-  // echo "</pre>";
 
-  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_checkout'])) {
-          // Tạo đơn hàng
-      $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
-      $stmt = $conn->prepare("INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address)
-                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-      $stmt->bind_param("ssssssssss", 
-          $username,
-          $paymentMethod,
-          $user['FullName'],
-          $user['Phone'],
-          $user['Province'],
-          $user['District'],
-          $user['Ward'],
-          $dateNow,
-          $total_amount,
-          $user['Address']
-      );
-      $stmt->execute();
-      $orderID = $stmt->insert_id;
-      $_SESSION['order_id'] = $orderID; // ✅ đặt ở đây, ngay sau khi có orderID
+    // Insert từng sản phẩm trong giỏ vào orderdetails
+    $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
+    foreach ($cart_items as $item) {
+        $productID = $item['ProductID'];
+        $quantity = $item['Quantity'];
+        $unitPrice = $item['Price'];
+        $totalPrice = $unitPrice * $quantity;
+        $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
+        $stmt->execute();
+    }
+    $stmt->close();
 
-      $stmt->close();
-      // thêm chi tiết đơn hàng
-      $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
-      foreach ($cart_items as $item) {
-          $productID = $item['ProductID'];
-          $quantity = $item['Quantity'];
-          $unitPrice = $item['Price'];
-          $totalPrice = $quantity * $unitPrice;
 
-          $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
-          $stmt->execute();
-      }
-      $stmt->close();
+}
 
-      
 
-  }
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info'])) {
-            // Debug: kiểm tra dữ liệu nhận được
-        // echo "<pre>";
-        // print_r($_POST);
-        // echo "</pre>";
-        // Lấy thông tin từ form
-        $orderID = $_POST['order_id']; // lấy từ input hidden
-        $newName = $_POST['new_name'];
-        $newSdt = $_POST['new_sdt'];
-        $newDiachi = $_POST['new_diachi'];
-        $province = $_POST['province'];
-        $district = $_POST['district'];
-        $ward = $_POST['wards'];
-        //     // Debug: kiểm tra giá trị orderID và các trường
-        // echo "Order ID nhận được: " . $orderID . "<br>";
-        // 🆕 Lấy thêm phương thức thanh toán nếu có
-        $paymentMethod = isset($_POST['paymentMethod']) ? $_POST['paymentMethod'] : 'COD';
 
-       // Cập nhật thông tin người nhận trong bảng orders
-        $stmt = $conn->prepare("UPDATE orders 
-        SET CustomerName = ?, Phone = ?, Address = ?, Province = ?, District = ?, Ward = ?,PaymentMethod = ?
+// Kiểm tra nếu có request POST từ form
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info'])) {
+    // Lấy thông tin từ form
+    $orderID = $_POST['order_id']; // lấy từ input hidden
+    $newName = $_POST['new_name'];
+    $newSdt = $_POST['new_sdt'];
+    $newDiachi = $_POST['new_diachi'];
+    $province = $_POST['province'];
+    $district = $_POST['district'];
+    $ward = $_POST['wards'];
+    // Kiểm tra dữ liệu đầu vào
+    if (empty($newName) || empty($newSdt) || empty($newDiachi) || empty($provinceID) || empty($districtID) || empty($wardID)) {
+      echo "Vui lòng điền đầy đủ thông tin.";
+      header("Location: thanh-toan.php");
+    }
+   // Lấy tên tỉnh
+    $stmt = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
+    $stmt->bind_param("s", $province);
+    $stmt->execute();
+    $stmt->bind_result($provinceName);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Lấy tên quận
+    $stmt = $conn->prepare("SELECT name FROM district WHERE district_id = ?");
+    $stmt->bind_param("s", $district);
+    $stmt->execute();
+    $stmt->bind_result($districtName);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Lấy tên phường
+    $stmt = $conn->prepare("SELECT name FROM wards WHERE wards_id = ?");
+    $stmt->bind_param("s", $ward);
+    $stmt->execute();
+    $stmt->bind_result($wardName);
+    $stmt->fetch();
+    $stmt->close();
+     
+    // Cập nhật thông tin đơn hàng với địa chỉ bằng tên đầy đủ
+    $stmt = $conn->prepare("UPDATE orders 
+        SET CustomerName = ?, Phone = ?, Address = ?, Province = ?, District = ?, Ward = ?
         WHERE OrderID = ?");
-          $stmt->bind_param("sssssssi", $newName, $newSdt, $newDiachi, $province, $district, $ward, $paymentMethod,$orderID,);
-          echo "SQL Query: " . "UPDATE orders SET CustomerName = '$newName', Phone = '$newSdt', Address = '$newDiachi', Province = '$province', District = '$district', Ward = '$ward', PaymentMethod = '$paymentMethod' WHERE OrderID = '$orderID'";
-
-          if ($stmt->execute()) {
-          // echo "<script>alert('Cập nhật thông tin giao hàng thành công!');</script>";
-          } else {
-          // echo "<script>alert('Cập nhật thông tin thất bại!');</script>";
-          }
-             // Debug: kiểm tra số dòng bị ảnh hưởng
-          // echo "Số dòng được cập nhật: " . $stmt->affected_rows;
-          $stmt->close();
-    } 
+    $stmt->bind_param("ssssssi", $newName, $newSdt, $newDiachi, $provinceName, $districtName, $wardName, $orderID);
+    $stmt->execute();
+    // Đóng statement
+    $stmt->close();
+    
+}
+  unset($_SESSION['cart']);
 
 ?>
 <!DOCTYPE html>
@@ -540,27 +576,27 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
        
           
 
-          <div id="default-information-form" >
-              <label><strong>Họ và tên</strong></label>
-              <input type="text" value="<?= htmlspecialchars($user['FullName']) ?>" disabled>
-              <input type="hidden" name="FullName" value="<?= htmlspecialchars($user['FullName']) ?>">
+       <div id="default-information-form">
+          <label><strong>Họ và tên</strong></label>
+          <input type="text" value="<?= htmlspecialchars($user['FullName'] ?? '') ?>" disabled>
+          <input type="hidden" name="FullName" value="<?= htmlspecialchars($user['FullName'] ?? '') ?>">
 
-              <label><strong>Email</strong></label>
-              <input type="email" value="<?= htmlspecialchars($user['Email']) ?>" disabled>
-              <input type="hidden" name="Email" value="<?= htmlspecialchars($user['Email']) ?>">
+          <label><strong>Email</strong></label>
+          <input type="email" value="<?= htmlspecialchars($user['Email'] ?? '') ?>" disabled>
+          <input type="hidden" name="Email" value="<?= htmlspecialchars($user['Email'] ?? '') ?>">
 
-              <label><strong>Số điện thoại</strong></label>
-              <input type="text" value="<?= htmlspecialchars($user['Phone']) ?>" disabled>
-              <input type="hidden" name="Phone" value="<?= htmlspecialchars($user['Phone']) ?>">
+          <label><strong>Số điện thoại</strong></label>
+          <input type="text" value="<?= htmlspecialchars($user['Phone'] ?? '') ?>" disabled>
+          <input type="hidden" name="Phone" value="<?= htmlspecialchars($user['Phone'] ?? '') ?>">
 
-              <label><strong>Địa chỉ</strong></label>
-              <input type="text" value="<?= htmlspecialchars($user['Address'] . ', ' . $user['Ward'] . ', ' . $user['District'] . ', ' . $user['Province']) ?>" disabled>
+          <label><strong>Địa chỉ</strong></label>
+          <input type="text" value="<?= htmlspecialchars(($user['Address'] ?? '') . ', ' . ($user['Ward'] ?? '') . ', ' . ($user['District'] ?? '') . ', ' . ($user['Province'] ?? '')) ?>" disabled>
+          <input type="hidden" name="Address" value="<?= htmlspecialchars($user['Address'] ?? '') ?>">
+          <input type="hidden" name="Ward" value="<?= htmlspecialchars($user['Ward'] ?? '') ?>">
+          <input type="hidden" name="District" value="<?= htmlspecialchars($user['District'] ?? '') ?>">
+          <input type="hidden" name="Province" value="<?= htmlspecialchars($user['Province'] ?? '') ?>">
+      </div>
 
-              <input type="hidden" name="Address" value="<?= htmlspecialchars($user['Address']) ?>">
-              <input type="hidden" name="Ward" value="<?= htmlspecialchars($user['Ward']) ?>">
-              <input type="hidden" name="District" value="<?= htmlspecialchars($user['District']) ?>">
-              <input type="hidden" name="Province" value="<?= htmlspecialchars($user['Province']) ?>">
-          </div>
 
 
         <form action="thanh-toan.php" id="new-information-form" method="POST">
@@ -571,7 +607,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
           <label for=""><strong>Số điện thoại</strong></label>
           <input type="text" name="new_sdt" id="new-sdt" placeholder="Số điện thoại">
           <label for=""><strong>Địa chỉ</strong></label>
-          <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ cụ thể" >
+          <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ(số và đường)" >
 
           <label for=""><strong>Tỉnh/Thành phố</strong></label>
           <select name="province" id="province" class="form-select">
@@ -638,7 +674,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
                                 <!-- Nút giảm số lượng -->
                                 <!-- <button type="button" class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>                       -->
                                 <!-- Trường số lượng, gán thuộc tính data-price để JS dùng cho tính toán nếu cần -->
-                                <span class="quantity-display" ><?php echo "x".$item['Quantity']; ?></span>
+                                <span class="quantity-display " style="margin-left:35px" ><?php echo "x".$item['Quantity']; ?></span>
                         
                                 <!-- Nút tăng số lượng -->
                                 <!-- <button type="button" class="quantity-btn" onclick="changeQuantity(this, 1)">+</button> -->
@@ -659,26 +695,23 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
             </div>
           </div>
 
-          <form action="thanh-toan.php"> 
-              <div class="payment-method">
-                <label>
-                  <input type="radio" name="paymentMethod" value="COD" id="cod-button"  checked>
-                  <span>Thanh toán khi nhận hàng</span>
-                </label>
-                <label>
-                  <input type="radio" name="paymentMethod" value="Banking" id="banking-button">
-                  <span>Chuyển khoản</span>
-                </label>
-              </div>
+          <form action="hoan-tat.php" method="POST"> 
+            <div class="payment-method">
+              <label>
+                <input type="radio" name="paymentMethod" value="COD" checked> Thanh toán khi nhận hàng
+              </label>
+              <label>
+                <input type="radio" name="paymentMethod" value="Banking"> Chuyển khoản
+              </label>
+            </div>
+
+            <div class="payment-button">
+              <button type="submit" class="btn btn-success">THANH TOÁN</button>
+            </div>
           </form>
 
-        <form action="hoan-tat.php" method="POST">
-          <div class="payment-button">
-            <button type="submit" class="btn btn-success" id="payment-button" style="width: 185px; height: 50px;">
-              THANH TOÁN
-            </button>
-          </div>
-        </form>
+        
+
 
           <a href="../index.html" style="text-decoration: none;
           margin-bottom: 10px;">Tiếp tục mua hàng</a>
