@@ -435,7 +435,7 @@ require_once './src/php/token.php';
         <?php foreach ($products as $product): ?>
           <div class="img__TREE">
             <a href="./pages/phan-loai.php?category_id=<?= $product['CategoryID'] ?>&category_name=<?= urlencode($product['CategoryName']) ?>">
-              <img class="THE-TREE" src=".<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['CategoryName']) ?>" style="height: 180px;" />
+              <img class="THE-TREE" src=".<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['CategoryName']) ?>" />
               <p class="content_TREE-1"><?= htmlspecialchars($product['CategoryName']) ?></p>
             </a>
           </div>
