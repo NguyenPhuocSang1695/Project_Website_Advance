@@ -82,11 +82,25 @@ if ($result && $result->num_rows > 0) {
                       <i class="fas fa-leaf"></i> Phân loại sản phẩm
                     </label>
                     <select id="categoryFilter" name="category" class="form-select">
-                      <option value="Chọn phân loại">Chọn phân loại</option>
-                      <option value="Cây dễ chăm">Cây dễ chăm</option>
-                      <option value="Cây văn phòng">Cây văn phòng</option>
-                      <option value="Cây để bàn">Cây để bàn</option>
-                      <option value="Cây dưới nước">Cây dưới nước</option>
+                      <option value="">Chọn phân loại</option>
+                      <?php
+                      require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
+
+                      $conn = connect_db();
+                      $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
+                      $result = $conn->query($sql);
+
+                      if ($result && $result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                          $categoryName = htmlspecialchars($row['CategoryName']);
+                          echo "<option value=\"$categoryName\">$categoryName</option>";
+                        }
+                      } else {
+                        echo '<option value="">Không có phân loại</option>';
+                      }
+
+                      $conn->close();
+                      ?>
                     </select>
                   </div>
 
@@ -212,18 +226,25 @@ if ($result && $result->num_rows > 0) {
                     Sản phẩm
                   </a>
                   <ul class="dropdown-menu">
-                    <li>
-                      <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
-                    </li>
+                    <?php
+                    require_once '../php-api/connectdb.php'; // hoặc đường dẫn đúng đến file connect của bạn
+                    $conn = connect_db();
+
+                    $sql = "SELECT CategoryID, CategoryName FROM categories ORDER BY CategoryID ASC";
+                    $result = $conn->query($sql);
+
+                    if ($result && $result->num_rows > 0) {
+                      while ($row = $result->fetch_assoc()) {
+                        $categoryID = htmlspecialchars($row['CategoryID']);
+                        $categoryName = htmlspecialchars($row['CategoryName']);
+                        echo "<li><a class='dropdown-item' href='./phan-loai.php?category_id=$categoryID'>$categoryName</a></li>";
+                      }
+                    } else {
+                      echo "<li><span class='dropdown-item text-muted'>Không có danh mục</span></li>";
+                    }
+
+                    $conn->close();
+                    ?>
                   </ul>
                 </li>
                 <li class="nav-item">
@@ -233,67 +254,86 @@ if ($result && $result->num_rows > 0) {
                   <a class="nav-link" href="#">Liên hệ</a>
                 </li>
               </ul>
-              <form class="d-flex mt-3" role="search">
-                <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search" />
-                <!-- Nút tìm kiếm nâng cao trên mobile  -->
-                <button type="button" class="advanced-search-toggle" onclick="toggleMobileSearch()"
-                  title="Tìm kiếm nâng cao">
-                  <i class="fas fa-sliders-h"></i>
-                </button>
-                <button class="btn btn-outline-success" type="submit">
-                  Search
-                </button>
-              </form>
-              <div id="search-filter-container-mobile" class="search-filter-container">
-                <div class="filter-group">
-                  <label for="categoryFilter">
-                    <i class="fas fa-leaf"></i> Phân loại sản phẩm
-                  </label>
-                  <select id="categoryFilter" class="form-select">
-                    <option value="">Tất cả phân loại</option>
-                    <option value="cay-de-cham">Cây dễ chăm</option>
-                    <option value="cay-van-phong">Cây văn phòng</option>
-                    <option value="cay-de-ban">Cây để bàn</option>
-                    <option value="cay-duoi-nuoc">Cây dưới nước</option>
-                  </select>
-                </div>
+              <form class="searchFormMobile mt-3" role="search" id="searchFormMobile">
+                <div class="d-flex">
+                  <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search"
+                    style="height: 37.6px;" />
+                  <!-- Nút tìm kiếm nâng cao trên mobile  -->
+                  <button type="button" class="advanced-search-toggle" onclick="toggleMobileSearch()"
+                    title="Tìm kiếm nâng cao">
+                    <i class="fas fa-sliders-h"></i>
+                  </button>
 
-                <div class="filter-group">
-                  <label for="priceRange">
-                    <i class="fas fa-tag"></i> Khoảng giá
-                  </label>
-                  <div class="price-range-slider">
-                    <div class="price-input-group">
-                      <input type="number" id="minPriceMobile" placeholder="Từ" min="0" />
-                      <span class="price-separator">-</span>
-                      <input type="number" id="maxPriceMobile" placeholder="Đến" min="0" />
+                  <button class="btn btn-outline-success" type="submit"
+                    style="width: 76.3px;display: flex;justify-content: center;align-items: center;height: 37.6px;">
+                    Tìm
+                  </button>
+                </div>
+                <div id="search-filter-container-mobile" class="search-filter-container-mobile">
+                  <div class="filter-group">
+                    <label for="categoryFilter-mobile">
+                      <i class="fas fa-leaf"></i> Phân loại sản phẩm
+                    </label>
+                    <select id="categoryFilter-mobile" name="category" class="form-select">
+                      <option value="">Chọn phân loại</option>
+                      <?php
+                      require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
+
+                      $conn = connect_db();
+                      $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
+                      $result = $conn->query($sql);
+
+                      if ($result && $result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                          $categoryName = htmlspecialchars($row['CategoryName']);
+                          echo "<option value=\"$categoryName\">$categoryName</option>";
+                        }
+                      } else {
+                        echo '<option value="">Không có phân loại</option>';
+                      }
+
+                      $conn->close();
+                      ?>
+                    </select>
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="priceRange">
+                      <i class="fas fa-tag"></i> Khoảng giá
+                    </label>
+                    <div class="price-range-slider">
+                      <div class="price-input-group">
+                        <input type="number" id="minPriceMobile" name="minPrice" placeholder="Từ" min="0" />
+                        <span class="price-separator">-</span>
+                        <input type="number" id="maxPriceMobile" name="maxPrice" placeholder="Đến" min="0" />
+                      </div>
+                      <!-- <div class="price-ranges">
+                          <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
+                            Dưới 200k
+                          </button>
+                          <button type="button" class="price-preset" onclick="setPriceMobile(200000, 500000)">
+                            200k - 500k
+                          </button>
+                          <button type="button" class="price-preset" onclick="setPriceMobile(500000, 1000000)">
+                            500k - 1tr
+                          </button>
+                          <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
+                            Trên 1tr
+                          </button>
+                        </div> -->
                     </div>
-                    <!-- <div class="price-ranges">
-                      <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
-                        Dưới 200k
-                      </button>
-                      <button type="button" class="price-preset" onclick="setPriceMobile(200000, 500000)">
-                        200k - 500k
-                      </button>
-                      <button type="button" class="price-preset" onclick="setPriceMobile(500000, 1000000)">
-                        500k - 1tr
-                      </button>
-                      <button type="button" class="price-preset" onclick="setPriceMobile(1000000, 0)">
-                        Trên 1tr
-                      </button>
-                    </div> -->
+                  </div>
+
+                  <div class="filter-actions">
+                    <button type="submit" class="btn-search" onclick="performSearchMobile()">
+                      <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    <button type="button" class="btn-reset" onclick="resetMobileFilters()">
+                      <i class="fas fa-redo-alt"></i> Đặt lại
+                    </button>
                   </div>
                 </div>
-
-                <div class="filter-actions">
-                  <button type="button" class="btn-search" onclick="performSearchMobile()">
-                    <i class="fas fa-search"></i> Tìm kiếm
-                  </button>
-                  <button type="button" class="btn-reset" onclick="resetMobileFilters()">
-                    <i class="fas fa-redo-alt"></i> Đặt lại
-                  </button>
-                </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
@@ -322,18 +362,25 @@ if ($result && $result->num_rows > 0) {
               Sản phẩm
             </a>
             <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="./phan-loai.php?category_id=3">Cây dễ chăm</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="./phan-loai.php?category_id=1">Cây văn phòng</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="./phan-loai.php?category_id=4">Cây để bàn</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="./phan-loai.php?category_id=2">Cây dưới nước</a>
-              </li>
+              <?php
+              require_once '../php-api/connectdb.php'; // hoặc đường dẫn đúng đến file connect của bạn
+              $conn = connect_db();
+
+              $sql = "SELECT CategoryID, CategoryName FROM categories ORDER BY CategoryID ASC";
+              $result = $conn->query($sql);
+
+              if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                  $categoryID = htmlspecialchars($row['CategoryID']);
+                  $categoryName = htmlspecialchars($row['CategoryName']);
+                  echo "<li><a class='dropdown-item' href='./phan-loai.php?category_id=$categoryID'>$categoryName</a></li>";
+                }
+              } else {
+                echo "<li><span class='dropdown-item text-muted'>Không có danh mục</span></li>";
+              }
+
+              $conn->close();
+              ?>
             </ul>
           </div>
         </li>

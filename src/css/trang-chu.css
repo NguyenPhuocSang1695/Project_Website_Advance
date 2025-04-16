@@ -360,11 +360,15 @@ body {
   /* Căn giữa toàn bộ ảnh theo chiều ngang */
   flex-wrap: wrap;
   /* Cho phép ảnh xuống dòng nếu không đủ chỗ */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 .img__TREE {
   position: relative;
-  width: 18%;
+  width: 200px;
   /* Chiếm 22% chiều rộng container cha, có thể thay đổi */
   min-width: 200px;
   /* Kích thước nhỏ nhất để ảnh không quá nhỏ */
@@ -376,6 +380,10 @@ body {
   /* Căn giữa theo chiều ngang */
   transition: all 0.3s ease;
   /* Thêm hiệu ứng chuyển đổi mượt mà */
+  width: calc(25% - 113px);
+  /* 4 phần tử, trừ khoảng cách */
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .img__TREE:hover {
