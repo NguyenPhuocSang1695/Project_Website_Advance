@@ -72,7 +72,8 @@ WHERE o.DateGeneration BETWEEN ? AND ?
 GROUP BY p.ProductID, p.ProductName
 HAVING SUM(od.Quantity) > 0
     AND SUM(od.TotalPrice) > 0
-ORDER BY quantity_sold DESC, total_amount DESC";
+ORDER BY quantity_sold DESC, total_amount DESC
+LIMIT 5";
 
 $stmt = $myconn->prepare($product_query);
 $stmt->bind_param("ss", $start_date, $end_date);

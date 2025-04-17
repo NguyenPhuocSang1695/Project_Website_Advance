@@ -1,5 +1,4 @@
-
-  body {
+body {
   font-family: Arial, sans-serif;
   background-color: #f7f8fc;
   margin: 0;
@@ -305,12 +304,7 @@ td img {
 
 /* Responsive styles */
 @media only screen and  (max-width: 769px)  {
-  .main-content {
-    width: 100%;
-    gap: 3px;
-    padding: 5px 0;
 
-}
 .left-section {
   flex: 2;
 }
@@ -419,7 +413,6 @@ td img {
   border: 1px solid #d6d8db;
   font-weight:bold;
 }
-/* Hiệu ứng hover cho trạng thái */
 .status:hover {
     opacity: 0.9;
     transition: opacity 0.2s ease-in-out;
@@ -479,4 +472,41 @@ td img {
   flex-direction: column;
   gap: 5px;
   font-weight: bold;
+}
+
+/* Products Section */
+.section.products table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.section.products tbody {
+    display: block;
+    max-height: 300px; /* Chiều cao tối đa của vùng cuộn */
+    overflow-y: auto;  /* Thêm thanh cuộn dọc khi nội dung vượt quá */
+}
+
+.section.products thead, 
+.section.products tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Tùy chỉnh thanh cuộn */
+.section.products tbody::-webkit-scrollbar {
+    width: 6px;
+}
+
+.section.products tbody::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.section.products tbody::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.section.products tbody::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
