@@ -462,18 +462,147 @@ require_once './src/php/token.php';
       <h2 class="font_size">SẢN PHẨM MỚI</h2>
 
       <div class="pro-container">
-        <!-- truy vấn hiển thị sản phẩm theo thứ tự id giảm dần (sản phẩm mới thêm vào hiện trước) -->
         <?php
+        require_once './php-api/connectdb.php';
+        $conn = connect_db();
 
+        $limit = 8; // số sản phẩm mỗi trang
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+        $offset = ($page - 1) * $limit;
+
+        // Đếm tổng số sản phẩm
+        $countResult = $conn->query('SELECT COUNT(*) as total FROM products WHERE Status = "appear"');
+        $totalRows = $countResult->fetch_assoc()['total'];
+        $totalPages = ceil($totalRows / $limit);
+
+        // Truy vấn sản phẩm phân trang
+        $stmt = $conn->prepare('
+      SELECT ProductID, ProductName, Price, ImageURL 
+      FROM products 
+      WHERE Status = "appear"
+      ORDER BY ProductID DESC
+      LIMIT ? OFFSET ?');
+        $stmt->bind_param("ii", $limit, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Hiển thị sản phẩm
+        if ($result && $result->num_rows > 0):
+          while ($product = $result->fetch_assoc()):
         ?>
-        <div class="pro">
-          <img src="./assets/images/CAY5.jpg" alt="Cây phát tài" />
-          <div class="item_name__price">
-            <p>CÂY PHÁT TÀI</p>
-            <span>750.000 vnđ</span>
-          </div>
-        </div>
+            <div class="pro">
+              <a style="text-decoration: none" href="./pages/user-sanpham.php?id=<?= htmlspecialchars($product['ProductID']) ?>">
+                <img style="width: 100%; height: 300px;" src=".<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['ProductName']) ?>" />
+                <div class="item_name__price">
+                  <p style="text-decoration: none; color: black; font-size: 20px; font-weight:bold"><?= htmlspecialchars($product['ProductName']) ?></p>
+                  <span style="font-size: 20px"><?= number_format($product['Price'], 0, ',', '.') ?> vnđ</span>
+                </div>
+              </a>
+            </div>
+        <?php
+          endwhile;
+        else:
+          echo "<p>Không có sản phẩm nào để hiển thị.</p>";
+        endif;
+        ?>
       </div>
+
+
+      <!-- PHÂN TRANG -->
+      <div class="pagination" style="margin-top: 20px; text-align: center; display: flex; justify-content:center">
+        <?php if ($totalPages > 1): ?>
+          <!-- Nút trang trước -->
+          <a href="?page=<?= max(1, $page - 1) ?>" style="
+            display: inline-block;
+            margin: 0 5px;
+            padding: 8px 12px;
+            background-color: <?= $page === 1 ? '#ccc' : '#eee' ?>;
+            color: <?= $page === 1 ? '#fff' : '#000' ?>;
+            border-radius: 5px;
+            text-decoration: none;
+        ">
+            < </a>
+
+              <?php
+              if ($totalPages <= 5) {
+                // Hiển thị tất cả các trang nếu tổng số trang <= 5
+                for ($i = 1; $i <= $totalPages; $i++) {
+                  echo '<a href="?page=' . $i . '" style="
+                    display: inline-block;
+                    margin: 0 5px;
+                    padding: 8px 12px;
+                    background-color: ' . ($i === $page ? '#4CAF50' : '#eee') . ';
+                    color: ' . ($i === $page ? '#fff' : '#000') . ';
+                    border-radius: 5px;
+                    text-decoration: none;
+                ">' . $i . '</a>';
+                }
+              } else {
+                // Hiển thị trang đầu
+                echo '<a href="?page=1" style="
+                display: inline-block;
+                margin: 0 5px;
+                padding: 8px 12px;
+                background-color: ' . (1 === $page ? '#4CAF50' : '#eee') . ';
+                color: ' . (1 === $page ? '#fff' : '#000') . ';
+                border-radius: 5px;
+                text-decoration: none;
+            ">1</a>';
+
+                // Hiển thị dấu "..." nếu trang hiện tại cách trang đầu > 2
+                if ($page > 3) {
+                  echo '<span style="display: inline-block; margin: 0 5px; padding: 8px 12px;">...</span>';
+                }
+
+                // Hiển thị các trang gần trang hiện tại
+                $start = max(2, $page - 1);
+                $end = min($totalPages - 1, $page + 1);
+                for ($i = $start; $i <= $end; $i++) {
+                  echo '<a href="?page=' . $i . '" style="
+                    display: inline-block;
+                    margin: 0 5px;
+                    padding: 8px 12px;
+                    background-color: ' . ($i === $page ? '#4CAF50' : '#eee') . ';
+                    color: ' . ($i === $page ? '#fff' : '#000') . ';
+                    border-radius: 5px;
+                    text-decoration: none;
+                ">' . $i . '</a>';
+                }
+
+                // Hiển thị dấu "..." nếu trang hiện tại cách trang cuối > 2
+                if ($page < $totalPages - 2) {
+                  echo '<span style="display: inline-block; margin: 0 5px; padding: 8px 12px;">...</span>';
+                }
+
+                // Hiển thị trang cuối
+                echo '<a href="?page=' . $totalPages . '" style="
+                display: inline-block;
+                margin: 0 5px;
+                padding: 8px 12px;
+                background-color: ' . ($totalPages === $page ? '#4CAF50' : '#eee') . ';
+                color: ' . ($totalPages === $page ? '#fff' : '#000') . ';
+                border-radius: 5px;
+                text-decoration: none;
+            ">' . $totalPages . '</a>';
+              }
+              ?>
+
+              <!-- Nút trang sau -->
+              <a href="?page=<?= min($totalPages, $page + 1) ?>" style="
+            display: inline-block;
+            margin: 0 5px;
+            padding: 8px 12px;
+            background-color: <?= $page === $totalPages ? '#ccc' : '#eee' ?>;
+            color: <?= $page === $totalPages ? '#fff' : '#000' ?>;
+            border-radius: 5px;
+            text-decoration: none;
+        ">></a>
+            <?php endif; ?>
+      </div>
+
+
+
     </section>
   </main>
 
