@@ -419,12 +419,10 @@ function setupPagination(totalItems) {
 
   // Các số trang
   for (let i = startPage; i <= endPage; i++) {
+    const btnClass = i === currentPage ? "btn-success" : "btn-secondary";
     paginationHTML += `
-      <a href="#" class="btn btn-secondary pagination-item ${
-        i === currentPage ? "active" : ""
-      }" 
-         onclick="changePage(${i})">${i}</a>
-    `;
+    <a href="#" class="btn pagination-item ${btnClass}" onclick="changePage(${i})">${i}</a>
+  `;
   }
 
   // Hiển thị trang cuối cùng nếu cần
@@ -434,7 +432,7 @@ function setupPagination(totalItems) {
     }
 
     paginationHTML += `
-      <a href="#" class=" btn btn-success pagination-item" onclick="changePage(${totalPages})">${totalPages}</a>
+      <a href="#" class=" btn btn-secondary pagination-item" onclick="changePage(${totalPages})">${totalPages}</a>
     `;
   }
 
