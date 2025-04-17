@@ -1,4 +1,5 @@
-.backToHome {
+
+  .backToHome {
   margin-top: 5px;
 }
 .container-function-selection {
@@ -18,22 +19,14 @@
    }
    .header-right-section {
     position: relative;
-    top:15px;
+    top: 15px;
     z-index: 1;
+    left: -3rem;
   }
   .header-left-section {
-    position: fixed;
-    left: clamp(80px, 162px, 164px);
-    top: 58px;
+    top: 30px;
+    left: 0;
 }
-
-  .header-middle-section {
-    height: auto;
-    position: relative;
-    right: clamp(52px, 75px, 104px);
-    bottom: 12px;
- 
-  }
   .logo-store {
     width: 60px;
     height :auto;
@@ -54,7 +47,7 @@
     }
     .avatar {
       width: 58px;
-      height: auto;
+      height: 58px;
      }  
      .offcanvas.offcanvas-start {
       background-color: #35635A;
@@ -101,8 +94,10 @@
   }
  
   .main-content {
-    margin-top: -46px;
-    margin-left: -60px;
+  display: flex;
+  margin-top: -46px;
+  margin-left: -5rem;
+  flex-direction: column;
   }
   .statistic-table {
     max-width: 100%;
@@ -198,10 +193,7 @@
       .header {
         width: 90%;
        }
-      
-       .header-left-section {
-        width: 130px;
-       }
+    
       .header-left-section p {
         font-size: 30px;
         font-weight: bold;
@@ -266,6 +258,12 @@
     /* PC : width >= 1024px */
     @media only screen and (min-width: 64em) {
       /* Phan Header */
+      .header-left-section p {
+        font-size: 30px;
+        font-weight: bold;
+        position: relative;
+        left: -25px;
+      }
      .header-middle-section {
       margin-right: 60px;
      }

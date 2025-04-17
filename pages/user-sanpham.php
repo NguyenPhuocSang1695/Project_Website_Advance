@@ -431,7 +431,6 @@ if ($result && $result->num_rows > 0) {
   <h3>MÔ TẢ</h3>
   <p><?php echo ($product['Description'] !== 'None') ? $product['Description'] : 'Không có mô tả'; ?></p>
 </div>
-<?php $conn->close(); ?>
 </div>
 
 

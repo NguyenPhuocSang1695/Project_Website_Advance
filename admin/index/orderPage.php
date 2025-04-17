@@ -273,12 +273,11 @@
         </div>
 
         <div class="statistic-section">
-          <table class="statistic-table">
+          <table class="statistic-table"> 
             <thead>
               <tr>
                 <th>Mã đơn hàng</th>
                 <th class="hide-index-tablet">Người mua</th>
-                <th class="hide-index-tablet">Người nhận</th>
                 <th>Ngày tạo</th>
                 <th class="hide-index-mobile">Giá tiền (VND)</th>
                 <th>Trạng thái</th>
