@@ -462,102 +462,15 @@ require_once './src/php/token.php';
       <h2 class="font_size">SẢN PHẨM MỚI</h2>
 
       <div class="pro-container">
+        <!-- truy vấn hiển thị sản phẩm theo thứ tự id giảm dần (sản phẩm mới thêm vào hiện trước) -->
+        <?php
+
+        ?>
         <div class="pro">
           <img src="./assets/images/CAY5.jpg" alt="Cây phát tài" />
           <div class="item_name__price">
             <p>CÂY PHÁT TÀI</p>
             <span>750.000 vnđ</span>
-          </div>
-          <!-- <button class="add-to-cart-btn">
-            <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
-          </button> -->
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY6.jpg" alt="CÂY KIM NGÂN" />
-          <div class="item_name__price">
-            <p>CÂY KIM NGÂN</p>
-            <span>280.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY7.jpg" alt="CÂY TRẦU BÀ" />
-          <div class="item_name__price">
-            <p>CÂY TRẦU BÀ</p>
-            <span>120.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY8.jpg" alt="CÂY LAN CHI" />
-          <div class="item_name__price">
-            <p>CÂY LAN CHI</p>
-            <span>120.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY9.jpg" alt="ÂY TRẦU BÀ ĐỎ" />
-          <div class="item_name__price">
-            <p>CÂY TRẦU BÀ ĐỎ</p>
-            <span>320.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY10.jpg" alt="CÂY PHÁT TÀI" />
-          <div class="item_name__price">
-            <p>CÂY LƯỠI HỔ</p>
-            <span>750.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY11.jpg" alt="CÂY LƯỠI HỔ VÀNG" />
-          <div class="item_name__price">
-            <p>CÂY LƯỠI HỔ VÀNG</p>
-            <span>160.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY12.jpg" alt="CÂY PHẠNH PHÚC" />
-          <div class="item_name__price">
-            <p>CÂY HẠNH PHÚC</p>
-            <span>1.200.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY13.jpg" alt="CÂY TRẦU BÀ CHẬU LỚN" />
-          <div class="item_name__price">
-            <p>CÂY TRẦU BÀ CHẬU LỚN</p>
-            <span>1.100.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY14.jpg" alt="CÂY PHÁT TÀI DORADO" />
-          <div class="item_name__price">
-            <p>CÂY PHÁT TÀI DORADO</p>
-            <span>220.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY16.jpg" alt="CÂY VẠN LỘC" />
-          <div class="item_name__price">
-            <p>CÂY VẠN LỘC</p>
-            <span>1.150.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY17.jpg" alt="CÂY NGỌC VỪNG" />
-          <div class="item_name__price">
-            <p>CÂY NGỌC VỪNG</p>
-            <span>1.750.000 vnđ</span>
           </div>
         </div>
       </div>
