@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       // Hiển thị các nút số trang
       if (totalPages <= 5) {
-        // Nếu tổng số trang ít hơn hoặc bằng 5, hiển thị tất cả
+        // Hiển thị tất cả các trang nếu totalPages <= 5
         for (let i = 1; i <= totalPages; i++) {
           paginationDiv.appendChild(
             createPaginationButton(
@@ -126,33 +126,42 @@ document.addEventListener("DOMContentLoaded", async function () {
           );
         }
       } else {
-        // Nếu tổng số trang lớn hơn 5, hiển thị theo định dạng 1 2 3 ... n
+        // Hiển thị trang 1
         paginationDiv.appendChild(
           createPaginationButton(
             1,
             true,
-            () => renderPage(1),
+            () => {
+              currentPage = 1;
+              renderPage(currentPage);
+            },
             currentPage === 1
           )
         );
 
+        // Xác định các trang hiển thị giữa
         let startPage = Math.max(2, currentPage - 1);
         let endPage = Math.min(totalPages - 1, currentPage + 1);
 
+        // Nếu đang ở trang 1, hiển thị 2, 3, 4
         if (currentPage === 1) {
-          endPage = 3;
-        } else if (currentPage === totalPages) {
-          startPage = totalPages - 2;
+          endPage = 4;
+        }
+        // Nếu đang ở trang cuối, hiển thị n-3, n-2, n-1
+        else if (currentPage === totalPages) {
+          startPage = totalPages - 3;
         }
 
+        // Thêm dấu "..." nếu cần
         if (startPage > 2) {
           paginationDiv.appendChild(
             createPaginationButton("...", false, null, false)
           );
         }
 
+        // Hiển thị các trang giữa
         for (let i = startPage; i <= endPage; i++) {
-          if (i > 1 && i < totalPages) {
+          if (i < totalPages) {
             paginationDiv.appendChild(
               createPaginationButton(
                 i,
@@ -167,17 +176,22 @@ document.addEventListener("DOMContentLoaded", async function () {
           }
         }
 
+        // Thêm dấu "..." nếu cần
         if (endPage < totalPages - 1) {
           paginationDiv.appendChild(
             createPaginationButton("...", false, null, false)
           );
         }
 
+        // Hiển thị trang cuối
         paginationDiv.appendChild(
           createPaginationButton(
             totalPages,
             true,
-            () => renderPage(totalPages),
+            () => {
+              currentPage = totalPages;
+              renderPage(currentPage);
+            },
             currentPage === totalPages
           )
         );

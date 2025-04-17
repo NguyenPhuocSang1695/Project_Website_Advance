@@ -774,6 +774,7 @@ body {
 
   #product1 .pro {
     margin: 10px;
+    width: fit-content;
   }
 }
 
@@ -814,6 +815,7 @@ body {
 
   #product1 .pro {
     margin: 10px;
+    width: fit-content;
   }
 }
 
