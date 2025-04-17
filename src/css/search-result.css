@@ -452,6 +452,26 @@ main {
     margin-bottom: 15px;
 }
 
+.btn-view-product {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #2e7d32;
+    /* Xanh lá đậm */
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-view-product:hover {
+    background-color: #1b5e20;
+    /* Xanh đậm hơn khi hover */
+    transform: translateY(-2px);
+}
+
 .add-to-cart-btn {
     width: 100%;
     padding: 8px 15px;
