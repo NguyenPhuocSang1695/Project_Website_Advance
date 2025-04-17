@@ -1,0 +1,118 @@
+[33m14e9594[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mkhoi[m[33m, [m[1;31morigin/khoi[m[33m)[m khoi
+[33m2f54485[m Cập-Nhập-lần-2-11:33pm
+[33mefb94b5[m DuyKhoi cap-nhap-hoa-don-11h20pm
+[33m2cec304[m cập-Nhập-v1
+[33m2da7240[m[33m ([m[1;31morigin/develop[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdevelop[m[33m)[m Merge pull request #110 from NguyenPhuocSang1695/filter-product
+[33ma53e6ba[m sửa phân loại khi thêm sản phẩm ở admin, tìm kiếm theo phân loại và phân loại bên user
+[33m86a0bdb[m Merge branch 'develop' of https://github.com/NguyenPhuocSang1695/Project_Website_Advance into filter-product
+[33m8dbec8b[m .
+[33m9a0ddba[m sửa tìm kiếm user-sanpham.php
+[33mfa4ab9b[m Merge pull request #109 from NguyenPhuocSang1695/gia-thieu-v5
+[33m4f31eab[m[33m ([m[1;31morigin/gia-thieu-v5[m[33m)[m Chỉnh giao diện
+[33m3d7a851[m Merge pull request #106 from NguyenPhuocSang1695/Antran_Branch_Admin
+[33mf324ba1[m[33m ([m[1;31morigin/Antran_Branch_Admin[m[33m)[m sửa trang và chỉnh lại responisve cho trang thống kê và trang tài khoảnoản
+[33m4ea5556[m xóa width 100% của detail ở giao diện ipad (800px max)
+[33m87ed3ff[m thêm border-radius ở ảnh chi tiết sản phẩm, class single-image
+[33m26558be[m sửa ảnh ở single-image trong file san-pham.css
+[33mdf49aa7[m Merge branch 'gia-thieu-v5' into develop
+[33m9e3dfbf[m lịch sử đặt hàng
+[33mb8c28a8[m[33m ([m[1;31morigin/filter-product[m[33m)[m sửa lại kích thước sản phẩm, xóa ở user-sanpham.php, thêm ở san-pham.css class single-image
+[33m4c08ab0[m thêm min = 0 ở giá lúc thêm sản phẩm, chỉnh dài rộng 432px của ảnh ở chi tiết sản phẩm
+[33md68bd0b[m sửa hiện nút phân trang ở tìm kiếm, nếu từ 5 trang đổ lên thì sẽ hiển thị 1 2 3 ... 5 (thay 5 thành số trang cuối cùng nếu nhiều hơn 5)
+[33me0c80cf[m thêm php-jwt
+[33m73c0d2e[m xóa jwt
+[33mf47d140[m sửa jwt
+[33m80738bd[m Merge pull request #100 from NguyenPhuocSang1695/gia-thieu-v5
+[33mf327746[m update token
+[33me649eb0[m xóa khoảng giá ở index ở giao diện mobile
+[33m85ea7b8[m Merge branch 'develop' of https://github.com/NguyenPhuocSang1695/Project_Website_Advance into develop
+[33m0c6ff31[m add vendor
+[33m08ae041[m Làm-Xong-Hóa-Đơn-Khôi
+[33m98bf282[m[33m ([m[1;31morigin/sang[m[33m)[m add
+[33m5e6ec16[m Merge pull request #96 from NguyenPhuocSang1695/gia-thieu-v5
+[33m7c7e284[m xoa dvkh ở footer
+[33m6c862bb[m change gt-v3
+[33mc71123c[m sửa thành công, hihihaha
+[33mdaec268[m okk ok
+[33m44846e3[m Merge branch 'gt-v3' into develop
+[33ma71d941[m[33m ([m[1;31morigin/gt-v3[m[33m)[m add file gt-v3.md
+[33m569e874[m[33m ([m[1;31morigin/Giathieu[m[33m)[m update sanpham
+[33m4390ce0[m[33m ([m[1;31morigin/dev-cop[m[33m)[m delete develop.md
+[33mf7b83ba[m Merge branch 'develop' of https://github.com/NguyenPhuocSang1695/Project_Website_Advance into develop
+[33m820ae8f[m add file develop.md
+[33mb400a6e[m update đăng ký đăng nhập
+[33m4493d29[m update đăng ký
+[33m1d81846[m Merge pull request #91 from NguyenPhuocSang1695/Antran_Branch_Admin
+[33m3dd7ad4[m cap-nhap san pham trong gio hang
+[33m2efda3f[m đổi đuôi html thanhf php với chỉnh responsive
+[33m3786112[m Merge pull request #90 from NguyenPhuocSang1695/add-products
+[33m431091a[m[33m ([m[1;31morigin/add-products[m[33m)[m sửa db name ở php-api/connectdb.php
+[33m0d31dff[m Merge pull request #89 from NguyenPhuocSang1695/Antran_Branch_Admin
+[33mcbb6c05[m Sửa lại giao diện trang warehouse và bỏ các file chức năng php vào folder phpphp
+[33m6e27e3c[m Merge branch 'develop' of https://github.com/NguyenPhuocSang1695/Project_Website_Advance into develop
+[33mca83ac8[m Merge pull request #88 from NguyenPhuocSang1695/Antran_Branch_Admin
+[33m8bcbc16[m Merge branch 'develop' into Antran_Branch_Admin
+[33mc777a14[m Tạo phần đăng nhập , hoàn thiện các chức năng của 3 trang order, orderDetails , analyze và accountaccount
+[33m3a8b00c[m Merge pull request #86 from NguyenPhuocSang1695/develop
+[33m7f15480[m Merge pull request #85 from NguyenPhuocSang1695/add-products
+[33m09188e4[m Merge pull request #84 from NguyenPhuocSang1695/add-products
+[33m53ec1c3[m okok
+[33md08702f[m xóa ảnh sản phẩm vừa thêm
+[33m106d925[m sửa lại tính năng thêm sản phẩm
+[33me0e10d7[m Merge pull request #82 from NguyenPhuocSang1695/develop
+[33m60e95ed[m Merge pull request #81 from NguyenPhuocSang1695/add-products
+[33m9bc32e8[m xóa ảnh
+[33md89b614[m Merge pull request #80 from NguyenPhuocSang1695/add-products
+[33m92dea1c[m sửa trang phân loại
+[33m1432b52[m sửa trang phân loại
+[33m5c579f0[m sửa trang phân loại
+[33mf1dd50a[m  tạm thời -khôi
+[33m936ad04[m sửa thêm sản phẩm
+[33m50d049d[m thêm sản phẩm
+[33ma857c5a[m Merge pull request #78 from NguyenPhuocSang1695/develop
+[33mdf43179[m Merge pull request #77 from NguyenPhuocSang1695/search-product
+[33m0f95ce2[m[33m ([m[1;31morigin/search-product[m[33m)[m thêm điều kiện lọc và tìm kiếm. điều kiện status = appear
+[33m6f81507[m update 10:00 4/5
+[33m3fd4d80[m Merge pull request #75 from NguyenPhuocSang1695/develop
+[33m67c5aac[m Merge pull request #74 from NguyenPhuocSang1695/Antran_Branch_Admin
+[33mfdeed4a[m Update trang orderPage và orderDetail , đã có truy vấn và cập nhật các chức năng cho trang analyzePageanalyzePage
+[33m8faf088[m Merge pull request #73 from NguyenPhuocSang1695/search-product
+[33m955e72a[m sửa item header trang phân loại, đăng ký
+[33m8538400[m Sửa lại link-khôi
+[33md8d94cc[m Merge pull request #72 from NguyenPhuocSang1695/search-product
+[33m851d321[m Merge branch 'search-product' of https://github.com/NguyenPhuocSang1695/Project_Website_Advance into search-product
+[33mbc599c0[m sửa trang phan loại
+[33mda85a8b[m Merge pull request #71 from NguyenPhuocSang1695/search-product
+[33mfd09415[m Merge branch 'develop' into search-product
+[33mc7a9971[m thêm tìm kiếm trên mobile
+[33m099b592[m file test-search.js tìm kiếm mobile và desktop
+[33mf34a274[m update user-register
+[33m55f82ec[m tìm kiếm trên pc
+[33m34402b2[m Lam Gio Hang
+[33m6a2a561[m Merge branch 'Antran_Branch_Admin' of https://github.com/NguyenPhuocSang1695/Project_Website_Advance into search-product
+[33m10e8cf6[m Adjust admin pages and remove unneccessary filesfiles
+[33me64d95e[m Merge pull request #69 from NguyenPhuocSang1695/develop
+[33m60b88c4[m Merge pull request #68 from NguyenPhuocSang1695/search-product
+[33me77a0e9[m thêm link phân loại ở giao diện điện thoại và laptop
+[33m8991d1e[m Merge pull request #66 from NguyenPhuocSang1695/develop
+[33m80cb40a[m Merge pull request #65 from NguyenPhuocSang1695/search-product
+[33m5965b52[m sửa thứ tự phân loại ở phan-loai.js
+[33m3f2f58f[m Merge branch 'master' into release
+[33mabe684d[m Merge pull request #63 from NguyenPhuocSang1695/develop
+[33m35f7239[m Merge branch 'release' into develop
+[33m60b4481[m Merge pull request #62 from NguyenPhuocSang1695/search-product
+[33mf84b697[m sửa lại id truyền vào ở phân loại
+[33md434317[m pull dev
+[33mac149de[m xóa search.js
+[33m9e3fa08[m xóa file filter-product.js
+[33md19a247[m Merge pull request #61 from NguyenPhuocSang1695/filter-product
+[33m3ba55be[m thêm note
+[33m50c1129[m sửa đường dẫn trang phân loại
+[33m618e480[m Merge pull request #60 from NguyenPhuocSang1695/filter-product
+[33mef8ad5c[m Merge pull request #59 from NguyenPhuocSang1695/filter-product
+[33md527617[m Merge branch 'develop' into filter-product
+[33mb325e76[m Merge branch 'filter-product' of https://github.com/NguyenPhuocSang1695/Project_Website_Advance into filter-product
+[33m5446089[m sửa png thành jpg
+[33m28e4bce[m thêm chuyển trang từ phan-loai.html sang user-sanpham
+[33m64d399c[m lọc sản phẩm
+[33mcf99b

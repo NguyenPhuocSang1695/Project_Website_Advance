@@ -695,20 +695,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
             </div>
           </div>
 
-          <form action="hoan-tat.php" method="POST"> 
+          <form action="hoan-tat.php" method="POST">
+            <!-- Phương thức thanh toán -->
             <div class="payment-method">
               <label>
-                <input type="radio" name="paymentMethod" value="COD" checked> Thanh toán khi nhận hàng
+                <input type="radio" name="paymentMethod" value="COD" id="cod-button" checked>
+                <span>Thanh toán khi nhận hàng</span>
               </label>
               <label>
-                <input type="radio" name="paymentMethod" value="Banking"> Chuyển khoản
+                <input type="radio" name="paymentMethod" value="Banking" id="banking-button">
+                <span>Chuyển khoản</span>
               </label>
             </div>
 
+            <!-- Thẻ hiển thị loại card -->
+            <div class="card-type" id="card-type" style="display: none;">
+              <i class="fa-brands fa-cc-visa" title="Thẻ visa" id="visa-card"></i>
+              <i class="fa-solid fa-credit-card" title="Thẻ tín dụng"></i>
+            </div>
+
+            <!-- Thông tin chuyển khoản -->
+            <div id="banking-form" style="display: none;">
+              <h2>Liên kết thẻ</h2>
+              <label>Thông tin thẻ</label>
+              <input type="text" placeholder="1234 1234 1234 1234" name="card_number">
+              <input type="text" placeholder="MM / YY" name="expiry">
+              <input type="text" placeholder="CVC" name="cvc">
+              <label>Tên chủ thẻ</label>
+              <input type="text" placeholder="Full name on card" name="cardholder_name">
+              <label>Địa chỉ</label>
+              <select name="country">
+                <option>Vietnam</option>
+              </select>
+              <input type="text" placeholder="Địa chỉ 1" name="address1">
+              <input type="text" placeholder="Địa chỉ 2" name="address2">
+              <input type="text" placeholder="Thành phố" name="city">
+              <input type="text" placeholder="Tỉnh" name="province">
+              <input type="text" placeholder="Mã bưu điện" name="zipcode">
+            </div>
+            <script src="../src/js/thanh-toan.js"></script>
+
+
+            <!-- Nút thanh toán -->
             <div class="payment-button">
-              <button type="submit" class="btn btn-success">THANH TOÁN</button>
+              <button type="submit" class="btn btn-success" style="width: 185px; height: 50px;">
+                THANH TOÁN
+              </button>
             </div>
           </form>
+
 
         
 
@@ -787,7 +822,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
     </div>
     <!-- xong footer  -->
   </footer>
-  <script src="../src/js/thanh-toan.js"></script>
 
   
   
