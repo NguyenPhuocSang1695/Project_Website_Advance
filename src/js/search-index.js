@@ -389,7 +389,7 @@ function setupPagination(totalItems) {
 
   // Nút Previous
   paginationHTML += `
-    <a href="#" class="btn btn-success pagination-item ${
+    <a href="#" class="btn btn-secondary pagination-item ${
       currentPage === 1 ? "disabled" : ""
     }" 
        onclick="${
@@ -409,18 +409,18 @@ function setupPagination(totalItems) {
   // Hiển thị trang đầu tiên nếu cần
   if (startPage > 1) {
     paginationHTML += `
-      <a href="#" class="btn btn-success pagination-item" onclick="changePage(1)">1</a>
+      <a href="#" class="btn btn-secondary pagination-item" onclick="changePage(1)">1</a>
     `;
 
     if (startPage > 2) {
-      paginationHTML += `<span class="btn btn-success pagination-ellipsis">...</span>`;
+      paginationHTML += `<span class="btn btn-secondary pagination-ellipsis">...</span>`;
     }
   }
 
   // Các số trang
   for (let i = startPage; i <= endPage; i++) {
     paginationHTML += `
-      <a href="#" class="btn btn-success pagination-item ${
+      <a href="#" class="btn btn-secondary pagination-item ${
         i === currentPage ? "active" : ""
       }" 
          onclick="changePage(${i})">${i}</a>
@@ -430,7 +430,7 @@ function setupPagination(totalItems) {
   // Hiển thị trang cuối cùng nếu cần
   if (endPage < totalPages) {
     if (endPage < totalPages - 1) {
-      paginationHTML += `<span class="btn btn-success pagination-ellipsis">...</span>`;
+      paginationHTML += `<span class="btn btn-secondary pagination-ellipsis">...</span>`;
     }
 
     paginationHTML += `
@@ -440,7 +440,7 @@ function setupPagination(totalItems) {
 
   // Nút Next
   paginationHTML += `
-    <a href="#" class="btn btn-success pagination-item ${
+    <a href="#" class="btn btn-secondary pagination-item ${
       currentPage === totalPages ? "disabled" : ""
     }" 
        onclick="${
