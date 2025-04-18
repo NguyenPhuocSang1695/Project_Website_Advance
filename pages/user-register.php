@@ -532,7 +532,7 @@ $provinceResult = $conn->query($provinceQuery);
         <div class="form-content">
           <div class="form-header">
             <h1>Tạo tài khoản mới</h1>
-            <p>Điền thông tin dưới đây để bắt đầu</p>
+            <p style="font-weight: bold">Điền thông tin dưới đây để bắt đầu</p>
           </div>
           <form method="POST" action="">
             <div class="form-row">

@@ -511,7 +511,7 @@ if (isset($_POST["login"])) {
       </div>
       <form id="form-02" method="post">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username" style="font-weight: bold">Username</label>
           <input type="text" id="username" name="username" class="form-control" placeholder="Nhập username của bạn"
             required value="<?= htmlspecialchars($_POST['username'] ?? '') ?>">
           <?php if ($error === 'Tên đăng nhập hoặc mật khẩu không đúng.' || $error === 'Vui lòng nhập tên đăng nhập.'): ?>
@@ -520,7 +520,7 @@ if (isset($_POST["login"])) {
         </div>
 
         <div class="form-group">
-          <label for="password">Mật khẩu</label>
+          <label for="password" style="font-weight: bold">Mật khẩu</label>
           <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu"
             required>
           <?php if ($error === 'Vui lòng nhập mật khẩu.'): ?>
