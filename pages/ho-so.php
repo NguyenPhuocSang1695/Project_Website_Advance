@@ -467,7 +467,7 @@ if ($loggedInUsername) {
     <!-- FOOTER  -->
     <footer class="footer">
       <div class="footer-column">
-        <h3>Thee Tree</h3>
+        <h3>The Tree</h3>
         <ul>
           <li><a href="#">Cây dễ chăm</a></li>
           <li><a href="#">Cây văn phòng</a></li>
@@ -477,7 +477,7 @@ if ($loggedInUsername) {
       </div>
 
       <div class="footer-column">
-        <h3>Learn</h3>
+        <h3>Khám phá</h3>
         <ul>
           <li><a href="#">Cách chăm sóc cây</a></li>
           <li><a href="#">Lợi ích của cây xanh</a></li>
@@ -486,17 +486,19 @@ if ($loggedInUsername) {
       </div>
 
       <div class="footer-column">
-        <h3>More from The Tree</h3>
+        <h3>Khám phá thêm từ The Tree</h3>
         <ul>
           <li><a href="#">Blog</a></li>
-          <li><a href="#">Affiliate</a></li>
+          <li><a href="#">Cộng tác viên</a></li>
           <li><a href="#">Liên hệ</a></li>
-          <li><a href="#">Faq's</a></li>
-          <li><a href="#">Sign In</a></li>
+          <li><a href="#">Câu hỏi thường gặp</a></li>
+          <li><a href="#">Đăng nhập</a></li>
         </ul>
+
       </div>
 
       <div class="footer-column newsletter">
+
 
         <h3>Theo dõi chúng tôi</h3>
         <div class="social-icons">
