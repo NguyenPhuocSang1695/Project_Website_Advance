@@ -86,17 +86,17 @@ if (isset($_POST["login"])) {
       height: 18px;
       margin-right: 10px;
       margin-top: 3px;
-      accent-color: var(--primary-color);
+      accent-color: #1c8e2e;
     }
 
     .checkbox-container label {
       font-size: 13px;
-      color: var(--text-light);
+      color: #5f6368;
       line-height: 1.5;
     }
 
     .checkbox-container a {
-      color: var(--primary-color);
+      color: #1c8e2e;
       text-decoration: none;
       font-weight: 500;
     }
@@ -116,17 +116,17 @@ if (isset($_POST["login"])) {
       height: 18px;
       margin-right: 10px;
       margin-top: 3px;
-      accent-color: var(--primary-color);
+      accent-color: #1c8e2e;
     }
 
     .checkbox-container label {
       font-size: 13px;
-      color: var(--text-light);
+      color: #5f6368;
       line-height: 1.5;
     }
 
     .checkbox-container a {
-      color: var(--primary-color);
+      color: #1c8e2e;
       text-decoration: none;
       font-weight: 500;
     }
