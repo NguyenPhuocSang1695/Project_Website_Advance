@@ -1,7 +1,42 @@
 <?php
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
+require_once('../src/php/connect.php');
+
+if ($loggedInUsername) {
+  $stmt = $conn->prepare("
+    SELECT 
+      u.username, u.fullname, u.email, u.phone, u.address,
+      w.name AS ward_name,
+      d.name AS district_name,
+      p.name AS province_name
+    FROM users u
+    JOIN wards w ON u.ward = w.wards_id
+    JOIN district d ON u.district = d.district_id
+    JOIN province p ON u.province = p.province_id
+    WHERE u.username = ?
+  ");
+
+  if (!$stmt) {
+    die("Lỗi prepare: " . $conn->error);
+  }
+
+  $stmt->bind_param("s", $loggedInUsername);
+
+  if (!$stmt->execute()) {
+    die("Lỗi execute: " . $stmt->error);
+  }
+
+  $result = $stmt->get_result();
+  $user = $result->fetch_assoc();
+
+  if (!$user) {
+    echo "Không tìm thấy thông tin người dùng.";
+    exit;
+  }
+}
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -387,39 +422,43 @@ require_once('../src/php/check_token_v2.php');
     <!-- ARTICLE -->
     <div class="container-hoso">
       <div class="sidebar">
-
-        <h2>Hi, Nguyễn Phước Sang</h2>
+        <h2>Xin chào, <?= htmlspecialchars($user['username']) ?></h2>
         <ul>
           <li><a href="ho-so.php">Thông tin tài khoản</a></li>
           <li><a href="user-History.php">Lịch sử mua hàng</a></li>
-          <li><a href="../index.php" onclick="logOut()">Đăng xuất</a></li>
+          <li><a href="../src/php/logout.php">Đăng xuất</a></li>
         </ul>
       </div>
+
       <div class="content">
         <h3>Thông tin tài khoản</h3>
+
         <div class="info-row">
           <label>Họ tên</label>
-          <span>Nguyễn Phước Sang</span>
+          <span><?= htmlspecialchars($user['fullname']) ?></span>
           <button>Sửa</button>
         </div>
+
         <div class="info-row">
           <label>Email</label>
-          <span>sangnguyenphuoc@gmail.com</span>
+          <span><?= htmlspecialchars($user['email']) ?></span>
           <button>Sửa</button>
         </div>
-        <div class="info-row">
-          <label>Giới tính</label>
-          <span>Nam</span>
-          <button>Sửa</button>
-        </div>
+
         <div class="info-row">
           <label>Số điện thoại</label>
-          <span>0913074164</span>
+          <span><?= htmlspecialchars($user['phone']) ?></span>
           <button>Sửa</button>
         </div>
+
         <div class="info-row">
           <label>Địa chỉ</label>
-          <span> 115 Phan Huy Ích, Quận Tân Bình, Thành phố Hồ Chí Minh</span>
+          <span>
+            <?= htmlspecialchars($user['address']) ?>,
+            <?= htmlspecialchars($user['ward_name']) ?>,
+            <?= htmlspecialchars($user['district_name']) ?>,
+            <?= htmlspecialchars($user['province_name']) ?>
+          </span>
           <button>Sửa</button>
         </div>
       </div>
@@ -428,7 +467,7 @@ require_once('../src/php/check_token_v2.php');
     <!-- FOOTER  -->
     <footer class="footer">
       <div class="footer-column">
-        <h3>The Tree</h3>
+        <h3>Thee Tree</h3>
         <ul>
           <li><a href="#">Cây dễ chăm</a></li>
           <li><a href="#">Cây văn phòng</a></li>
@@ -438,7 +477,7 @@ require_once('../src/php/check_token_v2.php');
       </div>
 
       <div class="footer-column">
-        <h3>Khám phá</h3>
+        <h3>Learn</h3>
         <ul>
           <li><a href="#">Cách chăm sóc cây</a></li>
           <li><a href="#">Lợi ích của cây xanh</a></li>
@@ -447,19 +486,17 @@ require_once('../src/php/check_token_v2.php');
       </div>
 
       <div class="footer-column">
-        <h3>Khám phá thêm từ The Tree</h3>
+        <h3>More from The Tree</h3>
         <ul>
           <li><a href="#">Blog</a></li>
-          <li><a href="#">Cộng tác viên</a></li>
+          <li><a href="#">Affiliate</a></li>
           <li><a href="#">Liên hệ</a></li>
-          <li><a href="#">Câu hỏi thường gặp</a></li>
-          <li><a href="#">Đăng nhập</a></li>
+          <li><a href="#">Faq's</a></li>
+          <li><a href="#">Sign In</a></li>
         </ul>
-
       </div>
 
       <div class="footer-column newsletter">
-
 
         <h3>Theo dõi chúng tôi</h3>
         <div class="social-icons">
