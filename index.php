@@ -169,15 +169,14 @@ require_once './src/php/token.php';
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <?php if (!$loggedInUsername): ?>
                       <li class="nav-item">
-                        <a class="nav-link login-logout" href="./pages/user-register.php">Đăng
-                          kí</a>
+                        <a class="nav-link login-logout" href="./pages/user-register.php">Đăng ký</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link login-logout" href="./pages/user-login.php">Đăng nhập</a>
                       </li>
                     <?php else: ?>
                       <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
+                        <a class="nav-link hs-ls-dx" href="./pages/ho-so.php">Hồ sơ</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link hs-ls-dx" href="./pages/user-History.php">Lịch sử mua

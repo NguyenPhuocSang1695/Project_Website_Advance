@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <?php
 require_once('../src/php/token.php');
+require_once('../src/php/check_token_v1.php');
 $errors = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -54,6 +55,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (!preg_match("/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,}/", $password)) {
     $errors['password'] = "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
   }
+  if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {
+    $errors['fullname'] = "Họ tên không hợp lệ! Chỉ được chứa chữ cái và tối đa 80 từ.";
+  }
+
 
   // Nếu không có lỗi thì thêm vào CSDL
   if (empty($errors)) {
@@ -101,7 +106,7 @@ $provinceResult = $conn->query($provinceQuery);
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
-  <title>Đăng kí</title>
+  <title>Đăng ký</title>
   <style>
     /* hiện lỗi */
     .error-message {
@@ -135,6 +140,10 @@ $provinceResult = $conn->query($provinceQuery);
       .form-card {
         width: 100%;
       }
+    }
+
+    .form-group label {
+      font-weight: bold;
     }
   </style>
 </head>
@@ -279,7 +288,7 @@ $provinceResult = $conn->query($provinceQuery);
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <?php if (!$loggedInUsername): ?>
                       <li class="nav-item">
-                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                        <a class="nav-link login-logout" href="user-register.php">Đăng ký</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
@@ -523,7 +532,7 @@ $provinceResult = $conn->query($provinceQuery);
         <div class="form-content">
           <div class="form-header">
             <h1>Tạo tài khoản mới</h1>
-            <p>Điền thông tin dưới đây để bắt đầu</p>
+            <p style="font-weight: bold">Điền thông tin dưới đây để bắt đầu</p>
           </div>
           <form method="POST" action="">
             <div class="form-row">
@@ -605,7 +614,10 @@ $provinceResult = $conn->query($provinceQuery);
             </div>
 
             <button type="submit" class="btn">Đăng ký ngay</button>
-            <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button>
+            <!-- <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button> -->
+            <div class="checkbox-container">
+              <p for>Bạn đã có tài khoản? <a href="user-login.php">Đăng nhập</a> </p>
+            </div>
           </form>
         </div>
       </div>
