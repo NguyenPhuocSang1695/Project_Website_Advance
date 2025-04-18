@@ -488,7 +488,7 @@ if (isset($_POST["login"])) {
 
         <button type="submit" name="login" class="btn-login">Đăng nhập</button>
         <div class="checkbox-container">
-          <label for>Bạn chưa có tài khoản ?<a href="user-login.php">Đăng Kí</a> </label>
+          <label for>Bạn chưa có tài khoản ?<a href="user-register.php">Đăng Ký</a> </label>
         </div>
       </form>
 
