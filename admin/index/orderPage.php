@@ -36,6 +36,12 @@
     background-color: #6aa173;
     border-color: #6aa173;
   }
+  .one-line-paragraph {
+            width: 200px; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+}
 </style>
 <body>
   <div class="header">
@@ -277,7 +283,7 @@
             <thead>
               <tr>
                 <th>Mã đơn hàng</th>
-                <th class="hide-index-tablet">Người mua</th>
+                <th class="hide-index-tablet ">Người mua</th>
                 <th>Ngày tạo</th>
                 <th class="hide-index-mobile">Giá tiền (VND)</th>
                 <th>Trạng thái</th>
