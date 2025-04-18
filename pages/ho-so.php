@@ -1,5 +1,6 @@
 <?php
 require_once('../src/php/token.php');
+require_once('../src/php/check_token_v2.php');
 ?>
 <!DOCTYPE html>
 <html>
