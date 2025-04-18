@@ -1,49 +1,58 @@
-// Hàm thay đổi số lượng và tự động submit form để cập nhật lên database
 function changeQuantity(button, delta) {
   // Lấy phần tử input chứa số lượng
-  let quantityInput = button.parentNode.querySelector(".quantity-input");
-
-  // Lấy giá trị hiện tại của số lượng
+  const quantityInput = button
+    .closest(".update-form")
+    .querySelector(".quantity-input");
   let currentQuantity = parseInt(quantityInput.value, 10);
+  const productId = button
+    .closest(".update-form")
+    .querySelector("input[name='update_product_id']").value;
 
   // Tính toán số lượng mới
   let newQuantity = currentQuantity + delta;
 
   // Kiểm tra số lượng mới không nhỏ hơn 1
-  if (newQuantity > 0) {
-    // Cập nhật giá trị số lượng trong ô input
-    quantityInput.value = newQuantity;
+  if (newQuantity < 1) return;
 
-    // Gửi form để cập nhật giỏ hàng ngay lập tức
-    quantityInput.form.submit();
-  }
+  // Cập nhật giá trị số lượng trong ô input
+  quantityInput.value = newQuantity;
+
+  // Gửi dữ liệu lên server để cập nhật giỏ hàng (có thể thêm AJAX để cập nhật vào session)
+  const formData = new FormData();
+  formData.append("product_id", productId);
+  formData.append("quantity", newQuantity);
+
+  fetch("cap-nhat-so-luong.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        // Cập nhật lại tổng giỏ hàng
+        updateCartTotal();
+      } else {
+        alert("Cập nhật thất bại: " + data.message);
+      }
+    })
+    .catch((err) => {
+      console.error("Lỗi:", err);
+    });
 }
 
-// Hàm tính lại tổng giỏ hàng
 function updateCartTotal() {
   let total = 0;
-  // Duyệt qua tất cả các sản phẩm (.order)
   document.querySelectorAll(".order").forEach((order) => {
-    const input = order.querySelector(".quantity-input");
+    const quantityInput = order.querySelector(".quantity-input");
     // Lấy giá sản phẩm từ data-price
-    const price = parseFloat(input.getAttribute("data-price"));
-    const quantity = parseInt(input.value);
+    const price = parseFloat(quantityInput.getAttribute("data-price")) || 0;
+    const quantity = parseInt(quantityInput.value) || 1;
     const productTotal = price * quantity;
     total += productTotal;
-
-    // Cập nhật lại giá của sản phẩm trong đơn hàng
-    const priceElement = order.querySelector(".price");
-    if (priceElement) {
-      priceElement.textContent = productTotal.toLocaleString("vi-VN") + " VNĐ";
-    }
   });
   // Cập nhật tổng tiền của giỏ hàng
-  document.getElementById("total-price").textContent =
-    total.toLocaleString("vi-VN") + " VNĐ";
-}
-
-// Hàm xử lý submit form cập nhật (nếu cần)
-// Bạn có thể thêm kiểm tra hợp lệ trước khi submit form lên server
-function updateCart(form) {
-  return true;
+  const totalElement = document.getElementById("total-price");
+  if (totalElement) {
+    totalElement.textContent = total.toLocaleString("vi-VN") + " VNĐ";
+  }
 }

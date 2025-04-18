@@ -26,10 +26,11 @@ try {
 
 // Xử lý thêm, cập nhật và xóa sản phẩm
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Thêm sản phẩm vào giỏ
-  if (isset($_POST['product_id'], $_POST['quantity'])) {
+  // THÊM SẢN PHẨM VÀO GIỎ
+  if (isset($_POST['product_id'], $_POST['quantity'])) 
+  {
       $product_id = intval($_POST['product_id']);
-$quantity = max(1, min(100, intval($_POST['quantity'])));
+      $quantity = max(1, min(100, intval($_POST['quantity'])));
 
       $stmt = $conn->prepare("SELECT ProductID, ProductName, Price, ImageURL FROM products WHERE ProductID = ?");
       $stmt->bind_param("i", $product_id);
@@ -40,7 +41,6 @@ $quantity = max(1, min(100, intval($_POST['quantity'])));
           if (isset($_SESSION['cart'][$product_id])) {
               $_SESSION['cart'][$product_id]['Quantity'] += $quantity;
           } else {
-              
               $_SESSION['cart'][$product_id] = [
                   'ProductID'   => $product['ProductID'],
                   'ProductName' => $product['ProductName'],
@@ -50,13 +50,14 @@ $quantity = max(1, min(100, intval($_POST['quantity'])));
               ];
           }
       }
-
       $stmt->close();
       header("Location: gio-hang.php");
       exit;
+
+   
   }
-  // Cập nhật số lượng
-  if (isset($_POST['update_product_id'], $_POST['quantity'])) {
+    // Cập nhật số lượng
+    if (isset($_POST['update_product_id'], $_POST['quantity'])) {
       $pid = intval($_POST['update_product_id']);
       $newQty = max(1, intval($_POST['quantity']));
       if (isset($_SESSION['cart'][$pid])) {
@@ -65,21 +66,41 @@ $quantity = max(1, min(100, intval($_POST['quantity'])));
       header("Location: gio-hang.php");
       exit;
   }
-  // Xóa sản phẩm
-  if (isset($_POST['remove_product_id'])) {
-      $remove_id = intval($_POST['remove_product_id']);
-      unset($_SESSION['cart'][$remove_id]);
-      header("Location: gio-hang.php");
-      exit;
-  }
+  
+    //xóa sản phẩm
+    if (isset($_POST['remove_product_id'])) {
+        $product_id_to_remove = $_POST['remove_product_id'];
+    
+        // 1. Kiểm tra xem biến session giỏ hàng có tồn tại không
+        if (isset($_SESSION['cart'])) {
+            // 2. Duyệt qua các sản phẩm trong giỏ hàng
+            foreach ($_SESSION['cart'] as $key => $item) {
+                // 3. Tìm sản phẩm cần xóa
+                if ($item['ProductID'] == $product_id_to_remove) {
+                    // 4. Xóa sản phẩm khỏi giỏ hàng bằng hàm unset()
+                    unset($_SESSION['cart'][$key]);
+                    break; // Dừng vòng lặp sau khi xóa sản phẩm
+                }
+            }
+            // 5.  Sắp xếp lại chỉ mục của mảng để tránh bị thiếu phần tử.  Điều này rất quan trọng!
+            $_SESSION['cart'] = array_values($_SESSION['cart']);
+        }
+        // Chuyển hướng về trang giỏ hàng để hiển thị các thay đổi
+        header("Location: gio-hang.php"); // Quan trọng: Chuyển hướng để tránh các vấn đề khi tải lại trang
+        exit();
+    }
+
+    
 
 }
+
 $cart_items = isset($_SESSION['cart']) ? array_values($_SESSION['cart']) : [];
 $total = 0;
 foreach ($cart_items as $item) {
     $total += $item['Price'] * $item['Quantity'];
 }
 $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
+// Xoá cookie cart_quantity
 ?>
 <!DOCTYPE html>
 <html>
@@ -451,7 +472,8 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
           <div class="frame">
             <div class="name-price">
               <p><strong><?php echo htmlspecialchars($item['ProductName']); ?></strong></p>
-                <!-- Giá sản phẩm hiển thị, gán thêm data-price để JS dễ lấy -->
+
+                 <!-- Giá sản phẩm hiển thị, gán thêm data-price để JS dễ lấy -->
               <p class="price" data-price="<?php echo $item['Price']; ?>">
                 <strong><?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></strong>
               </p>
@@ -461,11 +483,13 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
               <!-- Button trigger modal -->
               <form action="gio-hang.php" method="POST">
                 <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                <button type="button" class="btn" onclick="this.form.submit();"
+                <button type="submit" class="btn" "
                   style="width: 53px; height: 33px;">
                   <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                 </button>
               </form>
+
+              
 
               <div class="add-del">
                     <div class="oder">
@@ -484,10 +508,11 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                         <!-- Nút tăng số lượng -->
                         <button type="button" class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
                       </form>
+                      <script src="../src/js/gio-hang.js"></script>
+
                       </div>
                     </div>
-                    <script src="../src/js/gio-hang.js"></script>
-
+                   
               </div>
             </div>
           </div>

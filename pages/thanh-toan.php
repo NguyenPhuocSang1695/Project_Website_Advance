@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
     }
    // Lấy tên tỉnh
     $stmt = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
-    $stmt->bind_param("s", $province);
+    $stmt->bind_param("i", $province);
     $stmt->execute();
     $stmt->bind_result($provinceName);
     $stmt->fetch();
@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
 
     // Lấy tên quận
     $stmt = $conn->prepare("SELECT name FROM district WHERE district_id = ?");
-    $stmt->bind_param("s", $district);
+    $stmt->bind_param("i", $district);
     $stmt->execute();
     $stmt->bind_result($districtName);
     $stmt->fetch();
@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
 
     // Lấy tên phường
     $stmt = $conn->prepare("SELECT name FROM wards WHERE wards_id = ?");
-    $stmt->bind_param("s", $ward);
+    $stmt->bind_param("i", $ward);
     $stmt->execute();
     $stmt->bind_result($wardName);
     $stmt->fetch();
