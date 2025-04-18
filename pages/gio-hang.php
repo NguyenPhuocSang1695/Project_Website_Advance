@@ -3,6 +3,99 @@ session_start();
 require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
+require __DIR__ . '/../src/Jwt/vendor/autoload.php';
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+
+// Kiểm tra xem cookie 'token' có tồn tại không
+if (!isset($_COOKIE['token'])) {
+  header("Location: user-login.php");
+  exit;
+}
+
+try {
+  // Giải mã token
+  $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
+  $username = $decoded->data->Username;
+} catch (Exception $e) {
+  // Nếu token không hợp lệ, hết hạn, hoặc bị chỉnh sửa => chuyển hướng login
+  header("Location: user-login.php");
+  exit;
+}
+
+// Xử lý thêm, cập nhật và xóa sản phẩm
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // THÊM SẢN PHẨM VÀO GIỎ
+  if (isset($_POST['product_id'], $_POST['quantity'])) {
+    $product_id = intval($_POST['product_id']);
+    $quantity = max(1, min(100, intval($_POST['quantity'])));
+
+    $stmt = $conn->prepare("SELECT ProductID, ProductName, Price, ImageURL FROM products WHERE ProductID = ?");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($product = $result->fetch_assoc()) {
+      if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
+      if (isset($_SESSION['cart'][$product_id])) {
+        $_SESSION['cart'][$product_id]['Quantity'] += $quantity;
+      } else {
+        $_SESSION['cart'][$product_id] = [
+          'ProductID'   => $product['ProductID'],
+          'ProductName' => $product['ProductName'],
+          'Price'       => $product['Price'],
+          'ImageURL'    => $product['ImageURL'],
+          'Quantity'    => $quantity
+        ];
+      }
+    }
+    $stmt->close();
+    header("Location: gio-hang.php");
+    exit;
+  }
+  // Cập nhật số lượng
+  if (isset($_POST['update_product_id'], $_POST['quantity'])) {
+    $pid = intval($_POST['update_product_id']);
+    $newQty = max(1, intval($_POST['quantity']));
+    if (isset($_SESSION['cart'][$pid])) {
+      $_SESSION['cart'][$pid]['Quantity'] = $newQty;
+    }
+    header("Location: gio-hang.php");
+    exit;
+  }
+
+  //xóa sản phẩm
+  if (isset($_POST['remove_product_id'])) {
+    $product_id_to_remove = $_POST['remove_product_id'];
+
+    // 1. Kiểm tra xem biến session giỏ hàng có tồn tại không
+    if (isset($_SESSION['cart'])) {
+      // 2. Duyệt qua các sản phẩm trong giỏ hàng
+      foreach ($_SESSION['cart'] as $key => $item) {
+        // 3. Tìm sản phẩm cần xóa
+        if ($item['ProductID'] == $product_id_to_remove) {
+          // 4. Xóa sản phẩm khỏi giỏ hàng bằng hàm unset()
+          unset($_SESSION['cart'][$key]);
+          break; // Dừng vòng lặp sau khi xóa sản phẩm
+        }
+      }
+      // 5.  Sắp xếp lại chỉ mục của mảng để tránh bị thiếu phần tử.  Điều này rất quan trọng!
+      $_SESSION['cart'] = array_values($_SESSION['cart']);
+    }
+    // Chuyển hướng về trang giỏ hàng để hiển thị các thay đổi
+    header("Location: gio-hang.php"); // Quan trọng: Chuyển hướng để tránh các vấn đề khi tải lại trang
+    exit();
+  }
+}
+
+$cart_items = isset($_SESSION['cart']) ? array_values($_SESSION['cart']) : [];
+$total = 0;
+foreach ($cart_items as $item) {
+  $total += $item['Price'] * $item['Quantity'];
+}
+$total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
+// Xoá cookie cart_quantity
 ?>
 <!DOCTYPE html>
 <html>

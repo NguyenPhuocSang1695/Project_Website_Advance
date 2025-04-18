@@ -587,6 +587,7 @@ body {
     justify-content: flex-start;
     align-items: flex-start;
   }
+
   /* khoi */
   .cart-table {
     width: 100%;
@@ -674,6 +675,7 @@ body {
   .frame-2 {
     width: 110%;
   }
+
   /* khoi */
   .cart-table th,
   .cart-table td {
@@ -777,10 +779,12 @@ body {
     justify-content: start;
     align-items: flex-start;
   }
+
   /* khoi */
   .cart-table th,
   .cart-table td {
-    font-size: 10px; /* Điều chỉnh kích thước chữ */
+    font-size: 10px;
+    /* Điều chỉnh kích thước chữ */
   }
 
   /* Ẩn các tiêu đề cột */
@@ -795,26 +799,32 @@ body {
 
   /* Điều chỉnh các ô trong bảng để dễ đọc hơn */
   .cart-table td {
-    padding: 5px; /* Giảm khoảng cách padding */
+    padding: 5px;
+    /* Giảm khoảng cách padding */
   }
 
   .cart-table td .cart-image {
-    width: 60px; /* Giảm kích thước ảnh */
+    width: 60px;
+    /* Giảm kích thước ảnh */
   }
 
   .cart-table td .quantity-input {
-    width: 30px; /* Điều chỉnh độ rộng của input số lượng */
+    width: 30px;
+    /* Điều chỉnh độ rộng của input số lượng */
   }
 
   .cart-table td .total-price {
-    font-size: 12px; /* Giảm kích thước chữ cho tổng tiền */
+    font-size: 12px;
+    /* Giảm kích thước chữ cho tổng tiền */
   }
 
   .cart-table td .btn-delete {
-    font-size: 18px; /* Điều chỉnh kích thước nút xóa */
+    font-size: 18px;
+    /* Điều chỉnh kích thước nút xóa */
   }
 
   .cart-table td .btn-delete i {
-    font-size: 18px; /* Điều chỉnh kích thước icon thùng rác */
+    font-size: 18px;
+    /* Điều chỉnh kích thước icon thùng rác */
   }
 }
