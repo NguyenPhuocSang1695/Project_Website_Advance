@@ -152,7 +152,7 @@ require_once('../src/php/token.php');
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <?php if (!$loggedInUsername): ?>
                     <li class="nav-item">
-                      <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                      <a class="nav-link login-logout" href="user-register.php">Đăng ký</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
