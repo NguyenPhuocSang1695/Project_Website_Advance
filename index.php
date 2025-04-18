@@ -157,7 +157,7 @@ require_once './src/php/token.php';
                       </li>
                     <?php else: ?>
                       <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
+                        <a class="nav-link hs-ls-dx" href="./pages/ho-so.php">Hồ sơ</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link hs-ls-dx" href="./pages/user-History.php">Lịch sử mua hàng</a>

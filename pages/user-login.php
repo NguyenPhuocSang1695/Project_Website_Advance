@@ -1,5 +1,6 @@
 <?php
 require_once('../src/php/token.php');
+require_once('../src/php/check_token_v1.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
 
 use Firebase\JWT\JWT;
@@ -73,10 +74,70 @@ if (isset($_POST["login"])) {
       font-size: 12px;
       margin-top: 5px;
     }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      margin: 24px 0;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      margin-top: 3px;
+      accent-color: var(--primary-color);
+    }
+
+    .checkbox-container label {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    .checkbox-container a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .checkbox-container a:hover {
+      text-decoration: underline;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      margin: 24px 0;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      margin-top: 3px;
+      accent-color: var(--primary-color);
+    }
+
+    .checkbox-container label {
+      font-size: 13px;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    .checkbox-container a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .checkbox-container a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 
-<body>
+<body>  
   <div class="Sticky">
     <div class="container-fluid" style="padding: 0 !important">
       <!-- HEADER  -->
@@ -173,7 +234,7 @@ if (isset($_POST["login"])) {
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function(e) {
+              document.getElementById("searchForm").addEventListener("submit", function (e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
@@ -426,6 +487,9 @@ if (isset($_POST["login"])) {
         </div>
 
         <button type="submit" name="login" class="btn-login">Đăng nhập</button>
+        <div class="checkbox-container">
+          <label for>Bạn chưa có tài khoản ?<a href="user-login.php">Đăng Kí</a> </label>
+        </div>
       </form>
 
     </div>

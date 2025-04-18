@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <?php
 require_once('../src/php/token.php');
+require_once('../src/php/check_token_v1.php');
 $errors = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -54,6 +55,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (!preg_match("/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,}/", $password)) {
     $errors['password'] = "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
   }
+  if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {
+    $errors['fullname'] = "Họ tên không hợp lệ! Chỉ được chứa chữ cái và tối đa 80 từ.";
+  }
+  
 
   // Nếu không có lỗi thì thêm vào CSDL
   if (empty($errors)) {
@@ -563,7 +568,10 @@ $provinceResult = $conn->query($provinceQuery);
             </div>
 
             <button type="submit" class="btn">Đăng ký ngay</button>
-            <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button>
+            <!-- <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button> -->
+            <div class="checkbox-container">
+              <label for>Bạn đã có tài khoản ?<a href="user-login.php">Đăng nhập</a> </label>
+            </div>
           </form>
         </div>
       </div>
