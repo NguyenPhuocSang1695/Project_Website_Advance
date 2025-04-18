@@ -106,7 +106,7 @@ $provinceResult = $conn->query($provinceQuery);
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
-  <title>Đăng kí</title>
+  <title>Đăng ký</title>
   <style>
     /* hiện lỗi */
     .error-message {
@@ -288,7 +288,7 @@ $provinceResult = $conn->query($provinceQuery);
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <?php if (!$loggedInUsername): ?>
                       <li class="nav-item">
-                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                        <a class="nav-link login-logout" href="user-register.php">Đăng ký</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
