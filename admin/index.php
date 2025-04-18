@@ -1,30 +1,38 @@
 <?php 
 include '../admin/php/connect.php';
 session_start();
-
+if(isset($_SESSION['Username'])) {
+    header("Location: ../admin/index/homePage.php");
+    exit();
+}
 if (isset($_POST['submit'])) {
     $username = trim($_POST['Username']);
     $password = trim($_POST['PasswordHash']);
-
+    
     if (empty($username) || empty($password)) {
         echo "<script>alert('Vui lòng nhập tên đăng nhập và mật khẩu!');</script>";
-    } else {
-        $stmt = $myconn->prepare("SELECT Username, FullName, Role FROM users WHERE Username = ? AND PasswordHash = ? AND Role = 'admin'");
-        $stmt->bind_param("ss", $username, $password);
+    } 
+    else {
+        $stmt = $myconn->prepare("SELECT Username, FullName, Role, PasswordHash FROM users WHERE Username = ? AND Role = 'admin'");
+        $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
-
+        
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
-            $_SESSION['Username'] = $user['Username'];
-            $_SESSION['FullName'] = $user['FullName']; 
-            $_SESSION['Role'] ='Nhân viên';
+            if (password_verify($password, $user['PasswordHash'])) {
+                $_SESSION['Username'] = $user['Username'];
+                $_SESSION['FullName'] = $user['FullName']; 
+                $_SESSION['Role'] = 'Nhân viên';
 
-            echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    showSuccessPopup('{$user['FullName']}');
-                });
-            </script>";
+                echo "<script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        showSuccessPopup('{$user['FullName']}');
+                    });
+                </script>";
+            } else {
+                echo "<script>alert('Tên đăng nhập hoặc mật khẩu không đúng!');</script>";
+            }
         } else {
             echo "<script>alert('Tên đăng nhập hoặc mật khẩu không đúng!');</script>";
         }
@@ -32,6 +40,7 @@ if (isset($_POST['submit'])) {
         $stmt->close();
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

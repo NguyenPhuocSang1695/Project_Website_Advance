@@ -35,7 +35,7 @@
 
 .newsletter {
     flex-basis: 100%;
-    max-width: 400px;
+    max-width: fit-content;
 }
 
 .newsletter h3 {
