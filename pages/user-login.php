@@ -137,7 +137,7 @@ if (isset($_POST["login"])) {
   </style>
 </head>
 
-<body>  
+<body>
   <div class="Sticky">
     <div class="container-fluid" style="padding: 0 !important">
       <!-- HEADER  -->
@@ -248,7 +248,7 @@ if (isset($_POST["login"])) {
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function (e) {
+              document.getElementById("searchForm").addEventListener("submit", function(e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
@@ -530,7 +530,7 @@ if (isset($_POST["login"])) {
 
         <button type="submit" name="login" class="btn-login">Đăng nhập</button>
         <div class="checkbox-container">
-          <label for>Bạn chưa có tài khoản ?<a href="user-register.php">Đăng Ký</a> </label>
+          <p for>Bạn chưa có tài khoản? <a href="user-register.php">Đăng ký</a> </p>
         </div>
       </form>
 

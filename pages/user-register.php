@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {
     $errors['fullname'] = "Họ tên không hợp lệ! Chỉ được chứa chữ cái và tối đa 80 từ.";
   }
-  
+
 
   // Nếu không có lỗi thì thêm vào CSDL
   if (empty($errors)) {
@@ -140,6 +140,10 @@ $provinceResult = $conn->query($provinceQuery);
       .form-card {
         width: 100%;
       }
+    }
+
+    .form-group label {
+      font-weight: bold;
     }
   </style>
 </head>
@@ -612,7 +616,7 @@ $provinceResult = $conn->query($provinceQuery);
             <button type="submit" class="btn">Đăng ký ngay</button>
             <!-- <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button> -->
             <div class="checkbox-container">
-              <label for>Bạn đã có tài khoản ?<a href="user-login.php">Đăng nhập</a> </label>
+              <p for>Bạn đã có tài khoản? <a href="user-login.php">Đăng nhập</a> </p>
             </div>
           </form>
         </div>
