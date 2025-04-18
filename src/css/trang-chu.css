@@ -390,6 +390,15 @@ body {
   /* Màu xanh lá cây nhạt */
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
   /* Bóng đậm hơn, rõ hơn */
+
+}
+
+.img__TREE .THE-TREE {
+  transition: transform 0.3s ease;
+}
+
+.img__TREE:hover .THE-TREE {
+  transform: scale(1.05);
 }
 
 .THE-TREE {
