@@ -1,4 +1,6 @@
 <?php
+session_start();
+require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
 ?>
@@ -486,38 +488,77 @@ require_once('../src/php/check_token_v2.php');
 
       <div class="footer-column newsletter">
 
+        <<<<<<< HEAD
 
-        <h3>Theo dõi chúng tôi</h3>
-        <div class="social-icons">
-          <a href="#" aria-label="Pinterest">
-            <i class="fa-brands fa-pinterest"></i>
-          </a>
-          <a href="#" aria-label="Facebook">
-            <i class="fa-brands fa-facebook"></i>
-          </a>
-          <a href="#" aria-label="Instagram">
-            <i class="fa-brands fa-instagram"></i>
-          </a>
-          <a href="#" aria-label="Twitter">
-            <i class="fa-brands fa-x-twitter"></i>
-          </a>
-        </div>
-      </div>
+          <h3>Theo dõi chúng tôi</h3>
+          <div class="social-icons">
+            <a href="#" aria-label="Pinterest">
+              <i class="fa-brands fa-pinterest"></i>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <i class="fa-brands fa-facebook"></i>
+            </a>
+            <a href="#" aria-label="Instagram">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="#" aria-label="Twitter">
+              <i class="fa-brands fa-x-twitter"></i>
+            </a>
+            =======
+            <div class="invoice-container">
+              <h2>HÓA ĐƠN MUA HÀNG</h2>
+              <p><strong>Mã hóa đơn:</strong> <?= $order['OrderID'] ?> <span id="invoice-id"></span></p>
+              <p><strong>Ngày mua:</strong> <?= $order['DateGeneration'] ?><span id="purchase-date"></span></p>
+              <p>
+                <strong>Tên khách hàng:</strong> <?= $order['CustomerName'] ?> <span id="customer-name"></span>
+              </p>
+              <p>
+                <strong>Số điện thoại:</strong> <?= $order['Phone'] ?> <span id="customer-phone"></span>
+              </p>
+              <p><strong>Địa chỉ:</strong> <?= $order['Address'] ?>, <?= $order['Ward'] ?>, <?= $order['District'] ?>, <?= $order['Province'] ?><span id="customer-address"></span></p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Sản phẩm</th>
+                    <th>Hình ảnh</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Thành tiền</th>
 
-      <div class="copyright">
-        © 2021 c01.nhahodau
+                  </tr>
+                </thead>
+                <tbody id="invoice-body">
+                  <?php while ($row = $details->fetch_assoc()): ?>
+                    <tr>
+                      <td><?php echo htmlspecialchars($row['ProductName']); ?></td>
+                      <td><img src="<?php echo ".." . $row['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>" width="80"></td>
+                      <td><?= $row['Quantity'] ?></td>
+                      <td><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
+                      <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
+                    </tr>
+                  <?php endwhile; ?>
+                </tbody>
+              </table>
+              <div class="total">
+                <strong>Tổng cộng: </strong> <span id="total-price"><?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ</span>
+                >>>>>>> khoi
+              </div>
+            </div>
 
-        <div class="policies">
-          <a href="#">Điều khoản dịch vụ</a>
-          <span>|</span>
-          <a href="#">Chính sách bảo mật</a>
-          <span>|</span>
-          <a href="#">Chính sách hoàn tiền</a>
-          <span>|</span>
-          <a href="#">Chính sách trợ năng</a>
-        </div>
-      </div>
-      <!-- xong footer  -->
+            <div class="copyright">
+              © 2021 c01.nhahodau
+
+              <div class="policies">
+                <a href="#">Điều khoản dịch vụ</a>
+                <span>|</span>
+                <a href="#">Chính sách bảo mật</a>
+                <span>|</span>
+                <a href="#">Chính sách hoàn tiền</a>
+                <span>|</span>
+                <a href="#">Chính sách trợ năng</a>
+              </div>
+            </div>
+            <!-- xong footer  -->
     </footer>
 </body>
 

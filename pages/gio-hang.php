@@ -1,4 +1,6 @@
 <?php
+session_start();
+require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
 ?>
@@ -10,6 +12,7 @@ require_once('../src/php/check_token_v2.php');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- CSS  -->
   <link rel="stylesheet" href="../src/css/gio-hang.css">
+  <link rel="stylesheet" href="../src/css/gio-hang-php.css">
   <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../src/css/search-styles.css">
   <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css">
@@ -18,6 +21,7 @@ require_once('../src/php/check_token_v2.php');
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
+
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
@@ -401,71 +405,79 @@ require_once('../src/php/check_token_v2.php');
         <hr>
         <img src="../assets/images/circle-check.svg" alt="ccheck">
       </div>
-      <div class="order">
+      <?php if (count($cart_items) > 0): ?>
+        <?php foreach ($cart_items as $item): ?>
+
+          <div class="order">
+            <div class="order-img">
+              <img src="<?php echo ".." . $item['ImageURL']; ?>" width="120" class="cart-image">
+            </div>
+
+            <div class="frame">
+              <div class="name-price">
+                <p><strong><?php echo htmlspecialchars($item['ProductName']); ?></strong></p>
+
+                <!-- Giá sản phẩm hiển thị, gán thêm data-price để JS dễ lấy -->
+                <p class="price" data-price="<?php echo $item['Price']; ?>">
+                  <strong><?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></strong>
+                </p>
+              </div>
+
+              <div class="function">
+                <!-- Button trigger modal -->
+                <form action="gio-hang.php" method="POST">
+                  <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
+                  <button type="submit" class="btn" "
+                  style=" width: 53px; height: 33px;">
+                    <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
+                  </button>
+                </form>
 
 
-        <div class="order-img">
-          <img src="../assets/images/CAY5.jpg" alt="Phat tai">
-        </div>
 
+                <div class="add-del">
+                  <div class="oder">
+                    <div class="wrapper">
+                      <form action="gio-hang.php" method="POST" class="update-form">
+                        <!-- Truyền ProductID để xác định sản phẩm cần cập nhật -->
+                        <input type="hidden" name="update_product_id" value="<?php echo $item['ProductID']; ?>">
 
-        <div class="frame">
-          <div class="name-price">
-            <p><strong>Cây phát tài</strong></p>
-            <p><strong>750.000đ</strong></p>
-          </div>
-          <div class="function">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
-              style="width: 53px; height: 33px;">
-              <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
-            </button>
+                        <!-- Nút giảm số lượng -->
+                        <button type="button" class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>
 
-            <!-- Modal -->
-            <div class="modal fade w-100" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-              aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Thông báo</h1>
-                    <button type="button" class="btn-close" style="width: 10%;" data-bs-dismiss="modal"
-                      aria-label="Close"></button>
+                        <!-- Trường số lượng, gán thuộc tính data-price để JS dùng cho tính toán nếu cần -->
+                        <input type="number" name="quantity" value="<?php echo max(1, $item['Quantity']); ?>" min="1"
+                          class="quantity-input" data-price="<?php echo $item['Price']; ?>">
+
+                        <!-- Nút tăng số lượng -->
+                        <button type="button" class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                      </form>
+                      <script src="../src/js/gio-hang.js"></script>
+
+                    </div>
                   </div>
-                  <div class="modal-body d-flex justify-content-center align-items-center">
-                    Bạn có chắc muốn xóa sản phẩm chứ!
-                  </div>
-                  <div class="modal-footer d-flex flex-row">
-                    <button type="button" class="btn btn-secondary" style="width: 20%;"
-                      data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" style="width: 45%;">Xóa</button>
-                  </div>
+
                 </div>
               </div>
             </div>
-            <div class="add-del">
-              <div class="oder">
-                <div class="wrapper">
-                  <span class="minus">-</span>
-                  <span class="num">01</span>
-                  <span class="plus">+</span>
-                </div>
-                <script src="../src/js/san-pham.js"></script>
-              </div>
-            </div>
-
           </div>
-        </div>
-      </div>
+        <?php endforeach; ?>
+      <?php else:  ?>
+        <p>Giỏ hàng của bạn đang trống</p>
+      <?php endif; ?>
 
       <div class="frame-2">
         <div class="thanh-tien">
-          Tạm tính: 750.000đ
+          Tổng : <span id="total-price"><?php echo $total_price_formatted; ?></span>
         </div>
       </div>
-      <div class="dat-hang">
-        <button onclick="clickCart()" type="button" class="btn btn-success" style="width: 185px;
-    height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
-      </div>
+
+      <form action="thanh-toan.php" method="POST" name="ThanhToan">
+        <div class="dat-hang">
+          <button type="submit" class="btn btn-success" name="confirm_checkout" style="width: 185px;
+          height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
+        </div>
+      </form>
       <div class="text" style="margin-bottom: 10px;">
         <!-- quay về trang chủ  -->
         <a style="text-decoration: none;" href="../index.php">Tiếp tục mua hàng</a>

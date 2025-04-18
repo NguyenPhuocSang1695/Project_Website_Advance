@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('../src/php/token.php');
 ?>
 <!DOCTYPE html>
