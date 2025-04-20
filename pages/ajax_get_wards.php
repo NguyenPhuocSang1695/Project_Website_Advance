@@ -12,10 +12,10 @@
     $result = mysqli_query($conn, $sql);
 
 
-    $data[0] = [
-        'id' => null,
-        'name' => 'Chọn một xã/phường'
-    ];
+    // $data[0] = [
+    //     'id' => null,
+    //     'name' => 'Chọn một xã/phường'
+    // ];
 
     while ($row = mysqli_fetch_assoc($result)) {
         $data[] = [

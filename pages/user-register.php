@@ -58,7 +58,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {
     $errors['fullname'] = "Họ tên không hợp lệ! Chỉ được chứa chữ cái và tối đa 80 từ.";
   }
-  
+  if (empty($province)) {
+    $errors['province'] = "Không được để trống tỉnh/thành!";
+  }
+  if (empty($district)) {
+    $errors['district'] = "Không được để trống quận/huyện!";
+  }
+  if (empty($ward)) {
+    $errors['ward'] = "Không được để trống phường/xã!";
+  }
+  if (empty($address)) {
+    $errors['address'] = "Không được để trống địa chỉ!";
+  }  
 
   // Nếu không có lỗi thì thêm vào CSDL
   if (empty($errors)) {
@@ -241,7 +252,7 @@ $provinceResult = $conn->query($provinceQuery);
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function(e) {
+              document.getElementById("searchForm").addEventListener("submit", function (e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
@@ -249,7 +260,7 @@ $provinceResult = $conn->query($provinceQuery);
             </script>
 
             <div class="cart-icon">
-              <a href="user-register.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="./gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
@@ -526,26 +537,29 @@ $provinceResult = $conn->query($provinceQuery);
                   }
                   ?>
                 </select>
-
+                <p class="error-message"><?php echo $errors['province'] ?? ''; ?></p>
               </div>
               <div class="form-group">
                 <label for="district">Quận/Huyện</label>
                 <select id="district" name="district" class="form-control">
-                  <option value="">Chọn một quận/huyện</option>
+                  <option value="">Chọn quận/huyện</option>
                 </select>
+                <p class="error-message"><?php echo $errors['district'] ?? ''; ?></p>
               </div>
             </div>
 
             <div class="form-group">
               <label for="wards">Phường/Xã</label>
               <select id="wards" name="wards" class="form-control">
-                <option value="">Chọn một xã</option>
+                <option value="">Chọn phường/xã</option>
               </select>
+              <p class="error-message"><?php echo $errors['ward'] ?? ''; ?></p>
             </div>
 
             <div class="form-group">
               <label for="address">Địa chỉ</label>
               <input type="text" id="address" name="address" class="form-control" required>
+              <p class="error-message"><?php echo $errors['address'] ?? ''; ?></p>
             </div>
 
             <div class="checkbox-container">
@@ -671,88 +685,10 @@ $provinceResult = $conn->query($provinceQuery);
   <script src="../src/js/user-register.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
 
+  <script src="../src/js/jquery-3.7.1.min.js"></script>
   <script>
-    $(document).ready(function() {
-      // Listen for changes in the "province" select box
-      $('#province').on('change', function() {
-        var province_id = $(this).val();
-        // console.log(province_id);
-        if (province_id) {
-          // If a province is selected, fetch the districts for that province using AJAX
-          $.ajax({
-            url: 'ajax_get_district.php',
-            method: 'GET',
-            dataType: "json",
-            data: {
-              province_id: province_id
-            },
-            success: function(data) {
-              // Clear the current options in the "district" select box
-              $('#district').empty();
-
-              // Add the new options for the districts for the selected province
-              $.each(data, function(i, district) {
-                // console.log(district);
-                $('#district').append($('<option>', {
-                  value: district.id,
-                  text: district.name
-                }));
-              });
-              // Clear the options in the "wards" select box
-              $('#wards').empty();
-            },
-            error: function(xhr, textStatus, errorThrown) {
-              console.log('Error: ' + errorThrown);
-            }
-          });
-          $('#wards').empty();
-        } else {
-          // If no province is selected, clear the options in the "district" and "wards" select boxes
-          $('#district').empty();
-        }
-      });
-
-      // Listen for changes in the "district" select box
-      $('#district').on('change', function() {
-        var district_id = $(this).val();
-        // console.log(district_id);
-        if (district_id) {
-          // If a district is selected, fetch the awards for that district using AJAX
-          $.ajax({
-            url: 'ajax_get_wards.php',
-            method: 'GET',
-            dataType: "json",
-            data: {
-              district_id: district_id
-            },
-            success: function(data) {
-              // console.log(data);
-              // Clear the current options in the "wards" select box
-              $('#wards').empty();
-              // Add the new options for the awards for the selected district
-              $.each(data, function(i, wards) {
-                $('#wards').append($('<option>', {
-                  value: wards.id,
-                  text: wards.name
-                }));
-              });
-            },
-            error: function(xhr, textStatus, errorThrown) {
-              console.log('Error: ' + errorThrown);
-            }
-          });
-        } else {
-          // If no district is selected, clear the options in the "award" select box
-          $('#wards').empty();
-        }
-      });
-    });
-  </script>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('#province').on('change', function() {
+    $(document).ready(function () {
+      $('#province').on('change', function () {
         var province_id = $(this).val();
         if (province_id) {
           $.ajax({
@@ -762,9 +698,9 @@ $provinceResult = $conn->query($provinceQuery);
             data: {
               province_id: province_id
             },
-            success: function(data) {
+            success: function (data) {
               $('#district').empty().append('<option value="">Chọn quận/huyện</option>');
-              $.each(data, function(i, district) {
+              $.each(data, function (i, district) {
                 $('#district').append($('<option>', {
                   value: district.id,
                   text: district.name
@@ -779,7 +715,7 @@ $provinceResult = $conn->query($provinceQuery);
         }
       });
 
-      $('#district').on('change', function() {
+      $('#district').on('change', function () {
         var district_id = $(this).val();
         if (district_id) {
           $.ajax({
@@ -789,9 +725,9 @@ $provinceResult = $conn->query($provinceQuery);
             data: {
               district_id: district_id
             },
-            success: function(data) {
+            success: function (data) {
               $('#wards').empty().append('<option value="">Chọn phường/xã</option>');
-              $.each(data, function(i, wards) {
+              $.each(data, function (i, wards) {
                 $('#wards').append($('<option>', {
                   value: wards.id,
                   text: wards.name
