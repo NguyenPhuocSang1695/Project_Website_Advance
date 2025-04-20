@@ -72,6 +72,8 @@ $stmt->bind_param("i", $orderID);
 $stmt->execute();
 $details = $stmt->get_result();
 $stmt->close();
+unset($_SESSION['cart']);
+
 setcookie('cart_quantity', '', time() - 3600, '/'); // Đặt thời gian hết hạn trong quá khứ để xoá
 
 ?>

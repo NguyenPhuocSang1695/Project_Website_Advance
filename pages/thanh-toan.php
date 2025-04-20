@@ -165,7 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
   // Đóng statement
   $stmt->close();
 }
-unset($_SESSION['cart']);
 
 ?>
 <!DOCTYPE html>
@@ -699,11 +698,28 @@ unset($_SESSION['cart']);
                       <!-- Button trigger modal -->
                       <form action="gio-hang.php" method="POST">
                         <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                        <button type="button" class="btn" onclick="this.form.submit();"
-                          style="width: 53px; height: 33px;">
+                        <button type="button" class="btn" style="width: 53px; height: 33px;" 
+                          onclick="if(confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')) xoaSanPham(<?php echo $item['ProductID']; ?>)">
                           <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                         </button>
+                        <!-- <button type="submit" class="btn btn-danger" style="width: 53px; height: 33px;">Xoá</button> -->             
                       </form>
+                      <script>
+                        function xoaSanPham(productId) {
+                          let form = document.createElement("form");
+                          form.method = "POST";
+                          form.action = "gio-hang.php";
+                          
+                          let input = document.createElement("input");
+                          input.type = "hidden";
+                          input.name = "remove_product_id";
+                          input.value = productId;
+                          
+                          form.appendChild(input);
+                          document.body.appendChild(form);
+                          form.submit();
+                        }
+                      </script>
                       <!-- Nútxóa và thêm số lượng sản phẩm  -->
                       <div class="add-del">
                         <div class="oder">
