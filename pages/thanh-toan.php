@@ -28,6 +28,29 @@ try {
   exit;
 }
 
+
+
+
+
+// Hàm kiểm tra giỏ hàng có trống không
+function isCartEmpty() {
+  // Kiểm tra session giỏ hàng
+  if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+      return true;
+  }
+  
+
+  return false;
+}
+
+if (isCartEmpty()) {
+  
+  
+  // Chuyển hướng về trang giỏ hàng
+  header("Location: gio-hang.php");
+  exit;
+}
+
 // Gán mặc định $user = null để tránh lỗi khi không có kết quả
 $user = null;
 // Lấy thông tin user (gồm JOIN với province, district, ward)
@@ -85,14 +108,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_checkout'])) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
   $stmt->bind_param(
-    "ssssssssss",
+    "ssssiiisss",
     $username,
     $paymentMethod,
     $user['FullName'],
     $user['Phone'],
-    $user['Province'],
-    $user['District'],
-    $user['Ward'],
+    $user['ProvinceID'],
+    $user['DistrictID'],
+    $user['WardID'],
     $dateNow,
     $total_amount,
     $user['Address']
@@ -116,25 +139,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_checkout'])) 
 }
 
 
-
-// Kiểm tra nếu có request POST từ form
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info'])) {
   // Lấy thông tin từ form
   $orderID = $_POST['order_id']; // lấy từ input hidden
-  $newName = $_POST['new_name'];
-  $newSdt = $_POST['new_sdt'];
-  $newDiachi = $_POST['new_diachi'];
-  $province = $_POST['province'];
-  $district = $_POST['district'];
-  $ward = $_POST['wards'];
+  $newName = trim($_POST['new_name']);
+  $newSdt = trim($_POST['new_sdt']);
+  $newDiachi = trim($_POST['new_diachi']);
+  $provinceID = (int) $_POST['province'];
+  $districtID = (int) $_POST['district'];
+  $wardID = (int) $_POST['wards'];
+
   // Kiểm tra dữ liệu đầu vào
-  if (empty($newName) || empty($newSdt) || empty($newDiachi) || empty($provinceID) || empty($districtID) || empty($wardID)) {
-    echo "Vui lòng điền đầy đủ thông tin.";
-    header("Location: thanh-toan.php");
+  if (empty($newName) || empty($newSdt) || empty($newDiachi) || $provinceID === 0 || $districtID === 0 || $wardID === 0) {
+      echo "Vui lòng điền đầy đủ thông tin.";
+      header("Location: thanh-toan.php");
+      exit();
   }
+
   // Lấy tên tỉnh
   $stmt = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
-  $stmt->bind_param("i", $province);
+  $stmt->bind_param("i", $provinceID);
   $stmt->execute();
   $stmt->bind_result($provinceName);
   $stmt->fetch();
@@ -142,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
 
   // Lấy tên quận
   $stmt = $conn->prepare("SELECT name FROM district WHERE district_id = ?");
-  $stmt->bind_param("i", $district);
+  $stmt->bind_param("i", $districtID);
   $stmt->execute();
   $stmt->bind_result($districtName);
   $stmt->fetch();
@@ -150,22 +174,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
 
   // Lấy tên phường
   $stmt = $conn->prepare("SELECT name FROM wards WHERE wards_id = ?");
-  $stmt->bind_param("i", $ward);
+  $stmt->bind_param("i", $wardID);
   $stmt->execute();
   $stmt->bind_result($wardName);
   $stmt->fetch();
   $stmt->close();
 
-  // Cập nhật thông tin đơn hàng với địa chỉ bằng tên đầy đủ
+  // Gộp địa chỉ đầy đủ
+  $fullAddress = $newDiachi ;
+
+  // Cập nhật thông tin đơn hàng
   $stmt = $conn->prepare("UPDATE orders 
-        SET CustomerName = ?, Phone = ?, Address = ?, Province = ?, District = ?, Ward = ?
-        WHERE OrderID = ?");
-  $stmt->bind_param("ssssssi", $newName, $newSdt, $newDiachi, $provinceName, $districtName, $wardName, $orderID);
+      SET CustomerName = ?, Phone = ?, Address = ?, Province = ?, District = ?, Ward = ? 
+      WHERE OrderID = ?");
+  $stmt->bind_param("ssssiii", $newName, $newSdt, $fullAddress, $provinceID, $districtID, $wardID, $orderID);
   $stmt->execute();
-  // Đóng statement
   $stmt->close();
 }
-unset($_SESSION['cart']);
+
+
 
 ?>
 <!DOCTYPE html>
@@ -191,6 +218,8 @@ unset($_SESSION['cart']);
   <script src="../src/js/thanh-toan.js"></script>
   <script src="../src/js/search-index.js"></script>
   <script src="../src/js/gio-hang.js"></script>
+  <script src="../src/js/PhuongThucChuyenKhoan.js"></script>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
@@ -641,11 +670,11 @@ unset($_SESSION['cart']);
             <input type="hidden" name="order_id" value="<?php echo $_SESSION['order_id'] ?? ''; ?>">
 
             <label for=""><strong>Họ và tên</strong></label>
-            <input type="text" name="new_name" id="new-name" placeholder="Họ và tên">
+            <input type="text" name="new_name" id="new-name" placeholder="Họ và tên" required>
             <label for=""><strong>Số điện thoại</strong></label>
-            <input type="text" name="new_sdt" id="new-sdt" placeholder="Số điện thoại">
+            <input type="text" name="new_sdt" id="new-sdt" placeholder="Số điện thoại" required>
             <label for=""><strong>Địa chỉ</strong></label>
-            <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ(số và đường)">
+            <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ(số và đường)" required>
 
             <label for=""><strong>Tỉnh/Thành phố</strong></label>
             <select name="province" id="province" class="form-select">
@@ -699,11 +728,28 @@ unset($_SESSION['cart']);
                       <!-- Button trigger modal -->
                       <form action="gio-hang.php" method="POST">
                         <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                        <button type="button" class="btn" onclick="this.form.submit();"
-                          style="width: 53px; height: 33px;">
+                        <button type="button" class="btn" style="width: 53px; height: 33px;" 
+                          onclick="if(confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')) xoaSanPham(<?php echo $item['ProductID']; ?>)">
                           <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                         </button>
+                        <!-- <button type="submit" class="btn btn-danger" style="width: 53px; height: 33px;">Xoá</button> -->             
                       </form>
+                      <script>
+                        function xoaSanPham(productId) {
+                          let form = document.createElement("form");
+                          form.method = "POST";
+                          form.action = "gio-hang.php";
+                          
+                          let input = document.createElement("input");
+                          input.type = "hidden";
+                          input.name = "remove_product_id";
+                          input.value = productId;
+                          
+                          form.appendChild(input);
+                          document.body.appendChild(form);
+                          form.submit();
+                        }
+                      </script>
                       <!-- Nútxóa và thêm số lượng sản phẩm  -->
                       <div class="add-del">
                         <div class="oder">
@@ -735,50 +781,51 @@ unset($_SESSION['cart']);
               </div>
               <hr style="border: 3px dashed green; width: 100%" />
             </div>
-
+            <form action="hoan-tat.php" method="POST">
             <div class="payment-method">
-              <label for="">
-                <input type="radio" name="paymentMehtod" id="cod-button" checked> <span>Thanh toán khi nhận hàng</span>
+              <label>
+                <input type="radio" name="paymentMethod" value="COD" checked>
+                <span>Thanh toán khi nhận hàng</span>
               </label>
-              <label for="">
-                <input type="radio" name="paymentMehtod" id="banking-button"> <span>Chuyển khoản</span>
+              <label>
+                <input type="radio" name="paymentMethod" value="Banking">
+                <span>Chuyển khoản</span>
               </label>
             </div>
 
-
-            <div class="card-type" id="card-type">
-              <i class="fa-brands fa-cc-visa" alter="thẻ visa" id="visa-card"></i>
-              <i class="fa-solid fa-credit-card" alter="thẻ tín dụng"></i>
-            </div>
-            <!-- Form chuyển khoản  -->
-            <form action="" id="banking-form">
+            <!-- Form chuyển khoản -->
+            <div id="banking-form" style="display: none;">
               <h2>Liên kết thẻ</h2>
               <label>Thông tin thẻ</label>
-              <input required type="text" placeholder="1234 1234 1234 1234">
-              <input required type="text" placeholder="MM / YY">
-              <input required type="text" placeholder="CVC">
+              <input type="text" name="card_number" placeholder="1234 1234 1234 1234" class="banking-required" required>
+              <input type="text" name="expiry_date" placeholder="MM / YY" class="banking-required" required>
+              <input type="text" name="cvc" placeholder="CVC" class="banking-required" required>
               <label>Tên chủ thẻ</label>
-              <input required type="text" placeholder="Full name on card">
+              <input type="text" name="card_holder" placeholder="Full name on card" class="banking-required" required>
               <label>Địa chỉ</label>
-              <select>
-                <option>Vietnam</option>
+              <select name="country" class="banking-required" required>
+                <option value="">Chọn quốc gia</option>
+                <option value="Vietnam">Vietnam</option>
               </select>
-              <input type="text" placeholder="Địa chỉ 1">
-              <input type="text" placeholder="Địa chỉ 2">
-              <input type="text" placeholder="Thành phố">
-              <input type="text" placeholder="Tỉnh">
-              <input required type="text" placeholder="Mã bưu điện">
-              <button class="subscribe-btn">Đăng ký</button>
-            </form>
-            <div class="payment-button">
-              <a href="../pages/hoan-tat.php"><button type="button" class="btn btn-success" id="payment-button" style="width: 185px;
-    height: 50px;">THANH TOÁN</button></a>
+              <input type="text" name="address1" placeholder="Địa chỉ 1" class="banking-required" required>
+              <input type="text" name="address2" placeholder="Địa chỉ 2" class="banking-required" required>
+              <input type="text" name="city" placeholder="Thành phố" class="banking-required" required>
+              <input type="text" name="province" placeholder="Tỉnh" class="banking-required" required>
+              <input type="text" name="zip_code" placeholder="Mã bưu điện" class="banking-required" required>
             </div>
-            <a href="../index.php" style="text-decoration: none;
-            display: flex
-;
-    justify-content: center;
-    margin-bottom: 10px;">Tiếp tục mua hàng</a>
+
+            <div class="payment-button">
+              <button type="submit" class="btn btn-success" style="width: 185px; height: 50px;">THANH TOÁN</button>
+            </div>
+          </form>
+
+            
+                <a href="../index.php" style="text-decoration: none;
+                display: flex;
+                justify-content: center;
+                margin-bottom: 10px;">
+                Tiếp tục mua hàng
+              </a>
           </div>
         </div>
       </div>

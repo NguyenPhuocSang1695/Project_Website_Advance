@@ -155,3 +155,19 @@ Thay đổi phân loại ở dropdown-menu trên pc và mobile
 Thay đổi phân loại bên admin
 Thêm danh mục sản phẩm tự động cập nhật thêm từ php
 Thay đổi trang kết quả tìm kiếm
+
+<!-- Khoi -->
+
+<!-- THONG TIN TAI KHOAN  -->
+
+Trường Giá trị mẫu
+Số thẻ 4111 1111 1111 1111
+Ngày hết hạn (MM/YY) 12 / 30
+CVC 123
+Tên chủ thẻ Nguyen Van A
+Quốc gia Vietnam
+Địa chỉ 1 123 Đường Lê Lợi
+Địa chỉ 2 Phường Bến Thành
+Thành phố Hồ Chí Minh
+Tỉnh TP Hồ Chí Minh
+Mã bưu điện 700000

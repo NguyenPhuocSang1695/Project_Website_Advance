@@ -518,15 +518,42 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
 
               <div class="function">
                 <!-- Button trigger modal -->
-                <form action="gio-hang.php" method="POST">
+                <form action="gio-hang.php" method="POST" id="remove-form-<?php echo $item['ProductID']; ?>">
                   <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                  <button type="submit" class="btn" "
-                  style=" width: 53px; height: 33px;">
+
+                  <!-- Nút icon mở modal -->
+                  <button type="button" class="btn" 
+                    style=" width: 53px; height: 33px;"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#exampleModal-<?php echo $item['ProductID']; ?>">
                     <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                   </button>
+
+                  <!-- Modal xác nhận -->
+                  <div class="modal fade w-100" id="exampleModal-<?php echo $item['ProductID']; ?>" tabindex="-1" aria-labelledby="exampleModalLabel-<?php echo $item['ProductID']; ?>" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="exampleModalLabel-<?php echo $item['ProductID']; ?>">Thông báo</h1>
+                          <button type="button" class="btn-close" style="width: 10%;" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body d-flex justify-content-center align-items-center">
+                          Bạn có chắc muốn xóa sản phẩm chứ!
+                        </div>
+
+                        <div class="modal-footer d-flex flex-row">
+                          <button type="button" class="btn btn-secondary" style="width: 20%;" data-bs-dismiss="modal">Đóng</button>
+                          
+                          <!-- Nút Xóa submit form -->
+                          <button type="button" class="btn btn-primary" style="width: 45%;" onclick="document.getElementById('remove-form-<?php echo $item['ProductID']; ?>').submit();">Xóa</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
                 </form>
-
-
 
                 <div class="add-del">
                   <div class="oder">
@@ -546,10 +573,8 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                         <button type="button" class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
                       </form>
                       <script src="../src/js/gio-hang.js"></script>
-
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>

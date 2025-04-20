@@ -8,7 +8,6 @@ require __DIR__ . '/../src/Jwt/vendor/autoload.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-
 // Kiểm tra xem cookie 'token' có tồn tại không
 if (!isset($_COOKIE['token'])) {
   header("Location: login.php");
@@ -24,40 +23,47 @@ try {
   header("Location: login.php");
   exit;
 }
+
+
+// Hàm kiểm tra giỏ hàng có trống không
+function isCartEmpty() {
+  // Kiểm tra session giỏ hàng
+  if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+      return true;
+  }
+  
+
+  return false;
+}
+
+if (isCartEmpty()) {
+  
+  
+  // Chuyển hướng về trang giỏ hàng
+  header("Location: gio-hang.php");
+  exit;
+}
+
+
 // Lấy OrderID từ session
 $orderID = $_SESSION['order_id'] ?? 0;
 if (!$orderID) die("Không tìm thấy đơn hàng.");
 
-
-// Lấy thông tin đơn hàng
-$stmt = $conn->prepare("SELECT * FROM orders WHERE OrderID = ?");
+// Lấy thông tin đơn hàng và địa chỉ đầy đủ
+$stmt = $conn->prepare("
+  SELECT o.OrderID, o.DateGeneration, o.CustomerName, o.Phone, o.Address, 
+         w.name AS WardName, d.name AS DistrictName, p.name AS ProvinceName,
+         o.TotalAmount
+  FROM orders o
+  LEFT JOIN wards w ON o.Ward = w.wards_id
+  LEFT JOIN district d ON o.District = d.district_id
+  LEFT JOIN province p ON o.Province = p.province_id
+  WHERE o.OrderID = ?
+");
 $stmt->bind_param("i", $orderID);
 $stmt->execute();
 $order = $stmt->get_result()->fetch_assoc();
 $stmt->close();
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-  // Lấy phương thức thanh toán, mặc định là 'COD' nếu không có giá trị
-  $paymentMethod = isset($_POST['paymentMethod']) ? $_POST['paymentMethod'] : 'COD';
-  // echo "Payment method gửi đi: " . $paymentMethod . "<br>";  // Hiển thị phương thức thanh toán
-
-  // Kiểm tra lại giá trị của OrderID từ session
-  $orderID = $_SESSION['order_id']; // Đảm bảo bạn đã lưu OrderID trước đó
-  echo "OrderID đang dùng để update: " . $orderID . "<br>"; // Debug giá trị OrderID
-
-  // Thực hiện cập nhật phương thức thanh toán trong bảng orders
-  $stmt = $conn->prepare("UPDATE orders SET PaymentMethod = ? WHERE OrderID = ?");
-  $stmt->bind_param("si", $paymentMethod, $orderID);
-
-  if ($stmt->execute()) {
-    // echo "Cập nhật phương thức thành công!";
-  } else {
-    echo "Lỗi: " . $stmt->error;
-  }
-  $stmt->close();
-}
-
 
 
 
@@ -72,8 +78,83 @@ $stmt->bind_param("i", $orderID);
 $stmt->execute();
 $details = $stmt->get_result();
 $stmt->close();
-setcookie('cart_quantity', '', time() - 3600, '/'); // Đặt thời gian hết hạn trong quá khứ để xoá
 
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  // Lấy phương thức thanh toán từ form
+  $paymentMethod = isset($_POST['paymentMethod']) ? $_POST['paymentMethod'] : 'COD';  
+  // Cập nhật phương thức thanh toán vào cơ sở dữ liệu (nếu cần)
+  if (isset($_SESSION['order_id'])) {
+    $orderID = $_SESSION['order_id'];
+
+    $stmt = $conn->prepare("UPDATE orders SET PaymentMethod = ? WHERE OrderID = ?");
+    $stmt->bind_param("si", $paymentMethod, $orderID);
+    $stmt->execute();
+    $stmt->close();
+  }
+}
+
+
+// Cập nhật thông tin người dùng nếu có form cập nhật thông tin
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_order_info'])) {
+  // Lấy thông tin cập nhật từ form
+  $newName = trim($_POST['new_name']);
+  $newSdt = trim($_POST['new_sdt']);
+  $newDiachi = trim($_POST['new_diachi']);
+  $provinceID = (int) $_POST['province'];
+  $districtID = (int) $_POST['district'];
+  $wardID = (int) $_POST['wards'];
+
+  // Cập nhật thông tin vào bảng orders nếu thông tin đầy đủ
+  if (!empty($newName) && !empty($newSdt) && !empty($newDiachi) && $provinceID > 0 && $districtID > 0 && $wardID > 0) {
+    // Lấy tên tỉnh
+    $stmt = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
+    $stmt->bind_param("i", $provinceID);
+    $stmt->execute();
+    $stmt->bind_result($provinceName);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Lấy tên quận
+    $stmt = $conn->prepare("SELECT name FROM district WHERE district_id = ?");
+    $stmt->bind_param("i", $districtID);
+    $stmt->execute();
+    $stmt->bind_result($districtName);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Lấy tên phường
+    $stmt = $conn->prepare("SELECT name FROM wards WHERE wards_id = ?");
+    $stmt->bind_param("i", $wardID);
+    $stmt->execute();
+    $stmt->bind_result($wardName);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Gộp địa chỉ đầy đủ
+    $fullAddress = $newDiachi; // Chỉ lưu số nhà và tên đường vào Address
+
+   // Chỉ lưu địa chỉ cụ thể
+$fullAddress = $newDiachi; // Không gộp với tên phường, quận, tỉnh
+
+$stmt = $conn->prepare("UPDATE orders 
+    SET CustomerName = ?, Phone = ?, Address = ?, Province = ?, District = ?, Ward = ?,
+    ProvinceName = ?, DistrictName = ?, WardName = ?
+    WHERE OrderID = ?");
+$stmt->bind_param("sssiisssi", $newName, $newSdt, $fullAddress, 
+                $provinceID, $districtID, $wardID,
+                $provinceName, $districtName, $wardName, $orderID);
+
+    
+  } 
+  
+  
+}
+unset($_SESSION['cart']);
+setcookie('cart_quantity', '', time() - 3600, '/'); 
+
+// Hiển thị thông tin chi tiết hóa đơn
 ?>
 <!DOCTYPE html>
 <html>
@@ -495,40 +576,42 @@ setcookie('cart_quantity', '', time() - 3600, '/'); // Đặt thời gian hết 
           <h2>HÓA ĐƠN MUA HÀNG</h2>
           <p><strong>Mã hóa đơn:</strong> <?= $order['OrderID'] ?> <span id="invoice-id"></span></p>
           <p><strong>Ngày mua:</strong> <?= $order['DateGeneration'] ?><span id="purchase-date"></span></p>
-          <p>
-            <strong>Tên khách hàng:</strong> <?= $order['CustomerName'] ?> <span id="customer-name"></span>
-          </p>
-          <p>
-            <strong>Số điện thoại:</strong> <?= $order['Phone'] ?> <span id="customer-phone"></span>
-          </p>
-          <p><strong>Địa chỉ:</strong> <?= $order['Address'] ?>, <?= $order['Ward'] ?>, <?= $order['District'] ?>, <?= $order['Province'] ?><span id="customer-address"></span></p>
-          <table>
-            <thead>
-              <tr>
-                <th>Sản phẩm</th>
-                <th>Hình ảnh</th>
-                <th>Số lượng</th>
-                <th>Giá</th>
-                <th>Thành tiền</th>
+          <p><strong>Tên khách hàng:</strong> <?= $order['CustomerName'] ?> <span id="customer-name"></span></p>
+          <p><strong>Số điện thoại:</strong> <?= $order['Phone'] ?> <span id="customer-phone"></span></p>
+          <p><strong>Địa chỉ:</strong> <?= $order['Address'] ?>, <?= $order['WardName'] ?>, <?= $order['DistrictName'] ?>, <?= $order['ProvinceName'] ?><span id="customer-address"></span></p>
 
-              </tr>
-            </thead>
-            <tbody id="invoice-body">
-              <?php while ($row = $details->fetch_assoc()): ?>
-                <tr>
-                  <td><?php echo htmlspecialchars($row['ProductName']); ?></td>
-                  <td><img src="<?php echo ".." . $row['ImageURL']; ?>" alt="<?php echo $product['ProductName']; ?>" width="80"></td>
-                  <td><?= $row['Quantity'] ?></td>
-                  <td><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
-                  <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
-                </tr>
-              <?php endwhile; ?>
-            </tbody>
+        <table> 
+          <thead>
+                  <tr>
+                      <th>Sản phẩm</th>
+                      <th>Hình ảnh</th>
+                      <th>Số lượng</th>
+                      <th>Giá</th>
+                      <th>Thành tiền</th>
+                  </tr>
+              </thead>
+              <tbody id="invoice-body">
+                  <?php while ($row = $details->fetch_assoc()): ?>
+                      <tr>
+                          <td><?php echo htmlspecialchars($row['ProductName']); ?></td>
+                          <td><img src="<?php echo ".." . $row['ImageURL']; ?>" alt="<?php echo htmlspecialchars($row['ProductName']); ?>" width="80"></td>
+                          <td><?= $row['Quantity'] ?></td>
+                          <td><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
+                          <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
+                      </tr>
+                  <?php endwhile; ?>
+              </tbody>
           </table>
-          <div class="total">
-            <strong>Tổng cộng: </strong> <span id="total-price"><?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ</span>
+          <div class="total" style="color: red;font-size: 23px;" >
+              <strong>Tổng cộng: </strong> <span id="total-price"><?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ</span>
           </div>
+      </div>
+
+
+        <div class="continue-shopping">
+          <a href="../index.php" class="btn btn-success">Tiếp tục mua sắm</a>
         </div>
+
       </div>
     </div>
 

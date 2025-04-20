@@ -453,7 +453,6 @@ th {
 
 .total {
   margin: 20px 0px;
-  font-size: 18px;
   font-weight: bold;
 }
 
@@ -559,8 +558,6 @@ th {
     height: 10rem;
     align-items: center;
   }
-
-
 
   .row-1 {
     display: flex;
@@ -735,8 +732,6 @@ th {
     height: 10rem;
     align-items: center;
   }
-
-
 
   .row-1 img {
     width: 53%;
