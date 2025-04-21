@@ -187,31 +187,72 @@
         <!-- Nội dung chính -->
         <div class="container-main">
             <div class="left-section-customer">
-                <div class="search-container-customer">
+                <div class="search-container-customer" style="margin-bottom: 20px;">
                     <input class="search-bar-customer" type="text" placeholder="Tìm kiếm người dùng..." onkeyup="searchUsers()">
-                    <button class="search-icon-customer">
+                    <button class="search-icon-customer" onclick="searchUsers()">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
-                <button class="add-customer-btn" onclick="showAddUserPopup()">Thêm Người Dùng</button>
+                <button type="button" class="btn btn-success" onclick="showAddUserPopup()">Thêm người dùng</button>
                 <table class="user-table" id="userTable">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Tên</th>
+                            <th>Tên tài khoản</th>
+                            <th>Họ và tên</th>
                             <th>Số điện thoại</th>
                             <th>Email</th>
                             <th>Trạng thái</th>
+                            <th></th>
                         </tr>
                     </thead>
-                    <tbody id="userList">
+                    <tbody>
+
+                    <?php
+                      require_once '../php/connect.php';
+                      
+                      // Get total number of customers
+                      $count_query = "SELECT COUNT(*) as total FROM users WHERE role = 'customer'";
+                      $count_result = mysqli_query($myconn, $count_query);
+                      $count_row = mysqli_fetch_assoc($count_result);
+                      $total_records = $count_row['total'];
+                      
+                      // Calculate total pages
+                      $records_per_page = 5;
+                      $total_pages = ceil($total_records / $records_per_page);
+                      
+                      // Get current page
+                      $page = isset($_GET['page']) ? $_GET['page'] : 1;
+                      $offset = ($page - 1) * $records_per_page;
+                      
+                      // Get customers for current page
+                      $sql = "SELECT Username, FullName, Phone, Email, Status FROM users 
+                             WHERE role = 'customer' 
+                             LIMIT $offset, $records_per_page";
+                      
+                      $result = mysqli_query($myconn, $sql);
+                      while($row = mysqli_fetch_assoc($result)){
+                        $statusText = $row['Status'] === 'Active' ? 'Hoạt động' : 'Đã khóa';
+                        $statusClass = $row['Status'] === 'Active' ? 'text-success' : 'text-danger';
+                        echo "<tr>";
+                        echo "<td>" . $row['Username'] . "</td>";
+                        echo "<td>" . $row['FullName'] . "</td>";
+                        echo "<td>" . $row['Phone'] . "</td>";
+                        echo "<td>" . $row['Email'] . "</td>";
+                        echo "<td class='" . $statusClass . "'>" . $statusText . "</td>";
+                        echo "<td><button class='btn btn-outline-warning' onclick='showEditUserPopup(\"" . $row['Username'] . "\")'>Chỉnh sửa</button></td>";
+                        echo "</tr>";
+                      }
+                    ?>
                     </tbody>
                 </table>
-                <div class="pagination"> 
-                  <button onclick="prevPage()" class="page-btn"><<</button>
-                  <span id="pageInfo">Trang 1 / 1</span>
-                  <button onclick="nextPage()" class="page-btn">>></button>
-              </div>
+                <div class="pagination">
+                    <?php
+                    // Add pagination links
+                    echo "<button onclick='changePage(" . ($page > 1 ? $page - 1 : 1) . ")' class='page-btn' " . ($page == 1 ? 'disabled' : '') . "><<</button>";
+                    echo "<span id='pageInfo'>Trang $page / $total_pages</span>";
+                    echo "<button onclick='changePage(" . ($page < $total_pages ? $page + 1 : $total_pages) . ")' class='page-btn' " . ($page == $total_pages ? 'disabled' : '') . ">>></button>";
+                    ?>
+                </div>
             </div>
         </div>
 
@@ -219,37 +260,64 @@
         <div class="user-overlay" id="addUserOverlay">
             <div class="user-content">
                 <h3>Thêm Người Dùng Mới</h3>
-                <div class="form-group">
-                    <label>Họ và tên:</label>
-                    <input type="text" id="addFullName">
-                </div>
-                <div class="form-group">
-                    <label>Số điện thoại:</label>
-                    <input type="text" id="addPhone">
-                </div>
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" id="addEmail">
-                </div>
-                <div class="form-group">
-                    <label>Mật khẩu:</label>
-                    <input type="password" id="addPassword">
-                </div>
-                <div class="form-group">
-                    <label>Giới tính:</label>
-                    <select id="addGender">
-                        <option value="Nam">Nam</option>
-                        <option value="Nữ">Nữ</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Quê quán:</label>
-                    <input type="text" id="addHometown">
-                </div>
-                <div class="form-actions">
-                    <button onclick="confirmAddUser()" class="save-btn">Thêm</button>
-                    <button onclick="closeAddUserPopup()" class="cancel-btn">Hủy</button>
-                </div>
+                <form id="addUserForm" onsubmit="event.preventDefault(); addUser();">
+                    <div class="form-group">
+                        <label>Tên tài khoản: <span class="required">*</span></label>
+                        <input type="text" id="addUsername" required minlength="3">
+                        <span class="error" id="username-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Họ và tên: <span class="required">*</span></label>
+                        <input type="text" id="addFullName" required>
+                        <span class="error" id="fullname-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="addEmail">
+                        <span class="error" id="email-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu: <span class="required">*</span></label>
+                        <input type="password" id="addPassword" required minlength="6">
+                        <span class="error" id="password-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại: <span class="required">*</span></label>
+                        <input type="tel" id="addPhone" required pattern="[0-9]{10}">
+                        <span class="error" id="phone-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Địa chỉ chi tiết: <span class="required">*</span></label>
+                        <input type="text" id="addAddress" required placeholder="Số nhà, tên đường...">
+                        <span class="error" id="address-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Tỉnh/Thành phố: <span class="required">*</span></label>
+                        <input type="text" id="addProvince" required>
+                        <span class="error" id="province-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Quận/Huyện: <span class="required">*</span></label>
+                        <input type="text" id="addDistrict" required>
+                        <span class="error" id="district-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Phường/Xã: <span class="required">*</span></label>
+                        <input type="text" id="addWard" required>
+                        <span class="error" id="ward-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng thái:</label>
+                        <select id="addStatus">
+                            <option value="Active">Hoạt động</option>
+                            <option value="Block">Khóa</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn">Thêm</button>
+                        <button type="button" onclick="closeAddUserPopup()" class="cancel-btn">Hủy</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -263,6 +331,52 @@
         <!-- Popup overlay cho chỉnh sửa người dùng -->
         <div class="user-overlay" id="editUserOverlay">
             <div class="user-content" id="editUserContent">
+                <h3>Chỉnh Sửa Thông Tin Người Dùng</h3>
+                <form id="editUserForm">
+                    <div class="form-group">
+                        <label>Tên tài khoản:</label>
+                        <input type="text" id="editUsername" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Họ và tên: <span class="required">*</span></label>
+                        <input type="text" id="editFullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="editEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại: <span class="required">*</span></label>
+                        <input type="tel" id="editPhone" required pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label>Địa chỉ chi tiết: <span class="required">*</span></label>
+                        <input type="text" id="editAddress" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tỉnh/Thành phố: <span class="required">*</span></label>
+                        <input type="text" id="editProvince" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quận/Huyện: <span class="required">*</span></label>
+                        <input type="text" id="editDistrict" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phường/Xã: <span class="required">*</span></label>
+                        <input type="text" id="editWard" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng thái:</label>
+                        <select id="editStatus">
+                            <option value="Active">Hoạt động</option>
+                            <option value="Block">Khóa</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="saveUserEdit()" class="save-btn">Lưu</button>
+                        <button type="button" onclick="closeEditUserPopup()" class="cancel-btn">Hủy</button>
+                    </div>
+                </form>
             </div>
         </div>
         <script src="../js/hienthikhachhang.js"></script>
