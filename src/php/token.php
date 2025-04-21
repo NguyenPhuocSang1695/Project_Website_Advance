@@ -8,12 +8,14 @@ $key = '1a3LM3W966D6QTJ5BJb9opunkUcw_d09NCOIJb9QZTsrneqOICoMoeYUDcd_NfaQyR787PAH
 $loggedInUsername = null;
 
 if (!empty($_COOKIE['token'])) {
-  try {
-    $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
-    $loggedInUsername = $decoded->data->Username ?? null;
+    try {
+      $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
+      $loggedInUsername = $decoded->data->Username ?? null;
   } catch (Exception $e) {
-    // Token không hợp lệ hoặc hết hạn
-    $loggedInUsername = null;
+      // Thêm thông báo chi tiết về lỗi
+      error_log("Token không hợp lệ hoặc hết hạn: " . $e->getMessage());
+      $loggedInUsername = null;
   }
+
 }
 ?>

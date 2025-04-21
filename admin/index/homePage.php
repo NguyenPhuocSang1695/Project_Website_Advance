@@ -1,3 +1,8 @@
+<?php
+include '../php/connect.php';
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -188,94 +193,140 @@
       </div>
     </a>
   </div>
-
   <div class="container-main">
     <div class="dashboard-overview">
-      <div class="overview-card">
-        <h3>50</h3>
-        <p>Đơn hàng chưa xử lý</p>
-      </div>
-      <div class="overview-card">
-        <h3>120</h3>
-        <p>Sản phẩm trong kho</p>
-      </div>
-      <div class="overview-card">
-        <h3>30</h3>
-        <p>Khách hàng mới</p>
-      </div>
-      <div class="overview-card">
-        <h3>5</h3>
-        <p>Sản phẩm sắp hết hạn</p>
-      </div>
+  <?php
+    $sql = "SELECT COUNT(*) AS totalExOder
+            FROM orders o
+            Where Status = 'execute';
+    ";
+     $result = $myconn->query($sql);
+    
+     if($result->num_rows > 0){
+      while($row = $result ->fetch_assoc()){
+          echo "<div class='overview-card'>";
+          echo "<h3>". $row['totalExOder']."</h3>";
+          echo "<p>Đơn hàng chưa xử lý</p> </div>";
+      }
+     }
+  ?>
+  <?php
+    $sql = "SELECT COUNT(*) AS QuantityProduct
+            FROM products
+    ";
+     $result = $myconn->query($sql);
+    
+     if($result->num_rows > 0){
+      while($row = $result ->fetch_assoc()){
+          echo "<div class='overview-card'>";
+          echo "<h3>". $row['QuantityProduct']."</h3>";
+          echo "<p>Sản phẩm trong kho</p> </div>";
+      }
+     }
+  ?>
+  <?php
+    $sql = "SELECT COUNT(*) AS QuantityUser
+            FROM users
+    ";
+     $result = $myconn->query($sql);
+    
+     if($result->num_rows > 0){
+      while($row = $result ->fetch_assoc()){
+          echo "<div class='overview-card'>";
+          echo "<h3>". $row['QuantityUser']."</h3>";
+          echo "<p>Khách hàng</p> </div>";
+      }
+     }
+  ?>
+      
     </div>
 
     <!-- Phần đơn hàng chưa xử lý -->
     <div class="order-section">
-
       <p class="section-title">Đơn hàng chưa xử lý</p>
       <a class="more-detail" href="orderPage.php"> Xem thêm</a>
-      <div class="overview-order">
-        <div><img class="avatar-customer" src="../image/sontung.webp" alt="Customer"></div>
-        <div class="info-overview-order">
-          <p>Sơn Tùng <span class="label customer">Customer</span></p>
-          <p>Ngày đặt hàng: 15/03/2025</p>
-        </div>
-        <div><a href="customer.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
-              lý</button></a></div>
-      </div>
-      <div class="overview-order">
-        <div><img class="avatar-customer" src="../image/baolam.jpg" alt="Customer"></div>
-        <div class="info-overview-order">
-          <p>Diễm <span class="label customer">Customer</span></p>
-          <p>Ngày đặt hàng: 16/03/2025</p>
-        </div>
-        <div><a href="customer3.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
-              lý</button></a></div>
-      </div>
-      <div class="overview-order">
-        <div><img class="avatar-customer" src="../image/hth.webp" alt="Customer"></div>
-        <div class="info-overview-order">
-          <p>HieuThuHai <span class="label customer">Customer</span></p>
-          <p>Ngày đặt hàng: 17/03/2025</p>
-        </div>
-        <div><a href="customer2.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
-              lý</button></a></div>
-      </div>
+      <?php
+      // Database connection
+      $conn = new mysqli("localhost", "root", "", "c01db");
+      if ($conn->connect_error) {
+          die("Connection failed: " . $conn->connect_error);
+      }
+
+      // Query to get pending orders
+      $sql = "SELECT o.*, u.FullName, u.Address, 
+              pr.name as province_name, dr.name as district_name
+              FROM orders o
+              LEFT JOIN users u ON o.Username = u.Username
+              LEFT JOIN province pr ON o.Province = pr.province_id
+              LEFT JOIN district dr ON o.District = dr.district_id
+              WHERE o.Status = 'execute'
+              ORDER BY o.DateGeneration DESC
+              LIMIT 3";
+
+      $result = $conn->query($sql);
+
+      if ($result->num_rows > 0) {
+          while($row = $result->fetch_assoc()) {
+              echo "<div class='overview-order'>";
+              echo "<div class='info-overview-order'>";
+              echo "<p>" . $row['FullName'] . " <span class='label customer'>Customer</span></p>";
+              echo "<p>Ngày đặt hàng: " . date('d/m/Y', strtotime($row['DateGeneration'])) . "</p>";
+              echo "<p>Địa chỉ: " . $row['Address'] . ", " . $row['district_name'] . ", " . $row['province_name'] . "</p>";
+              echo "</div>";
+              echo "<div><a href='orderDetail2.php?code_Product=" . $row['OrderID'] . "' style='text-decoration: none; color: black;'><button class='button-handle'>Xử lý</button></a></div>";
+              echo "</div>";
+          }
+      } else {
+          echo "<div class='overview-order'>";
+          echo "<p>Không có đơn hàng chưa xử lý</p>";
+          echo "</div>";
+      }
+
+      $conn->close();
+      ?>
     </div>
 
     <!-- Phần hàng cần chú ý -->
     <div class="inventory-section">
-      <p class="section-title">Hàng cần chú ý</p>
-      <a class="more-detail" href="wareHouse.php"> Xem thêm</a>
-      <div class="overview-order">
-        <div><img class="avatar-customer" src="../image/product1.webp" alt="Product"></div>
-        <div class="info-overview-order">
-          <p>Bắp cải hữu cơ <span class="label product">Product</span></p>
-          <p>Ngày hết hạn: 20/03/2025</p>
-          <p>Kho: 34</p>
-        </div>
-        <div><a href="wareHouse.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
-              lý</button></a></div>
-      </div>
-      <div class="overview-order">
-        <div><img class="avatar-customer" src="../image/product2.webp" alt="Product"></div>
-        <div class="info-overview-order">
-          <p>Bó xôi hữu cơ <span class="label product">Product</span></p>
-          <p>Ngày hết hạn: 21/03/2025</p>
-          <p>Kho: 40</p>
-        </div>
-        <div><a href="wareHouse.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử
-              lý</button></a></div>
-      </div>
-      <div class="overview-order">
-        <div><img class="avatar-customer" src="../image/product3.webp" alt="Product"></div>
-        <div class="info-overview-order">
-          <p>Cà chua hữu cơ <span class="label product">Product</span></p>
-          <p>Ngày hết hạn: 22/03/2025</p>
-          <p>Kho: 3</p>
-        </div>
-        <div><a href="wareHouse.php" style="text-decoration: none; color: black;"><button class="button-handle">Xử lý</button></a></div>
-      </div>
+      <p class="section-title">Sản phẩm mới</p>
+      <a class="more-detail" href="wareHouse.php"> Xem tất cả sản phẩm</a>
+      <?php
+      // Database connection
+      $conn = new mysqli("localhost", "root", "", "c01db");
+      if ($conn->connect_error) {
+          die("Connection failed: " . $conn->connect_error);
+      }
+
+      // Query to get newest products
+      $sql = "SELECT p.*, c.CategoryName as CategoryName 
+              FROM products p 
+              LEFT JOIN categories c ON p.CategoryID = c.CategoryID 
+              WHERE p.Status = 'appear'
+              ORDER BY p.ProductID DESC
+              LIMIT 5";
+
+      $result = $conn->query($sql);
+
+      if ($result->num_rows > 0) {
+          while($row = $result->fetch_assoc()) {
+              echo "<div class='overview-order'>";
+              echo "<div><img class='avatar-customer' src='../.." . $row['ImageURL'] . "' alt='Product'></div>";
+              echo "<div class='info-overview-order'>";
+              echo "<p>" . $row['ProductName'] . " <span class='label product'>Product</span></p>";
+              echo "<p>Danh mục: " . $row['CategoryName'] . "</p>";
+              echo "<p>Giá: " . number_format($row['Price'], 0, ',', '.') . " VNĐ</p>";
+              echo "</div>";
+              echo "<div><a href='wareHouse.php' style='text-decoration: none; color: black;'><button class='button-handle'>Xử lý</button></a></div>";
+              echo "</div>";
+          }
+      } else {
+          echo "<div class='overview-order'>";
+          echo "<p>Không có sản phẩm mới</p>";
+          echo "</div>";
+      }
+
+      $conn->close();
+      ?>
     </div>
   </div>
 

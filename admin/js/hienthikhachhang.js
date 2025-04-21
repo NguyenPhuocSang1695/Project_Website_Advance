@@ -1,4 +1,3 @@
-
 // Hàm mã hóa password 
 function hashPassword(password) {
     let hash = 0;
@@ -83,15 +82,43 @@ function renderUsers(filteredUsers = users) {
     });
 }
 
-// Tìm kiếm người dùng
+// Function to handle page changes
+function changePage(pageNumber) {
+    // Update URL with new page number
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('page', pageNumber);
+    window.location.href = currentUrl.toString();
+}
+
+// Function to handle search with pagination
 function searchUsers() {
     const searchTerm = document.querySelector('.search-bar-customer').value.toLowerCase();
-    const filteredUsers = users.filter(u => 
-        u.fullName.toLowerCase().includes(searchTerm) || 
-        u.phone.includes(searchTerm) || 
-        u.email.toLowerCase().includes(searchTerm)
-    );
-    renderUsers(filteredUsers);
+    fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}`)
+        .then(response => response.json())
+        .then(data => {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            
+            if (data.users.length > 0) {
+                data.users.forEach(user => {
+                    const tr = document.createElement('tr');
+                    const statusText = user.Status === 'Active' ? 'Hoạt động' : 'Đã khóa';
+                    const statusClass = user.Status === 'Active' ? 'text-success' : 'text-danger';
+                    tr.innerHTML = `
+                        <td>${user.Username}</td>
+                        <td>${user.FullName}</td>
+                        <td>${user.Phone}</td>
+                        <td>${user.Email}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td><button class="btn btn-outline-warning" onclick="showEditUserPopup('${user.Username}')">Chỉnh sửa</button></td>
+                    `;
+                    userList.appendChild(tr);
+                });
+            } else {
+                userList.innerHTML = '<tr><td colspan="6" style="text-align: center;">Không tìm thấy kết quả</td></tr>';
+            }
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 // Hiển thị chi tiết người dùng và lịch sử 5 ngày gần đây
@@ -165,98 +192,213 @@ function closeUserDetailsPopup() {
 
 // Hiển thị popup thêm người dùng
 function showAddUserPopup() {
-    document.getElementById('addUserOverlay').classList.add('active');
+    document.getElementById('addUserOverlay').style.display = 'flex';
 }
 
 function closeAddUserPopup() {
-    if (confirm('Bạn có muốn hủy thêm người dùng này?')) {
-        document.getElementById('addUserOverlay').classList.remove('active');
-    }
+    document.getElementById('addUserOverlay').style.display = 'none';
 }
 
-function confirmAddUser() {
-    if (confirm('Bạn có chắc chắn muốn thêm người dùng này?')) {
-        const password = document.getElementById('addPassword').value;
-        const newUser = {
-            id: users.length + 1,
-            fullName: document.getElementById('addFullName').value,
-            phone: document.getElementById('addPhone').value,
-            email: document.getElementById('addEmail').value,
-            password: hashPassword(password),
-            gender: document.getElementById('addGender').value,
-            hometown: document.getElementById('addHometown').value,
-            totalOrders: 0,
-            type: "Bạc",
-            status: "active",
-            img: "../image/default-customer.jpg",
-            orders: []
-        };
-        users.push(newUser);
-        alert('Đã thêm người dùng thành công!');
-        document.getElementById('addUserOverlay').classList.remove('active');
-        renderUsers();
+function addUser() {
+    // Validate form trước khi submit
+    if (!validateForm()) {
+        return;
     }
+
+    const formData = new FormData();
+    formData.append('username', document.getElementById('addUsername').value);
+    formData.append('fullname', document.getElementById('addFullName').value);
+    formData.append('email', document.getElementById('addEmail').value);
+    formData.append('password', document.getElementById('addPassword').value);
+    formData.append('phone', document.getElementById('addPhone').value);
+    formData.append('address', document.getElementById('addAddress').value);
+    formData.append('province', document.getElementById('addProvince').value);
+    formData.append('district', document.getElementById('addDistrict').value);
+    formData.append('ward', document.getElementById('addWard').value);
+    formData.append('status', document.getElementById('addStatus').value);
+
+    // Gửi request đến server
+    fetch('../php/add-user.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Thêm người dùng thành công!');
+            closeAddUserPopup();
+            location.reload(); // Refresh để hiển thị người dùng mới
+        } else {
+            alert(data.message || 'Có lỗi xảy ra khi thêm người dùng');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra khi thêm người dùng');
+    });
+}
+
+function validateForm() {
+    let isValid = true;
+    
+    // Validate username
+    const username = document.getElementById('addUsername').value;
+    if (username.length < 3) {
+        document.getElementById('username-error').textContent = 'Tên tài khoản phải có ít nhất 3 ký tự';
+        isValid = false;
+    } else {
+        document.getElementById('username-error').textContent = '';
+    }
+
+    // Validate fullname
+    const fullname = document.getElementById('addFullName').value;
+    if (!fullname) {
+        document.getElementById('fullname-error').textContent = 'Vui lòng nhập họ tên';
+        isValid = false;
+    } else {
+        document.getElementById('fullname-error').textContent = '';
+    }
+
+    // Validate email (không bắt buộc nhưng phải đúng định dạng nếu có)
+    const email = document.getElementById('addEmail').value;
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('email-error').textContent = 'Email không hợp lệ';
+        isValid = false;
+    } else {
+        document.getElementById('email-error').textContent = '';
+    }
+
+    // Validate password
+    const password = document.getElementById('addPassword').value;
+    if (password.length < 6) {
+        document.getElementById('password-error').textContent = 'Mật khẩu phải có ít nhất 6 ký tự';
+        isValid = false;
+    } else {
+        document.getElementById('password-error').textContent = '';
+    }
+
+    // Validate phone
+    const phone = document.getElementById('addPhone').value;
+    if (!/^[0-9]{10}$/.test(phone)) {
+        document.getElementById('phone-error').textContent = 'Số điện thoại phải có 10 chữ số';
+        isValid = false;
+    } else {
+        document.getElementById('phone-error').textContent = '';
+    }
+
+    // Validate các trường địa chỉ
+    const address = document.getElementById('addAddress').value;
+    const province = document.getElementById('addProvince').value;
+    const district = document.getElementById('addDistrict').value;
+    const ward = document.getElementById('addWard').value;
+
+    if (!address) {
+        document.getElementById('address-error').textContent = 'Vui lòng nhập địa chỉ';
+        isValid = false;
+    }
+    if (!province) {
+        document.getElementById('province-error').textContent = 'Vui lòng nhập tỉnh/thành phố';
+        isValid = false;
+    }
+    if (!district) {
+        document.getElementById('district-error').textContent = 'Vui lòng nhập quận/huyện';
+        isValid = false;
+    }
+    if (!ward) {
+        document.getElementById('ward-error').textContent = 'Vui lòng nhập phường/xã';
+        isValid = false;
+    }
+
+    return isValid;
 }
 
 // Hiển thị popup chỉnh sửa người dùng
-function showEditUserPopup(userId) {
-    const user = users.find(u => u.id === userId);
-    const editContent = document.getElementById('editUserContent');
-    editContent.innerHTML = `
-        <h3>Chỉnh sửa thông tin</h3>
-        <div class="form-group">
-            <label>Họ và tên:</label>
-            <input type="text" id="editFullName-${userId}" value="${user.fullName}">
-        </div>
-        <div class="form-group">
-            <label>Số điện thoại:</label>
-            <input type="text" id="editPhone-${userId}" value="${user.phone}">
-        </div>
-        <div class="form-group">
-            <label>Email:</label>
-            <input type="email" id="editEmail-${userId}" value="${user.email}">
-        </div>
-        <div class="form-group">
-            <label>Mật khẩu mới (để trống nếu không đổi):</label>
-            <input type="password" id="editPassword-${userId}">
-        </div>
-        <div class="form-group">
-            <label>Giới tính:</label>
-            <select id="editGender-${userId}">
-                <option value="Nam" ${user.gender === 'Nam' ? 'selected' : ''}>Nam</option>
-                <option value="Nữ" ${user.gender === 'Nữ' ? 'selected' : ''}>Nữ</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Quê quán:</label>
-            <input type="text" id="editHometown-${userId}" value="${user.hometown}">
-        </div>
-        <div class="form-actions">
-            <button onclick="confirmEditUser(${userId})" class="save-btn">Lưu</button>
-            <button onclick="closeEditUserPopup()" class="cancel-btn">Hủy</button>
-        </div>
-    `;
-    document.getElementById('editUserOverlay').classList.add('active');
+function showEditUserPopup(username) {
+    // Fetch user details from the server
+    fetch(`../php/get-user-details.php?userId=${username}`)
+        .then(response => response.json())
+        .then(user => {
+            if (user.error) {
+                alert('Không thể tải thông tin người dùng: ' + user.error);
+                return;
+            }
+
+            // Fill in the edit form with user data
+            document.getElementById('editUsername').value = user.Username;
+            document.getElementById('editFullName').value = user.FullName;
+            document.getElementById('editPhone').value = user.Phone;
+            document.getElementById('editEmail').value = user.Email || '';
+            document.getElementById('editAddress').value = user.Address || '';
+            document.getElementById('editProvince').value = user.Province || '';
+            document.getElementById('editDistrict').value = user.District || '';
+            document.getElementById('editWard').value = user.Ward || '';
+            document.getElementById('editStatus').value = user.Status;
+
+            // Show the edit popup
+            document.getElementById('editUserOverlay').style.display = 'flex';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Đã xảy ra lỗi khi tải thông tin người dùng');
+        });
 }
 
 function closeEditUserPopup() {
-    document.getElementById('editUserOverlay').classList.remove('active');
+    document.getElementById('editUserOverlay').style.display = 'none';
 }
 
-function confirmEditUser(userId) {
-    if (confirm('Bạn có chắc chắn muốn lưu thay đổi?')) {
-        const user = users.find(u => u.id === userId);
-        user.fullName = document.getElementById(`editFullName-${userId}`).value;
-        user.phone = document.getElementById(`editPhone-${userId}`).value;
-        user.email = document.getElementById(`editEmail-${userId}`).value;
-        const newPassword = document.getElementById(`editPassword-${userId}`).value;
-        if (newPassword) user.password = hashPassword(newPassword);
-        user.gender = document.getElementById(`editGender-${userId}`).value;
-        user.hometown = document.getElementById(`editHometown-${userId}`).value;
-        alert('Đã lưu thay đổi thành công!');
-        document.getElementById('editUserOverlay').classList.remove('active');
-        renderUsers();
+function saveUserEdit() {
+    const userData = {
+        username: document.getElementById('editUsername').value,
+        fullname: document.getElementById('editFullName').value,
+        email: document.getElementById('editEmail').value,
+        phone: document.getElementById('editPhone').value,
+        address: document.getElementById('editAddress').value,
+        province: document.getElementById('editProvince').value,
+        district: document.getElementById('editDistrict').value,
+        ward: document.getElementById('editWard').value,
+        status: document.getElementById('editStatus').value
+    };
+
+    // Validate required fields
+    if (!userData.fullname || !userData.phone) {
+        alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+        return;
     }
+
+    // Validate email format if provided
+    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
+        alert('Email không hợp lệ');
+        return;
+    }
+
+    // Validate phone format
+    if (!/^[0-9]{10}$/.test(userData.phone)) {
+        alert('Số điện thoại phải có 10 chữ số');
+        return;
+    }
+
+    fetch('../php/update-user.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Cập nhật thông tin thành công!');
+            closeEditUserPopup();
+            location.reload(); // Refresh the page to show updated data
+        } else {
+            alert('Có lỗi xảy ra: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra khi cập nhật thông tin');
+    });
 }
 
 // Khoá/Mở khoá người dùng
@@ -277,3 +419,54 @@ function toggleLockUser(userId) {
 document.addEventListener('DOMContentLoaded', () => {
     renderUsers();
 });
+
+// Hàm tải danh sách tỉnh/thành phố
+async function loadProvinces() {
+    try {
+        const response = await fetch('../php/get_Cities.php');
+        const provinces = await response.json();
+        const provinceSelect = document.getElementById('addProvince');
+        provinceSelect.innerHTML = '<option value="">Chọn Tỉnh/Thành phố</option>';
+        provinces.forEach(province => {
+            provinceSelect.innerHTML += `<option value="${province.id}">${province.name}</option>`;
+        });
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách tỉnh/thành:', error);
+    }
+}
+
+// Hàm tải danh sách quận/huyện
+async function loadDistricts() {
+    const provinceId = document.getElementById('addProvince').value;
+    if (!provinceId) return;
+
+    try {
+        const response = await fetch(`../php/get_District.php?province_id=${provinceId}`);
+        const districts = await response.json();
+        const districtSelect = document.getElementById('addDistrict');
+        districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+        districts.forEach(district => {
+            districtSelect.innerHTML += `<option value="${district.id}">${district.name}</option>`;
+        });
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách quận/huyện:', error);
+    }
+}
+
+// Hàm tải danh sách phường/xã
+async function loadWards() {
+    const districtId = document.getElementById('addDistrict').value;
+    if (!districtId) return;
+
+    try {
+        const response = await fetch(`../php/get_Address.php?district_id=${districtId}`);
+        const wards = await response.json();
+        const wardSelect = document.getElementById('addWard');
+        wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+        wards.forEach(ward => {
+            wardSelect.innerHTML += `<option value="${ward.id}">${ward.name}</option>`;
+        });
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách phường/xã:', error);
+    }
+}

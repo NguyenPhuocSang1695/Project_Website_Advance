@@ -1,6 +1,101 @@
 <?php
+session_start();
+require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
+require __DIR__ . '/../src/Jwt/vendor/autoload.php';
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+
+// Kiểm tra xem cookie 'token' có tồn tại không
+if (!isset($_COOKIE['token'])) {
+  header("Location: user-login.php");
+  exit;
+}
+
+try {
+  // Giải mã token
+  $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
+  $username = $decoded->data->Username;
+} catch (Exception $e) {
+  // Nếu token không hợp lệ, hết hạn, hoặc bị chỉnh sửa => chuyển hướng login
+  header("Location: user-login.php");
+  exit;
+}
+
+// Xử lý thêm, cập nhật và xóa sản phẩm
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // THÊM SẢN PHẨM VÀO GIỎ
+  if (isset($_POST['product_id'], $_POST['quantity'])) {
+    $product_id = intval($_POST['product_id']);
+    $quantity = max(1, min(100, intval($_POST['quantity'])));
+
+    $stmt = $conn->prepare("SELECT ProductID, ProductName, Price, ImageURL FROM products WHERE ProductID = ?");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($product = $result->fetch_assoc()) {
+      if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
+      if (isset($_SESSION['cart'][$product_id])) {
+        $_SESSION['cart'][$product_id]['Quantity'] += $quantity;
+      } else {
+        $_SESSION['cart'][$product_id] = [
+          'ProductID'   => $product['ProductID'],
+          'ProductName' => $product['ProductName'],
+          'Price'       => $product['Price'],
+          'ImageURL'    => $product['ImageURL'],
+          'Quantity'    => $quantity
+        ];
+      }
+    }
+    $stmt->close();
+    header("Location: gio-hang.php");
+    exit;
+  }
+  // Cập nhật số lượng
+  if (isset($_POST['update_product_id'], $_POST['quantity'])) {
+    $pid = intval($_POST['update_product_id']);
+    $newQty = max(1, intval($_POST['quantity']));
+    if (isset($_SESSION['cart'][$pid])) {
+      $_SESSION['cart'][$pid]['Quantity'] = $newQty;
+    }
+    header("Location: gio-hang.php");
+    exit;
+  }
+
+  //xóa sản phẩm
+  if (isset($_POST['remove_product_id'])) {
+    $product_id_to_remove = $_POST['remove_product_id'];
+
+    // 1. Kiểm tra xem biến session giỏ hàng có tồn tại không
+    if (isset($_SESSION['cart'])) {
+      // 2. Duyệt qua các sản phẩm trong giỏ hàng
+      foreach ($_SESSION['cart'] as $key => $item) {
+        // 3. Tìm sản phẩm cần xóa
+        if ($item['ProductID'] == $product_id_to_remove) {
+          // 4. Xóa sản phẩm khỏi giỏ hàng bằng hàm unset()
+          unset($_SESSION['cart'][$key]);
+          break; // Dừng vòng lặp sau khi xóa sản phẩm
+        }
+      }
+      // 5.  Sắp xếp lại chỉ mục của mảng để tránh bị thiếu phần tử.  Điều này rất quan trọng!
+      $_SESSION['cart'] = array_values($_SESSION['cart']);
+    }
+    // Chuyển hướng về trang giỏ hàng để hiển thị các thay đổi
+    header("Location: gio-hang.php"); // Quan trọng: Chuyển hướng để tránh các vấn đề khi tải lại trang
+    exit();
+  }
+}
+
+$cart_items = isset($_SESSION['cart']) ? array_values($_SESSION['cart']) : [];
+$total = 0;
+foreach ($cart_items as $item) {
+  $total += $item['Price'] * $item['Quantity'];
+}
+$total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
+// Xoá cookie cart_quantity
 ?>
 <!DOCTYPE html>
 <html>
@@ -10,6 +105,7 @@ require_once('../src/php/check_token_v2.php');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- CSS  -->
   <link rel="stylesheet" href="../src/css/gio-hang.css">
+  <link rel="stylesheet" href="../src/css/gio-hang-php.css">
   <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../src/css/search-styles.css">
   <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css">
@@ -18,6 +114,7 @@ require_once('../src/php/check_token_v2.php');
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
+
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
@@ -401,71 +498,104 @@ require_once('../src/php/check_token_v2.php');
         <hr>
         <img src="../assets/images/circle-check.svg" alt="ccheck">
       </div>
-      <div class="order">
+      <?php if (count($cart_items) > 0): ?>
+        <?php foreach ($cart_items as $item): ?>
 
+          <div class="order">
+            <div class="order-img">
+              <img src="<?php echo ".." . $item['ImageURL']; ?>" width="120" class="cart-image">
+            </div>
 
-        <div class="order-img">
-          <img src="../assets/images/CAY5.jpg" alt="Phat tai">
-        </div>
+            <div class="frame">
+              <div class="name-price">
+                <p><strong><?php echo htmlspecialchars($item['ProductName']); ?></strong></p>
 
+                <!-- Giá sản phẩm hiển thị, gán thêm data-price để JS dễ lấy -->
+                <p class="price" data-price="<?php echo $item['Price']; ?>">
+                  <strong><?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></strong>
+                </p>
+              </div>
 
-        <div class="frame">
-          <div class="name-price">
-            <p><strong>Cây phát tài</strong></p>
-            <p><strong>750.000đ</strong></p>
-          </div>
-          <div class="function">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
-              style="width: 53px; height: 33px;">
-              <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
-            </button>
+              <div class="function">
+                <!-- Button trigger modal -->
+                <form action="gio-hang.php" method="POST" id="remove-form-<?php echo $item['ProductID']; ?>">
+                  <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
 
-            <!-- Modal -->
-            <div class="modal fade w-100" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-              aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Thông báo</h1>
-                    <button type="button" class="btn-close" style="width: 10%;" data-bs-dismiss="modal"
-                      aria-label="Close"></button>
+                  <!-- Nút icon mở modal -->
+                  <button type="button" class="btn" 
+                    style=" width: 53px; height: 33px;"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#exampleModal-<?php echo $item['ProductID']; ?>">
+                    <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
+                  </button>
+
+                  <!-- Modal xác nhận -->
+                  <div class="modal fade w-100" id="exampleModal-<?php echo $item['ProductID']; ?>" tabindex="-1" aria-labelledby="exampleModalLabel-<?php echo $item['ProductID']; ?>" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="exampleModalLabel-<?php echo $item['ProductID']; ?>">Thông báo</h1>
+                          <button type="button" class="btn-close" style="width: 10%;" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body d-flex justify-content-center align-items-center">
+                          Bạn có chắc muốn xóa sản phẩm chứ!
+                        </div>
+
+                        <div class="modal-footer d-flex flex-row">
+                          <button type="button" class="btn btn-secondary" style="width: 20%;" data-bs-dismiss="modal">Đóng</button>
+                          
+                          <!-- Nút Xóa submit form -->
+                          <button type="button" class="btn btn-primary" style="width: 45%;" onclick="document.getElementById('remove-form-<?php echo $item['ProductID']; ?>').submit();">Xóa</button>
+                        </div>
+
+                      </div>
+                    </div>
                   </div>
-                  <div class="modal-body d-flex justify-content-center align-items-center">
-                    Bạn có chắc muốn xóa sản phẩm chứ!
-                  </div>
-                  <div class="modal-footer d-flex flex-row">
-                    <button type="button" class="btn btn-secondary" style="width: 20%;"
-                      data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" style="width: 45%;">Xóa</button>
+                </form>
+
+                <div class="add-del">
+                  <div class="oder">
+                    <div class="wrapper">
+                      <form action="gio-hang.php" method="POST" class="update-form">
+                        <!-- Truyền ProductID để xác định sản phẩm cần cập nhật -->
+                        <input type="hidden" name="update_product_id" value="<?php echo $item['ProductID']; ?>">
+
+                        <!-- Nút giảm số lượng -->
+                        <button type="button" class="quantity-btn" onclick="changeQuantity(this, -1)">-</button>
+
+                        <!-- Trường số lượng, gán thuộc tính data-price để JS dùng cho tính toán nếu cần -->
+                        <input type="number" name="quantity" value="<?php echo max(1, $item['Quantity']); ?>" min="1"
+                          class="quantity-input" data-price="<?php echo $item['Price']; ?>">
+
+                        <!-- Nút tăng số lượng -->
+                        <button type="button" class="quantity-btn" onclick="changeQuantity(this, 1)">+</button>
+                      </form>
+                      <script src="../src/js/gio-hang.js"></script>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="add-del">
-              <div class="oder">
-                <div class="wrapper">
-                  <span class="minus">-</span>
-                  <span class="num">01</span>
-                  <span class="plus">+</span>
-                </div>
-                <script src="../src/js/san-pham.js"></script>
-              </div>
-            </div>
-
           </div>
-        </div>
-      </div>
+        <?php endforeach; ?>
+      <?php else:  ?>
+        <p>Giỏ hàng của bạn đang trống</p>
+      <?php endif; ?>
 
       <div class="frame-2">
         <div class="thanh-tien">
-          Tạm tính: 750.000đ
+          Tổng : <span id="total-price"><?php echo $total_price_formatted; ?></span>
         </div>
       </div>
-      <div class="dat-hang">
-        <button onclick="clickCart()" type="button" class="btn btn-success" style="width: 185px;
-    height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
-      </div>
+
+      <form action="thanh-toan.php" method="POST" name="ThanhToan">
+        <div class="dat-hang">
+          <button type="submit" class="btn btn-success" name="confirm_checkout" style="width: 185px;
+          height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
+        </div>
+      </form>
       <div class="text" style="margin-bottom: 10px;">
         <!-- quay về trang chủ  -->
         <a style="text-decoration: none;" href="../index.php">Tiếp tục mua hàng</a>
