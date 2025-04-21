@@ -40,7 +40,7 @@ if ($orderID) {
     while ($row = $result_details->fetch_assoc()) {
       $orderDetails[] = $row;
     }
-
+ 
     // 3. Lấy thông tin thanh toán
     $sql_payment =    "SELECT 
                         SUM(od.Quantity) AS TotalQuantity, o.TotalAmount
@@ -160,8 +160,6 @@ function getStatusInfo($status)
       ];
   }
 }
-
-// Thêm hàm này cạnh hàm getStatusInfo
 function getPaymentStatusInfo($method)
 {
   switch ($method) {
@@ -342,10 +340,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
       </div>
     </div>
     <div class="header-left-section">
-      <p style="
-       font-size: 30px;
-       font-weight: bold; position: relative;
-       left: -25px;">Đơn số <?php echo $orderDetailID; ?></p>
+      <p>Đơn số <?php echo $orderDetailID; ?></p>
     </div>
     <div class="header-middle-section">
       <img class="logo-store" src="../../assets/images/LOGO-2.jpg">
@@ -511,37 +506,41 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
             <div class="section-header">
               <span style="color:#21923c;"><i class="fa-regular fa-circle" style="margin-right: 5px;"></i>Chi tiết đơn hàng</span>
             </div>
-            <table>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>SỐ LƯỢNG</th>
-                  <th>GIÁ (đ)</th>
-                  <th class="hide-display">THÀNH TIỀN (đ)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php if (empty($orderDetails)): ?>
+            <div class="table-container">
+              <table>
+                <thead>
                   <tr>
-                    <td colspan="4">Không có sản phẩm nào trong đơn hàng này.</td>
+                    <th style="width: 40%;">SẢN PHẨM</th>
+                    <th style="width: 20%;">SỐ LƯỢNG</th>
+                    <th style="width: 20%;">GIÁ (đ)</th>
+                    <th style="width: 20%;" class="hide-display">THÀNH TIỀN (đ)</th>
                   </tr>
-                <?php else: ?>
-                  <?php foreach ($orderDetails as $detail): ?>
+                </thead>
+                <tbody>
+                  <?php if (empty($orderDetails)): ?>
                     <tr>
-                      <td>
-                        <img src="<?php echo '../..' . $detail['ImageURL']; ?>" alt="Product Image" style="width: 50px; height: 50px;">
-                        <div class="product-info">
-                          <span class="product-name"><?php echo htmlspecialchars($detail['ProductName']); ?></span><br>
-                        </div>
-                      </td>
-                      <td><?php echo $detail['Quantity']; ?></td>
-                      <td><?php echo number_format($detail['UnitPrice'], 0, ',', '.') . ' đ'; ?></td>
-                      <td class="hide-display"><?php echo number_format($detail['TotalPrice'], 0, ',', '.') . ' đ'; ?></td>
+                      <td colspan="4">Không có sản phẩm nào trong đơn hàng này.</td>
                     </tr>
-                  <?php endforeach; ?>
-                <?php endif; ?>
-              </tbody>
-            </table>
+                  <?php else: ?>
+                    <?php foreach ($orderDetails as $detail): ?>
+                      <tr>
+                        <td>
+                          <div style="display: flex; align-items: center; gap: 10px;">
+                            <img src="<?php echo '../..' . $detail['ImageURL']; ?>" alt="Product Image" style="width: 50px; height: 50px; object-fit: cover;">
+                            <div class="product-info">
+                              <span class="product-name"><?php echo htmlspecialchars($detail['ProductName']); ?></span>
+                            </div>
+                          </div>
+                        </td>
+                        <td><?php echo $detail['Quantity']; ?></td>
+                        <td><?php echo number_format($detail['UnitPrice'], 0, ',', '.') . ' đ'; ?></td>
+                        <td class="hide-display"><?php echo number_format($detail['TotalPrice'], 0, ',', '.') . ' đ'; ?></td>
+                      </tr>
+                    <?php endforeach; ?>
+                  <?php endif; ?>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div class="section payment">
