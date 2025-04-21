@@ -36,12 +36,6 @@
     background-color: #6aa173;
     border-color: #6aa173;
   }
-  .one-line-paragraph {
-            width: 200px; 
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-}
 </style>
 <body>
   <div class="header">
