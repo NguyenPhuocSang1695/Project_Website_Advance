@@ -10,58 +10,58 @@ function hashPassword(password) {
 }
 
 // Dữ liệu mẫu người dùng và lịch sử đơn hàng
-let users = [
-    { 
-        id: 1, 
-        fullName: "Nguyễn Thanh Tùng", 
-        phone: "9999 999 999", 
-        email: "nguyentb@gmail.com", 
-        password: hashPassword("123456"), 
-        gender: "Nam", 
-        hometown: "Thái Bình", 
-        totalOrders: 5, 
-        type: "Kim cương", 
-        status: "active", 
-        img: "../image/sontung.webp",
-        orders: [
-            { id: "#123123", productImg: "../../assets/images/CAY13.jpg", amount: 500000, date: "2025-03-20" },
-            { id: "#123124", productImg: "../../assets/images/CAY14.jpg", amount: 300000, date: "2025-03-19" },
-            { id: "#123125", productImg: "../../assets/images/CAY12.jpg", amount: 700000, date: "2025-03-18" }
-        ]
-    },
-    { 
-        id: 2, 
-        fullName: "Hiếu 2nd", 
-        phone: "8888 888 888", 
-        email: "hieu2nd@gmail.com", 
-        password: hashPassword("abcdef"), 
-        gender: "Nam", 
-        hometown: "Hồ Chí Minh", 
-        totalOrders: 3, 
-        type: "Vàng", 
-        status: "active", 
-        img: "../image/hth.webp",
-        orders: [
-            { id: "#123126", productImg: "../image/product1.webp", amount: 200000, date: "2025-03-21" }
-        ]
-    },
-    { 
-        id: 3, 
-        fullName: "Diễm", 
-        phone: "7777 777 777", 
-        email: "diem@gmail.com", 
-        password: hashPassword("xyz789"), 
-        gender: "Nữ", 
-        hometown: "Đồng Nai", 
-        totalOrders: 2, 
-        type: "Bạc", 
-        status: "active", 
-        img: "../image/baolam.jpg",
-        orders: [
-            { id: "#123127", productImg: "../image/product1.webp", amount: 450000, date: "2025-03-20" }
-        ]
-    }
-];
+// let users = [
+//     { 
+//         id: 1, 
+//         fullName: "Nguyễn Thanh Tùng", 
+//         phone: "9999 999 999", 
+//         email: "nguyentb@gmail.com", 
+//         password: hashPassword("123456"), 
+//         gender: "Nam", 
+//         hometown: "Thái Bình", 
+//         totalOrders: 5, 
+//         type: "Kim cương", 
+//         status: "active", 
+//         img: "../image/sontung.webp",
+//         orders: [
+//             { id: "#123123", productImg: "../../assets/images/CAY13.jpg", amount: 500000, date: "2025-03-20" },
+//             { id: "#123124", productImg: "../../assets/images/CAY14.jpg", amount: 300000, date: "2025-03-19" },
+//             { id: "#123125", productImg: "../../assets/images/CAY12.jpg", amount: 700000, date: "2025-03-18" }
+//         ]
+//     },
+//     { 
+//         id: 2, 
+//         fullName: "Hiếu 2nd", 
+//         phone: "8888 888 888", 
+//         email: "hieu2nd@gmail.com", 
+//         password: hashPassword("abcdef"), 
+//         gender: "Nam", 
+//         hometown: "Hồ Chí Minh", 
+//         totalOrders: 3, 
+//         type: "Vàng", 
+//         status: "active", 
+//         img: "../image/hth.webp",
+//         orders: [
+//             { id: "#123126", productImg: "../image/product1.webp", amount: 200000, date: "2025-03-21" }
+//         ]
+//     },
+//     { 
+//         id: 3, 
+//         fullName: "Diễm", 
+//         phone: "7777 777 777", 
+//         email: "diem@gmail.com", 
+//         password: hashPassword("xyz789"), 
+//         gender: "Nữ", 
+//         hometown: "Đồng Nai", 
+//         totalOrders: 2, 
+//         type: "Bạc", 
+//         status: "active", 
+//         img: "../image/baolam.jpg",
+//         orders: [
+//             { id: "#123127", productImg: "../image/product1.webp", amount: 450000, date: "2025-03-20" }
+//         ]
+//     }
+// ];
 
 // Hiển thị danh sách người dùng dạng bảng
 function renderUsers(filteredUsers = users) {
@@ -186,6 +186,51 @@ function showUserDetails(userId) {
     document.getElementById('userDetailsOverlay').classList.add('active');
 }
 
+// Sửa lại hàm showEditUserPopup để hiển thị và chọn đúng địa chỉ
+function showEditUserPopup(username) {
+    // Fetch user details from the server
+    fetch(`../php/get-user-details.php?userId=${username}`)
+        .then(response => response.json())
+        .then(user => {
+            if (user.error) {
+                alert('Không thể tải thông tin người dùng: ' + user.error);
+                return;
+            }
+
+            // Fill in the edit form with user data
+            document.getElementById('editUsername').value = user.Username;
+            document.getElementById('editFullName').value = user.FullName;
+            document.getElementById('editEmail').value = user.Email || '';
+            document.getElementById('editPhone').value = user.Phone;
+            document.getElementById('editAddress').value = user.Address;
+            document.getElementById('editStatus').value = user.Status;
+
+            // Set province and trigger change event
+            const provinceSelect = document.getElementById('editProvince');
+            provinceSelect.value = user.Province;
+            provinceSelect.dispatchEvent(new Event('change'));
+
+            // Set district and ward after province is loaded
+            setTimeout(() => {
+                const districtSelect = document.getElementById('editDistrict');
+                districtSelect.value = user.District;
+                districtSelect.dispatchEvent(new Event('change'));
+
+                // Set ward after district is loaded
+                setTimeout(() => {
+                    const wardSelect = document.getElementById('editWard');
+                    wardSelect.value = user.Ward;
+                }, 500);
+            }, 500);
+
+            document.getElementById('editUserOverlay').style.display = 'flex';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Đã xảy ra lỗi khi tải thông tin người dùng');
+        });
+}
+
 function closeUserDetailsPopup() {
     document.getElementById('userDetailsOverlay').classList.remove('active');
 }
@@ -205,22 +250,26 @@ function addUser() {
         return;
     }
 
-    const formData = new FormData();
-    formData.append('username', document.getElementById('addUsername').value);
-    formData.append('fullname', document.getElementById('addFullName').value);
-    formData.append('email', document.getElementById('addEmail').value);
-    formData.append('password', document.getElementById('addPassword').value);
-    formData.append('phone', document.getElementById('addPhone').value);
-    formData.append('address', document.getElementById('addAddress').value);
-    formData.append('province', document.getElementById('addProvince').value);
-    formData.append('district', document.getElementById('addDistrict').value);
-    formData.append('ward', document.getElementById('addWard').value);
-    formData.append('status', document.getElementById('addStatus').value);
+    const userData = {
+        username: document.getElementById('addUsername').value,
+        fullname: document.getElementById('addFullName').value,
+        email: document.getElementById('addEmail').value,
+        password: document.getElementById('addPassword').value,
+        phone: document.getElementById('addPhone').value,
+        address: document.getElementById('addAddress').value,
+        province: document.getElementById('addProvince').value,
+        district: document.getElementById('addDistrict').value,
+        ward: document.getElementById('addWard').value,
+        status: document.getElementById('addStatus').value
+    };
 
     // Gửi request đến server
     fetch('../php/add-user.php', {
         method: 'POST',
-        body: formData
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
     })
     .then(response => response.json())
     .then(data => {
@@ -313,40 +362,11 @@ function validateForm() {
 }
 
 // Hiển thị popup chỉnh sửa người dùng
-function showEditUserPopup(username) {
-    // Fetch user details from the server
-    fetch(`../php/get-user-details.php?userId=${username}`)
-        .then(response => response.json())
-        .then(user => {
-            if (user.error) {
-                alert('Không thể tải thông tin người dùng: ' + user.error);
-                return;
-            }
-
-            // Fill in the edit form with user data
-            document.getElementById('editUsername').value = user.Username;
-            document.getElementById('editFullName').value = user.FullName;
-            document.getElementById('editPhone').value = user.Phone;
-            document.getElementById('editEmail').value = user.Email || '';
-            document.getElementById('editAddress').value = user.Address || '';
-            document.getElementById('editProvince').value = user.Province || '';
-            document.getElementById('editDistrict').value = user.District || '';
-            document.getElementById('editWard').value = user.Ward || '';
-            document.getElementById('editStatus').value = user.Status;
-
-            // Show the edit popup
-            document.getElementById('editUserOverlay').style.display = 'flex';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Đã xảy ra lỗi khi tải thông tin người dùng');
-        });
-}
-
 function closeEditUserPopup() {
     document.getElementById('editUserOverlay').style.display = 'none';
 }
 
+// Sửa lại hàm saveUserEdit để gửi thông tin địa chỉ đúng
 function saveUserEdit() {
     const userData = {
         username: document.getElementById('editUsername').value,
@@ -360,21 +380,7 @@ function saveUserEdit() {
         status: document.getElementById('editStatus').value
     };
 
-    // Validate required fields
-    if (!userData.fullname || !userData.phone) {
-        alert('Vui lòng điền đầy đủ thông tin bắt buộc');
-        return;
-    }
-
-    // Validate email format if provided
-    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
-        alert('Email không hợp lệ');
-        return;
-    }
-
-    // Validate phone format
-    if (!/^[0-9]{10}$/.test(userData.phone)) {
-        alert('Số điện thoại phải có 10 chữ số');
+    if (!validateEditForm(userData)) {
         return;
     }
 
@@ -390,7 +396,7 @@ function saveUserEdit() {
         if (data.success) {
             alert('Cập nhật thông tin thành công!');
             closeEditUserPopup();
-            location.reload(); // Refresh the page to show updated data
+            location.reload();
         } else {
             alert('Có lỗi xảy ra: ' + data.message);
         }
@@ -399,6 +405,26 @@ function saveUserEdit() {
         console.error('Error:', error);
         alert('Có lỗi xảy ra khi cập nhật thông tin');
     });
+}
+
+function validateEditForm(userData) {
+    if (!userData.fullname || !userData.phone || !userData.address || 
+        !userData.province || !userData.district || !userData.ward) {
+        alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+        return false;
+    }
+
+    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
+        alert('Email không hợp lệ');
+        return false;
+    }
+
+    if (!/^[0-9]{10}$/.test(userData.phone)) {
+        alert('Số điện thoại phải có 10 chữ số');
+        return false;
+    }
+
+    return true;
 }
 
 // Khoá/Mở khoá người dùng
@@ -411,14 +437,15 @@ function toggleLockUser(userId) {
         user.status = 'active';
         alert('Đã mở khoá người dùng thành công!');
     }
-    document.getElementById('userDetailsOverlay').classList.remove('active');
-    renderUsers();
-}
+    // document.getElementById('userDetailsOverlay').classList.remove('active');
+    // renderUsers();
+};
 
 // Khởi tạo
-document.addEventListener('DOMContentLoaded', () => {
-    renderUsers();
-});
+// document.addEventListener('DOMContentLoaded', () => {
+//     renderUsers();
+// }
+// );
 
 // Hàm tải danh sách tỉnh/thành phố
 async function loadProvinces() {
@@ -470,3 +497,138 @@ async function loadWards() {
         console.error('Lỗi khi tải danh sách phường/xã:', error);
     }
 }
+
+// Thêm event listener cho select box tỉnh/thành phố
+document.getElementById('addProvince').addEventListener('change', function() {
+    const provinceId = this.value;
+    const districtSelect = document.getElementById('addDistrict');
+    
+    // Reset quận/huyện select box
+    districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+    
+    if (provinceId) {
+        // Tạo form data
+        const formData = new FormData();
+        formData.append('province_id', provinceId);
+        
+        // Gửi request AJAX
+        fetch('../php/add_district.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Thêm các option mới vào select box quận/huyện
+                data.districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.district_id;
+                    option.textContent = district.name;
+                    districtSelect.appendChild(option);
+                });
+            } else {
+                console.error('Lỗi:', data.message);
+            }
+        })
+        .catch(error => console.error('Lỗi:', error));
+    }
+});
+
+// Thêm event listener cho select box quận/huyện
+document.getElementById('addDistrict').addEventListener('change', function() {
+    const districtId = this.value;
+    const wardSelect = document.getElementById('addWard');
+    
+    // Reset phường/xã select box
+    wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+    
+    if (districtId) {
+        // Tạo form data
+        const formData = new FormData();
+        formData.append('district_id', districtId);
+        
+        // Gửi request AJAX
+        fetch('../php/add_ward.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Thêm các option mới vào select box phường/xã
+                data.wards.forEach(ward => {
+                    const option = document.createElement('option');
+                    option.value = ward.wards_id;
+                    option.textContent = ward.name;
+                    wardSelect.appendChild(option);
+                });
+            } else {
+                console.error('Lỗi:', data.message);
+            }
+        })
+        .catch(error => console.error('Lỗi:', error));
+    }
+});
+
+// Event listener cho select box tỉnh/thành phố trong form chỉnh sửa
+document.getElementById('editProvince').addEventListener('change', function() {
+    const provinceId = this.value;
+    const districtSelect = document.getElementById('editDistrict');
+    
+    // Reset quận/huyện select box
+    districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+    document.getElementById('editWard').innerHTML = '<option value="">Chọn Phường/Xã</option>';
+    
+    if (provinceId) {
+        const formData = new FormData();
+        formData.append('province_id', provinceId);
+        
+        fetch('../php/add_district.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.district_id;
+                    option.textContent = district.name;
+                    districtSelect.appendChild(option);
+                });
+            }
+        })
+        .catch(error => console.error('Lỗi:', error));
+    }
+});
+
+// Event listener cho select box quận/huyện trong form chỉnh sửa
+document.getElementById('editDistrict').addEventListener('change', function() {
+    const districtId = this.value;
+    const wardSelect = document.getElementById('editWard');
+    
+    // Reset phường/xã select box
+    wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+    
+    if (districtId) {
+        const formData = new FormData();
+        formData.append('district_id', districtId);
+        
+        fetch('../php/add_ward.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.wards.forEach(ward => {
+                    const option = document.createElement('option');
+                    option.value = ward.wards_id;
+                    option.textContent = ward.name;
+                    wardSelect.appendChild(option);
+                });
+            }
+        })
+        .catch(error => console.error('Lỗi:', error));
+    }
+});

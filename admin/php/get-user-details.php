@@ -9,8 +9,19 @@ try {
 
     $username = $_GET['userId'];
 
-    // Lấy thông tin người dùng
-    $stmt = $myconn->prepare("SELECT Username, FullName, Email, Phone, Address, Province, District, Ward, Status FROM users WHERE Username = ?");
+    // Lấy thông tin người dùng và tên địa chỉ
+    $stmt = $myconn->prepare("
+        SELECT u.Username, u.FullName, u.Email, u.Phone, u.Address, 
+               u.Province, u.District, u.Ward, u.Status,
+               p.name as province_name,
+               d.name as district_name,
+               w.name as ward_name
+        FROM users u
+        LEFT JOIN province p ON u.Province = p.province_id
+        LEFT JOIN district d ON u.District = d.district_id
+        LEFT JOIN wards w ON u.Ward = w.wards_id
+        WHERE u.Username = ?");
+        
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -31,12 +42,14 @@ try {
         'Province' => $user['Province'],
         'District' => $user['District'],
         'Ward' => $user['Ward'],
-        'Status' => $user['Status']
+        'Status' => $user['Status'],
+        'province_name' => $user['province_name'],
+        'district_name' => $user['district_name'],
+        'ward_name' => $user['ward_name']
     ];
 
     echo json_encode($response);
-
-    $stmt->close();
+    
 } catch (Exception $e) {
     echo json_encode(['error' => $e->getMessage()]);
 }

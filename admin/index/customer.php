@@ -288,22 +288,34 @@
                     </div>
                     <div class="form-group">
                         <label>Địa chỉ chi tiết: <span class="required">*</span></label>
-                        <input type="text" id="addAddress" required placeholder="Số nhà, tên đường...">
+                        <input type="text" id="addAddress" name="address" required placeholder="Số nhà, tên đường...">
                         <span class="error" id="address-error"></span>
                     </div>
                     <div class="form-group">
                         <label>Tỉnh/Thành phố: <span class="required">*</span></label>
-                        <input type="text" id="addProvince" required>
-                        <span class="error" id="province-error"></span>
+                        <select name="province" id="addProvince" required>
+                            <option value="">Chọn Tỉnh/Thành phố</option>
+                            <?php
+                            include_once('../php/connect.php');
+                            $sql = "SELECT * FROM province";
+                            $result = mysqli_query($myconn, $sql);
+                            while($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='" . $row['province_id'] . "'>" . $row['name'] . "</option>";
+                            }
+                            ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Quận/Huyện: <span class="required">*</span></label>
-                        <input type="text" id="addDistrict" required>
-                        <span class="error" id="district-error"></span>
+                        <select name="district" id="addDistrict" required>
+                            <option value="">Chọn Quận/Huyện</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Phường/Xã: <span class="required">*</span></label>
-                        <input type="text" id="addWard" required>
+                        <select name="ward" id="addWard" required>
+                            <option value="">Chọn Phường/Xã</option>
+                        </select>
                         <span class="error" id="ward-error"></span>
                     </div>
                     <div class="form-group">
@@ -355,15 +367,28 @@
                     </div>
                     <div class="form-group">
                         <label>Tỉnh/Thành phố: <span class="required">*</span></label>
-                        <input type="text" id="editProvince" required>
+                        <select name="province" id="editProvince" required>
+                            <option value="">Chọn Tỉnh/Thành phố</option>
+                            <?php
+                            $sql = "SELECT * FROM province";
+                            $result = mysqli_query($myconn, $sql);
+                            while($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='" . $row['province_id'] . "'>" . $row['name'] . "</option>";
+                            }
+                            ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Quận/Huyện: <span class="required">*</span></label>
-                        <input type="text" id="editDistrict" required>
+                        <select name="district" id="editDistrict" required>
+                            <option value="">Chọn Quận/Huyện</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Phường/Xã: <span class="required">*</span></label>
-                        <input type="text" id="editWard" required>
+                        <select name="ward" id="editWard" required>
+                            <option value="">Chọn Phường/Xã</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Trạng thái:</label>
