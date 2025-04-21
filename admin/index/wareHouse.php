@@ -302,9 +302,9 @@
       background-color: #cc0000;
     }
 
-    .product-details-overlay {
+    /* .product-details-overlay {
       // ...existing code...
-    }
+    } */
   </style>
 </head>
 
@@ -481,6 +481,7 @@
   </div>
   <div class="container-main-warehouse">
     <div class="warehouse-management">
+      <!-- search button -->
       <div class="search-container">
         <input class="search-input" type="text" placeholder="Tìm kiếm sản phẩm..." onkeyup="searchProducts()">
         <button class="search-btn">
@@ -526,10 +527,10 @@
               $total_pages = ceil($total_products / $items_per_page);
               
               // Query to get products with category names and pagination
-              $sql = "SELECT p.*, c.Description as CategoryName 
+              $sql = "SELECT p.*, c.CategoryName as CategoryName 
                       FROM products p 
                       LEFT JOIN categories c ON p.CategoryID = c.CategoryID 
-                      WHERE p.Status = 'appear'
+                      WHERE p.Status = 'appear' OR p.Status = 'hidden'
                       ORDER BY p.ProductID DESC
                       LIMIT $offset, $items_per_page";
 
@@ -560,7 +561,7 @@
 
               // Previous button
               if ($page > 1) {
-                  echo "<li class='page-item'><a class='page-link' href='?page=" . ($page - 1) . "'>Trang trước</a></li>";
+                  echo "<li class='page-item'><a class='page-link' href='?page=" . ($page - 1) . "'><<</a></li>";
               }
 
               // Page numbers
@@ -601,7 +602,7 @@
 
               // Next button
               if ($page < $total_pages) {
-                  echo "<li class='page-item'><a class='page-link' href='?page=" . ($page + 1) . "'>Trang sau</a></li>";
+                  echo "<li class='page-item'><a class='page-link' href='?page=" . ($page + 1) . "'>>></a></li>";
               }
 
               echo "</ul>";
@@ -945,6 +946,79 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.position-employee p').textContent = userInfo.role;
     document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
   }
+});
+
+function searchProducts() {
+  const searchInput = document.querySelector('.search-input');
+  const searchTerm = searchInput.value.trim();
+  const tableBody = document.getElementById('productsBody');
+  
+  // Show loading state
+  tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Đang tìm kiếm...</td></tr>';
+  
+  // Create form data
+  const formData = new FormData();
+  formData.append('search', searchTerm);
+  
+  // Send AJAX request
+  fetch('../php/search-products.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.error) {
+      tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">${data.error}</td></tr>`;
+      return;
+    }
+    
+    if (data.products.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Không tìm thấy sản phẩm nào phù hợp</td></tr>';
+      return;
+    }
+    
+    // Clear table body
+    tableBody.innerHTML = '';
+    
+    // Add products to table
+    data.products.forEach(product => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><img src="${product.image}" alt="${product.name}" style="width: 100px; height: 100px; object-fit: cover;"></td>
+        <td>${product.name}</td>
+        <td>${product.category}</td>
+        <td>${product.price}</td>
+        <td class="actions">
+          <button class="btn btn-warning btn-sm" onclick="editProduct(${product.id})">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+  })
+  .catch(error => {
+    tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Có lỗi xảy ra: ${error.message}</td></tr>`;
+  });
+}
+
+// Add event listener for Enter key
+document.querySelector('.search-input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    searchProducts();
+  }
+});
+
+// Add event listener for search button
+document.querySelector('.search-btn').addEventListener('click', function() {
+  searchProducts();
+});
+
+// Add event listener for input changes with debounce
+let searchTimeout;
+document.querySelector('.search-input').addEventListener('input', function() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(searchProducts, 500);
 });
 </script>
 

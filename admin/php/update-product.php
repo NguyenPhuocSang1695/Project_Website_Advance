@@ -78,7 +78,7 @@ try {
         // Generate unique filename
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'product_' . uniqid() . '.' . $extension;
-        $uploadPath = '../../../assets/images/products/' . $filename;
+        $uploadPath = '../../assets/images/' . $filename;
         
         // Make sure the directory exists
         $uploadDir = dirname($uploadPath);
@@ -93,11 +93,11 @@ try {
             throw new Exception('Failed to upload image');
         }
         
-        $newImageURL = '/assets/images/products/' . $filename;
+        $newImageURL = '/assets/images/' . $filename;
         
         // Delete old image if it exists and is different
         if ($currentImageURL && $currentImageURL !== $newImageURL) {
-            $oldImagePath = $_SERVER['DOCUMENT_ROOT'] . $currentImageURL;
+            $oldImagePath = '../../' . $currentImageURL;
             if (file_exists($oldImagePath)) {
                 unlink($oldImagePath);
             }

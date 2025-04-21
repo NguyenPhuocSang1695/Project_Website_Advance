@@ -188,7 +188,7 @@
         <div class="container-main">
             <div class="left-section-customer">
                 <div class="search-container-customer" style="margin-bottom: 20px;">
-                    <input class="search-bar-customer" type="text" placeholder="Tìm kiếm người dùng..." onkeyup="searchUsers()">
+                    <input class="search-bar-customer" type="text" placeholder="Nhập tên người dùng" onkeyup="searchUsers()">
                     <button class="search-icon-customer" onclick="searchUsers()">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -278,8 +278,13 @@
                     </div>
                     <div class="form-group">
                         <label>Mật khẩu: <span class="required">*</span></label>
-                        <input type="password" id="addPassword" required minlength="6">
+                        <input type="password" id="addPassword" required minlength="8">
                         <span class="error" id="password-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu: <span class="required">*</span></label>
+                        <input type="password" id="addConfirmPassword" required minlength="8">
+                        <span class="error" id="confirm-password-error"></span>
                     </div>
                     <div class="form-group">
                         <label>Số điện thoại: <span class="required">*</span></label>
@@ -293,17 +298,31 @@
                     </div>
                     <div class="form-group">
                         <label>Tỉnh/Thành phố: <span class="required">*</span></label>
-                        <input type="text" id="addProvince" required>
+                        <select id="addProvince" required onchange="loadDistricts(this.value)">
+                            <option value="">Chọn tỉnh/thành phố</option>
+                            <?php
+                            require_once '../php/connect.php';
+                            $sql = "SELECT province_id, name FROM province ORDER BY name";
+                            $result = mysqli_query($myconn, $sql);
+                            while($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='" . $row['province_id'] . "'>" . $row['name'] . "</option>";
+                            }
+                            ?>
+                        </select>
                         <span class="error" id="province-error"></span>
                     </div>
                     <div class="form-group">
                         <label>Quận/Huyện: <span class="required">*</span></label>
-                        <input type="text" id="addDistrict" required>
+                        <select id="addDistrict" required onchange="loadWards(this.value)">
+                            <option value="">Chọn quận/huyện</option>
+                        </select>
                         <span class="error" id="district-error"></span>
                     </div>
                     <div class="form-group">
                         <label>Phường/Xã: <span class="required">*</span></label>
-                        <input type="text" id="addWard" required>
+                        <select id="addWard" required>
+                            <option value="">Chọn phường/xã</option>
+                        </select>
                         <span class="error" id="ward-error"></span>
                     </div>
                     <div class="form-group">
@@ -355,15 +374,28 @@
                     </div>
                     <div class="form-group">
                         <label>Tỉnh/Thành phố: <span class="required">*</span></label>
-                        <input type="text" id="editProvince" required>
+                        <select id="editProvince" required onchange="loadEditDistricts(this.value)">
+                            <option value="">Chọn tỉnh/thành phố</option>
+                            <?php
+                            $sql = "SELECT province_id, name FROM province ORDER BY name";
+                            $result = mysqli_query($myconn, $sql);
+                            while($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='" . $row['province_id'] . "'>" . $row['name'] . "</option>";
+                            }
+                            ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Quận/Huyện: <span class="required">*</span></label>
-                        <input type="text" id="editDistrict" required>
+                        <select id="editDistrict" required onchange="loadEditWards(this.value)">
+                            <option value="">Chọn quận/huyện</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Phường/Xã: <span class="required">*</span></label>
-                        <input type="text" id="editWard" required>
+                        <select id="editWard" required>
+                            <option value="">Chọn phường/xã</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Trạng thái:</label>
@@ -392,6 +424,305 @@
                 document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
             }
         });
+
+        function searchUsers() {
+            const searchInput = document.querySelector('.search-bar-customer');
+            const searchTerm = searchInput.value.trim();
+            const tableBody = document.querySelector('#userTable tbody');
+
+            // Show loading message
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Đang tìm kiếm...</td></tr>';
+
+            // Send AJAX request
+            fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'Có lỗi xảy ra khi tìm kiếm');
+                    }
+
+                    if (data.users.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Không tìm thấy người dùng nào phù hợp</td></tr>';
+                        return;
+                    }
+
+                    // Clear and update table
+                    tableBody.innerHTML = '';
+                    data.users.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${user.username}</td>
+                            <td>${user.fullname}</td>
+                            <td>${user.phone}</td>
+                            <td>${user.email}</td>
+                            <td class="${user.statusClass}">${user.status}</td>
+                            <td>
+                                <button class='btn btn-outline-warning' onclick='showEditUserPopup("${user.username}")'>
+                                    Chỉnh sửa
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                    tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">
+                        Có lỗi xảy ra: ${error.message}</td></tr>`;
+                });
+        }
+
+        // Add debounce to search
+        let searchTimeout;
+        document.querySelector('.search-bar-customer').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(searchUsers, 500);
+        });
+
+        // Add event listener for search button
+        document.querySelector('.search-icon-customer').addEventListener('click', searchUsers);
+
+        // Add event listener for Enter key
+        document.querySelector('.search-bar-customer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchUsers();
+            }
+        });
+
+        function loadDistricts(provinceId) {
+            if (!provinceId) {
+                document.getElementById('addDistrict').innerHTML = '<option value="">Chọn quận/huyện</option>';
+                document.getElementById('addWard').innerHTML = '<option value="">Chọn phường/xã</option>';
+                return;
+            }
+
+            fetch(`../php/get-districts.php?province_id=${provinceId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const districtSelect = document.getElementById('addDistrict');
+                    districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+                    data.forEach(district => {
+                        districtSelect.innerHTML += `<option value="${district.district_id}">${district.name}</option>`;
+                    });
+                    document.getElementById('addWard').innerHTML = '<option value="">Chọn phường/xã</option>';
+                })
+                .catch(error => console.error('Error loading districts:', error));
+        }
+
+        function loadWards(districtId) {
+            if (!districtId) {
+                document.getElementById('addWard').innerHTML = '<option value="">Chọn phường/xã</option>';
+                return;
+            }
+
+            console.log('Loading wards for district:', districtId);
+            
+            fetch(`../php/get-wards.php?district_id=${districtId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Received wards data:', data);
+                    const wardSelect = document.getElementById('addWard');
+                    wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                    
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(ward => {
+                            wardSelect.innerHTML += `<option value="${ward.ward_id}">${ward.name}</option>`;
+                        });
+                    } else {
+                        console.warn('No wards found for district:', districtId);
+                        wardSelect.innerHTML += '<option value="" disabled>Không có phường/xã nào</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading wards:', error);
+                    const wardSelect = document.getElementById('addWard');
+                    wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                    wardSelect.innerHTML += '<option value="" disabled>Lỗi khi tải dữ liệu</option>';
+                });
+        }
+
+        function addUser() {
+            // Get form data
+            const password = document.getElementById('addPassword').value;
+            const confirmPassword = document.getElementById('addConfirmPassword').value;
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                document.getElementById('confirm-password-error').textContent = 'Mật khẩu xác nhận không khớp';
+                return false;
+            }
+
+            const formData = new FormData();
+            formData.append('username', document.getElementById('addUsername').value.trim());
+            formData.append('fullname', document.getElementById('addFullName').value.trim());
+            formData.append('email', document.getElementById('addEmail').value.trim());
+            formData.append('password', password);
+            formData.append('phone', document.getElementById('addPhone').value.trim());
+            formData.append('address', document.getElementById('addAddress').value.trim());
+            formData.append('province_id', document.getElementById('addProvince').value);
+            formData.append('district_id', document.getElementById('addDistrict').value);
+            formData.append('ward_id', document.getElementById('addWard').value);
+            formData.append('status', document.getElementById('addStatus').value);
+
+            // Clear previous error messages
+            document.querySelectorAll('.error').forEach(error => error.textContent = '');
+
+            // Send request to server
+            fetch('../php/add-user.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Add new user to table
+                    const tableBody = document.querySelector('#userTable tbody');
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.user.username}</td>
+                        <td>${data.user.fullname}</td>
+                        <td>${data.user.phone}</td>
+                        <td>${data.user.email}</td>
+                        <td class="text-success">Hoạt động</td>
+                        <td>
+                            <button class='btn btn-outline-warning' onclick='showEditUserPopup("${data.user.username}")'>
+                                Chỉnh sửa
+                            </button>
+                        </td>
+                    `;
+                    tableBody.insertBefore(row, tableBody.firstChild);
+
+                    // Close popup and show success message
+                    closeAddUserPopup();
+                    alert('Thêm người dùng thành công!');
+                    
+                    // Clear form
+                    document.getElementById('addUserForm').reset();
+                } else {
+                    // Show error message in appropriate error span
+                    if (data.message.includes('mật khẩu')) {
+                        document.getElementById('password-error').textContent = data.message;
+                    } else if (data.message.includes('tài khoản')) {
+                        document.getElementById('username-error').textContent = data.message;
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi thêm người dùng');
+            });
+
+            return false; // Prevent form submission
+        }
+
+        // Add password validation on input
+        document.getElementById('addConfirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('addPassword').value;
+            const confirmPassword = this.value;
+            const errorSpan = document.getElementById('confirm-password-error');
+            
+            if (password !== confirmPassword) {
+                errorSpan.textContent = 'Mật khẩu xác nhận không khớp';
+            } else {
+                errorSpan.textContent = '';
+            }
+        });
+
+        document.getElementById('addPassword').addEventListener('input', function() {
+            const password = this.value;
+            const confirmPassword = document.getElementById('addConfirmPassword').value;
+            const errorSpan = document.getElementById('confirm-password-error');
+            
+            if (confirmPassword && password !== confirmPassword) {
+                errorSpan.textContent = 'Mật khẩu xác nhận không khớp';
+            } else {
+                errorSpan.textContent = '';
+            }
+        });
+
+        function showEditUserPopup(username) {
+            fetch(`../php/get-user-details.php?username=${username}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const user = data.user;
+                        document.getElementById('editUsername').value = user.username;
+                        document.getElementById('editFullName').value = user.fullname;
+                        document.getElementById('editEmail').value = user.email;
+                        document.getElementById('editPhone').value = user.phone;
+                        document.getElementById('editAddress').value = user.address;
+                        
+                        // Set province and load its districts
+                        const provinceSelect = document.getElementById('editProvince');
+                        provinceSelect.value = user.province_id;
+                        loadEditDistricts(user.province_id, user.district_id, user.ward_id);
+                        
+                        document.getElementById('editStatus').value = user.status;
+                        
+                        // Show the popup
+                        document.getElementById('editUserOverlay').style.display = 'flex';
+                    } else {
+                        alert(data.message || 'Không thể tải thông tin người dùng');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi tải thông tin người dùng');
+                });
+        }
+
+        function loadEditDistricts(provinceId, selectedDistrictId = null, selectedWardId = null) {
+            if (!provinceId) {
+                document.getElementById('editDistrict').innerHTML = '<option value="">Chọn quận/huyện</option>';
+                document.getElementById('editWard').innerHTML = '<option value="">Chọn phường/xã</option>';
+                return;
+            }
+
+            fetch(`../php/get-districts.php?province_id=${provinceId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const districtSelect = document.getElementById('editDistrict');
+                    districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+                    data.forEach(district => {
+                        districtSelect.innerHTML += `<option value="${district.district_id}">${district.name}</option>`;
+                    });
+                    
+                    if (selectedDistrictId) {
+                        districtSelect.value = selectedDistrictId;
+                        loadEditWards(selectedDistrictId, selectedWardId);
+                    }
+                })
+                .catch(error => console.error('Error loading districts:', error));
+        }
+
+        function loadEditWards(districtId, selectedWardId = null) {
+            if (!districtId) {
+                document.getElementById('editWard').innerHTML = '<option value="">Chọn phường/xã</option>';
+                return;
+            }
+
+            fetch(`../php/get-wards.php?district_id=${districtId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const wardSelect = document.getElementById('editWard');
+                    wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                    data.forEach(ward => {
+                        wardSelect.innerHTML += `<option value="${ward.ward_id}">${ward.name}</option>`;
+                    });
+                    
+                    if (selectedWardId) {
+                        wardSelect.value = selectedWardId;
+                    }
+                })
+                .catch(error => console.error('Error loading wards:', error));
+        }
         </script>
     </body>
 </html>
