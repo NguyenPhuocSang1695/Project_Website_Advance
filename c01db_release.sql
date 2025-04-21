@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 15, 2025 at 08:21 AM
+-- Generation Time: Apr 18, 2025 at 11:03 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `c01db`
+-- Database: `c01db_release`
 --
 
 -- --------------------------------------------------------
@@ -780,24 +780,6 @@ CREATE TABLE `orderdetails` (
   `TotalPrice` decimal(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `orderdetails`
---
-
-INSERT INTO `orderdetails` (`OrderID`, `ProductID`, `Quantity`, `UnitPrice`, `TotalPrice`) VALUES
-(1, 27, 3, 1232345, 23423423),
-(1, 37, 4, 5000000, 20000000),
-(6, 10, 2, 100000, 200000),
-(12, 1, 2, 160000, 320000),
-(12, 3, 1, 150000, 150000),
-(12, 9, 1, 35000, 35000),
-(14, 3, 1, 150000, 150000),
-(14, 26, 1, 90000, 90000),
-(15, 1, 1, 160000, 160000),
-(15, 24, 1, 450000, 450000),
-(16, 8, 1, 35000, 35000),
-(16, 9, 1, 75000, 75000);
-
 -- --------------------------------------------------------
 
 --
@@ -808,7 +790,7 @@ CREATE TABLE `orders` (
   `OrderID` int(11) NOT NULL,
   `Username` varchar(255) NOT NULL,
   `Status` enum('execute','ship','success','fail') NOT NULL DEFAULT 'execute',
-  `PaymentMethod` enum('COD','Banking') DEFAULT NULL,
+  `PaymentMethod` enum('COD','Banking','MOMO') DEFAULT NULL,
   `CustomerName` varchar(255) DEFAULT NULL,
   `Phone` varchar(100) DEFAULT NULL,
   `Province` varchar(100) DEFAULT NULL,
@@ -818,21 +800,6 @@ CREATE TABLE `orders` (
   `TotalAmount` decimal(10,0) DEFAULT NULL,
   `Address` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `orders`
---
-
-INSERT INTO `orders` (`OrderID`, `Username`, `Status`, `PaymentMethod`, `CustomerName`, `Phone`, `Province`, `District`, `Ward`, `DateGeneration`, `TotalAmount`, `Address`) VALUES
-(1, 'user1', 'success', 'COD', 'Nguyễn Văn A', '0912345678', '1', '5', '1', '2025-04-01 10:30:00', 360000, 'Số 10, Đường Láng'),
-(5, 'user2', 'success', 'Banking', 'Trần Thị B', '0987654321', '14', '145', '5', '2025-04-05 11:20:00', 75000, '12 Đường Hạ Long'),
-(6, 'user4', 'success', 'COD', 'Phạm Thị D', '0923456789', '1', '1', '7', '2025-04-06 09:00:00', 200000, '25 Đường Đội Cấn'),
-(7, 'user3', 'success', 'Banking', 'Lê Văn C', '0901234567', '20', '210', '6', '2025-04-07 08:00:00', 300000, '56 Đường Nguyễn Văn Cừ'),
-(8, 'user4', 'success', 'COD', 'Phạm Thị D', '0923456789', '1', '1', '7', '2025-04-07 10:00:00', 150000, '25 Đường Đội Cấn'),
-(12, 'user1', 'execute', 'COD', 'Nguyễn Văn A', '0912345678', '1', '5', '1', '2025-04-01 10:30:00', 0, 'Số 10, Đường Láng'),
-(14, 'user3', 'success', 'Banking', 'Lê Văn C', '0901234567', '20', '210', '3', '2025-04-03 09:00:00', 240000, '45 Đường Hải Phòng'),
-(15, 'user1', 'fail', 'COD', 'Nguyễn Văn A', '0912345678', '1', '5', '59', '2025-04-04 16:45:00', 0, 'Số 15, Đường Nguyễn Trãi'),
-(16, 'user2', 'success', 'Banking', 'Trần Quốc An', '01234589JQK', '14', '145', '5', '2025-04-05 11:20:00', 110000, '12 Đường Hạ Long');
 
 -- --------------------------------------------------------
 
@@ -896,11 +863,7 @@ INSERT INTO `products` (`ProductID`, `ProductName`, `CategoryID`, `Price`, `Desc
 (38, 'Cây hạnh phúc mini', 4, 400000, 'None', '/assets/images/CAY38.jpg', 'appear', NULL, 'medium', 0),
 (39, 'Cây tùng bồng lai', 4, 350000, 'None', '/assets/images/CAY39.jpg', 'appear', NULL, 'hard', 0),
 (40, 'Cây trường sinh', 4, 200000, 'None', '/assets/images/CAY40.jpg', 'appear', NULL, 'low', 0),
-(41, 'Cây bàng Singapore', 1, 400000, 'None', '/assets/images/CAY41.jpg', 'appear', NULL, 'medium', 0),
-(42, 'Cây tre', 3, 1200000, '1200000', '/assets/images/product_67f4c0c329983.jpg', 'appear', '0', NULL, 0),
-(43, 'Cây tre', 3, 1200000, '1200000', '/assets/images/product_67f4c0c6b5504.jpg', 'appear', '0', NULL, 0),
-(44, 'Cây tre', 3, 1200000, '1200000', '/assets/images/product_67f4c0cb28d70.jpg', 'appear', '0', NULL, 0),
-(45, 'Cây tre', 3, 1200000, '123', '/assets/images/product_67f4c12c8acc1.jpg', 'appear', '0', NULL, 0);
+(41, 'Cây bàng Singapore', 1, 400000, 'None', '/assets/images/CAY41.jpg', 'appear', NULL, 'medium', 0);
 
 -- --------------------------------------------------------
 
@@ -1007,14 +970,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`Username`, `FullName`, `Email`, `PasswordHash`, `Address`, `Province`, `District`, `Ward`, `Role`, `Phone`, `Status`) VALUES
-('SangNgu', 'Nguyễn Phước Sang', 'sangngu@gmail.com', '123', '123 Lạc Long Quân', '1', '1', '3', 'admin', '0912345675', 'Active'),
-('user1', 'Nguyễn Văn A', 'user1@example.com', 'hashed_password1', 'Số 15, Đường Nguyễn Trãi', '1', '5', '59', 'customer', '0912345678', 'Active'),
-('user2', 'Trần Thị B', 'user2@example.com', 'hashed_password2', '20 Đường Nguyễn Huệ', '50', '551\r\n', '8687', 'customer', '0987654321', 'Active'),
-('user3', 'Lê Văn C', 'user3@example.com', 'hashed_password3', '30 Đường Lê Đại Hành', '20', '211', '3598\r\n', 'customer', '0901234567', 'Active'),
-('user4', 'Phạm Thị D', 'user4@example.com', 'hashed_password4', '25 Đường Đội Cấn', '1', '1', '7', 'customer', '0923456789', 'Active'),
-('user7', 'Le Van G', 'user7@example.com', 'hashedpassword7', '789 Customer Rd', '32', '357', '7939', 'customer', '0912345677', 'Block'),
-('user8', 'Pham Thi H', 'user8@example.com', 'hashedpassword8', '101 Customer Ln', '31', '346', '8116', 'customer', '0912345678', 'Block'),
-('user9', 'Hoang Van I', 'user9@example.com', 'hashedpassword9', '202 Customer Blvd', '59', '662', '10155', 'customer', '0912345679', 'Block');
+('SangNgu', 'Nguyễn Phước Sang', 'sangngu@gmail.com', '$2y$10$DgAFZg7Vbl8O151o8lxJa.igyOsiX9vnRDdpJveME58gojl.1WHd.', '123 Lạc Long Quân', '1', '1', '3', 'admin', '0912345675', 'Active'),
+('sengnp', 'sang nguyen', 'sang@gmail.com', '$2y$10$wvnKJyCIraqwkefG8dEI5uulFk1xtgcYjiCUJXpj0EFyO6Hx2Uke.', '130a hcm', '63', '703', '10567', 'customer', '9384637444', 'Active');
 
 -- --------------------------------------------------------
 
@@ -11645,7 +11602,8 @@ ALTER TABLE `district`
 --
 ALTER TABLE `orderdetails`
   ADD PRIMARY KEY (`OrderID`,`ProductID`),
-  ADD KEY `OrderID` (`OrderID`,`ProductID`);
+  ADD KEY `OrderID` (`OrderID`,`ProductID`),
+  ADD KEY `orderdetails_ibfk_2` (`ProductID`);
 
 --
 -- Indexes for table `orders`
@@ -11690,7 +11648,7 @@ ALTER TABLE `wards`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `CategoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `CategoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `district`
@@ -11702,13 +11660,13 @@ ALTER TABLE `district`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `OrderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `OrderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=455;
 
 --
 -- AUTO_INCREMENT for table `province`
