@@ -24,51 +24,37 @@ try {
   exit;
 }
 
-
-// Hàm kiểm tra giỏ hàng có trống không
-function isCartEmpty() {
-  // Kiểm tra session giỏ hàng
-  if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
-      return true;
-  }
-  
-
-  return false;
-}
-
-if (isCartEmpty()) {
-  
-  
-  // Chuyển hướng về trang giỏ hàng
+// Lấy OrderID từ session
+$orderID = $_SESSION['order_id'] ?? 0;
+if (!$orderID) {
   header("Location: gio-hang.php");
   exit;
 }
 
-
-
-
-
-// Lấy OrderID từ session
-$orderID = $_SESSION['order_id'] ?? 0;
-if (!$orderID) die("Không tìm thấy đơn hàng.");
+// Lấy username từ session
+$username = $_SESSION['username'] ?? '';
 
 // Lấy thông tin đơn hàng và địa chỉ đầy đủ
 $stmt = $conn->prepare("
   SELECT o.OrderID, o.DateGeneration, o.CustomerName, o.Phone, o.Address, 
-         w.name AS WardName, d.name AS DistrictName, p.name AS ProvinceName,
+         o.PaymentMethod, o.Status,
+         p.name AS ProvinceName, d.name AS DistrictName, w.name AS WardName,
          o.TotalAmount
   FROM orders o
-  LEFT JOIN wards w ON o.Ward = w.wards_id
+  LEFT JOIN province p ON o.Province = p.province_id  
   LEFT JOIN district d ON o.District = d.district_id
-  LEFT JOIN province p ON o.Province = p.province_id
-  WHERE o.OrderID = ?
+  LEFT JOIN wards w ON o.Ward = w.wards_id
+  WHERE o.OrderID = ? AND o.Username = ?
 ");
-$stmt->bind_param("i", $orderID);
+
+$stmt->bind_param("is", $orderID, $username);
 $stmt->execute();
 $order = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-
+if (!$order) {
+  die("Không tìm thấy đơn hàng hoặc bạn không có quyền xem đơn hàng này.");
+}
 
 // Lấy chi tiết sản phẩm từ đơn hàng
 $stmt = $conn->prepare("
@@ -81,8 +67,6 @@ $stmt->bind_param("i", $orderID);
 $stmt->execute();
 $details = $stmt->get_result();
 $stmt->close();
-
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
   if (isset($_POST['chon']) && $_POST['chon'] === 'default-information') {

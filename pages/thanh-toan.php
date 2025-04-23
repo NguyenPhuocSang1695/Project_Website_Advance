@@ -43,7 +43,6 @@ if (isCartEmpty()) {
   exit;
 }
 
-// Gán mặc định $user = null để tránh lỗi khi không có kết quả
 $user = null;
 // Lấy thông tin user (gồm JOIN với province, district, ward)
 if (isset($_SESSION['username'])) {
@@ -102,13 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     if (isset($_POST['default-information']) && $_POST['default-information'] === 'true') {
       // Sử dụng thông tin mặc định từ bảng users
       $customerName = $user['FullName'];
-      $phone = $user['Phone'];
+      $phone = $user['Phone']; 
       $address = $user['Address'];
       $provinceID = $user['ProvinceID'];
       $districtID = $user['DistrictID'];
       $wardID = $user['WardID'];
     } else {
-      // Validate thông tin mới từ form
+      // Lấy thông tin mới từ form
       $customerName = isset($_POST['new_name']) ? trim($_POST['new_name']) : '';
       $phone = isset($_POST['new_sdt']) ? trim($_POST['new_sdt']) : '';
       $address = isset($_POST['new_diachi']) ? trim($_POST['new_diachi']) : '';
@@ -116,10 +115,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       $districtID = isset($_POST['district']) ? (int)$_POST['district'] : 0;
       $wardID = isset($_POST['wards']) ? (int)$_POST['wards'] : 0;
 
-      // Kiểm tra thông tin đầu vào
-      if (empty($customerName) || empty($phone) || empty($address) || 
-          empty($provinceID) || empty($districtID) || empty($wardID)) {
-        throw new Exception("Vui lòng điền đầy đủ thông tin giao hàng");
+      if (!empty($customerName) && !empty($phone) && !empty($address) && 
+          $provinceID > 0 && $districtID > 0 && $wardID > 0) {
+        // Cập nhật thông tin mặc định trong bảng users
+        $updateUserStmt = $conn->prepare("UPDATE users SET FullName = ?, Phone = ?, Address = ?, 
+                                         ProvinceID = ?, DistrictID = ?, WardID = ? 
+                                         WHERE Username = ?");
+        $updateUserStmt->bind_param("sssiiis", $customerName, $phone, $address, 
+                                   $provinceID, $districtID, $wardID, $_SESSION['username']);
+        $updateUserStmt->execute();
+        $updateUserStmt->close();
       }
     }
 
@@ -693,10 +698,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
               toggleForms();
             });
           </script>
-
-
-
-
           <div id="default-information-form">
             <label><strong>Họ và tên</strong></label>
             <input type="text" value="<?= htmlspecialchars($user['FullName'] ?? '') ?>" disabled>
@@ -839,6 +840,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
             <form action="thanh-toan.php" method="POST" id="payment-form" onsubmit="return validateForm()">
               <div class="payment-method">
                 <input type="hidden" name="default-information" id="use-default-info" value="">
+                <input type="hidden" name="new_name" id="hidden-new-name">
+                <input type="hidden" name="new_sdt" id="hidden-new-sdt">
+                <input type="hidden" name="new_diachi" id="hidden-new-diachi">
+                <input type="hidden" name="province" id="hidden-province">
+                <input type="hidden" name="district" id="hidden-district">
+                <input type="hidden" name="wards" id="hidden-wards">
                 <label>
                   <input type="radio" name="paymentMethod" value="COD" checked onchange="toggleBankingForm()">
                   <span>Thanh toán khi nhận hàng</span>
@@ -895,44 +902,115 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
             }
 
             function validateForm() {
-              // Xác định phương thức nhập thông tin
-              const defaultInfoChecked = document.getElementById('default-information').checked;
-              const newInfoChecked = document.getElementById('new-information').checked;
-              
-              // Set giá trị cho input hidden
-              document.getElementById('use-default-info').value = defaultInfoChecked ? "true" : "false";
+                // Lấy radio button được chọn
+                const defaultInfo = document.getElementById('default-information');
+                const newInfo = document.getElementById('new-information');
 
-              // Nếu chọn nhập thông tin mới, kiểm tra các trường bắt buộc
-              if (newInfoChecked) {
-                const newName = document.getElementById('new-name').value.trim();
-                const newSdt = document.getElementById('new-sdt').value.trim();
-                const newDiachi = document.getElementById('new-diachi').value.trim();
-                const province = document.getElementById('province').value;
-                const district = document.getElementById('district').value;
-                const wards = document.getElementById('wards').value;
+                // Đặt giá trị cho trường hidden use-default-info
+                document.getElementById('use-default-info').value = defaultInfo.checked ? "true" : "false";
 
-                if (!newName || !newSdt || !newDiachi || !province || !district || !wards) {
-                  alert('Vui lòng điền đầy đủ thông tin giao hàng');
-                  return false;
+                // Nếu chọn thông tin mới
+                if (newInfo.checked) {
+                    // Lấy giá trị của các trường
+                    const newName = document.getElementById('new-name');
+                    const newSdt = document.getElementById('new-sdt');
+                    const newDiachi = document.getElementById('new-diachi');
+                    const province = document.getElementById('province');
+                    const district = document.getElementById('district');
+                    const wards = document.getElementById('wards');
+
+                    // Cập nhật các trường hidden
+                    document.getElementById('hidden-new-name').value = newName.value.trim();
+                    document.getElementById('hidden-new-sdt').value = newSdt.value.trim();
+                    document.getElementById('hidden-new-diachi').value = newDiachi.value.trim();
+                    document.getElementById('hidden-province').value = province.value;
+                    document.getElementById('hidden-district').value = district.value;
+                    document.getElementById('hidden-wards').value = wards.value;
+
+                    // Kiểm tra từng trường
+                    if (!newName.value.trim()) {
+                        alert('Vui lòng nhập họ tên');
+                        newName.focus();
+                        return false;
+                    }
+                    if (!newSdt.value.trim()) {
+                        alert('Vui lòng nhập số điện thoại');
+                        newSdt.focus();
+                        return false;
+                    }
+                    if (!newDiachi.value.trim()) {
+                        alert('Vui lòng nhập địa chỉ');
+                        newDiachi.focus();
+                        return false;
+                    }
+                    if (!province.value) {
+                        alert('Vui lòng chọn tỉnh/thành phố');
+                        province.focus();
+                        return false;
+                    }
+                    if (!district.value) {
+                        alert('Vui lòng chọn quận/huyện');
+                        district.focus();
+                        return false;
+                    }
+                    if (!wards.value) {
+                        alert('Vui lòng chọn phường/xã');
+                        wards.focus();
+                        return false;
+                    }
                 }
-              }
 
-              // Xác định phương thức thanh toán được chọn
-              const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-              
-              // Nếu là Banking, validate các trường banking
-              if (paymentMethod === 'Banking') {
-                const bankingInputs = document.getElementsByClassName('banking-required');
-                for (let input of bankingInputs) {
-                  if (!input.value.trim()) {
-                    alert('Vui lòng điền đầy đủ thông tin thanh toán');
+                // Kiểm tra phương thức thanh toán
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                if (!paymentMethod) {
+                    alert('Vui lòng chọn phương thức thanh toán');
                     return false;
-                  }
                 }
-              }
 
-              return true;
+                // Nếu chọn thanh toán chuyển khoản
+                if (paymentMethod.value === 'Banking') {
+                    const bankingInputs = document.getElementsByClassName('banking-required');
+                    for (let input of bankingInputs) {
+                        if (!input.value.trim()) {
+                            alert('Vui lòng điền đầy đủ thông tin thanh toán');
+                            input.focus();
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
             }
+
+            // Thêm xử lý sự kiện cho radio buttons
+            document.addEventListener('DOMContentLoaded', function() {
+                const defaultInfo = document.getElementById('default-information');
+                const newInfo = document.getElementById('new-information');
+                const defaultForm = document.getElementById('default-information-form');
+                const newForm = document.getElementById('new-information-form');
+
+                function toggleForms() {
+                    if (defaultInfo.checked) {
+                        defaultForm.style.display = 'block';
+                        newForm.style.display = 'none';
+                        // Xóa required attribute khi không sử dụng form mới
+                        const inputs = newForm.querySelectorAll('input, select');
+                        inputs.forEach(input => input.required = false);
+                    } else {
+                        defaultForm.style.display = 'none';
+                        newForm.style.display = 'block';
+                        // Thêm required attribute khi sử dụng form mới
+                        const inputs = newForm.querySelectorAll('input, select');
+                        inputs.forEach(input => input.required = true);
+                    }
+                }
+
+                defaultInfo.addEventListener('change', toggleForms);
+                newInfo.addEventListener('change', toggleForms);
+
+                // Gọi hàm lần đầu để set trạng thái ban đầu
+                toggleForms();
+            });
             </script>
 
             <a href="../index.php" style="text-decoration: none; display: flex; justify-content: center; margin-bottom: 10px;">
