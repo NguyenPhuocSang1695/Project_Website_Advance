@@ -64,28 +64,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: gio-hang.php");
     exit;
   }
-
-  //xóa sản phẩm
+  // Xóa sản phẩm
   if (isset($_POST['remove_product_id'])) {
-    $product_id_to_remove = $_POST['remove_product_id'];
-
-    // 1. Kiểm tra xem biến session giỏ hàng có tồn tại không
-    if (isset($_SESSION['cart'])) {
-      // 2. Duyệt qua các sản phẩm trong giỏ hàng
-      foreach ($_SESSION['cart'] as $key => $item) {
-        // 3. Tìm sản phẩm cần xóa
-        if ($item['ProductID'] == $product_id_to_remove) {
-          // 4. Xóa sản phẩm khỏi giỏ hàng bằng hàm unset()
-          unset($_SESSION['cart'][$key]);
-          break; // Dừng vòng lặp sau khi xóa sản phẩm
-        }
-      }
-      // 5.  Sắp xếp lại chỉ mục của mảng để tránh bị thiếu phần tử.  Điều này rất quan trọng!
-      $_SESSION['cart'] = array_values($_SESSION['cart']);
+    $pid = intval($_POST['remove_product_id']);
+    if (isset($_SESSION['cart'][$pid])) {
+      unset($_SESSION['cart'][$pid]);
     }
-    // Chuyển hướng về trang giỏ hàng để hiển thị các thay đổi
-    header("Location: gio-hang.php"); // Quan trọng: Chuyển hướng để tránh các vấn đề khi tải lại trang
-    exit();
+    header("Location: gio-hang.php");
+    exit;
+  }
+  // Xử lý nút đặt hàng
+  if (isset($_POST['checkout'])) {
+    header("Location: thanh-toan.php");
+    exit;
   }
 }
 
@@ -590,9 +581,9 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
         </div>
       </div>
 
-      <form action="thanh-toan.php" method="POST" name="ThanhToan">
+      <form action="gio-hang.php" method="POST" name="ThanhToan">
         <div class="dat-hang">
-          <button type="submit" class="btn btn-success" name="confirm_checkout" style="width: 185px;
+          <button type="submit" class="btn btn-success" name="checkout" style="width: 185px;
           height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
         </div>
       </form>
