@@ -28,30 +28,21 @@ try {
   exit;
 }
 
-
-
-
-
 // Hàm kiểm tra giỏ hàng có trống không
 function isCartEmpty() {
   // Kiểm tra session giỏ hàng
   if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
       return true;
   }
-  
-
   return false;
 }
 
 if (isCartEmpty()) {
-  
-  
   // Chuyển hướng về trang giỏ hàng
   header("Location: gio-hang.php");
   exit;
 }
 
-// Gán mặc định $user = null để tránh lỗi khi không có kết quả
 $user = null;
 // Lấy thông tin user (gồm JOIN với province, district, ward)
 if (isset($_SESSION['username'])) {
@@ -99,99 +90,174 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
 $dateNow = date('Y-m-d H:i:s');
 
 // Xử lý thanh toán
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_checkout'])) {
-  $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
+  try {
+    
+    // Bắt đầu transaction
+    $conn->begin_transaction();
+    
 
-  // Insert đơn hàng
-  $stmt = $conn->prepare("
-        INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
+    
+    // Kiểm tra xem người dùng đang sử dụng thông tin mặc định hay thông tin mới
+    if (isset($_POST['default-information']) && $_POST['default-information'] === 'true') {
+      // Sử dụng thông tin mặc định từ bảng users
+      $customerName = $user['FullName'];
+      $phone = $user['Phone']; 
+      $address = $user['Address'];
+      $provinceID = $user['ProvinceID'];
+      $districtID = $user['DistrictID'];
+      $wardID = $user['WardID'];
+    } else {
+      // Lấy thông tin mới từ form
+      $customerName = isset($_POST['new_name']) ? trim($_POST['new_name']) : '';
+      $phone = isset($_POST['new_sdt']) ? trim($_POST['new_sdt']) : '';
+      $address = isset($_POST['new_diachi']) ? trim($_POST['new_diachi']) : '';
+      $provinceID = isset($_POST['province']) ? (int)$_POST['province'] : 0;
+      $districtID = isset($_POST['district']) ? (int)$_POST['district'] : 0;
+      $wardID = isset($_POST['wards']) ? (int)$_POST['wards'] : 0;
+
+      if (!empty($customerName) && !empty($phone) && !empty($address) && 
+          $provinceID > 0 && $districtID > 0 && $wardID > 0) {
+        // Cập nhật thông tin mặc định trong bảng users
+        $updateUserStmt = $conn->prepare("UPDATE users SET FullName = ?, Phone = ?, Address = ?, 
+                                         ProvinceID = ?, DistrictID = ?, WardID = ? 
+                                         WHERE Username = ?");
+        $updateUserStmt->bind_param("sssiiis", $customerName, $phone, $address, 
+                                   $provinceID, $districtID, $wardID, $_SESSION['username']);
+        $updateUserStmt->execute();
+        $updateUserStmt->close();
+      }
+    }
+
+    // Insert đơn hàng với thông tin đã chọn
+    $stmt = $conn->prepare("
+      INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address, Status) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'execute')
     ");
-  $stmt->bind_param(
-    "ssssiiisss",
-    $username,
-    $paymentMethod,
-    $user['FullName'],
-    $user['Phone'],
-    $user['ProvinceID'],
-    $user['DistrictID'],
-    $user['WardID'],
-    $dateNow,
-    $total_amount,
-    $user['Address']
-  );
-  $stmt->execute();
-  $orderID = $stmt->insert_id;
-  $_SESSION['order_id'] = $orderID;
-  $stmt->close();
+    
+    if (!$stmt) {
+      throw new Exception("Lỗi chuẩn bị câu lệnh: " . $conn->error);
+    }
 
-  // Insert từng sản phẩm trong giỏ vào orderdetails
-  $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
-  foreach ($cart_items as $item) {
-    $productID = $item['ProductID'];
-    $quantity = $item['Quantity'];
-    $unitPrice = $item['Price'];
-    $totalPrice = $unitPrice * $quantity;
-    $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
-    $stmt->execute();
+    $stmt->bind_param(
+      "ssssiiisds",
+      $username,
+      $paymentMethod, 
+      $customerName,
+      $phone,
+      $provinceID,
+      $districtID, 
+      $wardID,
+      $dateNow,
+      $total_amount,
+      $address
+    );
+
+    if (!$stmt->execute()) {
+      throw new Exception("Lỗi khi tạo đơn hàng: " . $stmt->error);
+    }
+
+    $orderID = $stmt->insert_id;
+    $_SESSION['order_id'] = $orderID;
+    $stmt->close();
+
+    // Insert chi tiết đơn hàng
+    $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
+    
+    if (!$stmt) {
+      throw new Exception("Lỗi chuẩn bị câu lệnh chi tiết đơn hàng: " . $conn->error);
+    }
+
+    foreach ($cart_items as $item) {
+      $productID = $item['ProductID'];
+      $quantity = $item['Quantity'];
+      $unitPrice = $item['Price'];
+      $totalPrice = $unitPrice * $quantity;
+      
+      $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
+      
+      if (!$stmt->execute()) {
+        throw new Exception("Lỗi khi thêm sản phẩm vào đơn hàng: " . $stmt->error);
+      }
+    }
+    $stmt->close();
+
+    // Commit transaction nếu mọi thứ thành công
+    $conn->commit();
+
+    // Xóa giỏ hàng sau khi đặt hàng thành công
+    unset($_SESSION['cart']);
+
+    // Chuyển hướng đến trang hoàn tất
+    header("Location: hoan-tat.php");
+    exit;
+
+  } catch (Exception $e) {
+    // Rollback nếu có lỗi
+    $conn->rollback();
+    echo "<script>alert('Có lỗi xảy ra: " . $e->getMessage() . "');</script>";
   }
-  $stmt->close();
 }
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info'])) {
-  // Lấy thông tin từ form
-  $orderID = $_POST['order_id']; // lấy từ input hidden
-  $newName = trim($_POST['new_name']);
-  $newSdt = trim($_POST['new_sdt']);
-  $newDiachi = trim($_POST['new_diachi']);
-  $provinceID = (int) $_POST['province'];
-  $districtID = (int) $_POST['district'];
-  $wardID = (int) $_POST['wards'];
 
-  // Kiểm tra dữ liệu đầu vào
-  if (empty($newName) || empty($newSdt) || empty($newDiachi) || $provinceID === 0 || $districtID === 0 || $wardID === 0) {
-      echo "Vui lòng điền đầy đủ thông tin.";
-      header("Location: thanh-toan.php");
-      exit();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $errors = [];
+
+  $customerName = $_POST['new_name'] ?? '';
+  $phone = $_POST['new_sdt'] ?? '';
+  $address = $_POST['new_diachi'] ?? '';
+  $province = $_POST['province'] ?? '';
+  $district = $_POST['district'] ?? '';
+  $wards = $_POST['wards'] ?? '';
+  
+  // Họ và tên: cho phép chữ cái Unicode và dấu cách, tối đa 80 từ
+  if (empty($customerName)) {
+      $errors['customerName'] = "Vui lòng nhập họ và tên.";
+  } elseif (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $customerName)) {
+      $errors['customerName'] = "Họ và tên không hợp lệ! Chỉ được chứa chữ cái và khoảng trắng.";
   }
-
-  // Lấy tên tỉnh
-  $stmt = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
-  $stmt->bind_param("i", $provinceID);
-  $stmt->execute();
-  $stmt->bind_result($provinceName);
-  $stmt->fetch();
-  $stmt->close();
-
-  // Lấy tên quận
-  $stmt = $conn->prepare("SELECT name FROM district WHERE district_id = ?");
-  $stmt->bind_param("i", $districtID);
-  $stmt->execute();
-  $stmt->bind_result($districtName);
-  $stmt->fetch();
-  $stmt->close();
-
-  // Lấy tên phường
-  $stmt = $conn->prepare("SELECT name FROM wards WHERE wards_id = ?");
-  $stmt->bind_param("i", $wardID);
-  $stmt->execute();
-  $stmt->bind_result($wardName);
-  $stmt->fetch();
-  $stmt->close();
-
-  // Gộp địa chỉ đầy đủ
-  $fullAddress = $newDiachi ;
-
-  // Cập nhật thông tin đơn hàng
-  $stmt = $conn->prepare("UPDATE orders 
-      SET CustomerName = ?, Phone = ?, Address = ?, Province = ?, District = ?, Ward = ? 
-      WHERE OrderID = ?");
-  $stmt->bind_param("ssssiii", $newName, $newSdt, $fullAddress, $provinceID, $districtID, $wardID, $orderID);
-  $stmt->execute();
-  $stmt->close();
+  
+  // Số điện thoại: bắt đầu bằng 0, có 10 chữ số
+  if (empty($phone)) {
+      $errors['phone'] = "Vui lòng nhập số điện thoại.";
+  } elseif (!preg_match('/^0[0-9]{9}$/', $phone)) {
+      $errors['phone'] = "Số điện thoại không hợp lệ! Phải gồm 10 chữ số và bắt đầu bằng 0.";
+  }
+  
+  // Địa chỉ
+  if (empty($address)) {
+      $errors['address'] = "Vui lòng nhập địa chỉ giao hàng.";
+  }
+  
+  // Tỉnh/Thành phố
+  if (empty($province)) {
+      $errors['province'] = "Vui lòng chọn tỉnh/thành phố.";
+  }
+  
+  // Quận/Huyện
+  if (empty($district)) {
+      $errors['district'] = "Vui lòng chọn quận/huyện.";
+  }
+  
+  // Phường/Xã
+  if (empty($wards)) {
+      $errors['wards'] = "Vui lòng chọn phường/xã.";
+  }
+  
+  // Thêm đoạn code này ngay sau phần kiểm tra lỗi
+  if (!empty($errors)) {
+      echo "<script>
+          document.addEventListener('DOMContentLoaded', function() {
+              document.getElementById('new-information').checked = true;
+              document.getElementById('default-information-form').style.display = 'none';
+              document.getElementById('new-information-form').style.display = 'block';
+          });
+      </script>";
+  }
 }
-
 
 
 ?>
@@ -639,14 +705,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
               toggleForms();
             });
           </script>
-
-
-
-
           <div id="default-information-form">
             <label><strong>Họ và tên</strong></label>
             <input type="text" value="<?= htmlspecialchars($user['FullName'] ?? '') ?>" disabled>
             <input type="hidden" name="FullName" value="<?= htmlspecialchars($user['FullName'] ?? '') ?>">
+            
 
             <label><strong>Email</strong></label>
             <input type="email" value="<?= htmlspecialchars($user['Email'] ?? '') ?>" disabled>
@@ -655,6 +718,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
             <label><strong>Số điện thoại</strong></label>
             <input type="text" value="<?= htmlspecialchars($user['Phone'] ?? '') ?>" disabled>
             <input type="hidden" name="Phone" value="<?= htmlspecialchars($user['Phone'] ?? '') ?>">
+
 
             <label><strong>Địa chỉ</strong></label>
             <input type="text" value="<?= htmlspecialchars(($user['Address'] ?? '') . ', ' . ($user['Ward'] ?? '') . ', ' . ($user['District'] ?? '') . ', ' . ($user['Province'] ?? '')) ?>" disabled>
@@ -671,8 +735,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
 
             <label for=""><strong>Họ và tên</strong></label>
             <input type="text" name="new_name" id="new-name" placeholder="Họ và tên" required>
+            <?php if (!empty($errors['customerName'])): ?>
+                <div class="error" style="color:red;"><?php echo $errors['customerName']; ?></div>
+            <?php endif; ?>
             <label for=""><strong>Số điện thoại</strong></label>
             <input type="text" name="new_sdt" id="new-sdt" placeholder="Số điện thoại" required>
+            <?php if (!empty($errors['phone'])): ?>
+                <div class="error" style="color:red;"><?php echo $errors['phone']; ?></div>
+            <?php endif; ?>
             <label for=""><strong>Địa chỉ</strong></label>
             <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ(số và đường)" required>
 
@@ -703,9 +773,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
             <select name="wards" id="wards" class="form-select">
               <option value="">Chọn phường/xã</option>
             </select>
-            <button type="submit" name="submit_order_info">Xác nhận thông tin mới này</button>
             <script src="../src/js/DiaChi.js"></script>
           </form>
+
 
 
 
@@ -738,7 +808,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
                         function xoaSanPham(productId) {
                           let form = document.createElement("form");
                           form.method = "POST";
-                          form.action = "gio-hang.php";
+                          form.action = "thanh-toan.php";
                           
                           let input = document.createElement("input");
                           input.type = "hidden";
@@ -781,51 +851,200 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
               </div>
               <hr style="border: 3px dashed green; width: 100%" />
             </div>
-            <form action="hoan-tat.php" method="POST">
-            <div class="payment-method">
-              <label>
-                <input type="radio" name="paymentMethod" value="COD" checked>
-                <span>Thanh toán khi nhận hàng</span>
-              </label>
-              <label>
-                <input type="radio" name="paymentMethod" value="Banking">
-                <span>Chuyển khoản</span>
-              </label>
-            </div>
 
-            <!-- Form chuyển khoản -->
-            <div id="banking-form" style="display: none;">
-              <h2>Liên kết thẻ</h2>
-              <label>Thông tin thẻ</label>
-              <input type="text" name="card_number" placeholder="1234 1234 1234 1234" class="banking-required" required>
-              <input type="text" name="expiry_date" placeholder="MM / YY" class="banking-required" required>
-              <input type="text" name="cvc" placeholder="CVC" class="banking-required" required>
-              <label>Tên chủ thẻ</label>
-              <input type="text" name="card_holder" placeholder="Full name on card" class="banking-required" required>
-              <label>Địa chỉ</label>
-              <select name="country" class="banking-required" required>
-                <option value="">Chọn quốc gia</option>
-                <option value="Vietnam">Vietnam</option>
-              </select>
-              <input type="text" name="address1" placeholder="Địa chỉ 1" class="banking-required" required>
-              <input type="text" name="address2" placeholder="Địa chỉ 2" class="banking-required" required>
-              <input type="text" name="city" placeholder="Thành phố" class="banking-required" required>
-              <input type="text" name="province" placeholder="Tỉnh" class="banking-required" required>
-              <input type="text" name="zip_code" placeholder="Mã bưu điện" class="banking-required" required>
-            </div>
+            <!-- Sửa action trỏ về chính file thanh-toan.php -->
+            <form action="thanh-toan.php" method="POST" id="payment-form" onsubmit="return validateForm()">
+              <div class="payment-method">
+                <input type="hidden" name="default-information" id="use-default-info" value="">
+                <input type="hidden" name="new_name" id="hidden-new-name">
+                <input type="hidden" name="new_sdt" id="hidden-new-sdt">
+                <input type="hidden" name="new_diachi" id="hidden-new-diachi">
+                <input type="hidden" name="province" id="hidden-province">
+                <input type="hidden" name="district" id="hidden-district">
+                <input type="hidden" name="wards" id="hidden-wards">
+                <label>
+                  <input type="radio" name="paymentMethod" value="COD" checked onchange="toggleBankingForm()">
+                  <span>Thanh toán khi nhận hàng</span>
+                </label>
+                <label>
+                  <input type="radio" name="paymentMethod" value="Banking" onchange="toggleBankingForm()">
+                  <span>Chuyển khoản</span>
+                </label>
+              </div>
 
-            <div class="payment-button">
-              <button type="submit" class="btn btn-success" style="width: 185px; height: 50px;">THANH TOÁN</button>
-            </div>
-          </form>
+              <!-- Form chuyển khoản -->
+              <div id="banking-form" style="display: none;">
+                <h2>Liên kết thẻ</h2>
+                <label>Thông tin thẻ</label>
+                <input type="text" name="card_number" placeholder="1234 1234 1234 1234" class="banking-required">
+                <input type="text" name="expiry_date" placeholder="MM / YY" class="banking-required">
+                <input type="text" name="cvc" placeholder="CVC" class="banking-required">
+                <label>Tên chủ thẻ</label>
+                <input type="text" name="card_holder" placeholder="Full name on card" class="banking-required">
+                <label>Địa chỉ</label>
+                <select name="country" class="banking-required">
+                  <option value="">Chọn quốc gia</option>
+                  <option value="Vietnam">Vietnam</option>
+                </select>
+                <input type="text" name="address1" placeholder="Địa chỉ 1" class="banking-required">
+                <input type="text" name="address2" placeholder="Địa chỉ 2">
+                <input type="text" name="city" placeholder="Thành phố" class="banking-required">
+                <input type="text" name="province" placeholder="Tỉnh" class="banking-required">
+                <input type="text" name="zip_code" placeholder="Mã bưu điện" class="banking-required">
+              </div>
 
-            
-                <a href="../index.php" style="text-decoration: none;
-                display: flex;
-                justify-content: center;
-                margin-bottom: 10px;">
-                Tiếp tục mua hàng
-              </a>
+              <div class="payment-button">
+                <button type="submit" class="btn btn-success" style="width: 185px; height: 50px;">THANH TOÁN</button>
+              </div>
+            </form>
+
+            <script>
+            function toggleBankingForm() {
+              const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+              const bankingForm = document.getElementById('banking-form');
+              const bankingInputs = document.getElementsByClassName('banking-required');
+              
+              if (paymentMethod === 'Banking') {
+                bankingForm.style.display = 'block';
+                for (let input of bankingInputs) {
+                  input.required = true;
+                }
+              } else {
+                bankingForm.style.display = 'none';
+                for (let input of bankingInputs) {
+                  input.required = false;
+                }
+              }
+            }
+
+            function validateForm() {
+                // Lấy radio button được chọn
+                const defaultInfo = document.getElementById('default-information');
+                const newInfo = document.getElementById('new-information');
+
+                // Đặt giá trị cho trường hidden use-default-info
+                document.getElementById('use-default-info').value = defaultInfo.checked ? "true" : "false";
+
+                // Nếu chọn thông tin mới
+                if (newInfo.checked) {
+                    // Lấy giá trị của các trường
+                    const newName = document.getElementById('new-name');
+                    const newSdt = document.getElementById('new-sdt');
+                    const newDiachi = document.getElementById('new-diachi');
+                    const province = document.getElementById('province');
+                    const district = document.getElementById('district');
+                    const wards = document.getElementById('wards');
+
+                    // Cập nhật các trường hidden
+                    document.getElementById('hidden-new-name').value = newName.value.trim();
+                    document.getElementById('hidden-new-sdt').value = newSdt.value.trim();
+                    document.getElementById('hidden-new-diachi').value = newDiachi.value.trim();
+                    document.getElementById('hidden-province').value = province.value;
+                    document.getElementById('hidden-district').value = district.value;
+                    document.getElementById('hidden-wards').value = wards.value;
+
+                    // Regex chỉ cho phép chữ cái Unicode và khoảng trắng (tối đa 80 từ)
+                    
+                    // Nếu đang sử dụng thông tin mới
+                    if (newInfo.checked) {
+                            // Kiểm tra tên
+                            const nameValue = newName.value.trim();
+                            const nameRegex = /^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u;
+                            if (!nameRegex.test(nameValue)) {
+                                alert("Họ và tên không hợp lệ! Chỉ được chứa chữ cái và khoảng trắng.");
+                                newName.focus();
+                                return false;
+                            }
+                            
+                            // Kiểm tra số điện thoại
+                            const phoneValue = newSdt.value.trim();
+                            const phoneRegex = /^0[0-9]{9}$/;
+                            if (!phoneRegex.test(phoneValue)) {
+                                alert("Số điện thoại không hợp lệ! Phải gồm 10 chữ số và bắt đầu bằng số 0.");
+                                newSdt.focus();
+                                return false;
+                            }
+                        }
+
+
+                    if (!newDiachi.value.trim()) {
+                        alert('Vui lòng nhập địa chỉ');
+                        newDiachi.focus();
+                        return false;
+                    }
+                    if (!province.value) {
+                        alert('Vui lòng chọn tỉnh/thành phố');
+                        province.focus();
+                        return false;
+                    }
+                    if (!district.value) {
+                        alert('Vui lòng chọn quận/huyện');
+                        district.focus();
+                        return false;
+                    }
+                    if (!wards.value) {
+                        alert('Vui lòng chọn phường/xã');
+                        wards.focus();
+                        return false;
+                    }
+                }
+
+                // Kiểm tra phương thức thanh toán
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                if (!paymentMethod) {
+                    alert('Vui lòng chọn phương thức thanh toán');
+                    return false;
+                }
+
+                // Nếu chọn thanh toán chuyển khoản
+                if (paymentMethod.value === 'Banking') {
+                    const bankingInputs = document.getElementsByClassName('banking-required');
+                    for (let input of bankingInputs) {
+                        if (!input.value.trim()) {
+                            alert('Vui lòng điền đầy đủ thông tin thanh toán');
+                            input.focus();
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            // Thêm xử lý sự kiện cho radio buttons
+            document.addEventListener('DOMContentLoaded', function() {
+                const defaultInfo = document.getElementById('default-information');
+                const newInfo = document.getElementById('new-information');
+                const defaultForm = document.getElementById('default-information-form');
+                const newForm = document.getElementById('new-information-form');
+
+                function toggleForms() {
+                    if (defaultInfo.checked) {
+                        defaultForm.style.display = 'block';
+                        newForm.style.display = 'none';
+                        // Xóa required attribute khi không sử dụng form mới
+                        const inputs = newForm.querySelectorAll('input, select');
+                        inputs.forEach(input => input.required = false);
+                    } else {
+                        defaultForm.style.display = 'none';
+                        newForm.style.display = 'block';
+                        // Thêm required attribute khi sử dụng form mới
+                        const inputs = newForm.querySelectorAll('input, select');
+                        inputs.forEach(input => input.required = true);
+                    }
+                }
+
+                defaultInfo.addEventListener('change', toggleForms);
+                newInfo.addEventListener('change', toggleForms);
+
+                // Gọi hàm lần đầu để set trạng thái ban đầu
+                toggleForms();
+            });
+            </script>
+
+            <a href="../index.php" style="text-decoration: none; display: flex; justify-content: center; margin-bottom: 10px;">
+              Tiếp tục mua hàng
+            </a>
           </div>
         </div>
       </div>
