@@ -70,55 +70,139 @@ $stmt->close();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
   if (isset($_POST['chon']) && $_POST['chon'] === 'default-information') {
-      // Xử lý khi chọn thông tin mặc định
-      $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
+    // Xử lý khi chọn thông tin mặc định
+    $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
 
-      // Lấy dữ liệu từ session hoặc biến $user (như bạn đang làm)
-      $username = $_SESSION['username'] ?? ''; // Giả sử có username trong session
-      $fullName = $user['FullName'] ?? '';
-      $phone = $user['Phone'] ?? '';
-      $provinceID = $user['ProvinceID'] ?? null; 
-      $districtID = $user['DistrictID'] ?? null;
-      $wardID = $user['WardID'] ?? null;
-      $address = $user['Address'] ?? '';
-      $dateNow = date('Y-m-d H:i:s'); // Lấy thời gian hiện tại
-      $total_amount = $_SESSION['total_amount'] ?? 0; // Giả sử có tổng tiền trong session
+    // Lấy dữ liệu từ session hoặc biến $user (như bạn đang làm)
+    $username = $_SESSION['username'] ?? ''; // Giả sử có username trong session
+    $fullName = $user['FullName'] ?? '';
+    $phone = $user['Phone'] ?? '';
+    $provinceID = $user['ProvinceID'] ?? null;
+    $districtID = $user['DistrictID'] ?? null;
+    $wardID = $user['WardID'] ?? null;
+    $address = $user['Address'] ?? '';
+    $dateNow = date('Y-m-d H:i:s'); // Lấy thời gian hiện tại
+    $total_amount = $_SESSION['total_amount'] ?? 0; // Giả sử có tổng tiền trong session
 
-      // Insert vào bảng orders
-      $stmt = $conn->prepare("
+    // Insert vào bảng orders
+    $stmt = $conn->prepare("
           INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, ProvinceID, DistrictID, WardID, DateGeneration, TotalAmount, Address, ProvinceName, DistrictName, WardName)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ");
 
-      // Lấy tên tỉnh, huyện, xã (tương tự như bạn đã làm ở phần thông tin mới)
-      $provinceName = '';
-      if ($provinceID) {
-          $stmt_province = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
-          $stmt_province->bind_param("i", $provinceID);
-          $stmt_province->execute();
-          $stmt_province->bind_result($provinceName);
-          $stmt_province->fetch();
-          $stmt_province->close();
-      }
-      // Tương tự cho DistrictName và WardName
+    // Lấy tên tỉnh, huyện, xã (tương tự như bạn đã làm ở phần thông tin mới)
+    $provinceName = '';
+    if ($provinceID) {
+      $stmt_province = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
+      $stmt_province->bind_param("i", $provinceID);
+      $stmt_province->execute();
+      $stmt_province->bind_result($provinceName);
+      $stmt_province->fetch();
+      $stmt_province->close();
+    }
+    // Tương tự cho DistrictName và WardName
 
-      $stmt->bind_param(
-          "ssssiiisssss",
-          $username,
-          $paymentMethod,
-          $fullName,
-          $phone,
-          $provinceID,
-          $districtID,
-          $wardID,
-          $dateNow,
-          $total_amount,
-          $address,
-          $provinceName,
-          $districtName,
-          $wardName
-      );
+    $stmt->bind_param(
+      "ssssiiisssss",
+      $username,
+      $paymentMethod,
+      $fullName,
+      $phone,
+      $provinceID,
+      $districtID,
+      $wardID,
+      $dateNow,
+      $total_amount,
+      $address,
+      $provinceName,
+      $districtName,
+      $wardName
+    );
+    $stmt->execute();
+    $orderID = $stmt->insert_id;
+    $_SESSION['order_id'] = $orderID;
+    $stmt->close();
+
+    // Insert vào bảng orderdetails (như bạn đã làm)
+    $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
+    foreach ($_SESSION['cart'] as $item) { // Giả sử giỏ hàng được lưu trong session
+      $productID = $item['ProductID'];
+      $quantity = $item['Quantity'];
+      $unitPrice = $item['Price'];
+      $totalPrice = $unitPrice * $quantity;
+      $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
       $stmt->execute();
+    }
+    $stmt->close();
+
+    // Chuyển hướng hoặc thực hiện hành động sau khi đặt hàng thành công
+
+
+  } elseif (isset($_POST['chon']) && $_POST['chon'] === 'new-information') {
+    // Xử lý khi chọn thông tin mới
+    $newName = trim($_POST['hidden-new-name']);
+    $newSdt = trim($_POST['hidden-new-sdt']);
+    $newDiachi = trim($_POST['hidden-new-diachi']);
+    $provinceID = (int) $_POST['hidden-province'];
+    $districtID = (int) $_POST['hidden-district'];
+    $wardID = (int) $_POST['hidden-wards'];
+    $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
+    $username = $_SESSION['username'] ?? ''; // Giả sử có username trong session
+    $dateNow = date('Y-m-d H:i:s'); // Lấy thời gian hiện tại
+    $total_amount = $_SESSION['total_amount'] ?? 0; // Giả sử có tổng tiền trong session
+
+    if (!empty($newName) && !empty($newSdt) && !empty($newDiachi) && $provinceID > 0 && $districtID > 0 && $wardID > 0) {
+      // Lấy tên tỉnh, huyện, xã
+      $provinceName = '';
+      $stmt_province = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
+      $stmt_province->bind_param("i", $provinceID);
+      $stmt_province->execute();
+      $stmt_province->bind_result($provinceName);
+      $stmt_province->fetch();
+      $stmt_province->close();
+
+      $districtName = '';
+      $stmt_district = $conn->prepare("SELECT name FROM district WHERE district_id = ?");
+      $stmt_district->bind_param("i", $districtID);
+      $stmt_district->execute();
+      $stmt_district->bind_result($districtName);
+      $stmt_district->fetch();
+      $stmt_district->close();
+
+      $wardName = '';
+      $stmt_ward = $conn->prepare("SELECT name FROM wards WHERE wards_id = ?");
+      $stmt_ward->bind_param("i", $wardID);
+      $stmt_ward->execute();
+      $stmt_ward->bind_result($wardName);
+      $stmt_ward->fetch();
+      $stmt_ward->close();
+
+      // Insert vào bảng orders
+      $stmt = $conn->prepare("
+              INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, ProvinceID, DistrictID, WardID, DateGeneration, TotalAmount, Address, ProvinceName, DistrictName, WardName)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          ");
+      $stmt->bind_param(
+        "ssssiiisssss",
+        $username,
+        $paymentMethod,
+        $newName,
+        $newSdt,
+        $provinceID,
+        $districtID,
+        $wardID,
+        $dateNow,
+        $total_amount,
+        $newDiachi,
+        $provinceName,
+        $districtName,
+        $wardName
+      );
+      if ($stmt->execute()) {
+        echo "Dữ liệu mới đã được lưu vào cơ sở dữ liệu.";
+      } else {
+        echo "Lỗi khi lưu dữ liệu mới: " . $stmt->error;
+      }
       $orderID = $stmt->insert_id;
       $_SESSION['order_id'] = $orderID;
       $stmt->close();
@@ -126,117 +210,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
       // Insert vào bảng orderdetails (như bạn đã làm)
       $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
       foreach ($_SESSION['cart'] as $item) { // Giả sử giỏ hàng được lưu trong session
-          $productID = $item['ProductID'];
-          $quantity = $item['Quantity'];
-          $unitPrice = $item['Price'];
-          $totalPrice = $unitPrice * $quantity;
-          $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
-          $stmt->execute();
+        $productID = $item['ProductID'];
+        $quantity = $item['Quantity'];
+        $unitPrice = $item['Price'];
+        $totalPrice = $unitPrice * $quantity;
+        $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
+        $stmt->execute();
       }
       $stmt->close();
 
+
+      header("Location: hoan-tat.php");
+      exit();
+
+
       // Chuyển hướng hoặc thực hiện hành động sau khi đặt hàng thành công
 
-
-  } elseif (isset($_POST['chon']) && $_POST['chon'] === 'new-information') {
-      // Xử lý khi chọn thông tin mới
-      $newName = trim($_POST['hidden-new-name']);
-      $newSdt = trim($_POST['hidden-new-sdt']);
-      $newDiachi = trim($_POST['hidden-new-diachi']);
-      $provinceID = (int) $_POST['hidden-province'];
-      $districtID = (int) $_POST['hidden-district'];
-      $wardID = (int) $_POST['hidden-wards'];
-      $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
-      $username = $_SESSION['username'] ?? ''; // Giả sử có username trong session
-      $dateNow = date('Y-m-d H:i:s'); // Lấy thời gian hiện tại
-      $total_amount = $_SESSION['total_amount'] ?? 0; // Giả sử có tổng tiền trong session
-
-      if (!empty($newName) && !empty($newSdt) && !empty($newDiachi) && $provinceID > 0 && $districtID > 0 && $wardID > 0) {
-          // Lấy tên tỉnh, huyện, xã
-          $provinceName = '';
-          $stmt_province = $conn->prepare("SELECT name FROM province WHERE province_id = ?");
-          $stmt_province->bind_param("i", $provinceID);
-          $stmt_province->execute();
-          $stmt_province->bind_result($provinceName);
-          $stmt_province->fetch();
-          $stmt_province->close();
-
-          $districtName = '';
-          $stmt_district = $conn->prepare("SELECT name FROM district WHERE district_id = ?");
-          $stmt_district->bind_param("i", $districtID);
-          $stmt_district->execute();
-          $stmt_district->bind_result($districtName);
-          $stmt_district->fetch();
-          $stmt_district->close();
-
-          $wardName = '';
-          $stmt_ward = $conn->prepare("SELECT name FROM wards WHERE wards_id = ?");
-          $stmt_ward->bind_param("i", $wardID);
-          $stmt_ward->execute();
-          $stmt_ward->bind_result($wardName);
-          $stmt_ward->fetch();
-          $stmt_ward->close();
-
-          // Insert vào bảng orders
-          $stmt = $conn->prepare("
-              INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, ProvinceID, DistrictID, WardID, DateGeneration, TotalAmount, Address, ProvinceName, DistrictName, WardName)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          ");
-          $stmt->bind_param(
-              "ssssiiisssss",
-              $username,
-              $paymentMethod,
-              $newName,
-              $newSdt,
-              $provinceID,
-              $districtID,
-              $wardID,
-              $dateNow,
-              $total_amount,
-              $newDiachi,
-              $provinceName,
-              $districtName,
-              $wardName
-          );
-            if ($stmt->execute()) {
-              echo "Dữ liệu mới đã được lưu vào cơ sở dữ liệu.";
-          } else {
-              echo "Lỗi khi lưu dữ liệu mới: " . $stmt->error;
-          }
-          $orderID = $stmt->insert_id;
-          $_SESSION['order_id'] = $orderID;
-          $stmt->close();
-
-          // Insert vào bảng orderdetails (như bạn đã làm)
-          $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
-          foreach ($_SESSION['cart'] as $item) { // Giả sử giỏ hàng được lưu trong session
-              $productID = $item['ProductID'];
-              $quantity = $item['Quantity'];
-              $unitPrice = $item['Price'];
-              $totalPrice = $unitPrice * $quantity;
-              $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
-              $stmt->execute();
-          }
-          $stmt->close();
-        
-        
-            header("Location: hoan-tat.php");
-            exit();
-        
-
-          // Chuyển hướng hoặc thực hiện hành động sau khi đặt hàng thành công
-        
-      } else {
-          // Xử lý lỗi nếu thông tin mới không đầy đủ
-          echo "Vui lòng nhập đầy đủ thông tin mới.";
-      }
+    } else {
+      // Xử lý lỗi nếu thông tin mới không đầy đủ
+      echo "Vui lòng nhập đầy đủ thông tin mới.";
+    }
   }
 }
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // Lấy phương thức thanh toán từ form
-  $paymentMethod = isset($_POST['paymentMethod']) ? $_POST['paymentMethod'] : 'COD';  
+  $paymentMethod = isset($_POST['paymentMethod']) ? $_POST['paymentMethod'] : 'COD';
   // Cập nhật phương thức thanh toán vào cơ sở dữ liệu (nếu cần)
   if (isset($_SESSION['order_id'])) {
     $orderID = $_SESSION['order_id'];
@@ -251,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 unset($_SESSION['cart']);
-setcookie('cart_quantity', '', time() - 3600, '/'); 
+setcookie('cart_quantity', '', time() - 3600, '/');
 
 // Hiển thị thông tin chi tiết hóa đơn
 ?>
@@ -676,50 +676,50 @@ setcookie('cart_quantity', '', time() - 3600, '/');
           <?php
           // Hiển thị thông tin đơn hàng từ database
           if ($order): ?>
-              <p><strong>Mã hóa đơn:</strong> <?= htmlspecialchars($order['OrderID']) ?></p>
-              <p><strong>Ngày mua:</strong> <?= htmlspecialchars($order['DateGeneration']) ?></p>
-              <p><strong>Tên khách hàng:</strong> <?= htmlspecialchars($order['CustomerName']) ?></p>
-              <p><strong>Số điện thoại:</strong> <?= htmlspecialchars($order['Phone']) ?></p>
-              <p><strong>Địa chỉ:</strong> <?= htmlspecialchars($order['Address']) ?>, 
-                  <?= htmlspecialchars($order['WardName']) ?>, 
-                  <?= htmlspecialchars($order['DistrictName']) ?>, 
-                  <?= htmlspecialchars($order['ProvinceName']) ?>
-              </p>
+            <p><strong>Mã hóa đơn:</strong> <?= htmlspecialchars($order['OrderID']) ?></p>
+            <p><strong>Ngày mua:</strong> <?= htmlspecialchars($order['DateGeneration']) ?></p>
+            <p><strong>Tên khách hàng:</strong> <?= htmlspecialchars($order['CustomerName']) ?></p>
+            <p><strong>Số điện thoại:</strong> <?= htmlspecialchars($order['Phone']) ?></p>
+            <p><strong>Địa chỉ:</strong> <?= htmlspecialchars($order['Address']) ?>,
+              <?= htmlspecialchars($order['WardName']) ?>,
+              <?= htmlspecialchars($order['DistrictName']) ?>,
+              <?= htmlspecialchars($order['ProvinceName']) ?>
+            </p>
 
-              <table>
-                  <thead>
-                      <tr>
-                          <th>Sản phẩm</th>
-                          <th>Hình ảnh</th>
-                          <th>Số lượng</th>
-                          <th>Giá</th>
-                          <th>Thành tiền</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <?php if ($details && $details->num_rows > 0):
-                          while ($row = $details->fetch_assoc()): ?>
-                              <tr>
-                                  <td><?= htmlspecialchars($row['ProductName']) ?></td>
-                                  <td><img src="<?= ".." . htmlspecialchars($row['ImageURL']) ?>" alt="<?= htmlspecialchars($row['ProductName']) ?>" width="80"></td>
-                                  <td><?= $row['Quantity'] ?></td>
-                                  <td><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
-                                  <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
-                              </tr>
-                          <?php endwhile;
-                      endif; ?>
-                  </tbody>
-              </table>
-              <div class="total" style="color: red; font-size: 23px;">
-                  <strong>Tổng cộng: </strong> <?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ
-              </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Hình ảnh</th>
+                  <th>Số lượng</th>
+                  <th>Giá</th>
+                  <th>Thành tiền</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php if ($details && $details->num_rows > 0):
+                  while ($row = $details->fetch_assoc()): ?>
+                    <tr>
+                      <td><?= htmlspecialchars($row['ProductName']) ?></td>
+                      <td><img src="<?= ".." . htmlspecialchars($row['ImageURL']) ?>" alt="<?= htmlspecialchars($row['ProductName']) ?>" width="80"></td>
+                      <td><?= $row['Quantity'] ?></td>
+                      <td><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
+                      <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
+                    </tr>
+                <?php endwhile;
+                endif; ?>
+              </tbody>
+            </table>
+            <div class="total" style="color: red; font-size: 23px;">
+              <strong>Tổng cộng: </strong> <?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ
+            </div>
           <?php else: ?>
-              <p>Không tìm thấy thông tin đơn hàng.</p>
+            <p>Không tìm thấy thông tin đơn hàng.</p>
           <?php endif; ?>
         </div>
 
         <div class="continue-shopping">
-          <a href="../index.php" class="btn btn-success">Tiếp tục mua sắm</a>
+          <a href="../index.php" class="btn btn-success" style="margin: 30px 0;">Tiếp tục mua hàng</a>
         </div>
 
       </div>

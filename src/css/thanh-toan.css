@@ -305,9 +305,10 @@ body {
   justify-content: flex-end;
   align-items: flex-end;
   margin-left: 0.7rem;
-  width: 110% !important;
+  width: 100%;
   height: 7rem;
 }
+
 .container-payment {
   display: flex;
   flex-direction: column;
@@ -382,6 +383,7 @@ body {
   height: 37px;
   outline-color: 1c8e2e;
 }
+
 /*  */
 #new-information-form .payment-method {
   margin-top: 10px;
@@ -409,6 +411,7 @@ body {
 .payment-method label:hover {
   color: #007bff;
 }
+
 .infor-goods {
   width: 70%;
   margin: 35px 0px;
@@ -423,8 +426,8 @@ body {
 }
 
 .order-img img {
-  width: 7rem;
-  height: 7rem;
+  width: 9rem;
+  height: 9rem;
 }
 
 .frame {
@@ -575,11 +578,11 @@ h2 {
 /* FOOTER  */
 
 /* PC  */
-@media only screen and (min-width: 1023.98px) {
-}
+@media only screen and (min-width: 1023.98px) {}
 
 /* TABLET and MOBILE  */
 @media only screen and (max-width: 768.01px) {
+
   /* Header  */
   .item-header {
     gap: 20px;
@@ -673,6 +676,7 @@ h2 {
 
 /* TABLET  */
 @media only screen and (min-width: 425px) and (max-width: 768.01px) {
+
   /* Main  */
   .content {
     width: 110%;
@@ -681,9 +685,10 @@ h2 {
 
 /* MOBILE  */
 @media only screen and (max-width: 425.1px) {
+
   /* Main  */
   .content {
-    width: 106%;
+    width: 100%;
   }
 
   .status-order,
