@@ -59,16 +59,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.success && data.orders && data.orders.length > 0) {
           data.orders.forEach(order => {
             const buyerName = order.buyer_name || 'Không xác định';
-            const receiverName = order.receiver_name || 'Không xác định';
+            // const receiverName = order.receiver_name || 'Không xác định';
             const address = order.receiver_address || 'Chưa có địa chỉ';
 
             const row = document.createElement('tr');
             row.innerHTML = `
               <td>${order.madonhang || ''}</td>
-              <div class="one-line-paragraph">
-                            <td class="hide-index-tablet">${buyerName}</td>
-                            </div>
-
+              <td class="hide-index-tablet" title="${buyerName}">${truncateText(buyerName)}</td>
               <td>${formatDate(order.ngaytao) || ''}</td>
               <td class="hide-index-mobile">${formatCurrency(order.giatien || 0)}</td>
               <td>
@@ -101,6 +98,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
   };
+
+  function truncateText(text, maxLength = 20) {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
+  }
 
   function formatDate(dateString) {
     const date = new Date(dateString);
