@@ -141,9 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
 
 
   } elseif (isset($_POST['chon']) && $_POST['chon'] === 'new-information') {
-      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    error_log('POST data: ' . print_r($_POST, true));
-}
       // Xử lý khi chọn thông tin mới
       $newName = trim($_POST['hidden-new-name']);
       $newSdt = trim($_POST['hidden-new-sdt']);
