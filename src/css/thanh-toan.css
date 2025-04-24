@@ -414,7 +414,7 @@ body {
 
 .infor-goods {
   width: 70%;
-  margin: 35px 0px;
+  margin: 35px 0 0 0;
 }
 
 .order {
@@ -426,8 +426,8 @@ body {
 }
 
 .order-img img {
-  width: 9rem;
-  height: 9rem;
+  width: 8rem;
+  height: 8rem;
 }
 
 .frame {

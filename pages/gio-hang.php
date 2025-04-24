@@ -513,9 +513,9 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                   <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
 
                   <!-- Nút icon mở modal -->
-                  <button type="button" class="btn" 
+                  <button type="button" class="btn"
                     style=" width: 53px; height: 33px;"
-                    data-bs-toggle="modal" 
+                    data-bs-toggle="modal"
                     data-bs-target="#exampleModal-<?php echo $item['ProductID']; ?>">
                     <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                   </button>
@@ -536,7 +536,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
 
                         <div class="modal-footer d-flex flex-row">
                           <button type="button" class="btn btn-secondary" style="width: 20%;" data-bs-dismiss="modal">Đóng</button>
-                          
+
                           <!-- Nút Xóa submit form -->
                           <button type="button" class="btn btn-primary" style="width: 45%;" onclick="document.getElementById('remove-form-<?php echo $item['ProductID']; ?>').submit();">Xóa</button>
                         </div>
