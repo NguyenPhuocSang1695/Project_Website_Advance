@@ -65,6 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
 
+
+  // Xóa sản phẩm
   //xóa sản phẩm
   if (isset($_POST['remove_product_id'])) {
     $product_id_to_remove = $_POST['remove_product_id'];
@@ -86,6 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Chuyển hướng về trang giỏ hàng để hiển thị các thay đổi
     header("Location: gio-hang.php"); // Quan trọng: Chuyển hướng để tránh các vấn đề khi tải lại trang
     exit();
+  }
+  // Xử lý nút đặt hàng
+  if (isset($_POST['checkout'])) {
+    header("Location: thanh-toan.php");
+    exit;
   }
 }
 
@@ -522,9 +529,9 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
                   <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
 
                   <!-- Nút icon mở modal -->
-                  <button type="button" class="btn" 
+                  <button type="button" class="btn"
                     style=" width: 53px; height: 33px;"
-                    data-bs-toggle="modal" 
+                    data-bs-toggle="modal"
                     data-bs-target="#exampleModal-<?php echo $item['ProductID']; ?>">
                     <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                   </button>
@@ -545,7 +552,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
 
                         <div class="modal-footer d-flex flex-row">
                           <button type="button" class="btn btn-secondary" style="width: 20%;" data-bs-dismiss="modal">Đóng</button>
-                          
+
                           <!-- Nút Xóa submit form -->
                           <button type="button" class="btn btn-primary" style="width: 45%;" onclick="document.getElementById('remove-form-<?php echo $item['ProductID']; ?>').submit();">Xóa</button>
                         </div>
@@ -590,9 +597,9 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
         </div>
       </div>
 
-      <form action="thanh-toan.php" method="POST" name="ThanhToan">
+      <form action="gio-hang.php" method="POST" name="ThanhToan">
         <div class="dat-hang">
-          <button type="submit" class="btn btn-success" name="confirm_checkout" style="width: 185px;
+          <button type="submit" class="btn btn-success" name="checkout" style="width: 185px;
           height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
         </div>
       </form>

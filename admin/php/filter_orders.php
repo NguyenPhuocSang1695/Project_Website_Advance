@@ -19,37 +19,45 @@ $orderStatus = isset($_GET['order_status']) ? $_GET['order_status'] : '';
 $provinceId = isset($_GET['province_id']) ? intval($_GET['province_id']) : 0;
 $districtId = isset($_GET['district_id']) ? intval($_GET['district_id']) : 0;
 
-// Sửa phần query SELECT 
-$selectQuery = "SELECT 
-    o.OrderID AS madonhang,
-    o.DateGeneration AS ngaytao,
-    o.Status AS trangthai,
-    o.TotalAmount AS giatien,
-    u.FullName AS buyer_name,
-    u.Address AS buyer_address, 
-    dr.name AS buyer_district, 
-    pr.name AS buyer_province, 
-    o.CustomerName AS receiver_name,
-    o.Address AS receiver_address,
-    dr.name AS shipping_district,  
-    pr.name AS shipping_province     
-FROM orders o
-LEFT JOIN users u ON o.Username = u.Username
-LEFT JOIN province pr ON o.Province = pr.province_id 
-LEFT JOIN district dr ON o.District = dr.district_id
-WHERE 1=1";
+// Sửa phần query SELECT với cú pháp chuẩn hơn
+$selectQuery = "
+    SELECT 
+        o.OrderID AS madonhang,
+        o.DateGeneration AS ngaytao,
+        o.Status AS trangthai,
+        o.TotalAmount AS giatien,
+        u.FullName AS buyer_name,
+        u.Address AS buyer_address,
+        d.name AS buyer_district,
+        p.name AS buyer_province,
+        o.CustomerName AS receiver_name,
+        o.Address AS receiver_address,
+        d2.name AS shipping_district,
+        p2.name AS shipping_province
+    FROM orders o
+    LEFT JOIN users u 
+        ON o.Username = u.Username
+    LEFT JOIN province p 
+        ON u.Province = p.province_id
+    LEFT JOIN district d 
+        ON u.District = d.district_id
+    LEFT JOIN province p2 
+        ON o.Province = p2.province_id
+    LEFT JOIN district d2 
+        ON o.District = d2.district_id
+    WHERE 1=1";
 
 $params = [];
 $types = '';
 
 if ($dateFrom) {
-    $selectQuery .= " AND o.DateGeneration >= ?";
+    $selectQuery .= " AND DATE(o.DateGeneration) >= ?";
     $params[] = $dateFrom;
     $types .= 's';
 }
 
 if ($dateTo) {
-    $selectQuery .= " AND o.DateGeneration <= ?";
+    $selectQuery .= " AND DATE(o.DateGeneration) <= ?";
     $params[] = $dateTo;
     $types .= 's';
 }
@@ -77,20 +85,28 @@ $params[] = $limit;
 $params[] = $offset;
 $types .= 'ii';
 
-$countQuery = "SELECT COUNT(*) as total FROM orders o";
-
-$countQuery .= " LEFT JOIN users u ON o.Username = u.Username
-                 LEFT JOIN province pr ON o.Province = pr.province_id
-                 LEFT JOIN district dr ON o.District = dr.district_id
-                 WHERE 1=1";
-
+// Sửa lại câu query đếm tổng số record
+$countQuery = "
+    SELECT COUNT(DISTINCT o.OrderID) as total 
+    FROM orders o
+    LEFT JOIN users u 
+        ON o.Username = u.Username
+    LEFT JOIN province p 
+        ON u.Province = p.province_id
+    LEFT JOIN district d 
+        ON u.District = d.district_id
+    LEFT JOIN province p2 
+        ON o.Province = p2.province_id
+    LEFT JOIN district d2 
+        ON o.District = d2.district_id
+    WHERE 1=1";
 
 if ($dateFrom) {
-    $countQuery .= " AND o.DateGeneration >= ?";
+    $countQuery .= " AND DATE(o.DateGeneration) >= ?";
 }
 
 if ($dateTo) {
-    $countQuery .= " AND o.DateGeneration <= ?";
+    $countQuery .= " AND DATE(o.DateGeneration) <= ?";
 }
 
 if ($orderStatus && $orderStatus !== 'all') {
@@ -158,7 +174,7 @@ while ($row = $result->fetch_assoc()) {
         $row['shipping_district'],
         $row['shipping_province']
     ] : [
-        $row['buyer_address'], // Thông tin địa chỉ từ bảng users
+        $row['buyer_address'],
         $row['buyer_district'],
         $row['buyer_province']
     ];
