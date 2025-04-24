@@ -66,14 +66,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   // Xóa sản phẩm
   if (isset($_POST['remove_product_id'])) {
-    $pid = intval($_POST['remove_product_id']);
-    if (isset($_SESSION['cart'][$pid])) {
-      unset($_SESSION['cart'][$pid]);
+    $product_id_to_remove = $_POST['remove_product_id'];
+
+    // 1. Kiểm tra xem biến session giỏ hàng có tồn tại không
+    if (isset($_SESSION['cart'])) {
+      // 2. Duyệt qua các sản phẩm trong giỏ hàng
+      foreach ($_SESSION['cart'] as $key => $item) {
+        // 3. Tìm sản phẩm cần xóa
+        if ($item['ProductID'] == $product_id_to_remove) {
+          // 4. Xóa sản phẩm khỏi giỏ hàng bằng hàm unset()
+          unset($_SESSION['cart'][$key]);
+          break; // Dừng vòng lặp sau khi xóa sản phẩm
+        }
+      }
+      // 5. Sắp xếp lại chỉ mục của mảng để tránh bị thiếu phần tử
+      $_SESSION['cart'] = array_values($_SESSION['cart']);
     }
+    // Chuyển hướng về trang giỏ hàng để hiển thị các thay đổi
     header("Location: gio-hang.php");
-    exit;
+    exit();
   }
-  // Xử lý nút đặt hàng
+  // Xử lý nút đặt hàng 
   if (isset($_POST['checkout'])) {
     header("Location: thanh-toan.php");
     exit;
@@ -509,38 +522,30 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
 
               <div class="function">
                 <!-- Button trigger modal -->
-                <form action="gio-hang.php" method="POST" id="remove-form-<?php echo $item['ProductID']; ?>">
+                <form action="" method="POST" id="remove-form-<?php echo $item['ProductID']; ?>">
                   <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-
+                  
                   <!-- Nút icon mở modal -->
-                  <button type="button" class="btn" 
-                    style=" width: 53px; height: 33px;"
-                    data-bs-toggle="modal" 
-                    data-bs-target="#exampleModal-<?php echo $item['ProductID']; ?>">
+                  <button type="button" class="btn" style="width: 53px; height: 33px;"
+                    data-bs-toggle="modal" data-bs-target="#exampleModal-<?php echo $item['ProductID']; ?>">
                     <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                   </button>
 
                   <!-- Modal xác nhận -->
-                  <div class="modal fade w-100" id="exampleModal-<?php echo $item['ProductID']; ?>" tabindex="-1" aria-labelledby="exampleModalLabel-<?php echo $item['ProductID']; ?>" aria-hidden="true">
+                  <div class="modal fade" id="exampleModal-<?php echo $item['ProductID']; ?>" tabindex="-1">
                     <div class="modal-dialog">
                       <div class="modal-content">
-
                         <div class="modal-header">
-                          <h1 class="modal-title fs-5" id="exampleModalLabel-<?php echo $item['ProductID']; ?>">Thông báo</h1>
-                          <button type="button" class="btn-close" style="width: 10%;" data-bs-dismiss="modal" aria-label="Close"></button>
+                          <h5 class="modal-title">Xác nhận xóa</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-
-                        <div class="modal-body d-flex justify-content-center align-items-center">
-                          Bạn có chắc muốn xóa sản phẩm chứ!
+                        <div class="modal-body">
+                          Bạn có chắc muốn xóa sản phẩm này?
                         </div>
-
-                        <div class="modal-footer d-flex flex-row">
-                          <button type="button" class="btn btn-secondary" style="width: 20%;" data-bs-dismiss="modal">Đóng</button>
-                          
-                          <!-- Nút Xóa submit form -->
-                          <button type="button" class="btn btn-primary" style="width: 45%;" onclick="document.getElementById('remove-form-<?php echo $item['ProductID']; ?>').submit();">Xóa</button>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                          <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
                         </div>
-
                       </div>
                     </div>
                   </div>

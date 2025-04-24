@@ -29,10 +29,11 @@ try {
 }
 
 // Hàm kiểm tra giỏ hàng có trống không
-function isCartEmpty() {
+function isCartEmpty()
+{
   // Kiểm tra session giỏ hàng
   if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
-      return true;
+    return true;
   }
   return false;
 }
@@ -94,14 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
   try {
     // Bắt đầu transaction
     $conn->begin_transaction();
-    
+
     $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
-    
+
     // Kiểm tra xem người dùng đang sử dụng thông tin mặc định hay thông tin mới
     if (isset($_POST['default-information']) && $_POST['default-information'] === 'true') {
       // Sử dụng thông tin mặc định từ bảng users
       $customerName = $user['FullName'];
-      $phone = $user['Phone']; 
+      $phone = $user['Phone'];
       $address = $user['Address'];
       $provinceID = $user['ProvinceID'];
       $districtID = $user['DistrictID'];
@@ -115,16 +116,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       $districtID = isset($_POST['district']) ? (int)$_POST['district'] : 0;
       $wardID = isset($_POST['wards']) ? (int)$_POST['wards'] : 0;
 
-      if (!empty($customerName) && !empty($phone) && !empty($address) && 
+      $formValid = true;
+      $errorMessage = '';
+      $customerName = trim($customerName); 
+      if (strlen($customerName) > 80) {
+        $errorMessage = 'Họ tên không được vượt quá 80 ký tự!';
+        $formValid = false;
+    } elseif (!preg_match('/^[A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*(?:[ ][A-ZÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ][a-zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]*)*$/u', $customerName)) {
+        $errorMessage = 'Họ tên không hợp lệ! Mỗi từ phải viết hoa chữ cái đầu, các chữ còn lại viết thường, và các từ phải cách nhau bởi đúng một khoảng trắng.';
+        $formValid = false;
+    }
+      else if (!preg_match("/^[0-9]{10,11}$/", $phone)) {
+        $errorMessage = 'Số điện thoại không hợp lệ! Phải có 10-11 chữ số.';
+        $formValid = false;
+      }
+
+      if (!$formValid) {
+        echo "<script>
+          alert('$errorMessage');
+          document.getElementById('new-information').checked = true;
+          document.getElementById('default-information-form').style.display = 'none';
+          document.getElementById('new-information-form').style.display = 'block';
+        </script>";
+      } else if (!empty($customerName) && !empty($phone) && !empty($address) &&
           $provinceID > 0 && $districtID > 0 && $wardID > 0) {
         // Cập nhật thông tin mặc định trong bảng users
         $updateUserStmt = $conn->prepare("UPDATE users SET FullName = ?, Phone = ?, Address = ?, 
                                          ProvinceID = ?, DistrictID = ?, WardID = ? 
                                          WHERE Username = ?");
-        $updateUserStmt->bind_param("sssiiis", $customerName, $phone, $address, 
-                                   $provinceID, $districtID, $wardID, $_SESSION['username']);
-        $updateUserStmt->execute();
-        $updateUserStmt->close();
+        $updateUserStmt->bind_param(
+          "sssiiis",
+          $customerName,
+          $phone,
+          $address,
+          $provinceID,
+          $districtID,
+          $wardID,
+          $_SESSION['username']
+        );
+        if (!$updateUserStmt->execute()) {
+          throw new Exception("Lỗi khi cập nhật thông tin người dùng: " . $updateUserStmt->error);
+        } else {
+          $updateUserStmt->close();
+        }
       }
     }
 
@@ -133,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address, Status) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'execute')
     ");
-    
+
     if (!$stmt) {
       throw new Exception("Lỗi chuẩn bị câu lệnh: " . $conn->error);
     }
@@ -141,11 +175,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     $stmt->bind_param(
       "ssssiiisds",
       $username,
-      $paymentMethod, 
+      $paymentMethod,
       $customerName,
       $phone,
       $provinceID,
-      $districtID, 
+      $districtID,
       $wardID,
       $dateNow,
       $total_amount,
@@ -162,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
 
     // Insert chi tiết đơn hàng
     $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
-    
+
     if (!$stmt) {
       throw new Exception("Lỗi chuẩn bị câu lệnh chi tiết đơn hàng: " . $conn->error);
     }
@@ -172,9 +206,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       $quantity = $item['Quantity'];
       $unitPrice = $item['Price'];
       $totalPrice = $unitPrice * $quantity;
-      
+
       $stmt->bind_param("iiidd", $orderID, $productID, $quantity, $unitPrice, $totalPrice);
-      
+
       if (!$stmt->execute()) {
         throw new Exception("Lỗi khi thêm sản phẩm vào đơn hàng: " . $stmt->error);
       }
@@ -190,7 +224,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     // Chuyển hướng đến trang hoàn tất
     header("Location: hoan-tat.php");
     exit;
-
   } catch (Exception $e) {
     // Rollback nếu có lỗi
     $conn->rollback();
@@ -210,9 +243,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
 
   // Kiểm tra dữ liệu đầu vào
   if (empty($newName) || empty($newSdt) || empty($newDiachi) || $provinceID === 0 || $districtID === 0 || $wardID === 0) {
-      echo "Vui lòng điền đầy đủ thông tin.";
-      header("Location: thanh-toan.php");
-      exit();
+    echo "Vui lòng điền đầy đủ thông tin.";
+    header("Location: thanh-toan.php");
+    exit();
   }
 
   // Lấy tên tỉnh
@@ -240,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
   $stmt->close();
 
   // Gộp địa chỉ đầy đủ
-  $fullAddress = $newDiachi ;
+  $fullAddress = $newDiachi;
 
   // Cập nhật thông tin đơn hàng
   $stmt = $conn->prepare("UPDATE orders 
@@ -250,9 +283,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
   $stmt->execute();
   $stmt->close();
 }
-
-
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -311,7 +341,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
                   </div>
                 </div>
 
-                <!-- Form tìm kiếm nâng cao được thiết kế lại -->
+                <!-- Form tìm kiếm nâng cao-->
                 <div id="advancedSearchForm" class="advanced-search-panel" style="display: none">
                   <div class="advanced-search-header">
                     <h5>Tìm kiếm nâng cao</h5>
@@ -782,23 +812,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
                       <!-- Button trigger modal -->
                       <form action="gio-hang.php" method="POST">
                         <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                        <button type="button" class="btn" style="width: 53px; height: 33px;" 
+                        <button type="button" class="btn" style="width: 53px; height: 33px;"
                           onclick="if(confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')) xoaSanPham(<?php echo $item['ProductID']; ?>)">
                           <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                         </button>
-                        <!-- <button type="submit" class="btn btn-danger" style="width: 53px; height: 33px;">Xoá</button> -->             
+                        <!-- <button type="submit" class="btn btn-danger" style="width: 53px; height: 33px;">Xoá</button> -->
                       </form>
                       <script>
                         function xoaSanPham(productId) {
                           let form = document.createElement("form");
                           form.method = "POST";
                           form.action = "gio-hang.php";
-                          
+
                           let input = document.createElement("input");
                           input.type = "hidden";
                           input.name = "remove_product_id";
                           input.value = productId;
-                          
+
                           form.appendChild(input);
                           document.body.appendChild(form);
                           form.submit();
@@ -883,25 +913,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
             </form>
 
             <script>
-            function toggleBankingForm() {
-              const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-              const bankingForm = document.getElementById('banking-form');
-              const bankingInputs = document.getElementsByClassName('banking-required');
-              
-              if (paymentMethod === 'Banking') {
-                bankingForm.style.display = 'block';
-                for (let input of bankingInputs) {
-                  input.required = true;
-                }
-              } else {
-                bankingForm.style.display = 'none';
-                for (let input of bankingInputs) {
-                  input.required = false;
+              function toggleBankingForm() {
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                const bankingForm = document.getElementById('banking-form');
+                const bankingInputs = document.getElementsByClassName('banking-required');
+
+                if (paymentMethod === 'Banking') {
+                  bankingForm.style.display = 'block';
+                  for (let input of bankingInputs) {
+                    input.required = true;
+                  }
+                } else {
+                  bankingForm.style.display = 'none';
+                  for (let input of bankingInputs) {
+                    input.required = false;
+                  }
                 }
               }
-            }
 
-            function validateForm() {
+              function validateForm() {
                 // Lấy radio button được chọn
                 const defaultInfo = document.getElementById('default-information');
                 const newInfo = document.getElementById('new-information');
@@ -911,98 +941,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
 
                 // Nếu chọn thông tin mới
                 if (newInfo.checked) {
-                    // Lấy giá trị của các trường
-                    const newName = document.getElementById('new-name');
-                    const newSdt = document.getElementById('new-sdt');
-                    const newDiachi = document.getElementById('new-diachi');
-                    const province = document.getElementById('province');
-                    const district = document.getElementById('district');
-                    const wards = document.getElementById('wards');
+                  // Lấy giá trị của các trường
+                  const newName = document.getElementById('new-name');
+                  const newSdt = document.getElementById('new-sdt');
+                  const newDiachi = document.getElementById('new-diachi');
+                  const province = document.getElementById('province');
+                  const district = document.getElementById('district');
+                  const wards = document.getElementById('wards');
 
-                    // Cập nhật các trường hidden
-                    document.getElementById('hidden-new-name').value = newName.value.trim();
-                    document.getElementById('hidden-new-sdt').value = newSdt.value.trim();
-                    document.getElementById('hidden-new-diachi').value = newDiachi.value.trim();
-                    document.getElementById('hidden-province').value = province.value;
-                    document.getElementById('hidden-district').value = district.value;
-                    document.getElementById('hidden-wards').value = wards.value;
+                  // Cập nhật các trường hidden
+                  document.getElementById('hidden-new-name').value = newName.value.trim();
+                  document.getElementById('hidden-new-sdt').value = newSdt.value.trim();
+                  document.getElementById('hidden-new-diachi').value = newDiachi.value.trim();
+                  document.getElementById('hidden-province').value = province.value;
+                  document.getElementById('hidden-district').value = district.value;
+                  document.getElementById('hidden-wards').value = wards.value;
 
-                    // Kiểm tra từng trường
-                    if (!newName.value.trim()) {
-                        alert('Vui lòng nhập họ tên');
-                        newName.focus();
-                        return false;
-                    }
-                    if (!newSdt.value.trim()) {
-                        alert('Vui lòng nhập số điện thoại');
-                        newSdt.focus();
-                        return false;
-                    }
-                    if (!newDiachi.value.trim()) {
-                        alert('Vui lòng nhập địa chỉ');
-                        newDiachi.focus();
-                        return false;
-                    }
-                    if (!province.value) {
-                        alert('Vui lòng chọn tỉnh/thành phố');
-                        province.focus();
-                        return false;
-                    }
-                    if (!district.value) {
-                        alert('Vui lòng chọn quận/huyện');
-                        district.focus();
-                        return false;
-                    }
-                    if (!wards.value) {
-                        alert('Vui lòng chọn phường/xã');
-                        wards.focus();
-                        return false;
-                    }
+                  // Kiểm tra từng trường
+                  if (!newName.value.trim()) {
+                    alert('Vui lòng nhập họ tên');
+                    newName.focus();
+                    return false;
+                  }
+                  if (!newSdt.value.trim()) {
+                    alert('Vui lòng nhập số điện thoại');
+                    newSdt.focus();
+                    return false;
+                  }
+                  if (!newDiachi.value.trim()) {
+                    alert('Vui lòng nhập địa chỉ');
+                    newDiachi.focus();
+                    return false;
+                  }
+                  if (!province.value) {
+                    alert('Vui lòng chọn tỉnh/thành phố');
+                    province.focus();
+                    return false;
+                  }
+                  if (!district.value) {
+                    alert('Vui lòng chọn quận/huyện');
+                    district.focus();
+                    return false;
+                  }
+                  if (!wards.value) {
+                    alert('Vui lòng chọn phường/xã');
+                    wards.focus();
+                    return false;
+                  }
                 }
 
                 // Kiểm tra phương thức thanh toán
                 const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
                 if (!paymentMethod) {
-                    alert('Vui lòng chọn phương thức thanh toán');
-                    return false;
+                  alert('Vui lòng chọn phương thức thanh toán');
+                  return false;
                 }
 
                 // Nếu chọn thanh toán chuyển khoản
                 if (paymentMethod.value === 'Banking') {
-                    const bankingInputs = document.getElementsByClassName('banking-required');
-                    for (let input of bankingInputs) {
-                        if (!input.value.trim()) {
-                            alert('Vui lòng điền đầy đủ thông tin thanh toán');
-                            input.focus();
-                            return false;
-                        }
+                  const bankingInputs = document.getElementsByClassName('banking-required');
+                  for (let input of bankingInputs) {
+                    if (!input.value.trim()) {
+                      alert('Vui lòng điền đầy đủ thông tin thanh toán');
+                      input.focus();
+                      return false;
                     }
+                  }
                 }
 
                 return true;
-            }
+              }
 
-            // Thêm xử lý sự kiện cho radio buttons
-            document.addEventListener('DOMContentLoaded', function() {
+              // Thêm xử lý sự kiện cho radio buttons
+              document.addEventListener('DOMContentLoaded', function() {
                 const defaultInfo = document.getElementById('default-information');
                 const newInfo = document.getElementById('new-information');
                 const defaultForm = document.getElementById('default-information-form');
                 const newForm = document.getElementById('new-information-form');
 
                 function toggleForms() {
-                    if (defaultInfo.checked) {
-                        defaultForm.style.display = 'block';
-                        newForm.style.display = 'none';
-                        // Xóa required attribute khi không sử dụng form mới
-                        const inputs = newForm.querySelectorAll('input, select');
-                        inputs.forEach(input => input.required = false);
-                    } else {
-                        defaultForm.style.display = 'none';
-                        newForm.style.display = 'block';
-                        // Thêm required attribute khi sử dụng form mới
-                        const inputs = newForm.querySelectorAll('input, select');
-                        inputs.forEach(input => input.required = true);
-                    }
+                  if (defaultInfo.checked) {
+                    defaultForm.style.display = 'block';
+                    newForm.style.display = 'none';
+                    // Xóa required attribute khi không sử dụng form mới
+                    const inputs = newForm.querySelectorAll('input, select');
+                    inputs.forEach(input => input.required = false);
+                  } else {
+                    defaultForm.style.display = 'none';
+                    newForm.style.display = 'block';
+                    // Thêm required attribute khi sử dụng form mới
+                    const inputs = newForm.querySelectorAll('input, select');
+                    inputs.forEach(input => input.required = true);
+                  }
                 }
 
                 defaultInfo.addEventListener('change', toggleForms);
@@ -1010,7 +1040,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_order_info']))
 
                 // Gọi hàm lần đầu để set trạng thái ban đầu
                 toggleForms();
-            });
+              });
             </script>
 
             <a href="../index.php" style="text-decoration: none; display: flex; justify-content: center; margin-bottom: 10px;">
