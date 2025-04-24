@@ -817,16 +817,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <script>
                         function xoaSanPham(productId) {
                           let form = document.createElement("form");
-                          form.method = "POST"; <<
-                          << << < HEAD
-                          form.action = "gio-hang.php";
-
-                          ===
-                          === =
+                          form.method = "POST";
                           form.action = "thanh-toan.php";
 
-                          >>>
-                          >>> > nguyenduykhoi
                           let input = document.createElement("input");
                           input.type = "hidden";
                           input.name = "remove_product_id";
@@ -916,8 +909,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
 
             <script>
-              << << << < HEAD
-
               function toggleBankingForm() {
                 const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
                 const bankingForm = document.getElementById('banking-form');
@@ -937,250 +928,128 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               }
 
               function validateForm() {
-                ===
-                === =
-                function toggleBankingForm() {
-                  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-                  const bankingForm = document.getElementById('banking-form');
-                  const bankingInputs = document.getElementsByClassName('banking-required');
+                // Lấy radio button được chọn
+                const defaultInfo = document.getElementById('default-information');
+                const newInfo = document.getElementById('new-information');
 
-                  if (paymentMethod === 'Banking') {
-                    bankingForm.style.display = 'block';
-                    for (let input of bankingInputs) {
-                      input.required = true;
-                    }
-                  } else {
-                    bankingForm.style.display = 'none';
-                    for (let input of bankingInputs) {
-                      input.required = false;
-                    }
-                  }
-                }
+                // Đặt giá trị cho trường hidden use-default-info
+                document.getElementById('use-default-info').value = defaultInfo.checked ? "true" : "false";
 
-                function validateForm() {
-                  >>>
-                  >>> > nguyenduykhoi
-                  // Lấy radio button được chọn
-                  const defaultInfo = document.getElementById('default-information');
-                  const newInfo = document.getElementById('new-information');
+                // Nếu chọn thông tin mới
+                if (newInfo.checked) {
+                  // Lấy giá trị của các trường
+                  const newName = document.getElementById('new-name');
+                  const newSdt = document.getElementById('new-sdt');
+                  const newDiachi = document.getElementById('new-diachi');
+                  const province = document.getElementById('province');
+                  const district = document.getElementById('district');
+                  const wards = document.getElementById('wards');
 
-                  // Đặt giá trị cho trường hidden use-default-info
-                  document.getElementById('use-default-info').value = defaultInfo.checked ? "true" : "false";
+                  // Cập nhật các trường hidden
+                  document.getElementById('hidden-new-name').value = newName.value.trim();
+                  document.getElementById('hidden-new-sdt').value = newSdt.value.trim();
+                  document.getElementById('hidden-new-diachi').value = newDiachi.value.trim();
+                  document.getElementById('hidden-province').value = province.value;
+                  document.getElementById('hidden-district').value = district.value;
+                  document.getElementById('hidden-wards').value = wards.value;
 
-                  // Nếu chọn thông tin mới
+                  // Regex chỉ cho phép chữ cái Unicode và khoảng trắng (tối đa 80 từ)
+
+                  // Nếu đang sử dụng thông tin mới
                   if (newInfo.checked) {
-                    <<
-                    << << < HEAD
-                    // Lấy giá trị của các trường
-                    const newName = document.getElementById('new-name');
-                    const newSdt = document.getElementById('new-sdt');
-                    const newDiachi = document.getElementById('new-diachi');
-                    const province = document.getElementById('province');
-                    const district = document.getElementById('district');
-                    const wards = document.getElementById('wards');
-
-                    // Cập nhật các trường hidden
-                    document.getElementById('hidden-new-name').value = newName.value.trim();
-                    document.getElementById('hidden-new-sdt').value = newSdt.value.trim();
-                    document.getElementById('hidden-new-diachi').value = newDiachi.value.trim();
-                    document.getElementById('hidden-province').value = province.value;
-                    document.getElementById('hidden-district').value = district.value;
-                    document.getElementById('hidden-wards').value = wards.value;
-
-                    // Kiểm tra từng trường
-                    if (!newName.value.trim()) {
-                      alert('Vui lòng nhập họ tên');
+                    // Kiểm tra tên
+                    const nameValue = newName.value.trim();
+                    const nameRegex = /^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u;
+                    if (!nameRegex.test(nameValue)) {
+                      alert("Họ và tên không hợp lệ! Chỉ được chứa chữ cái và khoảng trắng.");
                       newName.focus();
                       return false;
                     }
-                    if (!newSdt.value.trim()) {
-                      alert('Vui lòng nhập số điện thoại');
+
+                    // Kiểm tra số điện thoại
+                    const phoneValue = newSdt.value.trim();
+                    const phoneRegex = /^0[0-9]{9}$/;
+                    if (!phoneRegex.test(phoneValue)) {
+                      alert("Số điện thoại không hợp lệ! Phải gồm 10 chữ số và bắt đầu bằng số 0.");
                       newSdt.focus();
                       return false;
                     }
-                    if (!newDiachi.value.trim()) {
-                      alert('Vui lòng nhập địa chỉ');
-                      newDiachi.focus();
-                      return false;
-                    }
-                    if (!province.value) {
-                      alert('Vui lòng chọn tỉnh/thành phố');
-                      province.focus();
-                      return false;
-                    }
-                    if (!district.value) {
-                      alert('Vui lòng chọn quận/huyện');
-                      district.focus();
-                      return false;
-                    }
-                    if (!wards.value) {
-                      alert('Vui lòng chọn phường/xã');
-                      wards.focus();
-                      return false;
-                    } ===
-                    === =
-                    // Lấy giá trị của các trường
-                    const newName = document.getElementById('new-name');
-                    const newSdt = document.getElementById('new-sdt');
-                    const newDiachi = document.getElementById('new-diachi');
-                    const province = document.getElementById('province');
-                    const district = document.getElementById('district');
-                    const wards = document.getElementById('wards');
-
-                    // Cập nhật các trường hidden
-                    document.getElementById('hidden-new-name').value = newName.value.trim();
-                    document.getElementById('hidden-new-sdt').value = newSdt.value.trim();
-                    document.getElementById('hidden-new-diachi').value = newDiachi.value.trim();
-                    document.getElementById('hidden-province').value = province.value;
-                    document.getElementById('hidden-district').value = district.value;
-                    document.getElementById('hidden-wards').value = wards.value;
-
-                    // Regex chỉ cho phép chữ cái Unicode và khoảng trắng (tối đa 80 từ)
-
-                    // Nếu đang sử dụng thông tin mới
-                    if (newInfo.checked) {
-                      // Kiểm tra tên
-                      const nameValue = newName.value.trim();
-                      const nameRegex = /^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u;
-                      if (!nameRegex.test(nameValue)) {
-                        alert("Họ và tên không hợp lệ! Chỉ được chứa chữ cái và khoảng trắng.");
-                        newName.focus();
-                        return false;
-                      }
-
-                      // Kiểm tra số điện thoại
-                      const phoneValue = newSdt.value.trim();
-                      const phoneRegex = /^0[0-9]{9}$/;
-                      if (!phoneRegex.test(phoneValue)) {
-                        alert("Số điện thoại không hợp lệ! Phải gồm 10 chữ số và bắt đầu bằng số 0.");
-                        newSdt.focus();
-                        return false;
-                      }
-                    }
-
-
-                    if (!newDiachi.value.trim()) {
-                      alert('Vui lòng nhập địa chỉ');
-                      newDiachi.focus();
-                      return false;
-                    }
-                    if (!province.value) {
-                      alert('Vui lòng chọn tỉnh/thành phố');
-                      province.focus();
-                      return false;
-                    }
-                    if (!district.value) {
-                      alert('Vui lòng chọn quận/huyện');
-                      district.focus();
-                      return false;
-                    }
-                    if (!wards.value) {
-                      alert('Vui lòng chọn phường/xã');
-                      wards.focus();
-                      return false;
-                    } >>>
-                    >>> > nguyenduykhoi
                   }
 
-                  // Kiểm tra phương thức thanh toán
-                  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-                  if (!paymentMethod) {
-                    <<
-                    << << < HEAD
-                    alert('Vui lòng chọn phương thức thanh toán');
-                    return false; ===
-                    === =
-                    alert('Vui lòng chọn phương thức thanh toán');
-                    return false; >>>
-                    >>> > nguyenduykhoi
-                  }
 
-                  // Nếu chọn thanh toán chuyển khoản
-                  if (paymentMethod.value === 'Banking') {
-                    <<
-                    << << < HEAD
-                    const bankingInputs = document.getElementsByClassName('banking-required');
-                    for (let input of bankingInputs) {
-                      if (!input.value.trim()) {
-                        alert('Vui lòng điền đầy đủ thông tin thanh toán');
-                        input.focus();
-                        return false;
-                      }
-                    }
+                  if (!newDiachi.value.trim()) {
+                    alert('Vui lòng nhập địa chỉ');
+                    newDiachi.focus();
+                    return false;
                   }
-
-                  return true;
+                  if (!province.value) {
+                    alert('Vui lòng chọn tỉnh/thành phố');
+                    province.focus();
+                    return false;
+                  }
+                  if (!district.value) {
+                    alert('Vui lòng chọn quận/huyện');
+                    district.focus();
+                    return false;
+                  }
+                  if (!wards.value) {
+                    alert('Vui lòng chọn phường/xã');
+                    wards.focus();
+                    return false;
+                  }
                 }
 
-                // Thêm xử lý sự kiện cho radio buttons
-                document.addEventListener('DOMContentLoaded', function() {
-                    ===
-                    === =
-                    const bankingInputs = document.getElementsByClassName('banking-required');
-                    for (let input of bankingInputs) {
-                      if (!input.value.trim()) {
-                        alert('Vui lòng điền đầy đủ thông tin thanh toán');
-                        input.focus();
-                        return false;
-                      }
-                    }
-                  }
-
-                  return true;
+                // Kiểm tra phương thức thanh toán
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                if (!paymentMethod) {
+                  alert('Vui lòng chọn phương thức thanh toán');
+                  return false;
                 }
 
-                // Thêm xử lý sự kiện cho radio buttons
-                document.addEventListener('DOMContentLoaded', function() {
-                  >>>
-                  >>> > nguyenduykhoi
-                  const defaultInfo = document.getElementById('default-information');
-                  const newInfo = document.getElementById('new-information');
-                  const defaultForm = document.getElementById('default-information-form');
-                  const newForm = document.getElementById('new-information-form');
-
-                  function toggleForms() {
-                    <<
-                    << << < HEAD
-                    if (defaultInfo.checked) {
-                      defaultForm.style.display = 'block';
-                      newForm.style.display = 'none';
-                      // Xóa required attribute khi không sử dụng form mới
-                      const inputs = newForm.querySelectorAll('input, select');
-                      inputs.forEach(input => input.required = false);
-                    } else {
-                      defaultForm.style.display = 'none';
-                      newForm.style.display = 'block';
-                      // Thêm required attribute khi sử dụng form mới
-                      const inputs = newForm.querySelectorAll('input, select');
-                      inputs.forEach(input => input.required = true);
-                    } ===
-                    === =
-                    if (defaultInfo.checked) {
-                      defaultForm.style.display = 'block';
-                      newForm.style.display = 'none';
-                      // Xóa required attribute khi không sử dụng form mới
-                      const inputs = newForm.querySelectorAll('input, select');
-                      inputs.forEach(input => input.required = false);
-                    } else {
-                      defaultForm.style.display = 'none';
-                      newForm.style.display = 'block';
-                      // Thêm required attribute khi sử dụng form mới
-                      const inputs = newForm.querySelectorAll('input, select');
-                      inputs.forEach(input => input.required = true);
-                    } >>>
-                    >>> > nguyenduykhoi
+                // Nếu chọn thanh toán chuyển khoản
+                if (paymentMethod.value === 'Banking') {
+                  const bankingInputs = document.getElementsByClassName('banking-required');
+                  for (let input of bankingInputs) {
+                    if (!input.value.trim()) {
+                      alert('Vui lòng điền đầy đủ thông tin thanh toán');
+                      input.focus();
+                      return false;
+                    }
                   }
+                }
 
-                  defaultInfo.addEventListener('change', toggleForms);
-                  newInfo.addEventListener('change', toggleForms);
+                return true;
+              }
 
-                  // Gọi hàm lần đầu để set trạng thái ban đầu
-                  toggleForms(); <<
-                  << << < HEAD
-                }); ===
-                === =
-              }); >>>
-              >>> > nguyenduykhoi
+              // Thêm xử lý sự kiện cho radio buttons
+              document.addEventListener('DOMContentLoaded', function() {
+                const defaultInfo = document.getElementById('default-information');
+                const newInfo = document.getElementById('new-information');
+                const defaultForm = document.getElementById('default-information-form');
+                const newForm = document.getElementById('new-information-form');
+
+                function toggleForms() {
+                  if (defaultInfo.checked) {
+                    defaultForm.style.display = 'block';
+                    newForm.style.display = 'none';
+                    // Xóa required attribute khi không sử dụng form mới
+                    const inputs = newForm.querySelectorAll('input, select');
+                    inputs.forEach(input => input.required = false);
+                  } else {
+                    defaultForm.style.display = 'none';
+                    newForm.style.display = 'block';
+                    // Thêm required attribute khi sử dụng form mới
+                    const inputs = newForm.querySelectorAll('input, select');
+                    inputs.forEach(input => input.required = true);
+                  }
+                }
+
+                defaultInfo.addEventListener('change', toggleForms);
+                newInfo.addEventListener('change', toggleForms);
+
+                // Gọi hàm lần đầu để set trạng thái ban đầu
+                toggleForms();
+              });
             </script>
 
             <a href="../index.php" style="text-decoration: none; display: flex; justify-content: center; margin-bottom: 10px;">

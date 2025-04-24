@@ -718,7 +718,7 @@ setcookie('cart_quantity', '', time() - 3600, '/');
           <?php endif; ?>
         </div>
 
-        <div class="continue-shopping">
+        <div class="continue-shopping" style="margin: 25px 0;">
           <a href="../index.php" class="btn btn-success">Tiếp tục mua sắm</a>
         </div>
 
