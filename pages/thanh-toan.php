@@ -226,8 +226,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_product_id']))
     }
     $_SESSION['cart'] = array_values($_SESSION['cart']);
   }
+  echo json_encode(['status' => 'success']);
+  exit();
 }
 
+// **CHỈ CHUYỂN HƯỚNG NẾU KHÔNG PHẢI LÀ YÊU CẦU AJAX XÓA SẢN PHẨM**
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])) {
+  if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+    header('Location:thanh-toan.php');
+    exit();
+  }
+}
 
 ?>
 <!DOCTYPE html>
@@ -639,11 +648,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_product_id']))
             <i class="fa-solid fa-circle-check"></i>
           </div>
           <div class="option-address">
-            <label for="default-information">
+            <label for="">
               <input type="radio" name="chon" id="default-information" checked> <span>Sử dụng thông tin mặc
                 định</span>
             </label>
-            <label for="new-information">
+            <label for="">
               <input type="radio" name="chon" id="new-information"> <span>Nhập thông tin mới</span>
             </label>
           </div>
@@ -704,14 +713,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_product_id']))
 
             <label for=""><strong>Họ và tên</strong></label>
             <input type="text" name="new_name" id="new-name" placeholder="Họ và tên" required>
-            <?php if (!empty($errors['customerName'])): ?>
-              <div class="error" style="color:red;"><?php echo $errors['customerName']; ?></div>
-            <?php endif; ?>
+
             <label for=""><strong>Số điện thoại</strong></label>
             <input type="text" name="new_sdt" id="new-sdt" placeholder="Số điện thoại" required>
-            <?php if (!empty($errors['phone'])): ?>
-              <div class="error" style="color:red;"><?php echo $errors['phone']; ?></div>
-            <?php endif; ?>
+
             <label for=""><strong>Địa chỉ</strong></label>
             <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ(số và đường)" required>
 
@@ -765,28 +770,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_product_id']))
                     </div>
                     <div class="function">
                       <!-- Button trigger modal -->
-                      <form action="gio-hang.php" method="POST">
+                      <form onsubmit="event.preventDefault(); xoaSanPham(<?php echo $item['ProductID']; ?>);">
                         <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                        <button type="button" class="btn" style="width: 53px; height: 33px;"
-                          onclick="if(confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')) xoaSanPham(<?php echo $item['ProductID']; ?>)">
+                        <button type="button" class="btn" style="width: 53px; height: 33px;" onclick="xoaSanPham(<?php echo $item['ProductID']; ?>)">
                           <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                         </button>
-                        <!-- <button type="submit" class="btn btn-danger" style="width: 53px; height: 33px;">Xoá</button> -->
                       </form>
+
                       <script>
                         function xoaSanPham(productId) {
-                          let form = document.createElement("form");
-                          form.method = "POST";
-                          form.action = "thanh-toan.php";
+                          if (!confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')) return;
 
-                          let input = document.createElement("input");
-                          input.type = "hidden";
-                          input.name = "remove_product_id";
-                          input.value = productId;
-
-                          form.appendChild(input);
-                          document.body.appendChild(form);
-                          form.submit();
+                          fetch('thanh-toan.php', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                              },
+                              body: 'remove_product_id=' + encodeURIComponent(productId)
+                            })
+                            .then(response => {
+                              if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                              }
+                              return response.json();
+                            })
+                            .then(data => {
+                              if (data.status === 'success') {
+                                // Reload lại trang thanh-toan.php
+                                window.location.reload();
+                              } else {
+                                alert('Xoá sản phẩm thất bại!');
+                              }
+                            })
+                            .catch(err => {
+                              console.error('Lỗi khi xoá sản phẩm:', err);
+                              alert('Đã xảy ra lỗi khi xoá sản phẩm.');
+                            });
                         }
                       </script>
                       <!-- Nútxóa và thêm số lượng sản phẩm  -->
