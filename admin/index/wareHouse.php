@@ -303,7 +303,7 @@
     }
 
     .product-details-overlay {
-      // ...existing code...
+      /* // ...existing code... */
     }
   </style>
 </head>
