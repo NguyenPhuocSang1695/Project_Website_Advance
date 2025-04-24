@@ -11,10 +11,12 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        alert("Sản phẩm đã được thêm thành công!");
+        alert(data.message || "Sản phẩm đã được thêm thành công!");
         document.getElementById("productForm").reset(); // Reset form
+        // Ẩn overlay sau khi thêm thành công
+        document.getElementById("addProductOverlay").style.display = "none";
       } else {
-        alert("Có lỗi xảy ra. Vui lòng thử lại.");
+        alert(data.message || "Có lỗi xảy ra hoặc sản phẩm đã tồn tại. Vui lòng thử lại.");
       }
     })
     .catch((error) => {

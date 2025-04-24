@@ -466,8 +466,55 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
       <form id = "add-to-cart-form">
         <input type="hidden" name="product_id" value="<?php echo $product['ProductID']; ?>">
         <input type="hidden" name="quantity" id="quantity" value="1">
-        <button type="submit" class="btn btn-primary btn-lg">Thêm vào giỏ hàng</button>
+        <button type="submit" class="btn btn-primary btn-lg add-to-cart" 
+          data-id="<?= $product['ProductID'] ?>" 
+          data-name="<?= $product['ProductName'] ?>"
+          data-price="<?= $product['Price'] ?>"
+          data-image="<?= $product['ImageURL'] ?>"
+        >
+        Thêm vào giỏ hàng
+      </button>
       </form>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function () {
+              const productId = this.dataset.id;
+              const productName = this.dataset.name;
+              const price = this.dataset.price;
+              const image = this.dataset.image;
+
+              fetch('cart.php', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  id: productId,
+                  name: productName,
+                  price: price,
+                  image: image,
+                })
+              })
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  // 1. Hiện thông báo thành công
+                  alert('🛒 Đã thêm vào giỏ hàng thành công!');
+
+                  // 2. Cập nhật dropdown & số lượng
+                  document.getElementById('mni-cart-count').innerText = data.cart_count;
+                  document.querySelector('.cart-dropdown').innerHTML = data.cart_html;
+
+                  
+                  // auto ẩn sau 3 giây
+                }
+              });
+            });
+          });
+        });
+        </script>
+
       <script src="../src/js/load-sanpham.js"></script>
     </div>
   </div>

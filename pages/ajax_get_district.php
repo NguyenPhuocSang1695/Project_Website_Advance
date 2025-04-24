@@ -10,10 +10,10 @@ header('Content-Type: application/json');
     $sql = "SELECT * FROM `district` WHERE `province_id` = {$province_id}";
     $result = mysqli_query($conn, $sql);
 
-    $data[0] = [
-        'id' => null,
-        'name' => 'Chọn một Quận/huyện'
-    ];
+    // $data[0] = [
+    //     'id' => null,
+    //     'name' => 'Chọn một Quận/huyện'
+    // ];
     while ($row = mysqli_fetch_assoc($result)) {
         $data[] = [
             'id' => $row['district_id'],

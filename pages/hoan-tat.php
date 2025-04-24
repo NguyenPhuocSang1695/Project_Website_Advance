@@ -30,7 +30,7 @@ if (!$orderID) {
   header("Location: gio-hang.php");
   exit;
 }
-
+$errors = [];
 // Lấy username từ session
 $username = $_SESSION['username'] ?? '';
 
@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
 }
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' ) {
   // Lấy phương thức thanh toán từ form
   $paymentMethod = isset($_POST['paymentMethod']) ? $_POST['paymentMethod'] : 'COD';  
   // Cập nhật phương thức thanh toán vào cơ sở dữ liệu (nếu cần)
@@ -246,12 +246,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute();
     $stmt->close();
   }
+
+  
 }
 
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+   
+  // Lấy dữ liệu từ form
+  $fullname = $_POST['new_name'];
+  $phone = $_POST['new_sdt'];
+  
+  if (!preg_match("/^[0-9]{10,11}$/", $phone)) {
+    $errors['phone'] = "Số điện thoại không hợp lệ!";
+  }
 
-unset($_SESSION['cart']);
-setcookie('cart_quantity', '', time() - 3600, '/'); 
+  if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {
+    $errors['new_name'] = "Họ tên không hợp lệ! Chỉ được chứa chữ cái và tối đa 80 từ.";
+  }
+
+
+
+}
+
+
+// unset($_SESSION['cart']);
+// setcookie('cart_quantity', '', time() - 3600, '/'); 
 
 // Hiển thị thông tin chi tiết hóa đơn
 ?>
