@@ -305,7 +305,6 @@ body {
   justify-content: flex-end;
   align-items: flex-end;
   margin-left: 0.7rem;
-  width: 110% !important;
   height: 7rem;
 }
 .container-payment {

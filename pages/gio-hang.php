@@ -66,12 +66,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   // Xóa sản phẩm
   if (isset($_POST['remove_product_id'])) {
-    $pid = intval($_POST['remove_product_id']);
-    if (isset($_SESSION['cart'][$pid])) {
-      unset($_SESSION['cart'][$pid]);
+    $product_id_to_remove = $_POST['remove_product_id'];
+
+    // 1. Kiểm tra xem biến session giỏ hàng có tồn tại không
+    if (isset($_SESSION['cart'])) {
+        // 2. Duyệt qua các sản phẩm trong giỏ hàng
+        foreach ($_SESSION['cart'] as $key => $item) {
+            // 3. Tìm sản phẩm cần xóa
+            if ($item['ProductID'] == $product_id_to_remove) {
+                // 4. Xóa sản phẩm khỏi giỏ hàng bằng hàm unset()
+                unset($_SESSION['cart'][$key]);
+                break; // Dừng vòng lặp sau khi xóa sản phẩm
+            }
+        }
+        // 5.  Sắp xếp lại chỉ mục của mảng để tránh bị thiếu phần tử.  Điều này rất quan trọng!
+        $_SESSION['cart'] = array_values($_SESSION['cart']);
     }
-    header("Location: gio-hang.php");
-    exit;
+    // Chuyển hướng về trang giỏ hàng để hiển thị các thay đổi
+    header("Location: gio-hang.php"); // Quan trọng: Chuyển hướng để tránh các vấn đề khi tải lại trang
+    exit();
   }
   // Xử lý nút đặt hàng
   if (isset($_POST['checkout'])) {
