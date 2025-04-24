@@ -719,7 +719,7 @@ setcookie('cart_quantity', '', time() - 3600, '/');
         </div>
 
         <div class="continue-shopping">
-          <a href="../index.php" class="btn btn-success" style="margin: 30px 0;">Tiếp tục mua hàng</a>
+          <a href="../index.php" class="btn btn-success">Tiếp tục mua sắm</a>
         </div>
 
       </div>
