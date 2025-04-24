@@ -68,7 +68,9 @@ $stmt->execute();
 $details = $stmt->get_result();
 $stmt->close();
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
+  
   if (isset($_POST['chon']) && $_POST['chon'] === 'default-information') {
       // Xử lý khi chọn thông tin mặc định
       $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
@@ -139,6 +141,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
 
 
   } elseif (isset($_POST['chon']) && $_POST['chon'] === 'new-information') {
+      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log('POST data: ' . print_r($_POST, true));
+}
       // Xử lý khi chọn thông tin mới
       $newName = trim($_POST['hidden-new-name']);
       $newSdt = trim($_POST['hidden-new-sdt']);
@@ -270,8 +275,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
-unset($_SESSION['cart']);
-setcookie('cart_quantity', '', time() - 3600, '/'); 
+// unset($_SESSION['cart']);
+// setcookie('cart_quantity', '', time() - 3600, '/'); 
 
 // Hiển thị thông tin chi tiết hóa đơn
 ?>

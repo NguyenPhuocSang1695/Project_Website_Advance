@@ -89,6 +89,9 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
 // Ngày hiện tại
 $dateNow = date('Y-m-d H:i:s');
 
+// Debug toàn bộ dữ liệu POST để kiểm tra
+
+
 // Xử lý thanh toán
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
   try {
@@ -199,6 +202,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     echo "<script>alert('Có lỗi xảy ra: " . $e->getMessage() . "');</script>";
   }
 }
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_product_id'])) {
   $product_id_to_remove = $_POST['remove_product_id'];
