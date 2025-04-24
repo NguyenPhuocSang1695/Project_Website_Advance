@@ -185,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           ");
       $stmt->bind_param(
-        "ssssiiisssss",
+        "ssssiiissssss",
         $username,
         $paymentMethod,
         $newName,
