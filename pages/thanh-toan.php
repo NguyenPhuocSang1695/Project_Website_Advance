@@ -199,11 +199,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     echo "<script>alert('Có lỗi xảy ra: " . $e->getMessage() . "');</script>";
   }
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-if (isset($_POST['remove_product_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_product_id'])) {
   $product_id_to_remove = $_POST['remove_product_id'];
-
   if (isset($_SESSION['cart'])) {
       foreach ($_SESSION['cart'] as $key => $item) {
           if ($item['ProductID'] == $product_id_to_remove) {
@@ -213,11 +211,16 @@ if (isset($_POST['remove_product_id'])) {
       }
       $_SESSION['cart'] = array_values($_SESSION['cart']);
   }
-
-  // Trả về JSON thông báo xoá thành công
   echo json_encode(['status' => 'success']);
-  exit;
+  exit();
 }
+
+// **CHỈ CHUYỂN HƯỚNG NẾU KHÔNG PHẢI LÀ YÊU CẦU AJAX XÓA SẢN PHẨM**
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])) {
+  if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+      header('Location: thanh-toan.php');
+      exit();
+  }
 }
 
 ?>
