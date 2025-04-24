@@ -90,6 +90,9 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
 // Ngày hiện tại
 $dateNow = date('Y-m-d H:i:s');
 
+// Debug toàn bộ dữ liệu POST để kiểm tra
+
+
 // Xử lý thanh toán
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
   try {
@@ -212,63 +215,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
 
 
 
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $errors = [];
-
-  $customerName = $_POST['new_name'] ?? '';
-  $phone = $_POST['new_sdt'] ?? '';
-  $address = $_POST['new_diachi'] ?? '';
-  $province = $_POST['province'] ?? '';
-  $district = $_POST['district'] ?? '';
-  $wards = $_POST['wards'] ?? '';
-
-  // Họ và tên: cho phép chữ cái Unicode và dấu cách, tối đa 80 từ
-  if (empty($customerName)) {
-    $errors['customerName'] = "Vui lòng nhập họ và tên.";
-  } elseif (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $customerName)) {
-    $errors['customerName'] = "Họ và tên không hợp lệ! Chỉ được chứa chữ cái và khoảng trắng.";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_product_id'])) {
+  $product_id_to_remove = $_POST['remove_product_id'];
+  if (isset($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $key => $item) {
+      if ($item['ProductID'] == $product_id_to_remove) {
+        unset($_SESSION['cart'][$key]);
+        break;
+      }
+    }
+    $_SESSION['cart'] = array_values($_SESSION['cart']);
   }
-
-  // Số điện thoại: bắt đầu bằng 0, có 10 chữ số
-  if (empty($phone)) {
-    $errors['phone'] = "Vui lòng nhập số điện thoại.";
-  } elseif (!preg_match('/^0[0-9]{9}$/', $phone)) {
-    $errors['phone'] = "Số điện thoại không hợp lệ! Phải gồm 10 chữ số và bắt đầu bằng 0.";
-  }
-
-  // Địa chỉ
-  if (empty($address)) {
-    $errors['address'] = "Vui lòng nhập địa chỉ giao hàng.";
-  }
-
-  // Tỉnh/Thành phố
-  if (empty($province)) {
-    $errors['province'] = "Vui lòng chọn tỉnh/thành phố.";
-  }
-
-  // Quận/Huyện
-  if (empty($district)) {
-    $errors['district'] = "Vui lòng chọn quận/huyện.";
-  }
-
-  // Phường/Xã
-  if (empty($wards)) {
-    $errors['wards'] = "Vui lòng chọn phường/xã.";
-  }
-
-  // Thêm đoạn code này ngay sau phần kiểm tra lỗi
-  if (!empty($errors)) {
-    echo "<script>
-          document.addEventListener('DOMContentLoaded', function() {
-              document.getElementById('new-information').checked = true;
-              document.getElementById('default-information-form').style.display = 'none';
-              document.getElementById('new-information-form').style.display = 'block';
-          });
-      </script>";
-  }
+  echo json_encode(['status' => 'success']);
+  exit();
 }
 
+// **CHỈ CHUYỂN HƯỚNG NẾU KHÔNG PHẢI LÀ YÊU CẦU AJAX XÓA SẢN PHẨM**
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])) {
+  if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+    header('Location:thanh-toan.php');
+    exit();
+  }
+}
 
 ?>
 <!DOCTYPE html>
@@ -745,14 +713,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <label for=""><strong>Họ và tên</strong></label>
             <input type="text" name="new_name" id="new-name" placeholder="Họ và tên" required>
-            <?php if (!empty($errors['customerName'])): ?>
-              <div class="error" style="color:red;"><?php echo $errors['customerName']; ?></div>
-            <?php endif; ?>
+
             <label for=""><strong>Số điện thoại</strong></label>
             <input type="text" name="new_sdt" id="new-sdt" placeholder="Số điện thoại" required>
-            <?php if (!empty($errors['phone'])): ?>
-              <div class="error" style="color:red;"><?php echo $errors['phone']; ?></div>
-            <?php endif; ?>
+
             <label for=""><strong>Địa chỉ</strong></label>
             <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ(số và đường)" required>
 
@@ -806,28 +770,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="function">
                       <!-- Button trigger modal -->
-                      <form action="gio-hang.php" method="POST">
+                      <form onsubmit="event.preventDefault(); xoaSanPham(<?php echo $item['ProductID']; ?>);">
                         <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                        <button type="button" class="btn" style="width: 53px; height: 33px;"
-                          onclick="if(confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')) xoaSanPham(<?php echo $item['ProductID']; ?>)">
+                        <button type="button" class="btn" style="width: 53px; height: 33px;" onclick="xoaSanPham(<?php echo $item['ProductID']; ?>)">
                           <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                         </button>
-                        <!-- <button type="submit" class="btn btn-danger" style="width: 53px; height: 33px;">Xoá</button> -->
                       </form>
+
                       <script>
                         function xoaSanPham(productId) {
-                          let form = document.createElement("form");
-                          form.method = "POST";
-                          form.action = "thanh-toan.php";
+                          if (!confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')) return;
 
-                          let input = document.createElement("input");
-                          input.type = "hidden";
-                          input.name = "remove_product_id";
-                          input.value = productId;
-
-                          form.appendChild(input);
-                          document.body.appendChild(form);
-                          form.submit();
+                          fetch('thanh-toan.php', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                              },
+                              body: 'remove_product_id=' + encodeURIComponent(productId)
+                            })
+                            .then(response => {
+                              if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                              }
+                              return response.json();
+                            })
+                            .then(data => {
+                              if (data.status === 'success') {
+                                // Reload lại trang thanh-toan.php
+                                window.location.reload();
+                              } else {
+                                alert('Xoá sản phẩm thất bại!');
+                              }
+                            })
+                            .catch(err => {
+                              console.error('Lỗi khi xoá sản phẩm:', err);
+                              alert('Đã xảy ra lỗi khi xoá sản phẩm.');
+                            });
                         }
                       </script>
                       <!-- Nútxóa và thêm số lượng sản phẩm  -->
