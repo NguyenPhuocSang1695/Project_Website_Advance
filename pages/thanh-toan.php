@@ -199,6 +199,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     echo "<script>alert('Có lỗi xảy ra: " . $e->getMessage() . "');</script>";
   }
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+if (isset($_POST['remove_product_id'])) {
+  $product_id_to_remove = $_POST['remove_product_id'];
+
+  if (isset($_SESSION['cart'])) {
+      foreach ($_SESSION['cart'] as $key => $item) {
+          if ($item['ProductID'] == $product_id_to_remove) {
+              unset($_SESSION['cart'][$key]);
+              break;
+          }
+      }
+      $_SESSION['cart'] = array_values($_SESSION['cart']);
+  }
+
+  // Trả về JSON thông báo xoá thành công
+  echo json_encode(['status' => 'success']);
+  exit;
+}
+}
 
 ?>
 <!DOCTYPE html>
@@ -732,26 +752,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
                     </div>
                     <div class="function">
                       <!-- Button trigger modal -->
-                      <form action="gio-hang.php" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')">
+                      <form onsubmit="event.preventDefault(); xoaSanPham(<?php echo $item['ProductID']; ?>);">
                         <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
-                        <button type="submit" class="btn" style="width: 53px; height: 33px;">
+                        <button type="button" class="btn" style="width: 53px; height: 33px;" onclick="xoaSanPham(<?php echo $item['ProductID']; ?>)">
                           <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
-                        </button>        
+                        </button>
                       </form>
 
                       <script>
-                        function xoaSanPham(productId) {
-                          let form = document.createElement("form");
-                          form.method = "POST";
-                          form.action = "thanh-toan.php";
-                          let input = document.createElement("input");
-                          input.type = "hidden";
-                          input.name = "remove_product_id";
-                          input.value = productId;
-                          
-                          form.appendChild(input);
-                          document.body.appendChild(form);
-                          form.submit();
+                       function xoaSanPham(productId) {
+                          if (!confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')) return;
+
+                          fetch('thanh-toan.php', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: 'remove_product_id=' + encodeURIComponent(productId)
+                          })
+                          .then(response => {
+                            if (!response.ok) {
+                              throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                          })
+                          .then(data => {
+                            if (data.status === 'success') {
+                              // Reload lại trang thanh-toan.php
+                              window.location.reload();
+                            } else {
+                              alert('Xoá sản phẩm thất bại!');
+                            }
+                          })
+                          .catch(err => {
+                            console.error('Lỗi khi xoá sản phẩm:', err);
+                            alert('Đã xảy ra lỗi khi xoá sản phẩm.');
+                          });
                         }
                       </script>
                       <!-- Nútxóa và thêm số lượng sản phẩm  -->
