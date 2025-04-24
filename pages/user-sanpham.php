@@ -49,7 +49,6 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
   <link rel="stylesheet" href="../src/css/search-styles.css" />
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="../src/css/user-sanpham.css" />
-
   <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css" />
   <link rel="stylesheet" href="../src/css/footer.css">

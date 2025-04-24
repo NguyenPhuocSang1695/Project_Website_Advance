@@ -1,3 +1,6 @@
+<?php
+echo "sang";
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,7 +21,7 @@
 </head>
 <style>
   /* Default display for responsive columns */
-  .hide-index-tablet, 
+  .hide-index-tablet,
   .hide-index-mobile {
     display: table-cell;
   }
@@ -37,6 +40,7 @@
     border-color: #6aa173;
   }
 </style>
+
 <body>
   <div class="header">
     <div class="header-left-section">
@@ -67,7 +71,7 @@
           <img class="avatar" src="../../assets/images/admin.jpg" alt="">
           <div class="admin">
             <h4 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Username</h4>
-            <h5 id="employee-displayname">Họ tên</h5>  
+            <h5 id="employee-displayname">Họ tên</h5>
           </div>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
@@ -273,7 +277,7 @@
         </div>
 
         <div class="statistic-section">
-          <table class="statistic-table"> 
+          <table class="statistic-table">
             <thead>
               <tr>
                 <th>Mã đơn hàng</th>
@@ -297,16 +301,17 @@
             <button onclick="closeUpdateStatusPopup()" class="close-btn">Đóng</button>
           </div>
         </div>
-      <div class="select_list" id="pagination-container">
-        <button id="prevPage"><<</button>
-        <div id="pageNumbers"></div>
-        <button id="nextPage">>></button>
+        <div class="select_list" id="pagination-container">
+          <button id="prevPage">
+            << </button>
+              <div id="pageNumbers"></div>
+              <button id="nextPage">>></button>
+        </div>
       </div>
     </div>
-  </div>
-  <script src ="../js/checklog.js"></script>
-  <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../js/orderPage.js"></script>
+    <script src="../js/checklog.js"></script>
+    <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/orderPage.js"></script>
 </body>
-</html>
 
+</html>

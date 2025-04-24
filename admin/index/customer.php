@@ -257,7 +257,6 @@
       </div>
     </div>
   </div>
-
   <!-- Popup overlay cho thêm người dùng -->
   <div class="user-overlay" id="addUserOverlay">
     <div class="user-content">
@@ -272,6 +271,150 @@
           <label>Họ và tên: <span class="required">*</span></label>
           <input type="text" id="addFullName" required>
           <span class="error" id="fullname-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Email:</label>
+          <input type="email" id="addEmail">
+          <span class="error" id="email-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu: <span class="required">*</span></label>
+          <input type="password" id="addPassword" required minlength="8">
+          <span class="error" id="password-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Xác nhận mật khẩu: <span class="required">*</span></label>
+          <input type="password" id="addConfirmPassword" required minlength="8">
+          <span class="error" id="confirm-password-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Số điện thoại: <span class="required">*</span></label>
+          <input type="tel" id="addPhone" required pattern="[0-9]{10}">
+          <span class="error" id="phone-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Địa chỉ chi tiết: <span class="required">*</span></label>
+          <input type="text" id="addAddress" required placeholder="Số nhà, tên đường...">
+          <span class="error" id="address-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Tỉnh/Thành phố: <span class="required">*</span></label>
+          <select id="addProvince" required onchange="loadDistricts(this.value)">
+            <option value="">Chọn tỉnh/thành phố</option>
+            <?php
+            require_once '../php/connect.php';
+            $sql = "SELECT province_id, name FROM province ORDER BY name";
+            $result = mysqli_query($myconn, $sql);
+            while ($row = mysqli_fetch_assoc($result)) {
+              echo "<option value='" . $row['province_id'] . "'>" . $row['name'] . "</option>";
+            }
+            ?>
+          </select>
+          <span class="error" id="province-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Quận/Huyện: <span class="required">*</span></label>
+          <select id="addDistrict" required onchange="loadWards(this.value)">
+            <option value="">Chọn quận/huyện</option>
+          </select>
+          <span class="error" id="district-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Phường/Xã: <span class="required">*</span></label>
+          <select id="addWard" required>
+            <option value="">Chọn phường/xã</option>
+          </select>
+          <span class="error" id="ward-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Trạng thái:</label>
+          <select id="addStatus">
+            <option value="Active">Hoạt động</option>
+            <option value="Block">Khóa</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="save-btn">Thêm</button>
+          <button type="button" onclick="closeAddUserPopup()" class="cancel-btn">Hủy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Popup overlay cho thêm người dùng -->
+  <div class="user-overlay" id="addUserOverlay">
+    <div class="user-content">
+      <h3>Thêm Người Dùng Mới</h3>
+      <form id="addUserForm" onsubmit="event.preventDefault(); addUser();">
+        <div class="form-group">
+          <label>Tên tài khoản: <span class="required">*</span></label>
+          <input type="text" id="addUsername" required minlength="3">
+          <span class="error" id="username-error"></span>
+        </div>
+
+        <!-- Popup overlay cho chỉnh sửa người dùng -->
+        <div class="user-overlay" id="editUserOverlay">
+          <div class="user-content" id="editUserContent">
+            <h3>Chỉnh Sửa Thông Tin Người Dùng</h3>
+            <form id="editUserForm">
+              <div class="form-group">
+                <label>Tên tài khoản:</label>
+                <input type="text" id="editUsername" readonly>
+              </div>
+              <div class="form-group">
+                <label>Họ và tên: <span class="required">*</span></label>
+                <input type="text" id="editFullName" required>
+              </div>
+              <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="editEmail">
+              </div>
+              <div class="form-group">
+                <label>Số điện thoại: <span class="required">*</span></label>
+                <input type="tel" id="editPhone" required pattern="[0-9]{10}">
+              </div>
+              <div class="form-group">
+                <label>Địa chỉ chi tiết: <span class="required">*</span></label>
+                <input type="text" id="editAddress" required>
+              </div>
+              <div class="form-group">
+                <label>Tỉnh/Thành phố: <span class="required">*</span></label>
+                <select id="editProvince" required onchange="loadEditDistricts(this.value)">
+                  <option value="">Chọn tỉnh/thành phố</option>
+                  <?php
+                  $sql = "SELECT province_id, name FROM province ORDER BY name";
+                  $result = mysqli_query($myconn, $sql);
+                  while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<option value='" . $row['province_id'] . "'>" . $row['name'] . "</option>";
+                  }
+                  ?>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Quận/Huyện: <span class="required">*</span></label>
+                <select id="editDistrict" required onchange="loadEditWards(this.value)">
+                  <option value="">Chọn quận/huyện</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Phường/Xã: <span class="required">*</span></label>
+                <select id="editWard" required>
+                  <option value="">Chọn phường/xã</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Trạng thái:</label>
+                <select id="editStatus">
+                  <option value="Active">Hoạt động</option>
+                  <option value="Block">Khóa</option>
+                </select>
+              </div>
+              <div class="form-actions">
+                <button type="button" onclick="saveUserEdit()" class="save-btn">Lưu</button>
+                <button type="button" onclick="closeEditUserPopup()" class="cancel-btn">Hủy</button>
+              </div>
+            </form>
+          </div>
         </div>
         <div class="form-group">
           <label>Email:</label>
