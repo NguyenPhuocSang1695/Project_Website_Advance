@@ -270,8 +270,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
-// unset($_SESSION['cart']);
-// setcookie('cart_quantity', '', time() - 3600, '/'); 
+unset($_SESSION['cart']);
+setcookie('cart_quantity', '', time() - 3600, '/'); 
 
 // Hiển thị thông tin chi tiết hóa đơn
 ?>

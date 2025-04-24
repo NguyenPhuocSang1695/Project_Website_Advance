@@ -463,56 +463,55 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
       </div> 
       <script src ="../src/js/san-pham.js"></script>
       <!-- Form thêm vào giỏ hàng -->
-      <form id = "add-to-cart-form">
+      <form class = "add-to-cart-form">
         <input type="hidden" name="product_id" value="<?php echo $product['ProductID']; ?>">
         <input type="hidden" name="quantity" id="quantity" value="1">
-        <button type="submit" class="btn btn-primary btn-lg add-to-cart" 
-          data-id="<?= $product['ProductID'] ?>" 
+        <button type="submit" class="btn btn-primary btn-lg add" 
+          data-id="<?= $product['ProductID'] ?>"
           data-name="<?= $product['ProductName'] ?>"
           data-price="<?= $product['Price'] ?>"
-          data-image="<?= $product['ImageURL'] ?>"
-        >
-        Thêm vào giỏ hàng
-      </button>
+          data-image="<?= $product['ImageURL'] ?>">
+        
+        Thêm vào giỏ hàng</button>
       </form>
       <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', function () {
-              const productId = this.dataset.id;
-              const productName = this.dataset.name;
-              const price = this.dataset.price;
-              const image = this.dataset.image;
+       document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.add-to-cart-form').forEach(form => {
+          form.addEventListener('submit', function (e) {
+            e.preventDefault(); // Ngăn form gửi mặc định
 
-              fetch('cart.php', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  id: productId,
-                  name: productName,
-                  price: price,
-                  image: image,
-                })
+            const button = form.querySelector('button');
+            const productId = button.dataset.id;
+            const productName = button.dataset.name;
+            const price = button.dataset.price;
+            const image = button.dataset.image;
+
+            fetch('cart.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: productId,
+                name: productName,
+                price: price,
+                image: image,
               })
-              .then(res => res.json())
-              .then(data => {
-                if (data.success) {
-                  // 1. Hiện thông báo thành công
-                  alert('🛒 Đã thêm vào giỏ hàng thành công!');
-
-                  // 2. Cập nhật dropdown & số lượng
-                  document.getElementById('mni-cart-count').innerText = data.cart_count;
-                  document.querySelector('.cart-dropdown').innerHTML = data.cart_html;
-
-                  
-                  // auto ẩn sau 3 giây
-                }
-              });
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                alert('🛒 Đã thêm vào giỏ hàng thành công!');
+                document.getElementById('mni-cart-count').innerText = data.cart_count;
+                document.querySelector('.cart-dropdown').innerHTML = data.cart_html;
+                document.querySelector('.cart-dropdown').style.display = 'block';
+                
+              }
             });
           });
         });
+      });
+
         </script>
 
       <script src="../src/js/load-sanpham.js"></script>

@@ -218,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_product_id']))
 // **CHỈ CHUYỂN HƯỚNG NẾU KHÔNG PHẢI LÀ YÊU CẦU AJAX XÓA SẢN PHẨM**
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])) {
   if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
-      header('Location: thanh-toan.php');
+      header('Location:thanh-toan.php');
       exit();
   }
 }
