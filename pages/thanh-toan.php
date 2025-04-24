@@ -226,8 +226,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_product_id']))
     }
     $_SESSION['cart'] = array_values($_SESSION['cart']);
   }
-  echo json_encode(['status' => 'success']);
-  exit();
 }
 
 // **CHỈ CHUYỂN HƯỚNG NẾU KHÔNG PHẢI LÀ YÊU CẦU AJAX XÓA SẢN PHẨM**
@@ -770,13 +768,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])
                     </div>
                     <div class="function">
                       <!-- Button trigger modal -->
-                      <form onsubmit="event.preventDefault(); xoaSanPham(<?php echo $item['ProductID']; ?>);">
+                      <form action="gio-hang.php" method="POST">
                         <input type="hidden" name="remove_product_id" value="<?php echo $item['ProductID']; ?>">
                         <button type="button" class="btn" style="width: 53px; height: 33px;" onclick="xoaSanPham(<?php echo $item['ProductID']; ?>)">
                           <i class="fa-solid fa-trash" style="font-size: 25px;"></i>
                         </button>
                       </form>
-
                       <script>
                         function xoaSanPham(productId) {
                           if (!confirm('Bạn có chắc chắn muốn xoá sản phẩm này khỏi giỏ hàng?')) return;
