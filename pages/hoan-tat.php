@@ -56,6 +56,8 @@ if (!$order) {
   die("Không tìm thấy đơn hàng hoặc bạn không có quyền xem đơn hàng này.");
 }
 
+
+
 // Lấy chi tiết sản phẩm từ đơn hàng
 $stmt = $conn->prepare("
   SELECT p.ProductName, p.ImageURL, od.Quantity, od.UnitPrice, (od.Quantity * od.UnitPrice) AS TotalPrice
@@ -185,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           ");
           $stmt->bind_param(
-              "ssssiiisssss",
+              "ssssiiisdsss",
               $username,
               $paymentMethod,
               $newName,

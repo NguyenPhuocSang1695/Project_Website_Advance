@@ -840,6 +840,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])
                 <input type="hidden" name="province" id="hidden-province">
                 <input type="hidden" name="district" id="hidden-district">
                 <input type="hidden" name="wards" id="hidden-wards">
+                <input type="hidden" name="order_id" value="<?= $_SESSION['order_id'] ?? '' ?>">
+
                 <label>
                   <input type="radio" name="paymentMethod" value="COD" checked onchange="toggleBankingForm()">
                   <span>Thanh toán khi nhận hàng</span>
