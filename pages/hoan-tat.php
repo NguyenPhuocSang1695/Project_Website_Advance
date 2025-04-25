@@ -76,6 +76,10 @@ $stmt->execute();
 $details = $stmt->get_result();
 $stmt->close();
 
+// Debug toàn bộ dữ liệu POST để kiểm tra
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    error_log('POST data: ' . print_r($_POST, true));
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment-form'])) {
 
@@ -259,20 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-  // Lấy dữ liệu từ form
-  $fullname = $_POST['new_name'];
-  $phone = $_POST['new_sdt'];
-
-  if (!preg_match("/^[0-9]{10,11}$/", $phone)) {
-    $errors['phone'] = "Số điện thoại không hợp lệ!";
-  }
-
-  if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {
-    $errors['new_name'] = "Họ tên không hợp lệ! Chỉ được chứa chữ cái và tối đa 80 từ.";
-  }
-}
 
 
 // unset($_SESSION['cart']);

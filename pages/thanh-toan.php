@@ -118,7 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       $provinceID = $user['ProvinceID'];
       $districtID = $user['DistrictID'];
       $wardID = $user['WardID'];
-    } else {
+    } 
+    else 
+    {
       // Lấy thông tin mới từ form
       $customerName = isset($_POST['new_name']) ? trim($_POST['new_name']) : '';
       $phone = isset($_POST['new_sdt']) ? trim($_POST['new_sdt']) : '';
@@ -130,7 +132,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       if (
         !empty($customerName) && !empty($phone) && !empty($address) &&
         $provinceID > 0 && $districtID > 0 && $wardID > 0
-      ) {
+        ) 
+      {
         // Cập nhật thông tin mặc định trong bảng users
         $updateUserStmt = $conn->prepare("UPDATE users SET FullName = ?, Phone = ?, Address = ?, 
                                          ProvinceID = ?, DistrictID = ?, WardID = ? 
