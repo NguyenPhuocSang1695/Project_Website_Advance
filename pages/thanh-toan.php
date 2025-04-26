@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       ) {
         // Cập nhật thông tin mặc định trong bảng users
         $updateUserStmt = $conn->prepare("UPDATE users SET FullName = ?, Phone = ?, Address = ?, 
-                                         ProvinceID = ?, DistrictID = ?, WardID = ? 
+                                         Province = ?, District = ?, Ward = ? 
                                          WHERE Username = ?");
         $updateUserStmt->bind_param(
           "sssiiis",
@@ -900,7 +900,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])
               <input type="text" name="address1" placeholder="Địa chỉ 1" class="banking-required">
               <input type="text" name="address2" placeholder="Địa chỉ 2">
               <input type="text" name="city" placeholder="Thành phố" class="banking-required">
-              <input type="text" name="province" placeholder="Tỉnh" class="banking-required">
+              <input type="text" name="province1" placeholder="Tỉnh" class="banking-required">
               <input type="text" name="zip_code" placeholder="Mã bưu điện" class="banking-required">
             </div>
 
