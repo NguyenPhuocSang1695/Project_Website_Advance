@@ -5,22 +5,20 @@
   <title>Thống Kê Kinh Doanh</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Essential CSS -->
+  <link rel="stylesheet" href="../style/generall.css">
+  <link rel="stylesheet" href="../style/analyzeStyle.css">
   <link rel="stylesheet" href="../style/header.css">
   <link rel="stylesheet" href="../style/sidebar.css">
-  <link rel="stylesheet" href="../icon/css/all.css">
-  <link rel="stylesheet" href="../style/generall.css">
-  <!-- Add style-->
-  <link rel="stylesheet" href="../style/analyzeStyle.css">
-  <link rel="stylesheet" href="../style/main1.css">
-  <link rel="stylesheet" href="../icon/css/fontawesome.min.css">
-  <!-- Add reponsive -->
-  <link rel="stylesheet" href="../style/reponsiveAnalyze.css">
-  <!-- Add bootstrap -->
-  <link rel="stylesheet" href="./asset/bootstrap/css/bootstrap.min.css">
-  <!-- Add login function -->
   <link rel="stylesheet" href="../style/LogInfo.css">
+  <link rel="stylesheet" href="../style/reponsiveAnalyze.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="../icon/css/all.css">
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="./asset/bootstrap/css/bootstrap.min.css">
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
+
 <body>
   <div class="header">
     <div class="index-menu">
