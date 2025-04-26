@@ -474,7 +474,15 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
     <div class="order-container">
       <div class="order-header">
         <div class="breadcrumb">
-          <a href="orderPage.php">Đơn hàng</a> > <span><?php echo $orderDetailID; ?></span>
+          <?php
+          $source = isset($_GET['source']) ? $_GET['source'] : 'order';
+          if ($source === 'analyze') {
+            echo '<a href="analyzePage.php">Thống kê</a> > ';
+          } else {
+            echo '<a href="orderPage.php">Đơn hàng</a> > ';
+          }
+          ?>
+          <span>Đơn số <?php echo $orderDetailID; ?></span>
         </div>
         <table class="status-bar">
           <thead>
