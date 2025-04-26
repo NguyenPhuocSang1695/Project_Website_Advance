@@ -8,8 +8,8 @@ if ($myconn->connect_error) {
 
 $myconn->set_charset("utf8mb4");
 
-$start_date = isset($_POST['start_date']) ? $_POST['start_date'] : date('Y-m-01');
-$end_date = isset($_POST['end_date']) ? $_POST['end_date'] : date('Y-m-d');
+$start_date = isset($_POST['start_date']) ? $_POST['start_date'] . ' 00:00:00' : date('Y-m-01') . ' 00:00:00';
+$end_date = isset($_POST['end_date']) ? $_POST['end_date'] . ' 23:59:59' : date('Y-m-d') . ' 23:59:59';
 
 // Truy vấn khách hàng mua nhiều nhất
 $customer_query = "SELECT 
@@ -21,12 +21,10 @@ $customer_query = "SELECT
     GROUP_CONCAT(DISTINCT o.OrderID) AS order_ids
 FROM users u
 JOIN orders o ON u.Username = o.Username
-WHERE o.DateGeneration BETWEEN ? AND ?
-    AND o.Status = 'success' 
-    AND o.TotalAmount > 0
+WHERE o.DateGeneration >= ? AND o.DateGeneration <= ?
+    AND o.TotalAmount >= 0
 GROUP BY u.Username, u.FullName
 HAVING COUNT(o.OrderID) > 0
-    AND SUM(o.TotalAmount) > 0
 ORDER BY order_count DESC, total_amount DESC 
 LIMIT 5";
 
@@ -65,13 +63,12 @@ $product_query = "SELECT
 FROM products p
 JOIN orderdetails od ON p.ProductID = od.ProductID
 JOIN orders o ON od.OrderID = o.OrderID
-WHERE o.DateGeneration BETWEEN ? AND ?
-    AND o.Status = 'success'
-    AND od.Quantity > 0
-    AND od.TotalPrice > 0
+WHERE o.DateGeneration >= ? AND o.DateGeneration <= ?
+    AND od.Quantity >= 0
+    AND od.TotalPrice >= 0
 GROUP BY p.ProductID, p.ProductName
-HAVING SUM(od.Quantity) > 0
-    AND SUM(od.TotalPrice) > 0
+HAVING SUM(od.Quantity) >= 0
+    AND SUM(od.TotalPrice) >= 0
 ORDER BY quantity_sold DESC, total_amount DESC
 LIMIT 5";
 
@@ -105,9 +102,8 @@ $total_revenue_query = "SELECT
     COUNT(DISTINCT OrderID) as total_orders,
     COUNT(DISTINCT Username) as total_customers 
 FROM orders 
-WHERE DateGeneration BETWEEN ? AND ?
-    AND Status = 'success'
-    AND TotalAmount > 0";
+WHERE DateGeneration >= ? AND DateGeneration <= ?
+    AND TotalAmount >= 0";
 
 $stmt = $myconn->prepare($total_revenue_query);
 $stmt->bind_param("ss", $start_date, $end_date);

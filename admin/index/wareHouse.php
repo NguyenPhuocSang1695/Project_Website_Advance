@@ -302,9 +302,9 @@
       background-color: #cc0000;
     }
 
-    /* .product-details-overlay {
-      // ...existing code...
-    } */
+    .product-details-overlay {
+      /* // ...existing code... */
+    }
   </style>
 </head>
 
@@ -512,7 +512,7 @@
               // Database connection
               $conn = new mysqli("localhost", "root", "", "c01db");
               if ($conn->connect_error) {
-                  die("Connection failed: " . $conn->connect_error);
+                die("Connection failed: " . $conn->connect_error);
               }
 
               // Pagination settings
@@ -525,7 +525,7 @@
               $total_row = $total_result->fetch_assoc();
               $total_products = $total_row['total'];
               $total_pages = ceil($total_products / $items_per_page);
-              
+
               // Query to get products with category names and pagination
               $sql = "SELECT p.*, c.CategoryName as CategoryName 
                       FROM products p 
@@ -537,19 +537,19 @@
               $result = $conn->query($sql);
 
               if ($result->num_rows > 0) {
-                  while($row = $result->fetch_assoc()) {
-                      echo "<tr>";
-                      echo "<td><img src='../.." . $row['ImageURL'] . "' alt='" . $row['ProductName'] . "' style='width: 100px; height: 100px; object-fit: cover;'></td>";
-                      echo "<td>" . $row['ProductName'] . "</td>";
-                      echo "<td>" . $row['CategoryName'] . "</td>";
-                      echo "<td>" . number_format($row['Price'], 0, ',', '.') . " VNĐ</td>";
-                      echo "<td class='actions'>";
-                      echo "<button class='btn btn-warning btn-sm' onclick='editProduct(" . $row['ProductID'] . ")'><i class='fa-solid fa-pen-to-square'></i></button> ";
-                      echo "</td>";
-                      echo "</tr>";
-                  }
+                while ($row = $result->fetch_assoc()) {
+                  echo "<tr>";
+                  echo "<td><img src='../.." . $row['ImageURL'] . "' alt='" . $row['ProductName'] . "' style='width: 100px; height: 100px; object-fit: cover;'></td>";
+                  echo "<td>" . $row['ProductName'] . "</td>";
+                  echo "<td>" . $row['CategoryName'] . "</td>";
+                  echo "<td>" . number_format($row['Price'], 0, ',', '.') . " VNĐ</td>";
+                  echo "<td class='actions'>";
+                  echo "<button class='btn btn-warning btn-sm' onclick='editProduct(" . $row['ProductID'] . ")'><i class='fa-solid fa-pen-to-square'></i></button> ";
+                  echo "</td>";
+                  echo "</tr>";
+                }
               } else {
-                  echo "<tr><td colspan='5'>Không có sản phẩm nào</td></tr>";
+                echo "<tr><td colspan='5'>Không có sản phẩm nào</td></tr>";
               }
 
               // Close the table
@@ -561,57 +561,57 @@
 
               // Previous button
               if ($page > 1) {
-                  echo "<li class='page-item'><a class='page-link' href='?page=" . ($page - 1) . "'><<</a></li>";
+                echo "<li class='page-item'><a class='page-link' href='?page=" . ($page - 1) . "'><<</a></li>";
               }
 
               // Page numbers
               if ($total_pages <= 5) {
-                  // If total pages is 5 or less, show all pages
-                  for ($i = 1; $i <= $total_pages; $i++) {
-                      echo "<li class='page-item " . ($page == $i ? 'active' : '') . "'>";
-                      echo "<a class='page-link' href='?page=$i'>$i</a>";
-                      echo "</li>";
-                  }
+                // If total pages is 5 or less, show all pages
+                for ($i = 1; $i <= $total_pages; $i++) {
+                  echo "<li class='page-item " . ($page == $i ? 'active' : '') . "'>";
+                  echo "<a class='page-link' href='?page=$i'>$i</a>";
+                  echo "</li>";
+                }
               } else {
-                  // Show first page
-                  echo "<li class='page-item " . ($page == 1 ? 'active' : '') . "'>";
-                  echo "<a class='page-link' href='?page=1'>1</a></li>";
+                // Show first page
+                echo "<li class='page-item " . ($page == 1 ? 'active' : '') . "'>";
+                echo "<a class='page-link' href='?page=1'>1</a></li>";
 
-                  // Show pages around current page
-                  $start_page = max(2, min($page - 1, $total_pages - 3));
-                  $end_page = min($total_pages - 1, max($page + 1, 4));
+                // Show pages around current page
+                $start_page = max(2, min($page - 1, $total_pages - 3));
+                $end_page = min($total_pages - 1, max($page + 1, 4));
 
-                  if ($start_page > 2) {
-                      echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
-                  }
+                if ($start_page > 2) {
+                  echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
+                }
 
-                  for ($i = $start_page; $i <= $end_page; $i++) {
-                      echo "<li class='page-item " . ($page == $i ? 'active' : '') . "'>";
-                      echo "<a class='page-link' href='?page=$i'>$i</a>";
-                      echo "</li>";
-                  }
+                for ($i = $start_page; $i <= $end_page; $i++) {
+                  echo "<li class='page-item " . ($page == $i ? 'active' : '') . "'>";
+                  echo "<a class='page-link' href='?page=$i'>$i</a>";
+                  echo "</li>";
+                }
 
-                  if ($end_page < $total_pages - 1) {
-                      echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
-                  }
+                if ($end_page < $total_pages - 1) {
+                  echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
+                }
 
-                  // Show last page
-                  echo "<li class='page-item " . ($page == $total_pages ? 'active' : '') . "'>";
-                  echo "<a class='page-link' href='?page=$total_pages'>$total_pages</a></li>";
+                // Show last page
+                echo "<li class='page-item " . ($page == $total_pages ? 'active' : '') . "'>";
+                echo "<a class='page-link' href='?page=$total_pages'>$total_pages</a></li>";
               }
 
               // Next button
               if ($page < $total_pages) {
-                  echo "<li class='page-item'><a class='page-link' href='?page=" . ($page + 1) . "'>>></a></li>";
+                echo "<li class='page-item'><a class='page-link' href='?page=" . ($page + 1) . "'>>></a></li>";
               }
 
               echo "</ul>";
               echo "</nav>";
 
               // Xử lý xóa sản phẩm khi form submit
-              if(isset($_POST['delete_product'])) {
+              if (isset($_POST['delete_product'])) {
                 $productId = $_POST['productId'];
-                
+
                 // Lấy thông tin ảnh trước khi xóa
                 $imageQuery = "SELECT ImageURL FROM products WHERE ProductID = ?";
                 $stmt = $conn->prepare($imageQuery);
@@ -620,23 +620,23 @@
                 $result = $stmt->get_result();
                 $imageData = $result->fetch_assoc();
                 $stmt->close();
-                
+
                 // Xóa sản phẩm từ database
                 $deleteQuery = "DELETE FROM products WHERE ProductID = ?";
                 $stmt = $conn->prepare($deleteQuery);
                 $stmt->bind_param("i", $productId);
-                
-                if($stmt->execute()) {
-                    // Nếu xóa thành công từ DB, thì xóa file ảnh
-                    if($imageData && isset($imageData['ImageURL'])) {
-                        $imagePath = $_SERVER['DOCUMENT_ROOT'] . $imageData['ImageURL'];
-                        if(file_exists($imagePath)) {
-                            unlink($imagePath);
-                        }
+
+                if ($stmt->execute()) {
+                  // Nếu xóa thành công từ DB, thì xóa file ảnh
+                  if ($imageData && isset($imageData['ImageURL'])) {
+                    $imagePath = $_SERVER['DOCUMENT_ROOT'] . $imageData['ImageURL'];
+                    if (file_exists($imagePath)) {
+                      unlink($imagePath);
                     }
-                    echo "<script>alert('Xóa sản phẩm thành công!'); window.location.href='wareHouse.php';</script>";
+                  }
+                  echo "<script>alert('Xóa sản phẩm thành công!'); window.location.href='wareHouse.php';</script>";
                 } else {
-                    echo "<script>alert('Lỗi khi xóa sản phẩm!');</script>";
+                  echo "<script>alert('Lỗi khi xóa sản phẩm!');</script>";
                 }
                 $stmt->close();
               }
@@ -784,7 +784,7 @@
           <h3 class="card-title mb-4">Chỉnh sửa sản phẩm</h3>
           <form id="editProductForm" method="POST" enctype="multipart/form-data">
             <input type="hidden" id="editProductId" name="productId">
-            
+
             <div class="row">
               <div class="col-md-4">
                 <div class="image-preview-container mb-3">
@@ -797,7 +797,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="col-md-8">
                 <div class="row">
                   <div class="col-md-6 mb-3">
@@ -814,7 +814,7 @@
                     </select>
                   </div>
                 </div>
-                
+
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="editPrice" class="form-label">Giá (VNĐ)</label>
@@ -828,7 +828,7 @@
                     </select>
                   </div>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="editDescription" class="form-label">Mô tả</label>
                   <textarea class="form-control" id="editDescription" name="description" rows="3" required></textarea>
@@ -845,163 +845,165 @@
       </div>
     </div>
   </div>
-</div>
+  </div>
 
-<script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="../js/add-product.js"></script>
-<script src="../js/checklog.js"></script>
+  <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/add-product.js"></script>
+  <script src="../js/checklog.js"></script>
 
-<script>
-// Function to show edit product overlay
-function editProduct(productId) {
-  fetch(`../php/get-product.php?id=${productId}`)
-    .then(response => response.json())
-    .then(product => {
-      document.getElementById('editProductId').value = product.ProductID;
-      document.getElementById('editProductName').value = product.ProductName;
-      document.getElementById('editCategoryID').value = product.CategoryID;
-      document.getElementById('editPrice').value = product.Price;
-      document.getElementById('editDescription').value = product.Description;
-      document.getElementById('editStatus').value = product.Status;
-      
-      const currentImage = document.getElementById('currentImage');
-      currentImage.src = '../../' + product.ImageURL;
-      currentImage.style.display = 'block';
-      
-      document.getElementById('editProductOverlay').style.display = 'flex';
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Có lỗi khi tải thông tin sản phẩm!');
-    });
-}
+  <script>
+    // Function to show edit product overlay
+    function editProduct(productId) {
+      fetch(`../php/get-product.php?id=${productId}`)
+        .then(response => response.json())
+        .then(product => {
+          document.getElementById('editProductId').value = product.ProductID;
+          document.getElementById('editProductName').value = product.ProductName;
+          document.getElementById('editCategoryID').value = product.CategoryID;
+          document.getElementById('editPrice').value = product.Price;
+          document.getElementById('editDescription').value = product.Description;
+          document.getElementById('editStatus').value = product.Status;
 
-function closeEditOverlay() {
-  document.getElementById('editProductOverlay').style.display = 'none';
-}
+          const currentImage = document.getElementById('currentImage');
+          currentImage.src = '../../' + product.ImageURL;
+          currentImage.style.display = 'block';
 
-// Preview image before upload
-document.getElementById('editImageURL').addEventListener('change', function(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  
-  const maxSize = 2 * 1024 * 1024; // 2MB
-  if (file.size > maxSize) {
-    alert('Ảnh không được vượt quá 2MB');
-    this.value = '';
-    return;
-  }
-  
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('currentImage').src = e.target.result;
-  }
-  reader.readAsDataURL(file);
-});
-
-// Handle form submission
-document.getElementById('editProductForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
-  const formData = new FormData(this);
-  const submitButton = this.querySelector('button[type="submit"]');
-  submitButton.disabled = true;
-  
-  fetch('../php/update-product.php', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-    if(data.success) {
-      alert('Cập nhật sản phẩm thành công!');
-      window.location.reload();
-    } else {
-      throw new Error(data.message || 'Có lỗi xảy ra khi cập nhật sản phẩm');
+          document.getElementById('editProductOverlay').style.display = 'flex';
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Có lỗi khi tải thông tin sản phẩm!');
+        });
     }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('Có lỗi xảy ra: ' + error.message);
-  })
-  .finally(() => {
-    submitButton.disabled = false;
-  });
-});
 
-function confirmDelete() {
-  const productId = document.getElementById('editProductId').value;
-  if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')) {
-    fetch('../php/delete-product.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ productId: productId })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'deleted' || data.status === 'hidden') {
-        alert(data.message);
-        closeEditOverlay();
-        location.reload();
-      } else {
-        throw new Error(data.message || 'Có lỗi xảy ra khi xóa sản phẩm');
+    function closeEditOverlay() {
+      document.getElementById('editProductOverlay').style.display = 'none';
+    }
+
+    // Preview image before upload
+    document.getElementById('editImageURL').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      if (file.size > maxSize) {
+        alert('Ảnh không được vượt quá 2MB');
+        this.value = '';
+        return;
       }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Có lỗi xảy ra: ' + error.message);
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('currentImage').src = e.target.result;
+      }
+      reader.readAsDataURL(file);
     });
-  }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  const cachedUserInfo = localStorage.getItem('userInfo');
-  if (cachedUserInfo) {
-    const userInfo = JSON.parse(cachedUserInfo);
-    document.querySelector('.name-employee p').textContent = userInfo.fullname;
-    document.querySelector('.position-employee p').textContent = userInfo.role;
-    document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
-  }
-});
+    // Handle form submission
+    document.getElementById('editProductForm').addEventListener('submit', function(e) {
+      e.preventDefault();
 
-function searchProducts() {
-  const searchInput = document.querySelector('.search-input');
-  const searchTerm = searchInput.value.trim();
-  const tableBody = document.getElementById('productsBody');
-  
-  // Show loading state
-  tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Đang tìm kiếm...</td></tr>';
-  
-  // Create form data
-  const formData = new FormData();
-  formData.append('search', searchTerm);
-  
-  // Send AJAX request
-  fetch('../php/search-products.php', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.error) {
-      tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">${data.error}</td></tr>`;
-      return;
+      const formData = new FormData(this);
+      const submitButton = this.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+
+      fetch('../php/update-product.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Cập nhật sản phẩm thành công!');
+            window.location.reload();
+          } else {
+            throw new Error(data.message || 'Có lỗi xảy ra khi cập nhật sản phẩm');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Có lỗi xảy ra: ' + error.message);
+        })
+        .finally(() => {
+          submitButton.disabled = false;
+        });
+    });
+
+    function confirmDelete() {
+      const productId = document.getElementById('editProductId').value;
+      if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')) {
+        fetch('../php/delete-product.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              productId: productId
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'deleted' || data.status === 'hidden') {
+              alert(data.message);
+              closeEditOverlay();
+              location.reload();
+            } else {
+              throw new Error(data.message || 'Có lỗi xảy ra khi xóa sản phẩm');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra: ' + error.message);
+          });
+      }
     }
-    
-    if (data.products.length === 0) {
-      tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Không tìm thấy sản phẩm nào phù hợp</td></tr>';
-      return;
-    }
-    
-    // Clear table body
-    tableBody.innerHTML = '';
-    
-    // Add products to table
-    data.products.forEach(product => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const cachedUserInfo = localStorage.getItem('userInfo');
+      if (cachedUserInfo) {
+        const userInfo = JSON.parse(cachedUserInfo);
+        document.querySelector('.name-employee p').textContent = userInfo.fullname;
+        document.querySelector('.position-employee p').textContent = userInfo.role;
+        document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
+      }
+    });
+
+    function searchProducts() {
+      const searchInput = document.querySelector('.search-input');
+      const searchTerm = searchInput.value.trim();
+      const tableBody = document.getElementById('productsBody');
+
+      // Show loading state
+      tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Đang tìm kiếm...</td></tr>';
+
+      // Create form data
+      const formData = new FormData();
+      formData.append('search', searchTerm);
+
+      // Send AJAX request
+      fetch('../php/search-products.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">${data.error}</td></tr>`;
+            return;
+          }
+
+          if (data.products.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Không tìm thấy sản phẩm nào phù hợp</td></tr>';
+            return;
+          }
+
+          // Clear table body
+          tableBody.innerHTML = '';
+
+          // Add products to table
+          data.products.forEach(product => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
         <td><img src="${product.image}" alt="${product.name}" style="width: 100px; height: 100px; object-fit: cover;"></td>
         <td>${product.name}</td>
         <td>${product.category}</td>
@@ -1012,75 +1014,76 @@ function searchProducts() {
           </button>
         </td>
       `;
-      tableBody.appendChild(row);
+            tableBody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Có lỗi xảy ra: ${error.message}</td></tr>`;
+        });
+    }
+
+    // Add event listener for Enter key
+    document.querySelector('.search-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        searchProducts();
+      }
     });
-  })
-  .catch(error => {
-    tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Có lỗi xảy ra: ${error.message}</td></tr>`;
-  });
-}
 
-// Add event listener for Enter key
-document.querySelector('.search-input').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    searchProducts();
-  }
-});
+    // Add event listener for search button
+    document.querySelector('.search-btn').addEventListener('click', function() {
+      searchProducts();
+    });
 
-// Add event listener for search button
-document.querySelector('.search-btn').addEventListener('click', function() {
-  searchProducts();
-});
+    // Add event listener for input changes with debounce
+    let searchTimeout;
+    document.querySelector('.search-input').addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(searchProducts, 500);
+    });
+  </script>
 
-// Add event listener for input changes with debounce
-let searchTimeout;
-document.querySelector('.search-input').addEventListener('input', function() {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(searchProducts, 500);
-});
-</script>
+  <style>
+    .product-details-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
 
-<style>
-.product-details-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
+    .product-details-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
 
-.product-details-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-}
+    .image-preview-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
 
-.image-preview-container img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
+    .form-actions {
+      border-top: 1px solid #dee2e6;
+      padding-top: 1rem;
+    }
 
-.form-actions {
-  border-top: 1px solid #dee2e6;
-  padding-top: 1rem;
-}
-
-.category-note {
-  font-size: 12px;
-  color: #777;
-  margin-top: 5px;
-}
-</style>
+    .category-note {
+      font-size: 12px;
+      color: #777;
+      margin-top: 5px;
+    }
+  </style>
 </body>
+
 </html>
