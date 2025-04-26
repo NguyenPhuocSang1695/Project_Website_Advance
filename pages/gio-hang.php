@@ -98,11 +98,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $cart_count =  0;
 if (isset($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $cart_count += $item['Quantity'];
-    }
+  foreach ($_SESSION['cart'] as $item) {
+    $cart_count += $item['Quantity'];
+  }
 }
 // Kiểm tra giỏ hàng
+
+if (isset($_SESSION['cart'])) {
+  foreach ($_SESSION['cart'] as $key => $item) {
+    // Lấy thông tin mới nhất của sản phẩm từ database
+    $stmt = $conn->prepare("SELECT ProductName, Price, ImageURL FROM products WHERE ProductID = ?");
+    $stmt->bind_param("i", $item['ProductID']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($product = $result->fetch_assoc()) {
+      // Cập nhật thông tin mới trong session
+      $_SESSION['cart'][$key]['ProductName'] = $product['ProductName'];
+      $_SESSION['cart'][$key]['Price'] = $product['Price'];
+      $_SESSION['cart'][$key]['ImageURL'] = $product['ImageURL'];
+    }
+    $stmt->close();
+  }
+}
 
 $cart_items = isset($_SESSION['cart']) ? array_values($_SESSION['cart']) : [];
 $total = 0;
@@ -253,30 +270,30 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
             <div class="cart-wrapper">
               <div class="cart-icon">
                 <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" />
-                <span class="cart-count" id = "mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
-                  <?php 
+                  <span class="cart-count" id="mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                    <?php
                     echo $cart_count;
-                  ?>
-                </span>
+                    ?>
+                  </span>
                 </a>
               </div>
               <div class="cart-dropdown">
-                    <?php if (count($cart_items) >0): ?>
-                        <?php foreach ($cart_items as $item): ?>
-                            <div class="cart-item">
-                                <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"  class="cart-thumb"/>                                
-                                <div class="cart-item-details">
-                                    <h5><?php echo $item['ProductName']; ?></h5>
-                                    <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
-                                    <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
-                                  </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>Giỏ hàng của bạn đang trống.</p>
-                    <?php endif; ?>
-                </div>
-          </div>       
+                <?php if (count($cart_items) > 0): ?>
+                  <?php foreach ($cart_items as $item): ?>
+                    <div class="cart-item">
+                      <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>" class="cart-thumb" />
+                      <div class="cart-item-details">
+                        <h5><?php echo $item['ProductName']; ?></h5>
+                        <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
+                        <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <p>Giỏ hàng của bạn đang trống.</p>
+                <?php endif; ?>
+              </div>
+            </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
                 <img src="../assets/images/user.svg" alt="" />
