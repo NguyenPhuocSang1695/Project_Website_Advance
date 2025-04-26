@@ -11,6 +11,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $price = $_POST['price'];
     $description = $_POST['description'];
 
+    // Kiểm tra sản phẩm đã tồn tại chưa
+    $checkSql = "SELECT COUNT(*) as count FROM products WHERE ProductName = ?";
+    $checkStmt = $conn->prepare($checkSql);
+    $checkStmt->bind_param("s", $productName);
+    $checkStmt->execute();
+    $result = $checkStmt->get_result();
+    $row = $result->fetch_assoc();
+
+    if ($row['count'] > 0) {
+        echo json_encode(["success" => false, "message" => "Sản phẩm đã tồn tại trong hệ thống"]);
+        exit;
+    }
+
     // Mặc định
     $status = 'appear';
     $isPurchase = 0;
@@ -50,10 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("siisssi", $productName, $categoryID, $price, $description, $imageRelativeURL, $status, $isPurchase);
 
-
-
     if ($stmt->execute()) {
-        echo json_encode(["success" => true]);
+        echo json_encode(["success" => true, "message" => "Thêm sản phẩm thành công"]);
     } else {
         echo json_encode(["success" => false, "message" => "Lỗi khi thêm sản phẩm: " . $stmt->error]);
     }

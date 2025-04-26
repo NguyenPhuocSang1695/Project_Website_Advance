@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <?php
 require_once('../src/php/token.php');
+require_once('../src/php/check_token_v1.php');
 $errors = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -54,6 +55,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (!preg_match("/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,}/", $password)) {
     $errors['password'] = "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
   }
+  if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {
+    $errors['fullname'] = "Họ tên không hợp lệ! Chỉ được chứa chữ cái và tối đa 80 từ.";
+  }
+  if (empty($province)) {
+    $errors['province'] = "Không được để trống tỉnh/thành!";
+  }
+  if (empty($district)) {
+    $errors['district'] = "Không được để trống quận/huyện!";
+  }
+  if (empty($ward)) {
+    $errors['ward'] = "Không được để trống phường/xã!";
+  }
+  if (empty($address)) {
+    $errors['address'] = "Không được để trống địa chỉ!";
+  }
 
   // Nếu không có lỗi thì thêm vào CSDL
   if (empty($errors)) {
@@ -101,7 +117,7 @@ $provinceResult = $conn->query($provinceQuery);
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
-  <title>Đăng kí</title>
+  <title>Đăng ký</title>
   <style>
     /* hiện lỗi */
     .error-message {
@@ -135,6 +151,10 @@ $provinceResult = $conn->query($provinceQuery);
       .form-card {
         width: 100%;
       }
+    }
+
+    .form-group label {
+      font-weight: bold;
     }
   </style>
 </head>
@@ -258,7 +278,7 @@ $provinceResult = $conn->query($provinceQuery);
             </script>
 
             <div class="cart-icon">
-              <a href="user-register.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
+              <a href="./gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
@@ -279,7 +299,7 @@ $provinceResult = $conn->query($provinceQuery);
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <?php if (!$loggedInUsername): ?>
                       <li class="nav-item">
-                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                        <a class="nav-link login-logout" href="user-register.php">Đăng ký</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
@@ -523,7 +543,7 @@ $provinceResult = $conn->query($provinceQuery);
         <div class="form-content">
           <div class="form-header">
             <h1>Tạo tài khoản mới</h1>
-            <p>Điền thông tin dưới đây để bắt đầu</p>
+            <p style="font-weight: bold">Điền thông tin dưới đây để bắt đầu</p>
           </div>
           <form method="POST" action="">
             <div class="form-row">
@@ -563,26 +583,29 @@ $provinceResult = $conn->query($provinceQuery);
                   }
                   ?>
                 </select>
-
+                <p class="error-message"><?php echo $errors['province'] ?? ''; ?></p>
               </div>
               <div class="form-group">
                 <label for="district">Quận/Huyện</label>
                 <select id="district" name="district" class="form-control">
-                  <option value="">Chọn một quận/huyện</option>
+                  <option value="">Chọn quận/huyện</option>
                 </select>
+                <p class="error-message"><?php echo $errors['district'] ?? ''; ?></p>
               </div>
             </div>
 
             <div class="form-group">
               <label for="wards">Phường/Xã</label>
               <select id="wards" name="wards" class="form-control">
-                <option value="">Chọn một xã</option>
+                <option value="">Chọn phường/xã</option>
               </select>
+              <p class="error-message"><?php echo $errors['ward'] ?? ''; ?></p>
             </div>
 
             <div class="form-group">
               <label for="address">Địa chỉ</label>
               <input type="text" id="address" name="address" class="form-control" required>
+              <p class="error-message"><?php echo $errors['address'] ?? ''; ?></p>
             </div>
 
             <div class="checkbox-container">
@@ -605,7 +628,10 @@ $provinceResult = $conn->query($provinceQuery);
             </div>
 
             <button type="submit" class="btn">Đăng ký ngay</button>
-            <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button>
+            <!-- <button type="reset" class="btn btn-reset" onclick="resetForm()">Làm mới</button> -->
+            <div class="checkbox-container">
+              <p for>Bạn đã có tài khoản? <a href="user-login.php">Đăng nhập</a> </p>
+            </div>
           </form>
         </div>
       </div>
@@ -637,7 +663,7 @@ $provinceResult = $conn->query($provinceQuery);
   <!-- FOOTER  -->
   <footer class="footer">
     <div class="footer-column">
-      <h3>Thee Tree</h3>
+      <h3>The Tree</h3>
       <ul>
         <li><a href="#">Cây dễ chăm</a></li>
         <li><a href="#">Cây văn phòng</a></li>
@@ -647,7 +673,7 @@ $provinceResult = $conn->query($provinceQuery);
     </div>
 
     <div class="footer-column">
-      <h3>Learn</h3>
+      <h3>Khám phá</h3>
       <ul>
         <li><a href="#">Cách chăm sóc cây</a></li>
         <li><a href="#">Lợi ích của cây xanh</a></li>
@@ -656,17 +682,19 @@ $provinceResult = $conn->query($provinceQuery);
     </div>
 
     <div class="footer-column">
-      <h3>More from The Tree</h3>
+      <h3>Khám phá thêm từ The Tree</h3>
       <ul>
         <li><a href="#">Blog</a></li>
-        <li><a href="#">Affiliate</a></li>
+        <li><a href="#">Cộng tác viên</a></li>
         <li><a href="#">Liên hệ</a></li>
-        <li><a href="#">Faq's</a></li>
-        <li><a href="#">Sign In</a></li>
+        <li><a href="#">Câu hỏi thường gặp</a></li>
+        <li><a href="#">Đăng nhập</a></li>
       </ul>
+
     </div>
 
     <div class="footer-column newsletter">
+
 
       <h3>Theo dõi chúng tôi</h3>
       <div class="social-icons">
@@ -686,7 +714,7 @@ $provinceResult = $conn->query($provinceQuery);
     </div>
 
     <div class="copyright">
-      © 2021 tenzotea.co
+      © 2021 c01.nhahodau
 
       <div class="policies">
         <a href="#">Điều khoản dịch vụ</a>
@@ -700,90 +728,12 @@ $provinceResult = $conn->query($provinceQuery);
     </div>
     <!-- xong footer  -->
   </footer>
-  </div>
+  <!-- </div> -->
 
   <script src="../src/js/user-register.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
 
-  <script>
-    $(document).ready(function() {
-      // Listen for changes in the "province" select box
-      $('#province').on('change', function() {
-        var province_id = $(this).val();
-        // console.log(province_id);
-        if (province_id) {
-          // If a province is selected, fetch the districts for that province using AJAX
-          $.ajax({
-            url: 'ajax_get_district.php',
-            method: 'GET',
-            dataType: "json",
-            data: {
-              province_id: province_id
-            },
-            success: function(data) {
-              // Clear the current options in the "district" select box
-              $('#district').empty();
-
-              // Add the new options for the districts for the selected province
-              $.each(data, function(i, district) {
-                // console.log(district);
-                $('#district').append($('<option>', {
-                  value: district.id,
-                  text: district.name
-                }));
-              });
-              // Clear the options in the "wards" select box
-              $('#wards').empty();
-            },
-            error: function(xhr, textStatus, errorThrown) {
-              console.log('Error: ' + errorThrown);
-            }
-          });
-          $('#wards').empty();
-        } else {
-          // If no province is selected, clear the options in the "district" and "wards" select boxes
-          $('#district').empty();
-        }
-      });
-
-      // Listen for changes in the "district" select box
-      $('#district').on('change', function() {
-        var district_id = $(this).val();
-        // console.log(district_id);
-        if (district_id) {
-          // If a district is selected, fetch the awards for that district using AJAX
-          $.ajax({
-            url: 'ajax_get_wards.php',
-            method: 'GET',
-            dataType: "json",
-            data: {
-              district_id: district_id
-            },
-            success: function(data) {
-              // console.log(data);
-              // Clear the current options in the "wards" select box
-              $('#wards').empty();
-              // Add the new options for the awards for the selected district
-              $.each(data, function(i, wards) {
-                $('#wards').append($('<option>', {
-                  value: wards.id,
-                  text: wards.name
-                }));
-              });
-            },
-            error: function(xhr, textStatus, errorThrown) {
-              console.log('Error: ' + errorThrown);
-            }
-          });
-        } else {
-          // If no district is selected, clear the options in the "award" select box
-          $('#wards').empty();
-        }
-      });
-    });
-  </script>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../src/js/jquery-3.7.1.min.js"></script>
   <script>
     $(document).ready(function() {
       $('#province').on('change', function() {

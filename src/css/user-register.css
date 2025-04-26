@@ -533,6 +533,36 @@ body {
   text-decoration: underline;
 }
 
+.checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  margin: 24px 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  margin-top: 3px;
+  accent-color: var(--primary-color);
+}
+
+.checkbox-container label {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.checkbox-container a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.checkbox-container a:hover {
+  text-decoration: underline;
+}
+
 .btn {
   background-color: var(--primary-color);
   color: white;

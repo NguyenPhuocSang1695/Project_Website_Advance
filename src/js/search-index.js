@@ -389,7 +389,7 @@ function setupPagination(totalItems) {
 
   // Nút Previous
   paginationHTML += `
-    <a href="#" class="btn btn-success pagination-item ${
+    <a href="#" class="btn btn-secondary pagination-item ${
       currentPage === 1 ? "disabled" : ""
     }" 
        onclick="${
@@ -409,38 +409,36 @@ function setupPagination(totalItems) {
   // Hiển thị trang đầu tiên nếu cần
   if (startPage > 1) {
     paginationHTML += `
-      <a href="#" class="btn btn-success pagination-item" onclick="changePage(1)">1</a>
+      <a href="#" class="btn btn-secondary pagination-item" onclick="changePage(1)">1</a>
     `;
 
     if (startPage > 2) {
-      paginationHTML += `<span class="btn btn-success pagination-ellipsis">...</span>`;
+      paginationHTML += `<span class="btn btn-secondary pagination-ellipsis">...</span>`;
     }
   }
 
   // Các số trang
   for (let i = startPage; i <= endPage; i++) {
+    const btnClass = i === currentPage ? "btn-success" : "btn-secondary";
     paginationHTML += `
-      <a href="#" class="btn btn-success pagination-item ${
-        i === currentPage ? "active" : ""
-      }" 
-         onclick="changePage(${i})">${i}</a>
-    `;
+    <a href="#" class="btn pagination-item ${btnClass}" onclick="changePage(${i})">${i}</a>
+  `;
   }
 
   // Hiển thị trang cuối cùng nếu cần
   if (endPage < totalPages) {
     if (endPage < totalPages - 1) {
-      paginationHTML += `<span class="btn btn-success pagination-ellipsis">...</span>`;
+      paginationHTML += `<span class="btn btn-secondary pagination-ellipsis">...</span>`;
     }
 
     paginationHTML += `
-      <a href="#" class=" btn btn-success pagination-item" onclick="changePage(${totalPages})">${totalPages}</a>
+      <a href="#" class=" btn btn-secondary pagination-item" onclick="changePage(${totalPages})">${totalPages}</a>
     `;
   }
 
   // Nút Next
   paginationHTML += `
-    <a href="#" class="btn btn-success pagination-item ${
+    <a href="#" class="btn btn-secondary pagination-item ${
       currentPage === totalPages ? "disabled" : ""
     }" 
        onclick="${

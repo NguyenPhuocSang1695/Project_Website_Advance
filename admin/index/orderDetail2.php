@@ -40,7 +40,7 @@ if ($orderID) {
     while ($row = $result_details->fetch_assoc()) {
       $orderDetails[] = $row;
     }
-
+ 
     // 3. Lấy thông tin thanh toán
     $sql_payment =    "SELECT 
                         SUM(od.Quantity) AS TotalQuantity, o.TotalAmount
@@ -60,28 +60,32 @@ if ($orderID) {
 
     // 4. Lấy thông tin người mua (từ bảng users) và người nhận (từ bảng orders)
     $sql_user = "SELECT 
-            -- Thông tin người mua từ bảng users
+            -- Thông tin người mua 
             u.Email as buyer_email,
             u.Address as buyer_address,
             u.FullName as buyer_name,
             u.Phone as buyer_phone,
             p1.name as buyer_province,
             d1.name as buyer_district,
-            u.Ward as buyer_ward,
+            w1.name as buyer_ward,
             
-            -- Thông tin người nhận từ bảng orders
+            -- Thông tin người nhận
             o.CustomerName as receiver_name,
             o.Phone as receiver_phone,
             o.Address as receiver_address,
             o.Ward as receiver_ward,
             p2.name as receiver_province,
-            d2.name as receiver_district
+            d2.name as receiver_district,
+            w2.name as receiver_ward,
+            o.Status as order_status
         FROM orders o
         JOIN users u ON o.Username = u.Username
         LEFT JOIN province p1 ON u.Province = p1.province_id
         LEFT JOIN district d1 ON u.District = d1.district_id
         LEFT JOIN province p2 ON o.Province = p2.province_id
         LEFT JOIN district d2 ON o.District = d2.district_id
+        LEFT JOIN wards w1 ON u.Ward = w1.wards_id
+        LEFT JOIN wards w2 ON o.ward= w2.wards_id
         WHERE o.OrderID = ?";
 
     $stmt_user = $myconn->prepare($sql_user);
@@ -91,7 +95,6 @@ if ($orderID) {
     $userInfo = $result_user->fetch_assoc();
 
     if ($userInfo) {
-      // Thông tin người mua
       $buyerName = $userInfo['buyer_name'];
       $buyerEmail = $userInfo['buyer_email'];
       $buyerAddress = $userInfo['buyer_address'] . ', ' .
@@ -99,14 +102,18 @@ if ($orderID) {
         $userInfo['buyer_district'] . ', ' .
         $userInfo['buyer_province'];
       $buyerPhone = $userInfo['buyer_phone'];
-
-      // Thông tin người nhận
-      $receiverName = $userInfo['receiver_name'];
-      $receiverPhone = $userInfo['receiver_phone'];
-      $receiverAddress = $userInfo['receiver_address'] . ', ' .
-        $userInfo['receiver_ward'] . ', ' .
-        $userInfo['receiver_district'] . ', ' .
-        $userInfo['receiver_province'];
+      if ($userInfo['order_status'] === 'success') {
+        $receiverName = $userInfo['receiver_name'];
+        $receiverPhone = $userInfo['receiver_phone'];
+        $receiverAddress = $userInfo['receiver_address'] . ', ' .
+          $userInfo['receiver_ward'] . ', ' .
+          $userInfo['receiver_district'] . ', ' .
+          $userInfo['receiver_province'];
+      } else {
+        $receiverName = $userInfo['buyer_name'];
+        $receiverPhone = $userInfo['buyer_phone'];
+        $receiverAddress = $buyerAddress;
+      }
     } else {
       echo "Không tìm thấy thông tin người mua";
       exit;
@@ -117,7 +124,7 @@ if ($orderID) {
   exit;
 }
 
-// Hàm để lấy thông tin trạng thái
+
 function getStatusInfo($status)
 {
   switch ($status) {
@@ -153,8 +160,6 @@ function getStatusInfo($status)
       ];
   }
 }
-
-// Thêm hàm này cạnh hàm getStatusInfo
 function getPaymentStatusInfo($method)
 {
   switch ($method) {
@@ -335,10 +340,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
       </div>
     </div>
     <div class="header-left-section">
-      <p style="
-       font-size: 30px;
-       font-weight: bold; position: relative;
-       left: -25px;">Đơn số <?php echo $orderDetailID; ?></p>
+      <p>Đơn số <?php echo $orderDetailID; ?></p>
     </div>
     <div class="header-middle-section">
       <img class="logo-store" src="../../assets/images/LOGO-2.jpg">
@@ -504,37 +506,41 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
             <div class="section-header">
               <span style="color:#21923c;"><i class="fa-regular fa-circle" style="margin-right: 5px;"></i>Chi tiết đơn hàng</span>
             </div>
-            <table>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>SỐ LƯỢNG</th>
-                  <th>GIÁ (đ)</th>
-                  <th class="hide-display">THÀNH TIỀN (đ)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php if (empty($orderDetails)): ?>
+            <div class="table-container">
+              <table>
+                <thead>
                   <tr>
-                    <td colspan="4">Không có sản phẩm nào trong đơn hàng này.</td>
+                    <th style="width: 40%;">SẢN PHẨM</th>
+                    <th style="width: 20%;">SỐ LƯỢNG</th>
+                    <th style="width: 20%;">GIÁ (đ)</th>
+                    <th style="width: 20%;" class="hide-display">THÀNH TIỀN (đ)</th>
                   </tr>
-                <?php else: ?>
-                  <?php foreach ($orderDetails as $detail): ?>
+                </thead>
+                <tbody>
+                  <?php if (empty($orderDetails)): ?>
                     <tr>
-                      <td>
-                        <img src="<?php echo '../..' . $detail['ImageURL']; ?>" alt="Product Image" style="width: 50px; height: 50px;">
-                        <div class="product-info">
-                          <span class="product-name"><?php echo htmlspecialchars($detail['ProductName']); ?></span><br>
-                        </div>
-                      </td>
-                      <td><?php echo $detail['Quantity']; ?></td>
-                      <td><?php echo number_format($detail['UnitPrice'], 0, ',', '.') . ' đ'; ?></td>
-                      <td class="hide-display"><?php echo number_format($detail['TotalPrice'], 0, ',', '.') . ' đ'; ?></td>
+                      <td colspan="4">Không có sản phẩm nào trong đơn hàng này.</td>
                     </tr>
-                  <?php endforeach; ?>
-                <?php endif; ?>
-              </tbody>
-            </table>
+                  <?php else: ?>
+                    <?php foreach ($orderDetails as $detail): ?>
+                      <tr>
+                        <td>
+                          <div style="display: flex; align-items: center; gap: 10px;">
+                            <img src="<?php echo '../..' . $detail['ImageURL']; ?>" alt="Product Image" style="width: 50px; height: 50px; object-fit: cover;">
+                            <div class="product-info">
+                              <span class="product-name"><?php echo htmlspecialchars($detail['ProductName']); ?></span>
+                            </div>
+                          </div>
+                        </td>
+                        <td><?php echo $detail['Quantity']; ?></td>
+                        <td><?php echo number_format($detail['UnitPrice'], 0, ',', '.') . ' đ'; ?></td>
+                        <td class="hide-display"><?php echo number_format($detail['TotalPrice'], 0, ',', '.') . ' đ'; ?></td>
+                      </tr>
+                    <?php endforeach; ?>
+                  <?php endif; ?>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div class="section payment">

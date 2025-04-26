@@ -368,7 +368,7 @@ body {
 
 .img__TREE {
   position: relative;
-  width: 200px;
+  width: 250px;
   /* Chiếm 22% chiều rộng container cha, có thể thay đổi */
   min-width: 200px;
   /* Kích thước nhỏ nhất để ảnh không quá nhỏ */
@@ -380,7 +380,6 @@ body {
   /* Căn giữa theo chiều ngang */
   transition: all 0.3s ease;
   /* Thêm hiệu ứng chuyển đổi mượt mà */
-  width: calc(25% - 113px);
   /* 4 phần tử, trừ khoảng cách */
   box-sizing: border-box;
   text-align: center;
@@ -391,12 +390,21 @@ body {
   /* Màu xanh lá cây nhạt */
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
   /* Bóng đậm hơn, rõ hơn */
+
+}
+
+.img__TREE .THE-TREE {
+  transition: transform 0.3s ease;
+}
+
+.img__TREE:hover .THE-TREE {
+  transform: scale(1.05);
 }
 
 .THE-TREE {
   width: 100%;
   /* Ảnh chiếm toàn bộ chiều rộng của phần tử cha */
-  height: auto;
+  height: 100%;
   /* Tự động điều chỉnh chiều cao để giữ tỷ lệ khung hình */
   cursor: pointer;
   /* Thay đổi con trỏ khi hover vào ảnh */
@@ -775,6 +783,7 @@ body {
 
   #product1 .pro {
     margin: 10px;
+    width: fit-content;
   }
 }
 
@@ -815,6 +824,7 @@ body {
 
   #product1 .pro {
     margin: 10px;
+    width: fit-content;
   }
 }
 

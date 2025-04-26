@@ -19,34 +19,45 @@ $orderStatus = isset($_GET['order_status']) ? $_GET['order_status'] : '';
 $provinceId = isset($_GET['province_id']) ? intval($_GET['province_id']) : 0;
 $districtId = isset($_GET['district_id']) ? intval($_GET['district_id']) : 0;
 
-// Sửa phần query SELECT 
-$selectQuery = "SELECT 
-    o.OrderID AS madonhang,
-    o.DateGeneration AS ngaytao,
-    o.Status AS trangthai,
-    o.TotalAmount AS giatien,
-    u.FullName AS buyer_name,
-    o.CustomerName AS receiver_name,
-    o.Address AS receiver_address,
-    dr.name AS shipping_district,  
-    pr.name AS shipping_province     
-FROM orders o
-LEFT JOIN users u ON o.Username = u.Username
-LEFT JOIN province pr ON o.Province = pr.province_id 
-LEFT JOIN district dr ON o.District = dr.district_id
-WHERE 1=1";
+// Sửa phần query SELECT với cú pháp chuẩn hơn
+$selectQuery = "
+    SELECT 
+        o.OrderID AS madonhang,
+        o.DateGeneration AS ngaytao,
+        o.Status AS trangthai,
+        o.TotalAmount AS giatien,
+        u.FullName AS buyer_name,
+        u.Address AS buyer_address,
+        d.name AS buyer_district,
+        p.name AS buyer_province,
+        o.CustomerName AS receiver_name,
+        o.Address AS receiver_address,
+        d2.name AS shipping_district,
+        p2.name AS shipping_province
+    FROM orders o
+    LEFT JOIN users u 
+        ON o.Username = u.Username
+    LEFT JOIN province p 
+        ON u.Province = p.province_id
+    LEFT JOIN district d 
+        ON u.District = d.district_id
+    LEFT JOIN province p2 
+        ON o.Province = p2.province_id
+    LEFT JOIN district d2 
+        ON o.District = d2.district_id
+    WHERE 1=1";
 
 $params = [];
 $types = '';
 
 if ($dateFrom) {
-    $selectQuery .= " AND o.DateGeneration >= ?";
+    $selectQuery .= " AND DATE(o.DateGeneration) >= ?";
     $params[] = $dateFrom;
     $types .= 's';
 }
 
 if ($dateTo) {
-    $selectQuery .= " AND o.DateGeneration <= ?";
+    $selectQuery .= " AND DATE(o.DateGeneration) <= ?";
     $params[] = $dateTo;
     $types .= 's';
 }
@@ -74,22 +85,28 @@ $params[] = $limit;
 $params[] = $offset;
 $types .= 'ii';
 
-// Sửa lại phần xử lý query đếm
-$countQuery = "SELECT COUNT(*) as total FROM orders o";
+// Sửa lại câu query đếm tổng số record
+$countQuery = "
+    SELECT COUNT(DISTINCT o.OrderID) as total 
+    FROM orders o
+    LEFT JOIN users u 
+        ON o.Username = u.Username
+    LEFT JOIN province p 
+        ON u.Province = p.province_id
+    LEFT JOIN district d 
+        ON u.District = d.district_id
+    LEFT JOIN province p2 
+        ON o.Province = p2.province_id
+    LEFT JOIN district d2 
+        ON o.District = d2.district_id
+    WHERE 1=1";
 
-// Thêm các JOIN cần thiết
-$countQuery .= " LEFT JOIN users u ON o.Username = u.Username
-                 LEFT JOIN province pr ON o.Province = pr.province_id
-                 LEFT JOIN district dr ON o.District = dr.district_id
-                 WHERE 1=1";
-
-// Thêm điều kiện WHERE (không bao gồm LIMIT và OFFSET)
 if ($dateFrom) {
-    $countQuery .= " AND o.DateGeneration >= ?";
+    $countQuery .= " AND DATE(o.DateGeneration) >= ?";
 }
 
 if ($dateTo) {
-    $countQuery .= " AND o.DateGeneration <= ?";
+    $countQuery .= " AND DATE(o.DateGeneration) <= ?";
 }
 
 if ($orderStatus && $orderStatus !== 'all') {
@@ -150,11 +167,19 @@ $result = $stmt->get_result();
 
 $orders = [];
 while ($row = $result->fetch_assoc()) {
-    $receiver_address_parts = array_filter([
+    // Xác định thông tin người nhận dựa vào trạng thái đơn hàng
+    $displayReceiverName = $row['trangthai'] === 'success' ? $row['receiver_name'] : $row['buyer_name'];
+    $displayAddress = $row['trangthai'] === 'success' ? [
         $row['receiver_address'],
         $row['shipping_district'],
         $row['shipping_province']
-    ]);
+    ] : [
+        $row['buyer_address'],
+        $row['buyer_district'],
+        $row['buyer_province']
+    ];
+
+    $receiver_address_parts = array_filter($displayAddress);
 
     $orders[] = [
         'madonhang' => $row['madonhang'],
@@ -162,7 +187,7 @@ while ($row = $result->fetch_assoc()) {
         'trangthai' => $row['trangthai'],
         'giatien' => $row['giatien'],
         'buyer_name' => $row['buyer_name'] ?? 'Không xác định',
-        'receiver_name' => $row['receiver_name'] ?? 'Không xác định',
+        'receiver_name' => $displayReceiverName ?? 'Không xác định',
         'shipping_district' => $row['shipping_district'] ?? '',
         'shipping_province' => $row['shipping_province'] ?? '',
         'receiver_address' => implode(', ', $receiver_address_parts)

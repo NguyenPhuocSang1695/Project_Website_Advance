@@ -1,0 +1,64 @@
+.cart-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 999;
+  padding: 10px;
+  border-radius: 8px;
+  top: calc(
+    100% + 3px
+  ); /* Điều chỉnh giá trị này để dropdown gần sát với icon giỏ hàng hơn */
+  visibility: hidden;
+  opacity: 0;
+  transform: scale(0.9); /* Giảm kích thước khi ẩn */
+  transition: opacity 1s ease, visibility 0s 1s, transform 1s ease; /* Thêm thời gian 1 giây cho opacity và transform */
+}
+
+/* Khi hover vào cart-wrapper, hiển thị dropdown */
+.cart-wrapper:hover .cart-dropdown {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  transform: scale(1); /* Phóng to dropdown */
+  transition: opacity 1s ease, visibility 0s 0s, transform 1s ease; /* Đảm bảo thời gian 1 giây */
+}
+
+/* Giữ cho cả phần cart-icon và dropdown hiển thị khi hover */
+.cart-wrapper:hover .cart-icon,
+.cart-wrapper:hover .cart-dropdown {
+  display: block;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.cart-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+
+.cart-item-details h5 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.cart-item-details p {
+  margin: 2px 0;
+  font-size: 13px;
+}

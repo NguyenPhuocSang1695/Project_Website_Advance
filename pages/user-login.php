@@ -1,5 +1,6 @@
 <?php
 require_once('../src/php/token.php');
+require_once('../src/php/check_token_v1.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
 
 use Firebase\JWT\JWT;
@@ -72,6 +73,66 @@ if (isset($_POST["login"])) {
       color: red;
       font-size: 12px;
       margin-top: 5px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      margin: 24px 0;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      margin-top: 3px;
+      accent-color: #1c8e2e;
+    }
+
+    .checkbox-container label {
+      font-size: 13px;
+      color: #5f6368;
+      line-height: 1.5;
+    }
+
+    .checkbox-container a {
+      color: #1c8e2e;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .checkbox-container a:hover {
+      text-decoration: underline;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      margin: 24px 0;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      margin-top: 3px;
+      accent-color: #1c8e2e;
+    }
+
+    .checkbox-container label {
+      font-size: 13px;
+      color: #5f6368;
+      line-height: 1.5;
+    }
+
+    .checkbox-container a {
+      color: #1c8e2e;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .checkbox-container a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -215,7 +276,7 @@ if (isset($_POST["login"])) {
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <?php if (!$loggedInUsername): ?>
                       <li class="nav-item">
-                        <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                        <a class="nav-link login-logout" href="user-register.php">Đăng ký</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
@@ -450,7 +511,7 @@ if (isset($_POST["login"])) {
       </div>
       <form id="form-02" method="post">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username" style="font-weight: bold">Username</label>
           <input type="text" id="username" name="username" class="form-control" placeholder="Nhập username của bạn"
             required value="<?= htmlspecialchars($_POST['username'] ?? '') ?>">
           <?php if ($error === 'Tên đăng nhập hoặc mật khẩu không đúng.' || $error === 'Vui lòng nhập tên đăng nhập.'): ?>
@@ -459,7 +520,7 @@ if (isset($_POST["login"])) {
         </div>
 
         <div class="form-group">
-          <label for="password">Mật khẩu</label>
+          <label for="password" style="font-weight: bold">Mật khẩu</label>
           <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu"
             required>
           <?php if ($error === 'Vui lòng nhập mật khẩu.'): ?>
@@ -468,6 +529,9 @@ if (isset($_POST["login"])) {
         </div>
 
         <button type="submit" name="login" class="btn-login">Đăng nhập</button>
+        <div class="checkbox-container">
+          <p for>Bạn chưa có tài khoản? <a href="user-register.php">Đăng ký</a> </p>
+        </div>
       </form>
 
     </div>
@@ -476,7 +540,7 @@ if (isset($_POST["login"])) {
   <!-- FOOTER  -->
   <footer class="footer">
     <div class="footer-column">
-      <h3>Thee Tree</h3>
+      <h3>The Tree</h3>
       <ul>
         <li><a href="#">Cây dễ chăm</a></li>
         <li><a href="#">Cây văn phòng</a></li>
@@ -486,7 +550,7 @@ if (isset($_POST["login"])) {
     </div>
 
     <div class="footer-column">
-      <h3>Learn</h3>
+      <h3>Khám phá</h3>
       <ul>
         <li><a href="#">Cách chăm sóc cây</a></li>
         <li><a href="#">Lợi ích của cây xanh</a></li>
@@ -495,14 +559,15 @@ if (isset($_POST["login"])) {
     </div>
 
     <div class="footer-column">
-      <h3>More from The Tree</h3>
+      <h3>Khám phá thêm từ The Tree</h3>
       <ul>
         <li><a href="#">Blog</a></li>
-        <li><a href="#">Affiliate</a></li>
+        <li><a href="#">Cộng tác viên</a></li>
         <li><a href="#">Liên hệ</a></li>
-        <li><a href="#">Faq's</a></li>
-        <li><a href="#">Sign In</a></li>
+        <li><a href="#">Câu hỏi thường gặp</a></li>
+        <li><a href="#">Đăng nhập</a></li>
       </ul>
+
     </div>
 
     <div class="footer-column newsletter">
@@ -526,7 +591,7 @@ if (isset($_POST["login"])) {
     </div>
 
     <div class="copyright">
-      © 2021 tenzotea.co
+      © 2021 c01.nhahodau
 
       <div class="policies">
         <a href="#">Điều khoản dịch vụ</a>

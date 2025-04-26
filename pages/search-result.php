@@ -1,5 +1,15 @@
 <?php
+session_start();
 require_once('../src/php/token.php');
+$cart_count =  0;
+
+if (isset($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cart_count += $item['Quantity'];
+    }
+}
+// Kiểm tra giỏ hàng
+$cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,6 +25,8 @@ require_once('../src/php/token.php');
     <link rel="stylesheet" href="../src/css/search-styles.css" />
     <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
     <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
+    <link rel="stylesheet" href="../src/css/user-sanpham.css" />
+
     <link rel="stylesheet" href="../src/css/footer.css">
     <!-- JS  -->
     <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
@@ -154,9 +166,33 @@ require_once('../src/php/token.php');
                                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
                             });
                         </script>
+                    <div class="cart-wrapper">
                         <div class="cart-icon">
-                            <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
+                            <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" />
+                            <span class="cart-count" id = "mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                            <?php 
+                                echo $cart_count;
+                            ?>
+                            </span>
+                            </a>
                         </div>
+                        <div class="cart-dropdown">
+                                <?php if (count($cart_items) >0): ?>
+                                    <?php foreach ($cart_items as $item): ?>
+                                        <div class="cart-item">
+                                            <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"  class="cart-thumb"/>                                
+                                            <div class="cart-item-details">
+                                                <h5><?php echo $item['ProductName']; ?></h5>
+                                                <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
+                                                <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <p>Giỏ hàng của bạn đang trống.</p>
+                                <?php endif; ?>
+                            </div>
+                    </div>       
                         <div class="user-icon">
                             <label for="tick" style="cursor: pointer">
                                 <img src="../assets/images/user.svg" alt="" />
@@ -176,7 +212,7 @@ require_once('../src/php/token.php');
                                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                                         <?php if (!$loggedInUsername): ?>
                                             <li class="nav-item">
-                                                <a class="nav-link login-logout" href="user-register.php">Đăng kí</a>
+                                                <a class="nav-link login-logout" href="user-register.php">Đăng ký</a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link login-logout" href="user-login.php">Đăng nhập</a>
@@ -435,7 +471,7 @@ require_once('../src/php/token.php');
 
     <footer class="footer">
         <div class="footer-column">
-            <h3>Thee Tree</h3>
+            <h3>The Tree</h3>
             <ul>
                 <li><a href="#">Cây dễ chăm</a></li>
                 <li><a href="#">Cây văn phòng</a></li>
@@ -445,7 +481,7 @@ require_once('../src/php/token.php');
         </div>
 
         <div class="footer-column">
-            <h3>Learn</h3>
+            <h3>Khám phá</h3>
             <ul>
                 <li><a href="#">Cách chăm sóc cây</a></li>
                 <li><a href="#">Lợi ích của cây xanh</a></li>
@@ -454,14 +490,15 @@ require_once('../src/php/token.php');
         </div>
 
         <div class="footer-column">
-            <h3>More from The Tree</h3>
+            <h3>Khám phá thêm từ The Tree</h3>
             <ul>
                 <li><a href="#">Blog</a></li>
-                <li><a href="#">Affiliate</a></li>
+                <li><a href="#">Cộng tác viên</a></li>
                 <li><a href="#">Liên hệ</a></li>
-                <li><a href="#">Faq's</a></li>
-                <li><a href="#">Sign In</a></li>
+                <li><a href="#">Câu hỏi thường gặp</a></li>
+                <li><a href="#">Đăng nhập</a></li>
             </ul>
+
         </div>
 
         <div class="footer-column newsletter">
@@ -485,7 +522,7 @@ require_once('../src/php/token.php');
         </div>
 
         <div class="copyright">
-            © 2021 tenzotea.co
+            © 2021 c01.nhahodau
 
             <div class="policies">
                 <a href="#">Điều khoản dịch vụ</a>

@@ -320,4 +320,79 @@ function confirmDeleteProduct(productId) {
   }
 }
 
+function deleteProduct(productId) {
+  if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+      fetch('/Web/admin/php/delete-product.php', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ productId: productId })
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.text();
+      })
+      .then(result => {
+          if (result === "deleted" || result === "hidden") {
+              // Ẩn sản phẩm khỏi giao diện trong cả 2 trường hợp
+              const productElement = document.querySelector(`[data-product-id="${productId}"]`);
+              if (productElement) {
+                  productElement.remove();
+              }
+              alert(result === "deleted" ? "Đã xóa sản phẩm thành công!" : "Sản phẩm đã được ẩn do tồn tại trong đơn hàng!");
+              
+              // Refresh trang sau khi xóa
+              window.location.reload();
+          } else {
+              alert("Có lỗi xảy ra khi xóa sản phẩm!");
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert("Có lỗi xảy ra khi xóa sản phẩm: " + error.message);
+      });
+  }
+}
+
+function editProduct(productId) {
+  fetch(`../php/get-product.php?id=${productId}`)
+    .then(response => response.json())
+    .then(product => {
+      document.getElementById('editProductId').value = product.ProductID;
+      document.getElementById('editProductName').value = product.ProductName;
+      document.getElementById('editCategoryID').value = product.CategoryID;
+      document.getElementById('editPrice').value = product.Price;
+      document.getElementById('editDescription').value = product.Description;
+      document.getElementById('status').value = product.Status; // Load status
+      
+      const currentImage = document.getElementById('currentImage');
+      currentImage.src = '../../' + product.ImageURL;
+      currentImage.style.display = 'block';
+      
+      document.getElementById('editProductOverlay').style.display = 'flex';
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Có lỗi khi tải thông tin sản phẩm!');
+    });
+}
+
+function closeEditOverlay() {
+    const overlay = document.getElementById('editProductOverlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+// Thêm event listener cho nút đóng
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButton = document.querySelector('#editProductOverlay .close-btn');
+    if (closeButton) {
+        closeButton.addEventListener('click', closeEditOverlay);
+    }
+});
+
 document.addEventListener("DOMContentLoaded", renderProducts);

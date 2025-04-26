@@ -1,5 +1,21 @@
 <?php
+session_start();
 require_once './src/php/token.php';
+$cart_count =  0;
+
+if (isset($_SESSION['cart'])) {
+  foreach ($_SESSION['cart'] as $item) {
+    $cart_count += $item['Quantity'];
+  }
+}
+// Kiểm tra giỏ hàng
+$cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
+// Tính tổng
+$total_amount = 0;
+foreach ($cart_items as $item) {
+  $total_amount += $item['Price'] * $item['Quantity'];
+}
+$total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
 ?>
 
 <!DOCTYPE html>
@@ -14,6 +30,7 @@ require_once './src/php/token.php';
   <link rel="stylesheet" href="./assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="assets/icon/fontawesome-free-6.7.2-web/css/all.min.css" />
   <link rel="stylesheet" href="./src/css/searchAdvanceMobile.css" />
+  <link rel="stylesheet" href="./src/css/user-sanpham.css" />
   <link rel="stylesheet" href="./src/css/footer.css">
   <!-- JS  -->
   <!-- <script src="./src/js/main.js"></script> -->
@@ -44,13 +61,14 @@ require_once './src/php/token.php';
               <form id="searchForm" method="get">
                 <div class="search-container">
                   <div class="search-input-wrapper">
-                    <input type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput" name="search"
-                      class="search-input" />
+                    <input type="search" placeholder="Tìm kiếm sản phẩm..." id="searchInput"
+                      name="search" class="search-input" />
                     <button type="button" class="advanced-search-toggle" id="advanced-search-toggle"
                       onclick="toggleAdvancedSearch()" title="Tìm kiếm nâng cao">
                       <i class="fas fa-sliders-h"></i>
                     </button>
-                    <button type="submit" class="search-button" onclick="performSearch()" title="Tìm kiếm">
+                    <button type="submit" class="search-button" onclick="performSearch()"
+                      title="Tìm kiếm">
                       <i class="fas fa-search"></i>
                     </button>
                   </div>
@@ -60,7 +78,8 @@ require_once './src/php/token.php';
                 <div id="advancedSearchForm" class="advanced-search-panel" style="display: none">
                   <div class="advanced-search-header">
                     <h5>Tìm kiếm nâng cao</h5>
-                    <button type="button" class="close-advanced-search" onclick="toggleAdvancedSearch()">
+                    <button type="button" class="close-advanced-search"
+                      onclick="toggleAdvancedSearch()">
                       <i class="fas fa-times"></i>
                     </button>
                   </div>
@@ -101,9 +120,11 @@ require_once './src/php/token.php';
                       </label>
                       <div class="price-range-slider">
                         <div class="price-input-group">
-                          <input type="number" id="minPrice" name="minPrice" placeholder="Từ" min="0" />
+                          <input type="number" id="minPrice" name="minPrice" placeholder="Từ"
+                            min="0" />
                           <span class="price-separator">-</span>
-                          <input type="number" id="maxPrice" name="maxPrice" placeholder="Đến" min="0" />
+                          <input type="number" id="maxPrice" name="maxPrice" placeholder="Đến"
+                            min="0" />
                         </div>
                         <!-- <div class="price-ranges">
                           <button type="button" class="price-preset" onclick="setPrice(0, 200000)">
@@ -143,15 +164,39 @@ require_once './src/php/token.php';
             </div>
 
             <!-- Header, Giỏ hàng và user -->
-            <div class="cart-icon">
-              <a href="./pages/gio-hang.php"><img src="./assets/images/cart.svg" alt="cart" /></a>
+            <div class="cart-wrapper">
+              <div class="cart-icon">
+                <a href="./pages/gio-hang.php"><img src="assets/images/cart.svg" alt="cart" />
+                  <span class="cart-count" id="mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                    <?php
+                    echo $cart_count;
+                    ?>
+                  </span>
+                </a>
+              </div>
+              <div class="cart-dropdown">
+                <?php if (count($cart_items) > 0): ?>
+                  <?php foreach ($cart_items as $item): ?>
+                    <div class="cart-item">
+                      <img src="<?php echo "." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>" class="cart-thumb" />
+                      <div class="cart-item-details">
+                        <h5><?php echo $item['ProductName']; ?></h5>
+                        <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
+                        <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <p>Giỏ hàng của bạn đang trống.</p>
+                <?php endif; ?>
+              </div>
             </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
                 <img src="assets/images/user.svg" alt="" />
               </label>
-              <input id="tick" hidden type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
-                aria-controls="offcanvasExample" />
+              <input id="tick" hidden type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" />
               <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample"
                 aria-labelledby="offcanvasExampleLabel">
                 <div class="offcanvas-header">
@@ -165,17 +210,18 @@ require_once './src/php/token.php';
                   <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <?php if (!$loggedInUsername): ?>
                       <li class="nav-item">
-                        <a class="nav-link login-logout" href="./pages/user-register.php">Đăng kí</a>
+                        <a class="nav-link login-logout" href="./pages/user-register.php">Đăng ký</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link login-logout" href="./pages/user-login.php">Đăng nhập</a>
                       </li>
                     <?php else: ?>
                       <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="ho-so.php">Hồ sơ</a>
+                        <a class="nav-link hs-ls-dx" href="./pages/ho-so.php">Hồ sơ</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link hs-ls-dx" href="./pages/user-History.php">Lịch sử mua hàng</a>
+                        <a class="nav-link hs-ls-dx" href="./pages/user-History.php">Lịch sử mua
+                          hàng</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link hs-ls-dx" href="./src/php/logout.php">Đăng xuất</a>
@@ -191,8 +237,9 @@ require_once './src/php/token.php';
         <!-- BAR  -->
         <nav class="navbar position-absolute">
           <div class="a">
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-              aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+              aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
             <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
@@ -201,7 +248,8 @@ require_once './src/php/token.php';
                 <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
                   THEE TREE
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                  aria-label="Close"></button>
               </div>
               <div id="offcanvasbody" class="offcanvas-body offcanvas-fullscreen mt-20">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -212,8 +260,8 @@ require_once './src/php/token.php';
                     <a class="nav-link" href="#">Giới thiệu</a>
                   </li>
                   <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                      aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                      data-bs-toggle="dropdown" aria-expanded="false">
                       Sản phẩm
                     </a>
                     <ul class="dropdown-menu">
@@ -248,11 +296,11 @@ require_once './src/php/token.php';
                 <!-- form tìm kiếm trên mobile  -->
                 <form class="searchFormMobile mt-3" role="search" id="searchFormMobile">
                   <div class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search"
-                      style="height: 37.6px;" />
+                    <input class="form-control me-2" type="search" placeholder="Tìm kiếm"
+                      aria-label="Search" style="height: 37.6px;" />
                     <!-- Nút tìm kiếm nâng cao trên mobile  -->
-                    <button type="button" class="advanced-search-toggle" onclick="toggleMobileSearch()"
-                      title="Tìm kiếm nâng cao">
+                    <button type="button" class="advanced-search-toggle"
+                      onclick="toggleMobileSearch()" title="Tìm kiếm nâng cao">
                       <i class="fas fa-sliders-h"></i>
                     </button>
 
@@ -296,9 +344,11 @@ require_once './src/php/token.php';
                       </label>
                       <div class="price-range-slider">
                         <div class="price-input-group">
-                          <input type="number" id="minPriceMobile" name="minPrice" placeholder="Từ" min="0" />
+                          <input type="number" id="minPriceMobile" name="minPrice"
+                            placeholder="Từ" min="0" />
                           <span class="price-separator">-</span>
-                          <input type="number" id="maxPriceMobile" name="maxPrice" placeholder="Đến" min="0" />
+                          <input type="number" id="maxPriceMobile" name="maxPrice"
+                            placeholder="Đến" min="0" />
                         </div>
                         <!-- <div class="price-ranges">
                           <button type="button" class="price-preset" onclick="setPriceMobile(0, 200000)">
@@ -434,8 +484,10 @@ require_once './src/php/token.php';
       <div class="IMG">
         <?php foreach ($products as $product): ?>
           <div class="img__TREE">
-            <a href="./pages/phan-loai.php?category_id=<?= $product['CategoryID'] ?>&category_name=<?= urlencode($product['CategoryName']) ?>">
-              <img class="THE-TREE" src=".<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['CategoryName']) ?>" style="height: 180px;" />
+            <a
+              href="./pages/phan-loai.php?category_id=<?= $product['CategoryID'] ?>&category_name=<?= urlencode($product['CategoryName']) ?>">
+              <img class="THE-TREE" src=".<?= htmlspecialchars($product['ImageURL']) ?>"
+                alt="<?= htmlspecialchars($product['CategoryName']) ?>" />
               <p class="content_TREE-1"><?= htmlspecialchars($product['CategoryName']) ?></p>
             </a>
           </div>
@@ -450,111 +502,53 @@ require_once './src/php/token.php';
       <h2 class="font_size">SẢN PHẨM MỚI</h2>
 
       <div class="pro-container">
-        <div class="pro">
-          <img src="./assets/images/CAY5.jpg" alt="Cây phát tài" />
-          <div class="item_name__price">
-            <p>CÂY PHÁT TÀI</p>
-            <span>750.000 vnđ</span>
-          </div>
-          <!-- <button class="add-to-cart-btn">
-            <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
-          </button> -->
-        </div>
+        <?php
+        require_once './php-api/connectdb.php';
+        $conn = connect_db();
 
-        <div class="pro">
-          <img src="./assets/images/CAY6.jpg" alt="CÂY KIM NGÂN" />
-          <div class="item_name__price">
-            <p>CÂY KIM NGÂN</p>
-            <span>280.000 vnđ</span>
-          </div>
-        </div>
+        $limit = 8; // chỉ lấy đúng 8 sản phẩm
 
-        <div class="pro">
-          <img src="./assets/images/CAY7.jpg" alt="CÂY TRẦU BÀ" />
-          <div class="item_name__price">
-            <p>CÂY TRẦU BÀ</p>
-            <span>120.000 vnđ</span>
-          </div>
-        </div>
+        // Truy vấn sản phẩm giới hạn 8
+        $stmt = $conn->prepare('
+    SELECT ProductID, ProductName, Price, ImageURL 
+    FROM products 
+    WHERE Status = "appear"
+    ORDER BY ProductID DESC
+    LIMIT ?');
+        $stmt->bind_param("i", $limit);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        <div class="pro">
-          <img src="./assets/images/CAY8.jpg" alt="CÂY LAN CHI" />
-          <div class="item_name__price">
-            <p>CÂY LAN CHI</p>
-            <span>120.000 vnđ</span>
-          </div>
-        </div>
+        // Hiển thị sản phẩm
+        if ($result && $result->num_rows > 0):
+          while ($product = $result->fetch_assoc()):
+        ?>
+            <div class="pro">
+              <a style="text-decoration: none" href="./pages/user-sanpham.php?id=<?= htmlspecialchars($product['ProductID']) ?>">
+                <img style="width: 100%; height: 300px;" src=".<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['ProductName']) ?>" />
+                <div class="item_name__price">
+                  <p style="text-decoration: none; color: black; font-size: 20px; font-weight:bold"><?= htmlspecialchars($product['ProductName']) ?></p>
+                  <span style="font-size: 20px"><?= number_format($product['Price'], 0, ',', '.') ?> vnđ</span>
+                </div>
+              </a>
+            </div>
+        <?php
+          endwhile;
+        else:
+          echo "<p>Không có sản phẩm nào để hiển thị.</p>";
+        endif;
+        ?>
 
-        <div class="pro">
-          <img src="./assets/images/CAY9.jpg" alt="ÂY TRẦU BÀ ĐỎ" />
-          <div class="item_name__price">
-            <p>CÂY TRẦU BÀ ĐỎ</p>
-            <span>320.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY10.jpg" alt="CÂY PHÁT TÀI" />
-          <div class="item_name__price">
-            <p>CÂY LƯỠI HỔ</p>
-            <span>750.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY11.jpg" alt="CÂY LƯỠI HỔ VÀNG" />
-          <div class="item_name__price">
-            <p>CÂY LƯỠI HỔ VÀNG</p>
-            <span>160.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY12.jpg" alt="CÂY PHẠNH PHÚC" />
-          <div class="item_name__price">
-            <p>CÂY HẠNH PHÚC</p>
-            <span>1.200.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY13.jpg" alt="CÂY TRẦU BÀ CHẬU LỚN" />
-          <div class="item_name__price">
-            <p>CÂY TRẦU BÀ CHẬU LỚN</p>
-            <span>1.100.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY14.jpg" alt="CÂY PHÁT TÀI DORADO" />
-          <div class="item_name__price">
-            <p>CÂY PHÁT TÀI DORADO</p>
-            <span>220.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY16.jpg" alt="CÂY VẠN LỘC" />
-          <div class="item_name__price">
-            <p>CÂY VẠN LỘC</p>
-            <span>1.150.000 vnđ</span>
-          </div>
-        </div>
-
-        <div class="pro">
-          <img src="./assets/images/CAY17.jpg" alt="CÂY NGỌC VỪNG" />
-          <div class="item_name__price">
-            <p>CÂY NGỌC VỪNG</p>
-            <span>1.750.000 vnđ</span>
-          </div>
-        </div>
       </div>
+
+
+
     </section>
   </main>
 
   <footer class="footer">
     <div class="footer-column">
-      <h3>Thee Tree</h3>
+      <h3>The Tree</h3>
       <ul>
         <li><a href="#">Cây dễ chăm</a></li>
         <li><a href="#">Cây văn phòng</a></li>
@@ -564,7 +558,7 @@ require_once './src/php/token.php';
     </div>
 
     <div class="footer-column">
-      <h3>Learn</h3>
+      <h3>Khám phá</h3>
       <ul>
         <li><a href="#">Cách chăm sóc cây</a></li>
         <li><a href="#">Lợi ích của cây xanh</a></li>
@@ -573,14 +567,15 @@ require_once './src/php/token.php';
     </div>
 
     <div class="footer-column">
-      <h3>More from The Tree</h3>
+      <h3>Khám phá thêm từ The Tree</h3>
       <ul>
         <li><a href="#">Blog</a></li>
-        <li><a href="#">Affiliate</a></li>
+        <li><a href="#">Cộng tác viên</a></li>
         <li><a href="#">Liên hệ</a></li>
-        <li><a href="#">Faq's</a></li>
-        <li><a href="#">Sign In</a></li>
+        <li><a href="#">Câu hỏi thường gặp</a></li>
+        <li><a href="#">Đăng nhập</a></li>
       </ul>
+
     </div>
 
     <div class="footer-column newsletter">
@@ -604,7 +599,7 @@ require_once './src/php/token.php';
     </div>
 
     <div class="copyright">
-      © 2021 tenzotea.co
+      © 2021 c01.nhahodau
 
       <div class="policies">
         <a href="#">Điều khoản dịch vụ</a>
@@ -1008,7 +1003,7 @@ require_once './src/php/token.php';
 
       // Nút Previous
       paginationHTML += `
-    <a href="#" class="btn btn-success pagination-item ${currentPage === 1 ? "disabled" : ""
+    <a href="#" class="btn btn-secondary pagination-item ${currentPage === 1 ? "disabled" : ""
         }" 
        onclick="${currentPage > 1
           ? "changePage(" + (currentPage - 1) + ")"
@@ -1026,37 +1021,37 @@ require_once './src/php/token.php';
       // Hiển thị trang đầu tiên nếu cần
       if (startPage > 1) {
         paginationHTML += `
-      <a href="#" class="btn btn-success pagination-item" onclick="changePage(1)">1</a>
+      <a href="#" class="btn btn-secondary pagination-item" onclick="changePage(1)">1</a>
     `;
 
         if (startPage > 2) {
-          paginationHTML += `<span class="btn btn-success pagination-ellipsis">...</span>`;
+          paginationHTML += `<span class="btn btn-secondary pagination-ellipsis">...</span>`;
         }
       }
 
       // Các số trang
       for (let i = startPage; i <= endPage; i++) {
+        const btnClass = i === currentPage ? "btn-success" : "btn-secondary";
         paginationHTML += `
-      <a href="#" class="btn btn-success pagination-item ${i === currentPage ? "active" : ""
-          }" 
-         onclick="changePage(${i})">${i}</a>
-    `;
+    <a href="#" class="btn pagination-item ${btnClass}" onclick="changePage(${i})">${i}</a>
+  `;
       }
+
 
       // Hiển thị trang cuối cùng nếu cần
       if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
-          paginationHTML += `<span class="btn btn-success pagination-ellipsis">...</span>`;
+          paginationHTML += `<span class="btn btn-secondary pagination-ellipsis">...</span>`;
         }
 
         paginationHTML += `
-      <a href="#" class=" btn btn-success pagination-item" onclick="changePage(${totalPages})">${totalPages}</a>
+      <a href="#" class=" btn btn-secondary pagination-item" onclick="changePage(${totalPages})">${totalPages}</a>
     `;
       }
 
       // Nút Next
       paginationHTML += `
-    <a href="#" class="btn btn-success pagination-item ${currentPage === totalPages ? "disabled" : ""
+    <a href="#" class="btn btn-secondary pagination-item ${currentPage === totalPages ? "disabled" : ""
         }" 
        onclick="${currentPage < totalPages
           ? "changePage(" + (currentPage + 1) + ")"

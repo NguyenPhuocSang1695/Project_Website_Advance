@@ -354,10 +354,18 @@ body {
 
 .noti-order-success p {
   color: #065212;
+  margin: 15px 0;
 }
 
 .noti-thanks {
   width: 70%;
+}
+
+.noti-thanks p {
+  font-size: 20px;
+  color: #065212;
+  text-align: center;
+  font-weight: bold;
 }
 
 .cart-2 {
@@ -452,8 +460,7 @@ th {
 }
 
 .total {
-  margin-top: 20px;
-  font-size: 18px;
+  margin: 20px 0px;
   font-weight: bold;
 }
 
@@ -472,6 +479,19 @@ th {
 
 .btn-back:hover {
   background-color: #218838;
+}
+
+.invoice-container {
+  font-size: 20px;
+}
+
+.invoice-container table thead tr th {
+  text-align: center;
+}
+
+.invoice-container table tbody tr td img {
+  width: 100px;
+  height: auto;
 }
 
 /* FOOTER  */
@@ -561,7 +581,6 @@ th {
   }
 
 
-
   .row-1 {
     display: flex;
     justify-content: center;
@@ -622,7 +641,7 @@ th {
   }
 
   .invoice-container {
-    width: 80%;
+    width: 95%;
   }
 }
 
@@ -735,8 +754,6 @@ th {
     height: 10rem;
     align-items: center;
   }
-
-
 
   .row-1 img {
     width: 53%;
