@@ -303,10 +303,7 @@ if ($result->num_rows > 0) {
               <label>Họ và tên:</label>
               <span><?php echo $FullName ?></span>
             </div>
-            <div class="info-row">
-              <label>Ngày/ tháng / năm sinh:</label>
-              <span>29/02/2005</span>
-            </div>
+
             <div class="info-row">
               <label>Số điện thoại:</label>
               <span><?php echo $phone ?></span>
