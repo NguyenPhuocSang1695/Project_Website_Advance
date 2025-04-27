@@ -158,44 +158,73 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Hàm hiển thị modal với thông tin đơn hàng
     function showOrderDetail(orderId) {
+        console.log("Opening order detail for ID:", orderId);
         fetch(`../php/get_order_detail.php?orderId=${orderId}`)
-            .then(response => response.json())
+            .then(response => {
+                console.log("Response status:", response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log("Received data:", data);
                 if (data.success) {
                     const order = data.order;
+                    const modal = document.getElementById('orderDetailModal');
                     
-                    // Cập nhật thông tin cơ bản
-                    document.getElementById('modalOrderId').textContent = order.orderId;
-                    document.getElementById('modalOrderDate').textContent = formatDate(order.orderDate);
-                    document.getElementById('modalPaymentMethod').textContent = order.paymentMethod;
-                    document.getElementById('modalReceiverName').textContent = order.receiverName;
-                    document.getElementById('modalReceiverPhone').textContent = order.receiverPhone;
-                    document.getElementById('modalReceiverAddress').textContent = order.receiverAddress;
-                    document.getElementById('modalTotalAmount').textContent = formatCurrency(order.totalAmount);
+                    // Kiểm tra và cập nhật từng phần tử
+                    const elements = {
+                        modalOrderId: document.getElementById('modalOrderId'),
+                        modalOrderDate: document.getElementById('modalOrderDate'),
+                        modalPaymentMethod: document.getElementById('modalPaymentMethod'),
+                        modalReceiverName: document.getElementById('modalReceiverName'),
+                        modalReceiverPhone: document.getElementById('modalReceiverPhone'),
+                        modalReceiverAddress: document.getElementById('modalReceiverAddress'),
+                        modalTotalAmount: document.getElementById('modalTotalAmount'),
+                        modalOrderStatus: document.getElementById('modalOrderStatus'),
+                        modalProductList: document.getElementById('modalProductList')
+                    };
+
+                    console.log("Found elements:", Object.keys(elements).filter(key => elements[key] !== null));
+                    console.log("Missing elements:", Object.keys(elements).filter(key => elements[key] === null));
+
+                    // Cập nhật thông tin cơ bản nếu phần tử tồn tại
+                    if (elements.modalOrderId) elements.modalOrderId.textContent = order.orderId;
+                    if (elements.modalOrderDate) elements.modalOrderDate.textContent = formatDate(order.orderDate);
+                    if (elements.modalPaymentMethod) elements.modalPaymentMethod.textContent = order.paymentMethod;
+                    if (elements.modalReceiverName) elements.modalReceiverName.textContent = order.receiverName;
+                    if (elements.modalReceiverPhone) elements.modalReceiverPhone.textContent = order.receiverPhone;
+                    if (elements.modalReceiverAddress) elements.modalReceiverAddress.textContent = order.receiverAddress;
+                    if (elements.modalTotalAmount) elements.modalTotalAmount.textContent = formatCurrency(order.totalAmount);
                     
                     // Cập nhật trạng thái đơn hàng
-                    const statusBadge = document.getElementById('modalOrderStatus');
-                    statusBadge.textContent = getStatusText(order.status);
-                    statusBadge.className = 'status-badge status-' + order.status.toLowerCase();
+                    if (elements.modalOrderStatus) {
+                        elements.modalOrderStatus.textContent = getStatusText(order.status);
+                        elements.modalOrderStatus.className = 'status-badge status-' + order.status.toLowerCase();
+                    }
                     
                     // Hiển thị danh sách sản phẩm
-                    const productList = document.getElementById('modalProductList');
-                    productList.innerHTML = order.products.map(product => `
-                        <div class="product-item">
-                            <img src="../..${product.imageUrl}" alt="${product.productName}" class="product-image">
-                            <div class="product-details">
-                                <div class="product-name">${product.productName}</div>
-                                <div class="product-price">
-                                    ${product.quantity} x ${formatCurrency(product.unitPrice)} = ${formatCurrency(product.totalPrice)}
+                    if (elements.modalProductList && order.products) {
+                        elements.modalProductList.innerHTML = order.products.map(product => `
+                            <div class="product-item">
+                                <img src="${product.imageUrl}" alt="${product.productName}" class="product-image">
+                                <div class="product-details">
+                                    <div class="product-name">${product.productName}</div>
+                                    <div class="product-price">
+                                        ${product.quantity} x ${formatCurrency(product.unitPrice)} = ${formatCurrency(product.totalPrice)}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `).join('');
+                        `).join('');
+                    }
                     
                     // Hiển thị modal
-                    modal.style.display = "block";
+                    if (modal) {
+                        modal.style.display = "block";
+                    } else {
+                        console.error("Modal element not found!");
+                    }
                 } else {
-                    alert('Không thể tải thông tin đơn hàng');
+                    console.error("Error from server:", data.error);
+                    alert('Không thể tải thông tin đơn hàng: ' + data.error);
                 }
             })
             .catch(error => {
@@ -225,24 +254,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${formatDate(customer.latest_order_date)}</td>
                         <td class="total-amount">${formatCurrency(customer.total_amount)}</td>
                         <td class="order-detail-link">
-                            <div class="dropdown">
-                                <button class="btn btn-info dropdown-toggle" 
-                                        type="button" 
-                                        data-bs-toggle="dropdown" 
-                                        aria-expanded="false">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                    Xem đơn hàng
-                                </button>
-                                <ul class="dropdown-menu">
-                                    ${customer.order_links.map(order => `
-                                        <li>
-                                            <a class="dropdown-item" href="#" onclick="event.preventDefault(); showOrderDetail(${order.id})">
-                                                Đơn hàng #${order.id}
-                                            </a>
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                            </div>
+                            <button class="btn btn-info order-view-button" 
+                                    onclick="showOrderList('${customer.customer_name}', ${JSON.stringify(customer.order_links).replace(/"/g, '&quot;')})">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Xem đơn hàng
+                            </button>
                         </td>
                     </tr> 
                 `).join('') :
@@ -250,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // hiển thị bảng sản phẩm
     function updateProductTable(products) {
         if (productTable) {
             productTable.innerHTML = products.length ?
@@ -261,24 +276,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${product.quantity_sold}</td>
                         <td class="total-amount">${formatCurrency(product.total_amount)}</td>
                         <td class="order-detail-link">
-                            <div class="dropdown">
-                                <button class="btn btn-info dropdown-toggle" 
-                                        type="button" 
-                                        data-bs-toggle="dropdown" 
-                                        aria-expanded="false">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                    Xem đơn hàng
-                                </button>
-                                <ul class="dropdown-menu">
-                                    ${product.order_links.map(order => `
-                                        <li>
-                                            <a class="dropdown-item" href="#" onclick="event.preventDefault(); showOrderDetail(${order.id})">
-                                                Đơn hàng #${order.id}
-                                            </a>
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                            </div>
+                            <button class="btn btn-info order-view-button"
+                                    onclick="showOrderList('${product.product_name}', ${JSON.stringify(product.order_links).replace(/"/g, '&quot;')})">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Xem đơn hàng
+                            </button>
                         </td>
                     </tr>
                 `).join('') :
@@ -349,3 +351,61 @@ document.addEventListener('DOMContentLoaded', function() {
     restoreFilterValues();
     form.dispatchEvent(new Event('submit'));
   });
+
+// Thêm hàm mới để hiển thị danh sách đơn hàng trong modal
+window.showOrderList = function(title, orders) {
+        const modal = document.getElementById('orderDetailModal');
+        const modalContent = modal.querySelector('.order-modal-content');
+        
+        // Cập nhật nội dung modal
+        modalContent.innerHTML = `
+            <span class="order-modal-close">&times;</span>
+            <div class="order-list-header">
+                <h2>Danh sách đơn hàng của ${title}</h2>
+            </div>
+            <div class="order-list-container">
+                ${orders.map(order => `
+                    <div class="order-list-item">
+                        <div class="order-item-info">
+                            <h3>Đơn hàng #${order.id}</h3>
+                            <a href="../index/orderDetail2.php?code_Product=${order.id}&source=analyze" class="btn btn-view">
+                                <i class="fa-solid fa-eye"></i>
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            ${orders.length >= 5 ? '<div class="scroll-indicator"><i class="fa-solid fa-angles-down"></i> Cuộn xuống để xem thêm</div>' : ''}
+        `;
+
+        // Hiển thị modal
+        modal.style.display = "block";
+
+        // Xử lý scroll indicator
+        const container = modalContent.querySelector('.order-list-container');
+        const scrollIndicator = modalContent.querySelector('.scroll-indicator');
+        
+        if (scrollIndicator) {
+            container.addEventListener('scroll', function() {
+                if (container.scrollHeight - container.scrollTop <= container.clientHeight + 50) {
+                    scrollIndicator.style.display = 'none';
+                } else {
+                    scrollIndicator.style.display = 'block';
+                }
+            });
+        }
+
+        // Xử lý nút đóng modal
+        const closeBtn = modal.querySelector('.order-modal-close');
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Đóng modal khi click ngoài
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    };

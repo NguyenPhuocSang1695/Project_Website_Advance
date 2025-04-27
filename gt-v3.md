@@ -1,2 +1,0 @@
-sửa file
-thêm firebase

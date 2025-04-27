@@ -23,6 +23,7 @@ FROM users u
 JOIN orders o ON u.Username = o.Username
 WHERE o.DateGeneration >= ? AND o.DateGeneration <= ?
     AND o.TotalAmount >= 0
+    AND o.Status = 'success'
 GROUP BY u.Username, u.FullName
 HAVING COUNT(o.OrderID) > 0
 ORDER BY order_count DESC, total_amount DESC 
@@ -66,6 +67,7 @@ JOIN orders o ON od.OrderID = o.OrderID
 WHERE o.DateGeneration >= ? AND o.DateGeneration <= ?
     AND od.Quantity >= 0
     AND od.TotalPrice >= 0
+    AND o.Status = 'success'
 GROUP BY p.ProductID, p.ProductName
 HAVING SUM(od.Quantity) >= 0
     AND SUM(od.TotalPrice) >= 0
@@ -96,14 +98,15 @@ while ($row = $product_result->fetch_assoc()) {
     ];
 }
 
-// Tính tổng doanh thu từ TotalAmount trong bảng orders
+// Tính tổng doanh thu 
 $total_revenue_query = "SELECT 
     SUM(TotalAmount) AS total_revenue,
     COUNT(DISTINCT OrderID) as total_orders,
     COUNT(DISTINCT Username) as total_customers 
 FROM orders 
 WHERE DateGeneration >= ? AND DateGeneration <= ?
-    AND TotalAmount >= 0";
+    AND TotalAmount >= 0
+    AND Status = 'success'";
 
 $stmt = $myconn->prepare($total_revenue_query);
 $stmt->bind_param("ss", $start_date, $end_date);
@@ -117,7 +120,6 @@ $total_customers = $revenue_data['total_customers'] ?? 0;
 $stmt->close();
 $myconn->close();
 
-// Trả về dữ liệu JSON với thêm thông tin thống kê
 echo json_encode([
     'success' => true,
     'customers' => $customers,

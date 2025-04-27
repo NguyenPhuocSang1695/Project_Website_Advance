@@ -494,6 +494,8 @@ th {
   height: auto;
 }
 
+
+
 /* FOOTER  */
 
 /* PC  */
@@ -580,7 +582,6 @@ th {
     align-items: center;
   }
 
-
   .row-1 {
     display: flex;
     justify-content: center;
@@ -640,9 +641,7 @@ th {
     padding: 8px;
   }
 
-  .invoice-container {
-    width: 95%;
-  }
+
 }
 
 /* TABLET  */
@@ -703,6 +702,10 @@ th {
   }
 
   .infor-goods {
+    width: 80%;
+  }
+
+  .invoice-container {
     width: 80%;
   }
 }
@@ -805,5 +808,9 @@ th {
 
   .btn-back {
     width: 100%;
+  }
+
+  .invoice-container {
+    width: 95%;
   }
 }

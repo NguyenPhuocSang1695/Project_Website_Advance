@@ -425,22 +425,55 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function showNotification(message, type = 'info') {
+    // Xóa notification cũ nếu còn tồn tại
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+      existingNotification.remove();
+    }
+
+    // Tạo notification mới
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
-    notification.textContent = message;
+    notification.style.visibility = 'hidden'; // Ẩn ban đầu để tránh nhấp nháy
+
+    // Thêm icon phù hợp với loại thông báo
+    let icon = '';
+    switch (type) {
+      case 'success':
+        icon = '<i class="fa-solid fa-circle-check"></i> ';
+        break;
+      case 'error':
+        icon = '<i class="fa-solid fa-circle-xmark"></i> ';
+        break;
+      case 'info':
+        icon = '<i class="fa-solid fa-circle-info"></i> ';
+        break;
+    }
     
+    notification.innerHTML = icon + message;
+
+    // Thêm vào body
     document.body.appendChild(notification);
+
+    // Force reflow
+    notification.offsetHeight;
+
+    // Hiển thị notification
+    notification.style.visibility = 'visible';
+    notification.classList.add('show');
     
+    // Tự động ẩn sau 2 giây
     setTimeout(() => {
-      notification.classList.add('show');
-    }, 10);
-    
-    setTimeout(() => {
+      notification.classList.add('hide');
       notification.classList.remove('show');
+      
+      // Đợi animation kết thúc rồi mới xóa element
       setTimeout(() => {
-        document.body.removeChild(notification);
+        if (notification.parentElement) {
+          notification.remove();
+        }
       }, 300);
-    }, 3000);
+    }, 2000);
   }
 
   function initPage() {
