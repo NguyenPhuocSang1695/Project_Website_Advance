@@ -22,16 +22,16 @@ if ($result && $result->num_rows > 0) {
 $cart_count =  0;
 
 if (isset($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $cart_count += $item['Quantity'];
-    }
+  foreach ($_SESSION['cart'] as $item) {
+    $cart_count += $item['Quantity'];
+  }
 }
 // Kiểm tra giỏ hàng
 $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 // Tính tổng
 $total_amount = 0;
 foreach ($cart_items as $item) {
-    $total_amount += $item['Price'] * $item['Quantity'];
+  $total_amount += $item['Price'] * $item['Quantity'];
 }
 $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
 
@@ -170,32 +170,32 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
             </form>
           </div>
           <div class="cart-wrapper">
-              <div class="cart-icon">
-                <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" />
-                <span class="cart-count" id = "mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
-                  <?php 
-                    echo $cart_count;
+            <div class="cart-icon">
+              <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" />
+                <span class="cart-count" id="mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                  <?php
+                  echo $cart_count;
                   ?>
                 </span>
-                </a>
-              </div>
-              <div class="cart-dropdown">
-                    <?php if (count($cart_items) >0): ?>
-                        <?php foreach ($cart_items as $item): ?>
-                            <div class="cart-item">
-                                <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"  class="cart-thumb"/>                                
-                                <div class="cart-item-details">
-                                    <h5><?php echo $item['ProductName']; ?></h5>
-                                    <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
-                                    <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
-                                  </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>Giỏ hàng của bạn đang trống.</p>
-                    <?php endif; ?>
-                </div>
-          </div>       
+              </a>
+            </div>
+            <div class="cart-dropdown">
+              <?php if (count($cart_items) > 0): ?>
+                <?php foreach ($cart_items as $item): ?>
+                  <div class="cart-item">
+                    <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>" class="cart-thumb" />
+                    <div class="cart-item-details">
+                      <h5><?php echo $item['ProductName']; ?></h5>
+                      <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
+                      <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <p>Giỏ hàng của bạn đang trống.</p>
+              <?php endif; ?>
+            </div>
+          </div>
           <div class="user-icon">
             <label for="tick" style="cursor: pointer">
               <img src="../assets/images/user.svg" alt="" />
@@ -459,21 +459,22 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
         <span class="minus">-</span>
         <span class="num">01</span>
         <span class="plus">+</span>
-      </div> 
-      <script src ="../src/js/san-pham.js"></script>
+      </div>
+      <script src="../src/js/san-pham.js"></script>
       <!-- Form thêm vào giỏ hàng -->
-      <form id = "add-to-cart-form">
+      <form id="add-to-cart-form">
         <input type="hidden" name="product_id" value="<?php echo $product['ProductID']; ?>">
         <input type="hidden" name="quantity" id="quantity" value="1">
-        <button type="submit" class="btn btn-primary btn-lg">Thêm vào giỏ hàng</button>
+        <button type="submit" class="btn btn-success btn-lg">Thêm vào giỏ hàng</button>
       </form>
       <script src="../src/js/load-sanpham.js"></script>
     </div>
   </div>
 </div>
 <div class="description">
+
+  <h2>MÔ TẢ</h2>
   <hr style="height: 3px; border-width: 0; background-color: #1c8e2e; width: 20%;" />
-  <h3>MÔ TẢ</h3>
   <p><?php echo ($product['Description'] !== 'None') ? $product['Description'] : 'Không có mô tả'; ?></p>
 </div>
 </div>
