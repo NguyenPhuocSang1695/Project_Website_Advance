@@ -1,9 +1,12 @@
+---Admin---
 1/ username: sangnp
    password: Sang##123
 2/ username: sangnp2
    password: Sang##123
 3/ username: sangnp3
    password: Sang##123
+
+---User---
 4/ username: sangnp4
    password: Sang##123
 5/ username: sangnp5
