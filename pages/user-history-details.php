@@ -215,7 +215,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
               });
             </script>
 
-            s<div class="cart-wrapper">
+            <div class="cart-wrapper">
               <div class="cart-icon">
                 <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" />
                 <span class="cart-count" id = "mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">

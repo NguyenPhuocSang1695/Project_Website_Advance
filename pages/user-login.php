@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v1.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
@@ -46,6 +47,15 @@ if (isset($_POST["login"])) {
     }
   }
 }
+$cart_count =  0;
+
+if (isset($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cart_count += $item['Quantity'];
+    }
+}
+// Kiểm tra giỏ hàng
+$cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 ?>
 
 <!DOCTYPE html>
@@ -56,6 +66,7 @@ if (isset($_POST["login"])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- CSS  -->
   <link rel="stylesheet" href="../src/css/user-login.css">
+  <link rel="stylesheet" href="../src/css/user-sanpham.css" />
   <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css">
   <link rel="stylesheet" href="../src/css/search-styles.css">
@@ -254,9 +265,33 @@ if (isset($_POST["login"])) {
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
               });
             </script>
-            <div class="cart-icon">
-              <a href="./gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" /></a>
-            </div>
+          <div class="cart-wrapper">
+              <div class="cart-icon">
+                <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" />
+                <span class="cart-count" id = "mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                  <?php 
+                    echo $cart_count;
+                  ?>
+                </span>
+                </a>
+              </div>
+              <div class="cart-dropdown">
+                    <?php if (count($cart_items) >0): ?>
+                        <?php foreach ($cart_items as $item): ?>
+                            <div class="cart-item">
+                                <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"  class="cart-thumb"/>                                
+                                <div class="cart-item-details">
+                                    <h5><?php echo $item['ProductName']; ?></h5>
+                                    <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
+                                    <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
+                                  </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p>Giỏ hàng của bạn đang trống.</p>
+                    <?php endif; ?>
+                </div>
+          </div>  
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
                 <img src="../assets/images/user.svg" alt="" />
