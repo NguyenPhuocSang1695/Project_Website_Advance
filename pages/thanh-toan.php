@@ -132,11 +132,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
         !empty($customerName) && !empty($phone) && !empty($address) &&
         $provinceID > 0 && $districtID > 0 && $wardID > 0
       ) {
-        // Cập nhật thông tin mặc định trong bảng users
-        $updateUserStmt = $conn->prepare("UPDATE users SET FullName = ?, Phone = ?, Address = ?, 
+        // Cập nhật thông tin đơn hàng trong bảng orders
+        $updateOrderStmt = $conn->prepare("UPDATE orders SET CustomerName = ?, Phone = ?, Address = ?, 
                                          Province = ?, District = ?, Ward = ? 
-                                         WHERE Username = ?");
-        $updateUserStmt->bind_param(
+                                         WHERE OrderID = ?");
+        $updateOrderStmt->bind_param(
           "sssiiis",
           $customerName,
           $phone,
@@ -144,10 +144,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
           $provinceID,
           $districtID,
           $wardID,
-          $_SESSION['username']
+          $_SESSION['order_id']
         );
-        $updateUserStmt->execute();
-        $updateUserStmt->close();
+        $updateOrderStmt->execute();
+        $updateOrderStmt->close();
       }
     }
 
