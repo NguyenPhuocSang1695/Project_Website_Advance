@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once('../src/php/token.php');
-// require_once('../src/php/check_status.php');
+require_once('../src/php/check_status_v2.php');
 
 $cart_count =  0;
 
