@@ -6,6 +6,14 @@ require __DIR__ . '/../src/Jwt/vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 
+if (isset($_GET['error'])) {
+  if ($_GET['error'] == 'login_required') {
+    echo "<script>alert('Bạn cần đăng nhập để vào giỏ hàng.');</script>";
+  } elseif ($_GET['error'] == 'token_expired') {
+    echo "<script>alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');</script>";
+  }
+}
+
 $error = '';
 
 if (isset($_POST["login"])) {
@@ -24,39 +32,54 @@ if (isset($_POST["login"])) {
     $user = $statement->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user['PasswordHash'])) {
-      $key = '1a3LM3W966D6QTJ5BJb9opunkUcw_d09NCOIJb9QZTsrneqOICoMoeYUDcd_NfaQyR787PAH98Vhue5g938jdkiyIZyJICytKlbjNBtebaHljIR6-zf3A2h3uy6pCtUFl1UhXWnV6madujY4_3SyUViRwBUOP-UudUL4wnJnKYUGDKsiZePPzBGrF4_gxJMRwF9lIWyUCHSh-PRGfvT7s1mu4-5ByYlFvGDQraP4ZiG5bC1TAKO_CnPyd1hrpdzBzNW4SfjqGKmz7IvLAHmRD-2AMQHpTU-hN2vwoA-iQxwQhfnqjM0nnwtZ0urE6HjKl6GWQW-KLnhtfw5n_84IRQ';
+      // Đúng username và password rồi mới xét tiếp
+      if ($user['Status'] === 'Block') {
+        echo "<script>
+            alert('Tài khoản của bạn đã bị khóa.');
+            window.location.href = 'user-login.php'; 
+        </script>";
+        exit();
+      }
 
-      // Tạo JWT chỉ với Username
-      $payload = [
-        'iat' => time(),
-        'nbf' => time(),
-        'exp' => time() + 3600, // Token có hiệu lực trong 1 giờ
-        'data' => [
-          'Username' => $user['Username']
-        ]
-      ];
+      if ($user['Role'] !== 'customer') {
+        $error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
+      } else {
+        $key = '1a3LM3W966D6QTJ5BJb9opunkUcw_d09NCOIJb9QZTsrneqOICoMoeYUDcd_NfaQyR787PAH98Vhue5g938jdkiyIZyJICytKlbjNBtebaHljIR6-zf3A2h3uy6pCtUFl1UhXWnV6madujY4_3SyUViRwBUOP-UudUL4wnJnKYUGDKsiZePPzBGrF4_gxJMRwF9lIWyUCHSh-PRGfvT7s1mu4-5ByYlFvGDQraP4ZiG5bC1TAKO_CnPyd1hrpdzBzNW4SfjqGKmz7IvLAHmRD-2AMQHpTU-hN2vwoA-iQxwQhfnqjM0nnwtZ0urE6HjKl6GWQW-KLnhtfw5n_84IRQ';
 
-      $token = JWT::encode($payload, $key, 'HS256');
+        $payload = [
+          'iat' => time(),
+          'nbf' => time(),
+          'exp' => time() + 3600,
+          'data' => [
+            'Username' => $user['Username']
+          ]
+        ];
 
-      // Gửi token dưới dạng cookie
-      setcookie("token", $token, time() + 3600, "/", "", true, true);
-      header("Location: ../index.php");
-      exit();
+        $token = JWT::encode($payload, $key, 'HS256');
+
+        setcookie("token", $token, time() + 3600, "/", "", true, true);
+        header("Location: ../index.php");
+        exit();
+      }
     } else {
+      // Sai username hoặc password
       $error = 'Tên đăng nhập hoặc mật khẩu không đúng.';
     }
   }
 }
-$cart_count =  0;
 
+$cart_count = 0;
 if (isset($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $cart_count += $item['Quantity'];
-    }
+  foreach ($_SESSION['cart'] as $item) {
+    $cart_count += $item['Quantity'];
+  }
 }
-// Kiểm tra giỏ hàng
+
+// Giỏ hàng
 $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 ?>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -192,7 +215,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-
+                        
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);
@@ -259,39 +282,42 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function(e) {
+              document.getElementById("searchForm").addEventListener("submit", function (e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
               });
             </script>
-          <div class="cart-wrapper">
+            <div class="cart-wrapper">
               <div class="cart-icon">
                 <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" />
-                <span class="cart-count" id = "mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
-                  <?php 
+                  <span class="cart-count" id="mni-cart-count"
+                    style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                    <?php
                     echo $cart_count;
-                  ?>
-                </span>
+                    ?>
+                  </span>
                 </a>
               </div>
               <div class="cart-dropdown">
-                    <?php if (count($cart_items) >0): ?>
-                        <?php foreach ($cart_items as $item): ?>
-                            <div class="cart-item">
-                                <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"  class="cart-thumb"/>                                
-                                <div class="cart-item-details">
-                                    <h5><?php echo $item['ProductName']; ?></h5>
-                                    <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
-                                    <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
-                                  </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>Giỏ hàng của bạn đang trống.</p>
-                    <?php endif; ?>
-                </div>
-          </div>  
+                <?php if (count($cart_items) > 0): ?>
+                  <?php foreach ($cart_items as $item): ?>
+                    <div class="cart-item">
+                      <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"
+                        class="cart-thumb" />
+                      <div class="cart-item-details">
+                        <h5><?php echo $item['ProductName']; ?></h5>
+                        <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
+                        <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ
+                        </p>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <p>Giỏ hàng của bạn đang trống.</p>
+                <?php endif; ?>
+              </div>
+            </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
                 <img src="../assets/images/user.svg" alt="" />
@@ -415,7 +441,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-
+                        
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);

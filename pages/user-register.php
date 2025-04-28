@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors['password'] = "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
   }
   if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {
-    $errors['fullname'] = "Họ tên không hợp lệ! Chỉ được chứa chữ cái và tối đa 80 từ.";
+    $errors['fullname'] = "Chỉ được chứa chữ cái và tối đa 80 từ.";
   }
   if (empty($province)) {
     $errors['province'] = "Không được để trống tỉnh/thành!";
@@ -585,6 +585,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
               <div class="form-group">
                 <label for="fullname">Họ và tên</label>
                 <input type="text" id="fullname" name="fullname" class="form-control" required>
+                <p class="error-message"><?php echo $errors['fullname'] ?? ''; ?></p>
               </div>
               <div class="form-group">
                 <label for="username">Tên đăng nhập</label>

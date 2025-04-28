@@ -7,6 +7,7 @@ require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
+require_once('../src/php/check_status.php');
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -157,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     ");
 
     if (!$stmt) {
-      throw new Exception("Lỗi chuẩn bị câu lệnh: " . $conn->error);
+        new Exception("Lỗi chuẩn bị câu lệnh: " . $conn->error);
     }
 
     $stmt->bind_param(
