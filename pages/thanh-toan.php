@@ -134,16 +134,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       ) {
         // Cập nhật thông tin đơn hàng trong bảng orders
         $updateOrderStmt = $conn->prepare("UPDATE orders SET CustomerName = ?, Phone = ?, Address = ?, 
-                                         Province = ?, District = ?, Ward = ? 
+                                         Province = ?, District = ?, Ward = ?, Status = ? 
                                          WHERE OrderID = ?");
         $updateOrderStmt->bind_param(
-          "sssiiis",
+          "sssiiiss",
           $customerName,
           $phone,
           $address,
           $provinceID,
           $districtID,
           $wardID,
+          $status,
           $_SESSION['order_id']
         );
         $updateOrderStmt->execute();
