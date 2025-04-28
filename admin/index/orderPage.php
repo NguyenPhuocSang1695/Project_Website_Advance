@@ -17,29 +17,78 @@ echo "sang";
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/reponsiveOrder.css">
+  <style>
+    /* Styles cho notification popup */
+    .notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px 40px;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      z-index: 9999;
+      text-align: center;
+      min-width: 300px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .notification.show {
+      visibility: visible;
+      opacity: 1;
+      animation: fadeInScale 0.3s ease forwards;
+    }
+
+    .notification.success {
+      background-color: #4CAF50;
+    }
+
+    .notification.error {
+      background-color: #f44336;
+    }
+
+    .notification.info {
+      background-color: #2196F3;
+    }
+
+    .notification i {
+      margin-right: 8px;
+      font-size: 18px;
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.7);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    @keyframes fadeOutScale {
+      from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.7);
+      }
+    }
+
+    .notification.hide {
+      animation: fadeOutScale 0.3s ease forwards;
+    }
+  </style>
 
 </head>
-<style>
-  /* Default display for responsive columns */
-  .hide-index-tablet,
-  .hide-index-mobile {
-    display: table-cell;
-  }
-
-  #filter-button {
-    margin-bottom: 20px;
-  }
-
-  .modal .modal-header {
-    background-color: #6aa173;
-    color: white;
-  }
-
-  .modal .modal-footer .btn-primary {
-    background-color: #6aa173;
-    border-color: #6aa173;
-  }
-</style>
 
 <body>
   <div class="header">

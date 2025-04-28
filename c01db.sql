@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 18, 2025 at 11:03 AM
+-- Generation Time: Apr 27, 2025 at 10:03 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `c01db_release`
+-- Database: `c01db`
 --
 
 -- --------------------------------------------------------
@@ -780,6 +780,14 @@ CREATE TABLE `orderdetails` (
   `TotalPrice` decimal(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `orderdetails`
+--
+
+INSERT INTO `orderdetails` (`OrderID`, `ProductID`, `Quantity`, `UnitPrice`, `TotalPrice`) VALUES
+(157, 46, 1, 1500000, 1500000),
+(158, 42, 1, 250000, 250000);
+
 -- --------------------------------------------------------
 
 --
@@ -800,6 +808,14 @@ CREATE TABLE `orders` (
   `TotalAmount` decimal(10,0) DEFAULT NULL,
   `Address` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`OrderID`, `Username`, `Status`, `PaymentMethod`, `CustomerName`, `Phone`, `Province`, `District`, `Ward`, `DateGeneration`, `TotalAmount`, `Address`) VALUES
+(157, 'sangnp4', 'execute', 'COD', 'sang nguyen', '0989898989', '2', '38', '709', '2025-04-27 14:38:48', 1500000, '102 Đồng Khởi'),
+(158, 'sangnp6', 'execute', 'COD', 'sang', '0989888898', '16', '180', '3079', '2025-04-27 14:49:36', 250000, '12 sang');
 
 -- --------------------------------------------------------
 
@@ -825,45 +841,52 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`ProductID`, `ProductName`, `CategoryID`, `Price`, `Description`, `ImageURL`, `Status`, `Attribute`, `LevelDifficulty`, `IsPurchase`) VALUES
-(1, 'Cây thường xuân', 2, 160000, 'None', '/assets/images/CAY1.jpg', 'appear', NULL, 'low', 0),
-(2, 'Cây lá sọc dưa hấu', 2, 85000, 'None', '/assets/images/CAY2.jpg', 'appear', NULL, 'medium', 0),
-(3, 'Cây cẩm nhung', 4, 150000, 'None', '/assets/images/CAY3.jpg', 'appear', NULL, 'medium', 0),
-(4, 'Cây lan ý', 1, 180000, 'None', '/assets/images/CAY4.jpg', 'appear', NULL, 'medium', 0),
-(5, 'Cây phát tài núi', 1, 1950000, 'None', '/assets/images/CAY5.jpg', 'appear', NULL, 'medium', 0),
-(6, 'Cây kim ngân', 4, 100000, 'None', '/assets/images/CAY6.jpg', 'appear', NULL, 'medium', 0),
-(7, 'Trầu bà lá xanh', 1, 200000, 'None', '/assets/images/CAY7.jpg', 'appear', NULL, 'low', 0),
-(8, 'Cây dây nhện', 3, 35000, 'None', '/assets/images/CAY8.jpg', 'appear', NULL, 'low', 0),
-(9, 'Cây trầu bà đỏ', 2, 300000, 'None', '/assets/images/CAY9.jpg', 'appear', NULL, 'low', 0),
-(10, 'Lưỡi hổ vàng', 3, 200000, 'None', '/assets/images/CAY10.jpg', 'appear', NULL, 'low', 0),
-(11, 'Cây Thiết Mộc Lan', 1, 1000000, 'None', '/assets/images/CAY11.jpg', 'appear', NULL, 'medium', 0),
-(12, 'Cây trầu bà vàng', 2, 200000, 'None', '/assets/images/CAY12.jpg', 'appear', NULL, 'low', 0),
-(13, 'Thiết mộc lan sọc vàng', 3, 500000, 'None', '/assets/images/CAY13.jpg', 'appear', NULL, 'medium', 0),
-(14, 'Cây lưỡi hổ xanh', 3, 220000, 'None', '/assets/images/CAY14.jpg', 'appear', NULL, 'low', 0),
-(16, 'Vạn lộc đỏ', 4, 300000, 'None', '/assets/images/CAY16.jpg', 'appear', NULL, 'medium', 0),
-(17, 'Cây tróc bạc', 2, 180000, 'None', '/assets/images/CAY17.jpg', 'appear', NULL, 'medium', 0),
-(18, 'Lưỡi hổ búp sen', 3, 45000, 'None', '/assets/images/CAY18.jpg', 'appear', NULL, 'low', 0),
-(19, 'Cây Pachira aquatica', 4, 250000, 'None', '/assets/images/CAY19.jpg', 'appear', NULL, 'medium', 0),
-(20, 'Cây môn Hồng', 4, 100000, 'None', '/assets/images/CAY20.jpg', 'appear', NULL, 'medium', 0),
-(22, 'Cây trúc Nhật', 1, 250000, 'None', '/assets/images/CAY22.jpg', 'appear', NULL, 'medium', 0),
-(23, 'Cây cọ Nhật', 1, 650000, 'None', '/assets/images/CAY23.jpg', 'appear', NULL, 'medium', 0),
-(24, 'Cây kim tiền', 1, 450000, 'None', '/assets/images/CAY24.jpg', 'appear', NULL, 'medium', 0),
-(25, 'Cây ngọc ngân', 1, 300000, 'None', '/assets/images/CAY25.jpg', 'appear', NULL, 'medium', 0),
-(26, 'Cây rong la hán', 2, 90000, 'None', '/assets/images/CAY26.jpg', 'appear', NULL, 'medium', 0),
-(27, 'Cây bèo Nhật', 2, 75000, 'None', '/assets/images/CAY27.jpg', 'appear', NULL, 'medium', 0),
-(28, 'Cây dương xỉ nước', 2, 110000, 'None', '/assets/images/CAY28.jpg', 'appear', NULL, 'hard', 0),
-(29, 'Cây thủy sinh cỏ thìa', 2, 140000, 'None', '/assets/images/CAY29.jpg', 'appear', NULL, 'medium', 0),
-(30, 'Cây thủy cúc', 2, 100000, 'None', '/assets/images/CAY30.jpg', 'appear', NULL, 'medium', 0),
-(31, 'Cây cau tiểu trâm', 3, 70000, 'None', '/assets/images/CAY31.jpg', 'appear', NULL, 'medium', 0),
-(32, 'Cây phú quý', 3, 320000, 'None', '/assets/images/CAY32.jpg', 'appear', NULL, 'medium', 0),
-(33, 'Cây vạn niên thanh', 3, 250000, 'None', '/assets/images/CAY33.jpg', 'appear', NULL, 'medium', 0),
-(34, 'Cây sen đá', 3, 90000, 'None', '/assets/images/CAY34.jpg', 'appear', NULL, 'low', 0),
-(35, 'Cây cỏ lan chi', 3, 50000, 'None', '/assets/images/CAY35.jpg', 'appear', NULL, 'low', 0),
-(36, 'Cây bonsai sam hương', 4, 700000, 'None', '/assets/images/CAY36.jpg', 'appear', NULL, 'hard', 0),
-(37, 'Cây bạch mã hoàng tử', 4, 270000, 'None', '/assets/images/CAY37.jpg', 'appear', NULL, 'medium', 0),
-(38, 'Cây hạnh phúc mini', 4, 400000, 'None', '/assets/images/CAY38.jpg', 'appear', NULL, 'medium', 0),
-(39, 'Cây tùng bồng lai', 4, 350000, 'None', '/assets/images/CAY39.jpg', 'appear', NULL, 'hard', 0),
-(40, 'Cây trường sinh', 4, 200000, 'None', '/assets/images/CAY40.jpg', 'appear', NULL, 'low', 0),
-(41, 'Cây bàng Singapore', 1, 400000, 'None', '/assets/images/CAY41.jpg', 'appear', NULL, 'medium', 0);
+(1, 'Cây thường xuân', 2, 160000, 'Cây thường xuân là loại cây leo dễ chăm sóc, phù hợp trang trí trong nhà hoặc sân vườn. Với lá xanh mướt, cây giúp thanh lọc không khí, mang lại không gian tươi mát. Thích hợp với ánh sáng gián tiếp và đất ẩm vừa phải, cây thường xuân là lựa chọn lý tưởng cho người mới bắt đầu trồng cây.', '/assets/images/CAY1.jpg', 'appear', NULL, 'low', 0),
+(2, 'Cây lá sọc dưa hấu', 2, 85000, 'Cây lá sọc dưa hấu nổi bật với lá có họa tiết giống vỏ dưa hấu, mang lại vẻ đẹp độc đáo. Cây ưa sáng nhẹ, dễ trồng trong chậu nhỏ để bàn hoặc treo trang trí. Đất cần thoát nước tốt và tưới nước vừa phải để cây phát triển khỏe mạnh.', '/assets/images/CAY2.jpg', 'appear', NULL, 'medium', 0),
+(3, 'Cây cẩm nhung', 4, 150000, 'Cây cẩm nhung có lá mềm mại, màu sắc rực rỡ như hồng, xanh, tím, rất được yêu thích làm cây cảnh để bàn. Cây ưa ánh sáng gián tiếp và đất tơi xốp. Tưới nước đều đặn, tránh ngập úng để giữ cây luôn tươi tốt, là điểm nhấn cho không gian sống.', '/assets/images/CAY3.jpg', 'appear', NULL, 'medium', 0),
+(4, 'Cây lan ý', 1, 180000, 'Cây lan ý nổi tiếng với khả năng thanh lọc không khí và hoa trắng thanh lịch. Cây phù hợp với môi trường trong nhà, ưa bóng râm và đất ẩm. Đây là lựa chọn tuyệt vời cho văn phòng hoặc phòng khách, mang lại cảm giác yên bình và tươi mới.', '/assets/images/CAY4.jpg', 'appear', NULL, 'medium', 0),
+(5, 'Cây phát tài núi', 1, 1950000, 'Cây phát tài núi có dáng cao, lá xanh bóng, tượng trưng cho tài lộc và thịnh vượng. Cây thích hợp đặt ở phòng khách hoặc văn phòng lớn, ưa sáng nhẹ và đất thoát nước tốt. Dù giá cao, cây dễ chăm sóc và mang lại giá trị phong thủy cao.', '/assets/images/CAY5.jpg', 'appear', NULL, 'medium', 0),
+(6, 'Cây kim ngân', 4, 100000, 'Cây kim ngân với thân đan xen độc đáo, tượng trưng cho tài lộc. Lá xanh mướt, cây dễ trồng trong chậu nhỏ, phù hợp để bàn làm việc hoặc góc phòng. Cây ưa sáng gián tiếp, tưới nước vừa phải, là món quà ý nghĩa cho gia đình và bạn bè.', '/assets/images/CAY6.jpg', 'appear', NULL, 'medium', 0),
+(7, 'Trầu bà lá xanh', 1, 200000, 'Trầu bà lá xanh là cây leo dễ trồng, có lá hình tim mềm mại, giúp thanh lọc không khí hiệu quả. Cây phù hợp treo hoặc đặt trên kệ, ưa bóng râm và đất ẩm. Đây là lựa chọn phổ biến cho không gian sống hiện đại, dễ chăm sóc.', '/assets/images/CAY7.jpg', 'appear', NULL, 'low', 0),
+(8, 'Cây dây nhện', 3, 35000, 'Cây dây nhện có lá dài, màu xanh trắng, dễ trồng và sinh trưởng nhanh. Cây giúp lọc không khí, phù hợp treo trong nhà hoặc văn phòng. Chỉ cần ánh sáng nhẹ và tưới nước đều đặn, cây dây nhện là lựa chọn tiết kiệm cho người bận rộn.', '/assets/images/CAY8.jpg', 'appear', NULL, 'low', 0),
+(9, 'Cây trầu bà đỏ', 2, 300000, 'Cây trầu bà đỏ nổi bật với lá màu đỏ đậm, mang lại vẻ đẹp sang trọng. Cây ưa sáng gián tiếp, thích hợp trang trí trong nhà hoặc văn phòng. Tưới nước vừa phải và đất tơi xốp sẽ giúp cây phát triển tốt, tạo điểm nhấn cho không gian.', '/assets/images/CAY9.jpg', 'appear', NULL, 'low', 0),
+(10, 'Lưỡi hổ vàng', 3, 200000, 'Lưỡi hổ vàng có lá dài, viền vàng tươi, mang ý nghĩa phong thủy bảo vệ và thịnh vượng. Cây dễ chăm sóc, chịu được điều kiện khô hạn, thích hợp cho người mới trồng. Đặt cây ở góc phòng hoặc lối vào để tăng thẩm mỹ.', '/assets/images/CAY10.jpg', 'appear', NULL, 'low', 0),
+(11, 'Cây Thiết Mộc Lan', 1, 1000000, 'Cây Thiết Mộc Lan cao lớn, lá xanh bóng, mang ý nghĩa tài lộc và may mắn. Thích hợp đặt ở phòng khách hoặc văn phòng, cây ưa sáng nhẹ và đất thoát nước tốt. Dù giá cao, cây dễ chăm sóc và có giá trị trang trí lâu dài.', '/assets/images/CAY11.jpg', 'appear', NULL, 'medium', 0),
+(12, 'Cây trầu bà vàng', 2, 200000, 'Cây trầu bà vàng có lá màu vàng xanh bắt mắt, dễ trồng và chăm sóc. Cây phù hợp treo hoặc đặt trên kệ, ưa bóng râm và đất ẩm. Đây là lựa chọn lý tưởng để làm sáng không gian sống, mang lại cảm giác tươi mới.', '/assets/images/CAY12.jpg', 'appear', NULL, 'low', 0),
+(13, 'Thiết mộc lan sọc vàng', 3, 500000, 'Thiết mộc lan sọc vàng có lá dài, viền vàng nổi bật, mang ý nghĩa phong thủy tốt. Cây thích hợp cho không gian rộng, ưa sáng nhẹ và đất tơi xốp. Dễ chăm sóc, cây là lựa chọn tuyệt vời để tăng tính thẩm mỹ và năng lượng tích cực.', '/assets/images/CAY13.jpg', 'appear', NULL, 'medium', 0),
+(14, 'Cây lưỡi hổ xanh', 3, 220000, 'Cây lưỡi hổ xanh có lá cứng cáp, màu xanh đậm, dễ trồng và chịu hạn tốt. Cây giúp lọc không khí, phù hợp đặt ở góc phòng hoặc ban công. Với mức chăm sóc tối thiểu, cây là lựa chọn lý tưởng cho người bận rộn.', '/assets/images/CAY14.jpg', 'appear', NULL, 'low', 0),
+(16, 'Vạn lộc đỏ', 4, 300000, 'Vạn lộc đỏ có lá màu đỏ hồng rực rỡ, tượng trưng cho may mắn và tài lộc. Cây ưa sáng gián tiếp, thích hợp để bàn hoặc góc phòng. Tưới nước đều đặn và đất tơi xốp sẽ giúp cây phát triển tốt, làm đẹp không gian sống.', '/assets/images/CAY16.jpg', 'appear', NULL, 'medium', 0),
+(17, 'Cây tróc bạc', 2, 180000, 'Cây tróc bạc có lá xanh với đốm bạc độc đáo, mang lại vẻ đẹp hiện đại. Cây ưa bóng râm, dễ trồng trong chậu nhỏ để bàn. Tưới nước vừa phải, tránh ngập úng để cây luôn tươi tốt, là điểm nhấn cho không gian văn phòng.', '/assets/images/CAY17.jpg', 'appear', NULL, 'medium', 0),
+(18, 'Lưỡi hổ búp sen', 3, 45000, 'Lưỡi hổ búp sen có lá xếp hình hoa sen độc đáo, dễ chăm sóc và chịu hạn tốt. Cây phù hợp đặt ở bàn làm việc hoặc góc nhỏ, giúp lọc không khí. Với giá rẻ, cây là lựa chọn tuyệt vời cho người yêu cây cảnh.', '/assets/images/CAY18.jpg', 'appear', NULL, 'low', 0),
+(19, 'Cây Pachira aquatica', 4, 250000, 'Cây Pachira aquatica, hay còn gọi là cây tiền, có thân đan xen và lá xanh bóng, mang ý nghĩa tài lộc. Cây ưa sáng nhẹ, dễ trồng trong chậu để bàn. Tưới nước vừa phải, cây là món quà ý nghĩa cho dịp đặc biệt.', '/assets/images/CAY19.jpg', 'appear', NULL, 'medium', 0),
+(20, 'Cây môn Hồng', 4, 100000, 'Cây môn Hồng có lá màu hồng phấn độc đáo, mang lại vẻ đẹp dịu dàng. Cây ưa sáng gián tiếp, thích hợp để bàn hoặc góc phòng. Đất cần thoát nước tốt và tưới nước đều đặn để cây phát triển khỏe mạnh, làm đẹp không gian.', '/assets/images/CAY20.jpg', 'appear', NULL, 'medium', 0),
+(22, 'Cây trúc Nhật', 1, 250000, 'Cây trúc Nhật có dáng thanh mảnh, lá xanh mướt, mang lại cảm giác yên bình. Cây phù hợp đặt ở phòng khách hoặc ban công, ưa sáng nhẹ và đất ẩm. Dễ chăm sóc, cây là lựa chọn tuyệt vời để tăng tính thẩm mỹ cho không gian.', '/assets/images/CAY22.jpg', 'appear', NULL, 'medium', 0),
+(23, 'Cây cọ Nhật', 1, 650000, 'Cây cọ Nhật có lá xòe rộng, màu xanh đậm, mang lại vẻ đẹp nhiệt đới. Cây thích hợp cho không gian lớn, ưa sáng nhẹ và đất tơi xốp. Dù giá cao, cây dễ chăm sóc và tạo điểm nhấn sang trọng cho phòng khách.', '/assets/images/CAY23.jpg', 'appear', NULL, 'medium', 0),
+(24, 'Cây kim tiền', 1, 450000, 'Cây kim tiền có lá dày, xanh bóng, tượng trưng cho tài lộc và thịnh vượng. Cây dễ trồng, chịu hạn tốt, phù hợp đặt ở phòng khách hoặc văn phòng. Tưới nước vừa phải, cây là lựa chọn phổ biến cho người yêu cây cảnh.', '/assets/images/CAY24.jpg', 'appear', NULL, 'medium', 0),
+(25, 'Cây ngọc ngân', 1, 300000, 'Cây ngọc ngân có lá xanh với đốm trắng, mang lại vẻ đẹp thanh lịch. Cây ưa bóng râm, dễ trồng trong chậu để bàn hoặc góc phòng. Tưới nước đều đặn, cây là lựa chọn lý tưởng để làm sáng không gian sống hiện đại.', '/assets/images/CAY25.jpg', 'appear', NULL, 'medium', 0),
+(26, 'Cây rong la hán', 2, 90000, 'Cây rong la hán là cây thủy sinh dễ trồng, phù hợp cho bể cá hoặc chậu thủy tinh. Cây giúp làm sạch nước, ưa sáng nhẹ và không cần chăm sóc phức tạp. Đây là lựa chọn tuyệt vời cho người yêu thích cây cảnh thủy sinh.', '/assets/images/CAY26.jpg', 'appear', NULL, 'medium', 0),
+(27, 'Cây bèo Nhật', 2, 75000, 'Cây bèo Nhật là cây thủy sinh nhỏ gọn, nổi trên mặt nước, tạo vẻ đẹp tự nhiên cho bể cá. Cây dễ chăm sóc, ưa sáng nhẹ và không cần đất. Với giá rẻ, cây là lựa chọn lý tưởng để làm đẹp không gian thủy sinh.', '/assets/images/CAY27.jpg', 'appear', NULL, 'medium', 0),
+(28, 'Cây dương xỉ nước', 2, 110000, 'Cây dương xỉ nước là cây thủy sinh có lá mềm mại, mang lại vẻ đẹp dịu dàng cho bể cá. Cây ưa sáng nhẹ, cần chăm sóc kỹ hơn để phát triển tốt. Đây là lựa chọn cho người yêu thích tạo cảnh quan thủy sinh độc đáo.', '/assets/images/CAY28.jpg', 'appear', NULL, 'hard', 0),
+(29, 'Cây thủy sinh cỏ thìa', 2, 140000, 'Cây thủy sinh cỏ thìa có lá nhỏ, mọc thành thảm, tạo cảnh quan đẹp cho bể cá. Cây ưa sáng vừa phải, dễ trồng và chăm sóc. Đây là lựa chọn phổ biến để làm nền cho bể thủy sinh, mang lại vẻ đẹp tự nhiên.', '/assets/images/CAY29.jpg', 'appear', NULL, 'medium', 0),
+(30, 'Cây thủy cúc', 2, 100000, 'Cây thủy cúc có lá mảnh, màu xanh tươi, là cây thủy sinh dễ trồng. Cây giúp làm sạch nước, phù hợp cho bể cá hoặc chậu thủy tinh. Chỉ cần ánh sáng nhẹ và chăm sóc tối thiểu, cây tạo điểm nhấn cho không gian.', '/assets/images/CAY30.jpg', 'appear', NULL, 'medium', 0),
+(31, 'Cây cau tiểu trâm', 3, 70000, 'Cây cau tiểu trâm có dáng nhỏ gọn, lá xanh mướt, phù hợp để bàn hoặc góc phòng. Cây ưa sáng gián tiếp, dễ chăm sóc và chịu hạn tốt. Với giá phải chăng, cây là lựa chọn lý tưởng để làm đẹp không gian sống.', '/assets/images/CAY31.jpg', 'appear', NULL, 'medium', 0),
+(32, 'Cây phú quý', 3, 320000, 'Cây phú quý có lá màu đỏ và xanh, tượng trưng cho may mắn và thịnh vượng. Cây ưa sáng nhẹ, dễ trồng trong chậu nhỏ để bàn. Tưới nước đều đặn, cây là lựa chọn tuyệt vời để làm sáng không gian văn phòng.', '/assets/images/CAY32.jpg', 'appear', NULL, 'medium', 0),
+(33, 'Cây vạn niên thanh', 3, 250000, 'Cây vạn niên thanh có lá xanh bóng, mang lại vẻ đẹp thanh lịch và ý nghĩa trường tồn. Cây ưa bóng râm, dễ chăm sóc, phù hợp đặt ở phòng khách. Tưới nước vừa phải, cây là lựa chọn phổ biến cho không gian sống.', '/assets/images/CAY33.jpg', 'appear', NULL, 'medium', 0),
+(34, 'Cây sen đá', 3, 90000, 'Cây sen đá có lá mọng nước, xếp thành hoa sen độc đáo, dễ chăm sóc và chịu hạn tốt. Cây phù hợp đặt ở bàn làm việc hoặc ban công, ưa sáng nhẹ. Với giá rẻ, cây là lựa chọn yêu thích của người yêu cây cảnh.', '/assets/images/CAY34.jpg', 'appear', NULL, 'low', 0),
+(35, 'Cây cỏ lan chi', 3, 50000, 'Cây cỏ lan chi có lá mảnh, màu xanh trắng, mang lại vẻ đẹp dịu dàng. Cây dễ trồng, chịu hạn tốt, phù hợp treo hoặc đặt trên kệ. Tưới nước vừa phải, cây là lựa chọn tiết kiệm cho người bận rộn.', '/assets/images/CAY35.jpg', 'appear', NULL, 'low', 0),
+(36, 'Cây bonsai sam hương', 4, 700000, 'Cây bonsai sam hương có dáng nhỏ gọn, lá xanh đậm, mang vẻ đẹp cổ điển. Cây cần chăm sóc kỹ, ưa sáng nhẹ và đất thoát nước tốt. Dù khó trồng, cây là lựa chọn sang trọng cho người yêu nghệ thuật bonsai.', '/assets/images/CAY36.jpg', 'appear', NULL, 'hard', 0),
+(37, 'Cây bạch mã hoàng tử', 4, 270000, 'Cây bạch mã hoàng tử có lá xanh với gân trắng, mang lại vẻ đẹp thanh lịch. Cây ưa sáng gián tiếp, dễ trồng trong chậu để bàn. Tưới nước đều đặn, cây là lựa chọn tuyệt vời để làm đẹp không gian văn phòng.', '/assets/images/CAY37.jpg', 'appear', NULL, 'medium', 0),
+(38, 'Cây hạnh phúc mini', 4, 400000, 'Cây hạnh phúc mini có lá xanh bóng, mang ý nghĩa bình an và thịnh vượng. Cây dễ chăm sóc, ưa sáng nhẹ, phù hợp đặt ở phòng khách. Tưới nước vừa phải, cây là món quà ý nghĩa cho gia đình và bạn bè.', '/assets/images/CAY38.jpg', 'appear', NULL, 'medium', 0),
+(39, 'Cây tùng bồng lai', 4, 350000, 'Cây tùng bồng lai có lá mềm mại, dáng nhỏ gọn, mang vẻ đẹp cổ điển. Cây cần chăm sóc kỹ, ưa sáng nhẹ và đất tơi xốp. Dù khó trồng, cây là lựa chọn sang trọng cho không gian sống hoặc văn phòng.', '/assets/images/CAY39.jpg', 'appear', NULL, 'hard', 0),
+(40, 'Cây trường sinh', 4, 200000, 'Cây trường sinh có lá mọng nước, xếp tầng độc đáo, mang ý nghĩa bền vững. Cây dễ chăm sóc, chịu hạn tốt, phù hợp đặt ở bàn làm việc. Tưới nước vừa phải, cây là lựa chọn lý tưởng cho người yêu cây cảnh.', '/assets/images/CAY40.jpg', 'appear', NULL, 'low', 0),
+(41, 'Cây bàng Singapore', 1, 400000, 'Cây bàng Singapore có lá to, xanh bóng, mang lại vẻ đẹp hiện đại. Cây thích hợp cho không gian rộng, ưa sáng nhẹ và đất thoát nước tốt. Dễ chăm sóc, cây là lựa chọn tuyệt vời để làm đẹp phòng khách hoặc văn phòng.', '/assets/images/CAY41.jpg', 'appear', NULL, 'medium', 0),
+(42, 'Cây ngũ gia bì', 1, 250000, 'Cây Ngũ Gia Bì, hay còn gọi là Xuyên Gia Bì, có lá kép chân chim, màu xanh đậm, mang ý nghĩa phong thủy tài lộc và hòa thuận gia đình. Cây giúp thanh lọc không khí, xua đuổi muỗi nhờ tinh dầu thơm. Thích hợp đặt ở phòng khách, văn phòng hoặc bàn làm việc, cây ưa sáng gián tiếp, đất tơi xốp, tưới nước 2-3 lần/tuần. Dễ chăm sóc, cây là lựa chọn tuyệt vời cho người yêu cây cảnh, mang lại không gian xanh mát và may mắn.', '/assets/images/CAY42.jpg', 'appear', NULL, 'medium', 0),
+(43, 'Cây đuôi công', 2, 90000, 'Cây đuôi công nổi bật với lá có họa tiết sọc xanh trắng, giống đuôi chim công, mang lại vẻ đẹp độc đáo. Cây ưa sáng nhẹ, dễ trồng trong chậu nhỏ để bàn hoặc treo trang trí. Đất cần thoát nước tốt, tưới nước vừa phải 2 lần/tuần để cây xanh tươi. Phù hợp cho văn phòng hoặc không gian nhỏ, cây giúp làm sáng không gian và mang lại cảm giác thư giãn.', '/assets/images/CAY43.jpg', 'appear', NULL, 'medium', 0),
+(44, 'Cây huyết phất dụ', 4, 180000, 'Cây huyết phất dụ nổi bật với lá dài, màu đỏ rực rỡ xen kẽ xanh, mang ý nghĩa phong thủy may mắn và tài lộc. Cây dễ chăm sóc, ưa sáng gián tiếp và đất tơi xốp, phù hợp để bàn làm việc, phòng khách hoặc góc văn phòng. Tưới nước 2-3 lần/tuần, giữ đất ẩm nhưng tránh ngập úng để cây phát triển khỏe mạnh. Cây giúp làm đẹp không gian, tạo cảm giác tươi mới và năng lượng tích cực. Là lựa chọn lý tưởng cho người yêu cây cảnh, Cây huyết phất dụ mang lại sự sang trọng và phong cách cho không gian sống hiện đại.', '/assets/images/CAY44.jpg', 'appear', NULL, 'medium', 0),
+(45, 'Cây đại phú gia', 1, 220000, 'Cây đại phú gia có lá xanh đậm, dáng cao, mang ý nghĩa phong thủy thịnh vượng và giàu sang. Cây ưa bóng râm, dễ chăm sóc, phù hợp đặt ở phòng khách hoặc văn phòng. Đất cần ẩm vừa phải, tưới nước 2 lần/tuần. Cây giúp thanh lọc không khí, tạo không gian trong lành, là lựa chọn lý tưởng cho không gian sống hiện đại và sang trọng.', '/assets/images/CAY45.jpg', 'appear', NULL, 'medium', 0),
+(46, 'Cây cau Hawaii', 1, 1500000, 'Cây cau Hawaii có lá xòe rộng, màu xanh bóng, mang vẻ đẹp nhiệt đới và ý nghĩa tài lộc. Cây thích hợp cho không gian lớn, ưa sáng nhẹ và đất thoát nước tốt. Tưới nước 2-3 lần/tuần, cây dễ chăm sóc và tạo điểm nhấn sang trọng cho phòng khách. Là lựa chọn tuyệt vời cho người yêu cây cảnh, mang lại không gian xanh mát.', '/assets/images/CAY46.jpg', 'appear', NULL, 'medium', 0),
+(47, 'Cây hồng môn', 2, 200000, 'Cây hồng môn có lá xanh bóng và hoa đỏ rực rỡ, mang ý nghĩa may mắn và hạnh phúc. Cây dễ chăm sóc, ưa sáng gián tiếp và đất tơi xốp, phù hợp trang trí phòng khách hoặc văn phòng. Tưới nước 2-3 lần/tuần, tránh ngập úng để cây phát triển khỏe mạnh. Cây giúp thanh lọc không khí, tạo không gian tươi mới và sang trọng, là lựa chọn lý tưởng cho người yêu cây cảnh.', '/assets/images/CAY47.jpg', 'appear', NULL, 'low', 0),
+(48, 'Cây chuối rẻ quạt', 1, 450000, 'Cây chuối rẻ quạt có lá to, xanh đậm, mang vẻ đẹp nhiệt đới và ý nghĩa phong thủy bình an. Cây ưa sáng gián tiếp, đất tơi xốp, phù hợp đặt ở phòng khách hoặc văn phòng. Tưới nước 2-3 lần/tuần, cây dễ chăm sóc và giúp thanh lọc không khí. Là lựa chọn lý tưởng để làm đẹp không gian sống, mang lại sự tươi mới và thư giãn.', '/assets/images/CAY48.jpg', 'appear', NULL, 'medium', 0);
 
 -- --------------------------------------------------------
 
@@ -970,8 +993,20 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`Username`, `FullName`, `Email`, `PasswordHash`, `Address`, `Province`, `District`, `Ward`, `Role`, `Phone`, `Status`) VALUES
-('SangNgu', 'Nguyễn Phước Sang', 'sangngu@gmail.com', '$2y$10$DgAFZg7Vbl8O151o8lxJa.igyOsiX9vnRDdpJveME58gojl.1WHd.', '123 Lạc Long Quân', '1', '1', '3', 'admin', '0912345675', 'Active'),
-('sengnp', 'sang nguyen', 'sang@gmail.com', '$2y$10$wvnKJyCIraqwkefG8dEI5uulFk1xtgcYjiCUJXpj0EFyO6Hx2Uke.', '130a hcm', '63', '703', '10567', 'customer', '9384637444', 'Active');
+('sangnp', 'sang', 'sang@gmail.com', '$2y$10$o4s6B8IWerL5f1DtPYmtP.9a97WwQb8izDNftRsIg2zrxMP0jJgYK', '102 Đồng Khởi', '2', '39', '733', 'admin', '0989898989', 'Active'),
+('sangnp10', 'sang nguyen phuoc', 'sang10@gmail.com', '$2y$10$iGkLIzsSSPVXKlzmE7hSqOnC6KIaJVVJ95VhpjWvprVDITHdha28G', '30/4 giải phóng miền Nam', '2', '32', '601', 'customer', '0989898989', 'Active'),
+('sangnp11', 'sang phuoc nguyen', 'sang11@gmail.com', '$2y$10$2CQSwgPYiFLQE3Mztjp15.ut50fWg0e5nNsuCetq1dEcRgAjeRJei', '30/4 giải phóng miền Nam', '2', '39', '734', 'customer', '0989898989', 'Active'),
+('sangnp12', 'nguyen sang oi', 'sang12@gmail.com', '$2y$10$Zuzl8Op8ht1xa2zRqiB5aeP/N7VvzW/4BqabMsY9dwt1grJahY0EG', '30/4 giải phóng miền Nam', '2', '39', '731', 'customer', '0989898989', 'Active'),
+('sangnp14', 'sang is me', 'sang14@gmail.com', '$2y$10$2adbqZZWUCSqR.rXWbo/eeBvXOALrzByQSPHYM8BTzMWH28/tsvci', '30/4 giải phóng miền Nam', '2', '39', '731', 'customer', '0989898989', 'Active'),
+('sangnp2', 'sang n', 'sang2@gmail.com', '$2y$10$PbygLsSybCrxEQSnrDu1eOQ6b1Jc3UF.Hud7L0Iu9ikwQ2ZCML7FS', '102 Đồng Khởi', '2', '39', '730', 'admin', '0989898989', 'Active'),
+('sangnp3', 'sang ng', 'sang3@gmail.com', '$2y$10$EWSMyDsr5heqCu14.2IPmuptvY/YmGuwEV1KlNv773SdLPmfAXRWq', '102 Đồng Khởi', '2', '41', '771', 'admin', '0989898989', 'Active'),
+('sangnp4', 'sang nguyen', 'sang4@gmail.com', '$2y$10$5xPH3y6xnXU1NDHPCTjSFOx1FUYCb/knVtUK4C5iIn1dyk8BIVlKi', '102 Đồng Khởi', '2', '38', '709', 'customer', '0989898989', 'Active'),
+('sangnp5', 'sang phuoc', 'sang5@gmail.com', '$2y$10$GohfxI0Wx.w7c8yMsnt/Te5sUKdeDRU4BTwVNk.lZol2.T547FMJK', '155 Đồng Khởi', '2', '38', '708', 'customer', '0989898989', 'Active'),
+('sangnp6', 'sang', 'sang6@gmail.com', '$2y$10$L51uJ5hoN0qiD64B9QsDd.3j8eGeQdy8wy2/RaMOuGmgi/qR9FhXi', '12 sang', '16', '180', '3079', 'customer', '0989888898', 'Active'),
+('sangnp7', 'Sang Phước Nguyễn', 'sang7@gmail.com', '$2y$10$iL7QhHaYxsziNvAzaK2X4u5n0uX17lX68MSvTt/gBOAQrQM1lMI0e', '30/4 giải phóng miền Nam', '2', '39', '730', 'customer', '0989898989', 'Active'),
+('sangnp8', 'sang phước nguyễn', 'sang8@gmail.com', '$2y$10$RrwDUdZG/6NCg4NL/2Kp5u/6JgsKRYoRdvRCIvLoanaZNXCNxK9nW', '30/4 giải phóng miền Nam', '2', '39', '731', 'customer', '0989898989', 'Active'),
+('sangnp9', 'sang np', 'sang9@gmail.com', '$2y$10$6v2yiKec.OADRpgUdjulzOFNgZw49tXPsNn9DcSuVqIBPzKWHNZCa', '30/4 giải phóng miền Nam', '2', '37', '691', 'customer', '0989898989', 'Active'),
+('sangnpblocked', 'sang phuoc', 'sang13@gmail.com', '$2y$10$3Gb7Tsi75z2s4QJtYIXVO.iFjH5Eg8Ttn209DWk9f1Bp2etZQZokC', '30/4 giải phóng miền Nam', '2', '40', '750', 'customer', '0989898989', 'Block');
 
 -- --------------------------------------------------------
 
@@ -11660,13 +11695,13 @@ ALTER TABLE `district`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `OrderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `OrderID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=455;
+  MODIFY `ProductID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=456;
 
 --
 -- AUTO_INCREMENT for table `province`
