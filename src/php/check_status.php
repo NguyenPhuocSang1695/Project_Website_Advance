@@ -25,7 +25,7 @@ if ($result->num_rows > 0) {
 
         // Hiện alert + redirect
         echo "<script>
-                alert('User đã bị chặn.');
+                alert('Tài khoản đã bị khóa.');
                 window.location.href='../index.php';
               </script>";
         exit();
@@ -35,7 +35,7 @@ if ($result->num_rows > 0) {
     // Không tìm thấy user => xóa token + báo lỗi
     setcookie('token', '', time() - 3600, '/');
     echo "<script>
-            alert('Không tìm thấy user.');
+            alert('Không tìm thấy người dùng.');
             window.location.href='../index.php';
           </script>";
     exit();

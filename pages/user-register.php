@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors['password'] = "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
   }
   if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {
-    $errors['fullname'] = "Chỉ được chứa chữ cái và tối đa 80 từ.";
+    $errors['fullname'] = "Chỉ được chứa chữ cái và tối đa 80 ký tự.";
   }
   if (empty($province)) {
     $errors['province'] = "Không được để trống tỉnh/thành!";

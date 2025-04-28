@@ -6,13 +6,15 @@ require __DIR__ . '/../src/Jwt/vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 
+$errorMessage = '';
 if (isset($_GET['error'])) {
   if ($_GET['error'] == 'login_required') {
-    echo "<script>alert('Bạn cần đăng nhập để vào giỏ hàng.');</script>";
+    $errorMessage = 'Bạn cần đăng nhập để vào giỏ hàng.';
   } elseif ($_GET['error'] == 'token_expired') {
-    echo "<script>alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');</script>";
+    $errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
   }
 }
+
 
 $error = '';
 
@@ -79,6 +81,13 @@ if (isset($_SESSION['cart'])) {
 $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 ?>
 
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    <?php if (!empty($errorMessage)): ?>
+      alert("<?php echo $errorMessage; ?>");
+    <?php endif; ?>
+  });
+</script>
 
 
 <!DOCTYPE html>
