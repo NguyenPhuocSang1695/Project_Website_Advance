@@ -4,6 +4,7 @@ require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
+require_once('../src/php/check_status.php');
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;

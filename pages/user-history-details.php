@@ -4,6 +4,7 @@ session_start();
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
 require_once('../src/php/connect.php');
+require_once('../src/php/check_status.php');
 
 $orderID = $_GET['orderid'] ?? 0;
 

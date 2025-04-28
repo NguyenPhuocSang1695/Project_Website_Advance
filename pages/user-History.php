@@ -3,6 +3,7 @@ session_start();
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
 require_once('../src/php/connect.php');
+require_once('../src/php/check_status.php');
 $orderHistory = [];
 $userInfo = [];
 
@@ -29,12 +30,12 @@ if ($loggedInUsername) {
   }
 }
 
-$cart_count =  0;
+$cart_count = 0;
 
 if (isset($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $cart_count += $item['Quantity'];
-    }
+  foreach ($_SESSION['cart'] as $item) {
+    $cart_count += $item['Quantity'];
+  }
 }
 // Kiểm tra giỏ hàng
 $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
@@ -142,7 +143,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-
+                        
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);
@@ -209,7 +210,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function(e) {
+              document.getElementById("searchForm").addEventListener("submit", function (e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
@@ -219,30 +220,33 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
             <div class="cart-wrapper">
               <div class="cart-icon">
                 <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" />
-                <span class="cart-count" id = "mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
-                  <?php 
+                  <span class="cart-count" id="mni-cart-count"
+                    style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                    <?php
                     echo $cart_count;
-                  ?>
-                </span>
+                    ?>
+                  </span>
                 </a>
               </div>
               <div class="cart-dropdown">
-                    <?php if (count($cart_items) >0): ?>
-                        <?php foreach ($cart_items as $item): ?>
-                            <div class="cart-item">
-                                <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"  class="cart-thumb"/>                                
-                                <div class="cart-item-details">
-                                    <h5><?php echo $item['ProductName']; ?></h5>
-                                    <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
-                                    <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
-                                  </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>Giỏ hàng của bạn đang trống.</p>
-                    <?php endif; ?>
-                </div>
-          </div>       
+                <?php if (count($cart_items) > 0): ?>
+                  <?php foreach ($cart_items as $item): ?>
+                    <div class="cart-item">
+                      <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"
+                        class="cart-thumb" />
+                      <div class="cart-item-details">
+                        <h5><?php echo $item['ProductName']; ?></h5>
+                        <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
+                        <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ
+                        </p>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <p>Giỏ hàng của bạn đang trống.</p>
+                <?php endif; ?>
+              </div>
+            </div>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
                 <img src="../assets/images/user.svg" alt="" />
@@ -368,7 +372,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-
+                        
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);
@@ -519,30 +523,36 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
                 </tr>
               </thead>
               <tbody>
-                <?php foreach ($orderHistory as $order): ?>
-                  <tr class="order-row" data-orderid="<?= $order['OrderID']; ?>">
-                    <td>#f<?= $order['OrderID']; ?></td>
-                    <td><?= number_format($order['TotalAmount'], 0, ',', '.') . ' VNĐ'; ?></td>
-                    <td>
-                      <?php
-                      switch ($order['Status']) {
-                        case 'execute':
-                          echo 'Đang xử lý';
-                          break;
-                        case 'ship':
-                          echo 'Đang giao';
-                          break;
-                        case 'success':
-                          echo 'Đã hoàn thành';
-                          break;
-                        case 'fail':
-                          echo 'Đã hủy';
-                          break;
-                      }
-                      ?>
-                    </td>
+                <?php if (empty($orderHistory)): ?>
+                  <tr>
+                    <td colspan="3" class="text-center">Chưa có sản phẩm</td>
                   </tr>
-                <?php endforeach; ?>
+                <?php else: ?>
+                  <?php foreach ($orderHistory as $order): ?>
+                    <tr class="order-row" data-orderid="<?= $order['OrderID']; ?>">
+                      <td>#f<?= $order['OrderID']; ?></td>
+                      <td><?= number_format($order['TotalAmount'], 0, ',', '.') . ' VNĐ'; ?></td>
+                      <td>
+                        <?php
+                        switch ($order['Status']) {
+                          case 'execute':
+                            echo 'Đang xử lý';
+                            break;
+                          case 'ship':
+                            echo 'Đang giao';
+                            break;
+                          case 'success':
+                            echo 'Đã hoàn thành';
+                            break;
+                          case 'fail':
+                            echo 'Đã hủy';
+                            break;
+                        }
+                        ?>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                <?php endif; ?>
               </tbody>
             </table>
           </div>
@@ -553,7 +563,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
   </section>
 
   <script>
-    $("#menu-btn").click(function() {
+    $("#menu-btn").click(function () {
       $("#menu").toggleClass("active");
     });
   </script>
@@ -628,7 +638,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
 </body>
 <script>
   document.querySelectorAll('.order-row').forEach(row => {
-    row.addEventListener('click', function() {
+    row.addEventListener('click', function () {
       const orderId = this.dataset.orderid;
       window.location.href = `user-history-details.php?orderid=${orderId}`;
     });
