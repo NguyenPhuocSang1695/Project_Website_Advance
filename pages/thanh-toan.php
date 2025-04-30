@@ -103,10 +103,8 @@ $dateNow = date('Y-m-d H:i:s');
 // Xử lý thanh toán
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
   try {
-
     // Bắt đầu transaction
     $conn->begin_transaction();
-
 
     $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
 
@@ -129,41 +127,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       $wardID = isset($_POST['wards']) ? (int)$_POST['wards'] : 0;
 
       if (
-        !empty($customerName) && !empty($phone) && !empty($address) &&
-        $provinceID > 0 && $districtID > 0 && $wardID > 0
+        empty($customerName) || empty($phone) || empty($address) ||
+        $provinceID <= 0 || $districtID <= 0 || $wardID <= 0
       ) {
-        // Cập nhật thông tin đơn hàng trong bảng orders
-        $updateOrderStmt = $conn->prepare("UPDATE orders SET CustomerName = ?, Phone = ?, Address = ?, 
-                                         Province = ?, District = ?, Ward = ?, Status = ? 
-                                         WHERE OrderID = ?");
-        $updateOrderStmt->bind_param(
-          "sssiiiss",
-          $customerName,
-          $phone,
-          $address,
-          $provinceID,
-          $districtID,
-          $wardID,
-          $status,
-          $_SESSION['order_id']
-        );
-        $updateOrderStmt->execute();
-        $updateOrderStmt->close();
+        throw new Exception("Thông tin không hợp lệ. Vui lòng kiểm tra lại.");
       }
     }
 
-    // Insert đơn hàng với thông tin đã chọn
-    $stmt = $conn->prepare("
-      INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address, Status) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'execute')
-    ");
-
-    if (!$stmt) {
-        new Exception("Lỗi chuẩn bị câu lệnh: " . $conn->error);
-    }
-
+    // Thêm đơn hàng mới vào bảng orders
+    $status = 'execute';
+    $stmt = $conn->prepare("INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address, Status) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param(
-      "ssssiiisds",
+      "ssssiiisdss",
       $username,
       $paymentMethod,
       $customerName,
@@ -173,7 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       $wardID,
       $dateNow,
       $total_amount,
-      $address
+      $address,
+      $status
     );
 
     if (!$stmt->execute()) {
@@ -184,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     $_SESSION['order_id'] = $orderID;
     $stmt->close();
 
-    // Insert chi tiết đơn hàng
+    // Thêm chi tiết đơn hàng vào bảng orderdetails
     $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
 
     if (!$stmt) {
