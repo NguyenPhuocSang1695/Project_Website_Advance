@@ -102,19 +102,6 @@ if (isset($_SESSION['cart'])) {
     $cart_count += $item['Quantity'];
   }
 }
-<<<<<<< HEAD
-
-// Cập nhật giá & ẩn/sửa giỏ hàng theo database mới nhất
-if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
-  $cart_product_ids = array_column($_SESSION['cart'], 'ProductID');
-  $placeholders = implode(',', array_fill(0, count($cart_product_ids), '?'));
-  // Lấy luôn Price và Status
-  $sql = "SELECT ProductID, Price, Status 
-          FROM products 
-          WHERE ProductID IN ($placeholders)";
-  $stmt = $conn->prepare($sql);
-  if ($stmt) {
-=======
 // Loại bỏ sản phẩm bị ẩn khỏi giỏ hàng trong $_SESSION
 if (isset($_SESSION['cart'])) {
   $cart_product_ids = array_column($_SESSION['cart'], 'ProductID');
@@ -127,35 +114,10 @@ if (isset($_SESSION['cart'])) {
     $sql = "SELECT ProductID FROM products WHERE ProductID IN ($placeholders) AND Status = 'hidden';";
     $stmt = $conn->prepare($sql);
     if ($stmt) {
->>>>>>> b25e040 (mergre dev v1)
       $stmt->bind_param(str_repeat('i', count($cart_product_ids)), ...$cart_product_ids);
       $stmt->execute();
       $result = $stmt->get_result();
 
-<<<<<<< HEAD
-      $price_map  = [];
-      $status_map = [];
-      while ($row = $result->fetch_assoc()) {
-          $price_map[$row['ProductID']]  = $row['Price'];
-          $status_map[$row['ProductID']] = $row['Status'];
-      }
-      $stmt->close();
-
-      // Duyệt session cart: nếu hidden ➔ unset; else ➔ cập nhật Price
-      foreach ($_SESSION['cart'] as $key => $item) {
-          $pid = $item['ProductID'];
-          if (isset($status_map[$pid]) && $status_map[$pid] === 'hidden') {
-              // xoá sản phẩm ẩn
-              unset($_SESSION['cart'][$key]);
-          }
-          else if (isset($price_map[$pid])) {
-              // cập nhật giá mới
-              $_SESSION['cart'][$key]['Price'] = $price_map[$pid];
-          }
-      }
-      // reset chỉ mục
-      $_SESSION['cart'] = array_values($_SESSION['cart']);
-=======
       $hidden_products = [];
       while ($row = $result->fetch_assoc()) {
         $hidden_products[] = $row['ProductID'];
@@ -176,7 +138,6 @@ if (isset($_SESSION['cart'])) {
   } else {
     // Nếu không có sản phẩm trong giỏ hàng, bỏ qua xử lý
     error_log('Giỏ hàng trống hoặc không có ProductID hợp lệ.');
->>>>>>> b25e040 (mergre dev v1)
   }
 }
 

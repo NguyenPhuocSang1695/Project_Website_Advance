@@ -79,8 +79,6 @@ if (isset($_SESSION['cart'])) {
 // Giỏ hàng
 $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
-<<<<<<< HEAD
-=======
 // Loại bỏ sản phẩm bị ẩn khỏi giỏ hàng trong $_SESSION
 if (isset($_SESSION['cart'])) {
   $cart_product_ids = array_column($_SESSION['cart'], 'ProductID');
@@ -119,7 +117,6 @@ if (isset($_SESSION['cart'])) {
     error_log('Giỏ hàng trống hoặc không có ProductID hợp lệ.');
   }
 }
->>>>>>> b25e040 (mergre dev v1)
 ?>
 
 <script>
@@ -363,12 +360,8 @@ if (isset($_SESSION['cart'])) {
                   <p>Giỏ hàng của bạn đang trống.</p>
                 <?php endif; ?>
               </div>
-<<<<<<< HEAD
-          </div>
-=======
             </div>
             <script src="../src/js/AnSanPham.js"></script>
->>>>>>> b25e040 (mergre dev v1)
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
                 <img src="../assets/images/user.svg" alt="" />
