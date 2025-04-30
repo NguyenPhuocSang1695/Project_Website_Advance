@@ -16,7 +16,7 @@ $result = $conn->query($sql);
 if ($result && $result->num_rows > 0) {
   $product = $result->fetch_assoc();
 } else {
-  echo "Không tìm thấy sản phẩm.";
+  header("Location: ../index.php");
   exit;
 }
 
