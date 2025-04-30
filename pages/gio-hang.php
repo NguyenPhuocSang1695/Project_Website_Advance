@@ -102,8 +102,9 @@ if (isset($_SESSION['cart'])) {
     $cart_count += $item['Quantity'];
   }
 }
-// Loại bỏ sản phẩm bị ẩn khỏi giỏ hàng trong $_SESSION
-if (isset($_SESSION['cart'])) {
+
+// Cập nhật giá & ẩn/sửa giỏ hàng theo database mới nhất
+if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
   $cart_product_ids = array_column($_SESSION['cart'], 'ProductID');
   $placeholders = implode(',', array_fill(0, count($cart_product_ids), '?'));
   // Lấy luôn Price và Status
