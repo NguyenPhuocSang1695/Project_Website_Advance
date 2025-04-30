@@ -102,6 +102,7 @@ if (isset($_SESSION['cart'])) {
     $cart_count += $item['Quantity'];
   }
 }
+<<<<<<< HEAD
 
 // Cập nhật giá & ẩn/sửa giỏ hàng theo database mới nhất
 if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
@@ -113,10 +114,25 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
           WHERE ProductID IN ($placeholders)";
   $stmt = $conn->prepare($sql);
   if ($stmt) {
+=======
+// Loại bỏ sản phẩm bị ẩn khỏi giỏ hàng trong $_SESSION
+if (isset($_SESSION['cart'])) {
+  $cart_product_ids = array_column($_SESSION['cart'], 'ProductID');
+  // Kiểm tra nếu giỏ hàng không có sản phẩm nào
+  if (!empty($cart_product_ids)) {
+    require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
+    $conn = connect_db();
+    $placeholders = implode(',', array_fill(0, count($cart_product_ids), '?'));
+
+    $sql = "SELECT ProductID FROM products WHERE ProductID IN ($placeholders) AND Status = 'hidden';";
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+>>>>>>> b25e040 (mergre dev v1)
       $stmt->bind_param(str_repeat('i', count($cart_product_ids)), ...$cart_product_ids);
       $stmt->execute();
       $result = $stmt->get_result();
 
+<<<<<<< HEAD
       $price_map  = [];
       $status_map = [];
       while ($row = $result->fetch_assoc()) {
@@ -139,6 +155,28 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
       }
       // reset chỉ mục
       $_SESSION['cart'] = array_values($_SESSION['cart']);
+=======
+      $hidden_products = [];
+      while ($row = $result->fetch_assoc()) {
+        $hidden_products[] = $row['ProductID'];
+      }
+
+      // Loại bỏ sản phẩm bị ẩn khỏi $_SESSION['cart']
+      foreach ($hidden_products as $hidden_product_id) {
+        foreach ($_SESSION['cart'] as $key => $item) {
+          if ($item['ProductID'] == $hidden_product_id) {
+            unset($_SESSION['cart'][$key]);
+          }
+        }
+      }
+
+      // Sắp xếp lại chỉ mục của mảng
+      $_SESSION['cart'] = array_values($_SESSION['cart']);
+    }
+  } else {
+    // Nếu không có sản phẩm trong giỏ hàng, bỏ qua xử lý
+    error_log('Giỏ hàng trống hoặc không có ProductID hợp lệ.');
+>>>>>>> b25e040 (mergre dev v1)
   }
 }
 
@@ -294,32 +332,32 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
 
             <div class="cart-wrapper">
               <div class="cart-icon">
-                  <a href="gio-hang.php">
-                      <img src="../assets/images/cart.svg" alt="cart" />
-                      <span class="cart-count" id="mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
-                          <?php echo $cart_count; ?>
-                      </span>
-                  </a>
+                <a href="gio-hang.php">
+                  <img src="../assets/images/cart.svg" alt="cart" />
+                  <span class="cart-count" id="mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                    <?php echo $cart_count; ?>
+                  </span>
+                </a>
               </div>
               <div class="cart-dropdown">
-                  <?php if (count($cart_items) > 0): ?>
-                      <?php foreach ($cart_items as $item): ?>
-                          <div class="cart-item">
-                              <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>" class="cart-thumb" />
-                              <div class="cart-item-details">
-                                  <h5><?php echo $item['ProductName']; ?></h5>
-                                  <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
-                                  <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
-                              </div>
-                          </div>
-                      <?php endforeach; ?>
-                  <?php else: ?>
-                      <p>Giỏ hàng của bạn đang trống.</p>
-                  <?php endif; ?>
+                <?php if (count($cart_items) > 0): ?>
+                  <?php foreach ($cart_items as $item): ?>
+                    <div class="cart-item">
+                      <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>" class="cart-thumb" />
+                      <div class="cart-item-details">
+                        <h5><?php echo $item['ProductName']; ?></h5>
+                        <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
+                        <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                <?php else: ?>
+                  <p>Giỏ hàng của bạn đang trống.</p>
+                <?php endif; ?>
               </div>
-          </div>
-          <script src="../src/js/AnSanPham.js"></script>
-         
+            </div>
+            <script src="../src/js/AnSanPham.js"></script>
+
 
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
