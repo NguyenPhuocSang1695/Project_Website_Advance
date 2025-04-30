@@ -2,7 +2,9 @@
 session_start();
 require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
-require_once('../src/php/check_token_v2.php');
+// require_once('../src/php/check_token_v2.php');
+// require_once('../src/php/check_status.php');
+
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
 
 use Firebase\JWT\JWT;
@@ -11,19 +13,18 @@ use Firebase\JWT\Key;
 
 // Kiểm tra xem cookie 'token' có tồn tại không
 if (!isset($_COOKIE['token'])) {
-  header("Location: user-login.php");
-  exit;
+  header("Location: user-login.php?error=login_required");
+  exit();
 }
 
 try {
-  // Giải mã token
   $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
   $username = $decoded->data->Username;
 } catch (Exception $e) {
-  // Nếu token không hợp lệ, hết hạn, hoặc bị chỉnh sửa => chuyển hướng login
-  header("Location: user-login.php");
-  exit;
+  header("Location: user-login.php?error=token_expired");
+  exit();
 }
+
 
 // Xử lý thêm, cập nhật và xóa sản phẩm
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

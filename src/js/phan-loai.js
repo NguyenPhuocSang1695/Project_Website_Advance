@@ -228,9 +228,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             ${product.ProductName}
           </a>
         </h5>
-        <p class="card-text"><strong>Giá:</strong> ${Number(
+        <p class="card-text"><strong >Giá:</strong> <span style = "color: green;">${Number(
           product.Price
-        ).toLocaleString()} VNĐ</p>
+        ).toLocaleString()} VNĐ</span></p>
       </div>
     `;
     return card;

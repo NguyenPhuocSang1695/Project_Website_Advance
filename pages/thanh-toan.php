@@ -7,6 +7,7 @@ require_once('../src/php/connect.php');
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v2.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
+require_once('../src/php/check_status.php');
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -131,22 +132,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
         !empty($customerName) && !empty($phone) && !empty($address) &&
         $provinceID > 0 && $districtID > 0 && $wardID > 0
       ) {
-        // Cập nhật thông tin mặc định trong bảng users
-        $updateUserStmt = $conn->prepare("UPDATE users SET FullName = ?, Phone = ?, Address = ?, 
-                                         Province = ?, District = ?, Ward = ? 
-                                         WHERE Username = ?");
-        $updateUserStmt->bind_param(
-          "sssiiis",
+        // Cập nhật thông tin đơn hàng trong bảng orders
+        $updateOrderStmt = $conn->prepare("UPDATE orders SET CustomerName = ?, Phone = ?, Address = ?, 
+                                         Province = ?, District = ?, Ward = ?, Status = ? 
+                                         WHERE OrderID = ?");
+        $updateOrderStmt->bind_param(
+          "sssiiiss",
           $customerName,
           $phone,
           $address,
           $provinceID,
           $districtID,
           $wardID,
-          $_SESSION['username']
+          $status,
+          $_SESSION['order_id']
         );
-        $updateUserStmt->execute();
-        $updateUserStmt->close();
+        $updateOrderStmt->execute();
+        $updateOrderStmt->close();
       }
     }
 
@@ -157,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     ");
 
     if (!$stmt) {
-      throw new Exception("Lỗi chuẩn bị câu lệnh: " . $conn->error);
+        new Exception("Lỗi chuẩn bị câu lệnh: " . $conn->error);
     }
 
     $stmt->bind_param(

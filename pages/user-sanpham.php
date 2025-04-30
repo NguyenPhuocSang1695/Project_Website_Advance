@@ -3,6 +3,7 @@
 session_start();
 require_once('../src/php/token.php');
 require_once('../src/php/connect.php');
+require_once('../src/php/check_status_v2.php');
 
 // Lấy ID từ URL
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
