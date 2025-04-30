@@ -3,13 +3,6 @@
 require_once 'connect.php'; // file connect db
 require_once 'token.php';   // file bạn vừa gửi, để lấy $loggedInUsername
 
-
-// if (empty($loggedInUsername)) {
-//     // Không có username => token lỗi => về login
-//     header("Location: ../index.php");
-//     exit();
-// }
-
 // Truy vấn kiểm tra Status
 $sql = "SELECT Status FROM users WHERE Username = ?";
 $stmt = $conn->prepare($sql);
