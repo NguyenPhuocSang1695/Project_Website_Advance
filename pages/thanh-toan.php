@@ -223,6 +223,46 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])
   }
 }
 
+// Cập nhật giá sản phẩm và Loại bỏ sản phẩm  theo database mới nhất
+if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+  $cart_product_ids = array_column($_SESSION['cart'], 'ProductID');
+
+  $placeholders = implode(',', array_fill(0, count($cart_product_ids), '?'));
+  $sql = "SELECT ProductID, Price FROM products WHERE ProductID IN ($placeholders)";
+  $stmt = $conn->prepare($sql);
+
+  if ($stmt) {
+      $stmt->bind_param(str_repeat('i', count($cart_product_ids)), ...$cart_product_ids);
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      // Tạo một mảng [ProductID => Price]
+      $price_map = [];
+      while ($row = $result->fetch_assoc()) {
+          $price_map[$row['ProductID']] = $row['Price'];
+      }
+
+      // Cập nhật lại giá trong giỏ hàng
+      foreach ($_SESSION['cart'] as $key => $item) {
+          $pid = $item['ProductID'];
+          if (isset($price_map[$pid])) {
+              $_SESSION['cart'][$key]['Price'] = $price_map[$pid];
+          }
+      }
+
+      $stmt->close();
+  }
+}
+// Gián lại biến hiển thị
+$cart_items = $_SESSION['cart'] ?? [];
+$cart_count = count($cart_items);
+
+// Tính tổng SAU khi đã cập nhật giá
+$total_amount = 0;
+foreach ($cart_items as $item) {
+    $total_amount += $item['Price'] * $item['Quantity'];
+}
+$total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
 ?>
 <!DOCTYPE html>
 <html>
