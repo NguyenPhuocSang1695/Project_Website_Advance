@@ -1,6 +1,6 @@
 <?php 
     header('Content-Type: application/json');
-    $conn = new mysqli("localhost", "root", "", "c01db");
+    $conn = new mysqli("localhost", "c01u", "KtdVb9kNDRutbwFB", "C01DB");
     if ($conn->connect_error) {
         die("Kết nối thất bại: " . $conn->connect_error);
     }
