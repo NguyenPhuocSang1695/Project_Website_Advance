@@ -1,9 +1,9 @@
 <?php
 include('../php/connect.php');
 include('../php/login_check.php');
-$avatarPath = ($_SESSION['Role'] === 'admin') 
-    ? "../../assets/images/admin.jpg" 
-    : "../../assets/images/sang.jpg";
+$avatarPath = ($_SESSION['Role'] === 'admin')
+  ? "../../assets/images/admin.jpg"
+  : "../../assets/images/sang.jpg";
 $orderID = isset($_GET['code_Product']) ? $_GET['code_Product'] : null;
 
 if ($orderID) {
@@ -40,7 +40,7 @@ if ($orderID) {
     while ($row = $result_details->fetch_assoc()) {
       $orderDetails[] = $row;
     }
- 
+
     // 3. Lấy thông tin thanh toán
     $sql_payment =    "SELECT 
                         SUM(od.Quantity) AS TotalQuantity, o.TotalAmount
@@ -479,10 +479,10 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
           if ($source === 'analyze') {
             echo '<a href="analyzePage.php">Thống kê</a> > ';
           } else {
-            echo '<a href="orderPage.php">Đơn hàng</a> > ';
+            echo '<a href="orderPage.php">Đơn hàng</a> >';
           }
           ?>
-          <span>Đơn số <?php echo $orderDetailID; ?></span>
+          <span> Đơn số <?php echo $orderDetailID; ?></span>
         </div>
         <table class="status-bar">
           <thead>
@@ -518,10 +518,10 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
               <table>
                 <thead>
                   <tr>
-                    <th style="width: 40%;">SẢN PHẨM</th>
-                    <th style="width: 20%;">SỐ LƯỢNG</th>
-                    <th style="width: 20%;">GIÁ (đ)</th>
-                    <th style="width: 20%;" class="hide-display">THÀNH TIỀN (đ)</th>
+                    <th>SẢN PHẨM</th>
+                    <th style="text-align:center">SỐ LƯỢNG</th>
+                    <th style="text-align:center">GIÁ (đ)</th>
+                    <th style="text-align:center" class="hide-display">THÀNH TIỀN (đ)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -532,7 +532,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                   <?php else: ?>
                     <?php foreach ($orderDetails as $detail): ?>
                       <tr>
-                        <td>
+                        <td style="text-align:center">
                           <div style="display: flex; align-items: center; gap: 10px;">
                             <img src="<?php echo '../..' . $detail['ImageURL']; ?>" alt="Product Image" style="width: 50px; height: 50px; object-fit: cover;">
                             <div class="product-info">
@@ -540,9 +540,9 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                             </div>
                           </div>
                         </td>
-                        <td><?php echo $detail['Quantity']; ?></td>
-                        <td><?php echo number_format($detail['UnitPrice'], 0, ',', '.') . ' đ'; ?></td>
-                        <td class="hide-display"><?php echo number_format($detail['TotalPrice'], 0, ',', '.') . ' đ'; ?></td>
+                        <td style="text-align:center"><?php echo $detail['Quantity']; ?></td>
+                        <td style="text-align:center"><?php echo number_format($detail['UnitPrice'], 0, ',', '.') . ' đ'; ?></td>
+                        <td style="text-align:center" class="hide-display"><?php echo number_format($detail['TotalPrice'], 0, ',', '.') . ' đ'; ?></td>
                       </tr>
                     <?php endforeach; ?>
                   <?php endif; ?>
