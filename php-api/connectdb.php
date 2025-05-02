@@ -2,8 +2,8 @@
 function connect_db()
 {
     $server = "localhost";
-    $username = "root";
-    $password = "";
+    $username = "c01u";
+    $password = "KtdVb9kNDRutbwFB";
     $database = "c01db";
 
     // Create connection
@@ -12,5 +12,5 @@ function connect_db()
         die("Connection failed: " . mysqli_connect_error());
     }
 
-        return $conn;
+    return $conn;
 }
