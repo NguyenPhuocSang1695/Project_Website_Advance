@@ -104,7 +104,11 @@ try {
     $result = $check_stmt->get_result();
 
     if ($result->num_rows > 0) {
-        throw new Exception('Tên tài khoản đã tồn tại');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Tên tài khoản đã tồn tại. Vui lòng chọn tên khác.'
+        ]);
+        exit();
     }
     $check_stmt->close();
 
