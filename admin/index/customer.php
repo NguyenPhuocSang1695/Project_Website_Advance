@@ -611,6 +611,7 @@
               document.getElementById('password-error').textContent = data.message;
             } else if (data.message.includes('tài khoản')) {
               document.getElementById('username-error').textContent = data.message;
+              document.getElementById('addUsername').focus();
             } else {
               alert(data.message);
             }

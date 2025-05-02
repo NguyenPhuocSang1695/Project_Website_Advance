@@ -9,14 +9,14 @@ require_once('../src/php/check_status_v2.php');
 // Lấy ID từ URL
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 // Truy vấn sản phẩm theo ID
-$sql = "SELECT * FROM products WHERE ProductID = $id";
+$sql = "SELECT * FROM products WHERE ProductID = $id and Status != 'hidden'";
 $result = $conn->query($sql);
 
 // Nếu có sản phẩm
 if ($result && $result->num_rows > 0) {
   $product = $result->fetch_assoc();
 } else {
-  echo "Không tìm thấy sản phẩm.";
+  header("Location: ../index.php");
   exit;
 }
 
