@@ -40,6 +40,51 @@ if (isset($_SESSION['cart'])) {
 // Kiểm tra giỏ hàng
 $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
+
+// Cập nhật giá & ẩn/sửa giỏ hàng theo database mới nhất
+if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+  $cart_product_ids = array_column($_SESSION['cart'], 'ProductID');
+  $placeholders = implode(',', array_fill(0, count($cart_product_ids), '?'));
+  // Lấy luôn Price và Status
+  $sql = "SELECT ProductID, Price, Status 
+          FROM products 
+          WHERE ProductID IN ($placeholders)";
+  $stmt = $conn->prepare($sql);
+  if ($stmt) {
+    $stmt->bind_param(str_repeat('i', count($cart_product_ids)), ...$cart_product_ids);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $price_map  = [];
+    $status_map = [];
+    while ($row = $result->fetch_assoc()) {
+      $price_map[$row['ProductID']]  = $row['Price'];
+      $status_map[$row['ProductID']] = $row['Status'];
+    }
+    $stmt->close();
+
+    // Duyệt session cart: nếu hidden ➔ unset; else ➔ cập nhật Price
+    foreach ($_SESSION['cart'] as $key => $item) {
+      $pid = $item['ProductID'];
+      if (isset($status_map[$pid]) && $status_map[$pid] === 'hidden') {
+        // xoá sản phẩm ẩn
+        unset($_SESSION['cart'][$key]);
+      } else if (isset($price_map[$pid])) {
+        // cập nhật giá mới
+        $_SESSION['cart'][$key]['Price'] = $price_map[$pid];
+      }
+    }
+    // reset chỉ mục
+    $_SESSION['cart'] = array_values($_SESSION['cart']);
+  }
+}
+
+// Gián lại biến hiển thị và tính lại tổng
+$cart_items = $_SESSION['cart'] ?? [];
+$cart_count = count($cart_items);
+
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -143,7 +188,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-                        
+
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);
@@ -210,21 +255,18 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function (e) {
+              document.getElementById("searchForm").addEventListener("submit", function(e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
               });
             </script>
-
             <div class="cart-wrapper">
               <div class="cart-icon">
-                <a href="gio-hang.php"><img src="../assets/images/cart.svg" alt="cart" />
-                  <span class="cart-count" id="mni-cart-count"
-                    style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
-                    <?php
-                    echo $cart_count;
-                    ?>
+                <a href="gio-hang.php">
+                  <img src="../assets/images/cart.svg" alt="cart" />
+                  <span class="cart-count" id="mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                    <?php echo $cart_count; ?>
                   </span>
                 </a>
               </div>
@@ -232,13 +274,11 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
                 <?php if (count($cart_items) > 0): ?>
                   <?php foreach ($cart_items as $item): ?>
                     <div class="cart-item">
-                      <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"
-                        class="cart-thumb" />
+                      <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>" class="cart-thumb" />
                       <div class="cart-item-details">
                         <h5><?php echo $item['ProductName']; ?></h5>
                         <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
-                        <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ
-                        </p>
+                        <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
                       </div>
                     </div>
                   <?php endforeach; ?>
@@ -247,6 +287,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
                 <?php endif; ?>
               </div>
             </div>
+            <script src="../src/js/AnSanPham.js"></script>
             <div class="user-icon">
               <label for="tick" style="cursor: pointer">
                 <img src="../assets/images/user.svg" alt="" />
@@ -372,7 +413,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-                        
+
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);
@@ -563,7 +604,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
   </section>
 
   <script>
-    $("#menu-btn").click(function () {
+    $("#menu-btn").click(function() {
       $("#menu").toggleClass("active");
     });
   </script>
@@ -638,7 +679,7 @@ $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSIO
 </body>
 <script>
   document.querySelectorAll('.order-row').forEach(row => {
-    row.addEventListener('click', function () {
+    row.addEventListener('click', function() {
       const orderId = this.dataset.orderid;
       window.location.href = `user-history-details.php?orderid=${orderId}`;
     });
