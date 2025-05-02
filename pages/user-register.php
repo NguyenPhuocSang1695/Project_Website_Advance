@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $conn->close();
 }
 // Kết nối để load danh sách tỉnh/thành (đặt ở cuối để luôn chạy được cả GET)
-$conn = new mysqli("localhost", "c01u", "KtdVb9kNDRutbwFB", "C01DB");
+$conn = new mysqli("localhost", "c01u", "KtdVb9kNDRutbwFB", "c01db");
 if ($conn->connect_error) {
   die("Kết nối thất bại: " . $conn->connect_error);
 }
