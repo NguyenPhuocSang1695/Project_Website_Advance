@@ -103,10 +103,8 @@ $dateNow = date('Y-m-d H:i:s');
 // Xử lý thanh toán
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
   try {
-
     // Bắt đầu transaction
     $conn->begin_transaction();
-
 
     $paymentMethod = $_POST['paymentMethod'] ?? 'COD';
 
@@ -129,41 +127,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       $wardID = isset($_POST['wards']) ? (int)$_POST['wards'] : 0;
 
       if (
-        !empty($customerName) && !empty($phone) && !empty($address) &&
-        $provinceID > 0 && $districtID > 0 && $wardID > 0
+        empty($customerName) || empty($phone) || empty($address) ||
+        $provinceID <= 0 || $districtID <= 0 || $wardID <= 0
       ) {
-        // Cập nhật thông tin đơn hàng trong bảng orders
-        $updateOrderStmt = $conn->prepare("UPDATE orders SET CustomerName = ?, Phone = ?, Address = ?, 
-                                         Province = ?, District = ?, Ward = ?, Status = ? 
-                                         WHERE OrderID = ?");
-        $updateOrderStmt->bind_param(
-          "sssiiiss",
-          $customerName,
-          $phone,
-          $address,
-          $provinceID,
-          $districtID,
-          $wardID,
-          $status,
-          $_SESSION['order_id']
-        );
-        $updateOrderStmt->execute();
-        $updateOrderStmt->close();
+        throw new Exception("Thông tin không hợp lệ. Vui lòng kiểm tra lại.");
       }
     }
 
-    // Insert đơn hàng với thông tin đã chọn
-    $stmt = $conn->prepare("
-      INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address, Status) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'execute')
-    ");
-
-    if (!$stmt) {
-        new Exception("Lỗi chuẩn bị câu lệnh: " . $conn->error);
-    }
-
+    // Thêm đơn hàng mới vào bảng orders
+    $status = 'execute';
+    $stmt = $conn->prepare("INSERT INTO orders (Username, PaymentMethod, CustomerName, Phone, Province, District, Ward, DateGeneration, TotalAmount, Address, Status) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param(
-      "ssssiiisds",
+      "ssssiiisdss",
       $username,
       $paymentMethod,
       $customerName,
@@ -173,7 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
       $wardID,
       $dateNow,
       $total_amount,
-      $address
+      $address,
+      $status
     );
 
     if (!$stmt->execute()) {
@@ -184,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paymentMethod'])) {
     $_SESSION['order_id'] = $orderID;
     $stmt->close();
 
-    // Insert chi tiết đơn hàng
+    // Thêm chi tiết đơn hàng vào bảng orderdetails
     $stmt = $conn->prepare("INSERT INTO orderdetails (OrderID, ProductID, Quantity, UnitPrice, TotalPrice) VALUES (?, ?, ?, ?, ?)");
 
     if (!$stmt) {
@@ -246,6 +223,46 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])
   }
 }
 
+// Cập nhật giá sản phẩm và Loại bỏ sản phẩm  theo database mới nhất
+if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+  $cart_product_ids = array_column($_SESSION['cart'], 'ProductID');
+
+  $placeholders = implode(',', array_fill(0, count($cart_product_ids), '?'));
+  $sql = "SELECT ProductID, Price FROM products WHERE ProductID IN ($placeholders)";
+  $stmt = $conn->prepare($sql);
+
+  if ($stmt) {
+    $stmt->bind_param(str_repeat('i', count($cart_product_ids)), ...$cart_product_ids);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Tạo một mảng [ProductID => Price]
+    $price_map = [];
+    while ($row = $result->fetch_assoc()) {
+      $price_map[$row['ProductID']] = $row['Price'];
+    }
+
+    // Cập nhật lại giá trong giỏ hàng
+    foreach ($_SESSION['cart'] as $key => $item) {
+      $pid = $item['ProductID'];
+      if (isset($price_map[$pid])) {
+        $_SESSION['cart'][$key]['Price'] = $price_map[$pid];
+      }
+    }
+
+    $stmt->close();
+  }
+}
+// Gián lại biến hiển thị
+$cart_items = $_SESSION['cart'] ?? [];
+$cart_count = count($cart_items);
+
+// Tính tổng SAU khi đã cập nhật giá
+$total_amount = 0;
+foreach ($cart_items as $item) {
+  $total_amount += $item['Price'] * $item['Quantity'];
+}
+$total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
 ?>
 <!DOCTYPE html>
 <html>
