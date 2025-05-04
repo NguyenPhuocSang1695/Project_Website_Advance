@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // Kiểm tra nếu đang ở trang kết quả tìm kiếm
   if (window.location.pathname.includes("search-result.php")) {
     loadSearchResults();
+
+    // Khởi tạo các nút lọc
+    initializeFilterButtons();
   }
 
   // Khởi tạo sự kiện cho form tìm kiếm
@@ -28,6 +31,138 @@ function initializeSearchForms() {
       e.preventDefault();
       performSearchMobile();
     });
+  }
+}
+
+// Khởi tạo các nút lọc sản phẩm
+function initializeFilterButtons() {
+  // Thêm container lọc nếu chưa tồn tại
+  createFilterContainer();
+
+  // Lấy trạng thái lọc từ URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentSort = urlParams.get("sort") || "default";
+
+  // Cập nhật trạng thái active của các nút
+  updateActiveFilterButton(currentSort);
+
+  // Thêm event listener cho các nút lọc
+  const filterButtons = document.querySelectorAll(".filter-button");
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const sortBy = this.getAttribute("data-sort");
+
+      // Lọc sản phẩm ngay tại client không cần refresh trang
+      if (globalProductsData.length > 0) {
+        const searchResultsContainer = document.getElementById("searchResults");
+        if (searchResultsContainer) {
+          // Cập nhật trạng thái active
+          updateActiveFilterButton(sortBy);
+
+          // Sắp xếp và hiển thị lại sản phẩm
+          const sortedData = sortProductsData(globalProductsData, sortBy);
+          displayProducts(sortedData, searchResultsContainer);
+
+          // Cập nhật URL để lưu trạng thái sắp xếp (không refresh trang)
+          updateUrlWithSort(sortBy);
+        }
+      }
+    });
+  });
+}
+
+// Cập nhật URL với tham số sắp xếp mà không làm mới trang
+function updateUrlWithSort(sortBy) {
+  const url = new URL(window.location.href);
+  const urlParams = url.searchParams;
+
+  if (sortBy === "default") {
+    urlParams.delete("sort");
+  } else {
+    urlParams.set("sort", sortBy);
+  }
+
+  // Cập nhật URL không làm mới trang
+  window.history.pushState({}, "", url);
+}
+
+// Tạo container cho các nút lọc
+function createFilterContainer() {
+  const searchResultsContainer = document.getElementById("searchResults");
+  if (!searchResultsContainer) return;
+
+  // Kiểm tra nếu container đã tồn tại
+  if (document.getElementById("filter-container")) return;
+
+  // Lấy trạng thái lọc từ URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentSort = urlParams.get("sort") || "default";
+
+  // Tạo và chèn container lọc trước kết quả tìm kiếm
+  const filterContainerHTML = `
+    <div id="filter-container" class="filter-container">
+      <div class="filter-label">Sắp xếp theo:</div>
+      <div class="filter-select-wrapper">
+        <select id="filter-select" class="filter-select">
+          <option value="default" ${
+            currentSort === "default" ? "selected" : ""
+          }>Mặc định</option>
+          <option value="price-asc" ${
+            currentSort === "price-asc" ? "selected" : ""
+          }>Giá tăng dần</option>
+          <option value="price-desc" ${
+            currentSort === "price-desc" ? "selected" : ""
+          }>Giá giảm dần</option>
+          <option value="name-asc" ${
+            currentSort === "name-asc" ? "selected" : ""
+          }>Tên A-Z</option>
+          <option value="name-desc" ${
+            currentSort === "name-desc" ? "selected" : ""
+          }>Tên Z-A</option>
+        </select>
+      </div>
+    </div>
+  `;
+
+  // Chèn container lọc vào đầu kết quả tìm kiếm
+  searchResultsContainer.insertAdjacentHTML("beforebegin", filterContainerHTML);
+
+  // Thêm event listener cho select
+  const filterSelect = document.getElementById("filter-select");
+  if (filterSelect) {
+    filterSelect.addEventListener("change", function () {
+      const sortBy = this.value;
+
+      // Lọc sản phẩm ngay tại client không cần refresh trang
+      if (globalProductsData.length > 0) {
+        const searchResultsContainer = document.getElementById("searchResults");
+        if (searchResultsContainer) {
+          // Sắp xếp và hiển thị lại sản phẩm
+          const sortedData = sortProductsData(globalProductsData, sortBy);
+          displayProducts(sortedData, searchResultsContainer);
+
+          // Cập nhật URL để lưu trạng thái sắp xếp (không refresh trang)
+          updateUrlWithSort(sortBy);
+        }
+      }
+    });
+  }
+}
+
+// Cập nhật trạng thái active của nút lọc
+function updateActiveFilterButton(sortBy) {
+  // Xóa trạng thái active khỏi tất cả các nút
+  const filterButtons = document.querySelectorAll(".filter-button");
+  filterButtons.forEach((button) => {
+    button.classList.remove("active");
+  });
+
+  // Thêm active cho nút được chọn
+  const activeButton =
+    document.querySelector(`.filter-button[data-sort="${sortBy}"]`) ||
+    document.querySelector('.filter-button[data-sort="default"]');
+  if (activeButton) {
+    activeButton.classList.add("active");
   }
 }
 
@@ -135,6 +270,9 @@ function redirectToSearchPage(search, category, minPrice, maxPrice) {
   window.location.href = url;
 }
 
+// Khai báo biến để lưu trữ dữ liệu sản phẩm toàn cục
+let globalProductsData = [];
+
 // Tải kết quả tìm kiếm
 function loadSearchResults() {
   // Phân tích URL để lấy tham số tìm kiếm
@@ -143,12 +281,13 @@ function loadSearchResults() {
   const category = urlParams.get("category") || "";
   const minPrice = urlParams.get("minPrice") || "";
   const maxPrice = urlParams.get("maxPrice") || "";
+  const sortBy = urlParams.get("sort") || "default";
 
   // Hiển thị thông tin tìm kiếm
   displaySearchParams(search, category, minPrice, maxPrice);
 
   // Gọi API để lấy kết quả
-  fetchSearchResults(search, category, minPrice, maxPrice);
+  fetchSearchResults(search, category, minPrice, maxPrice, sortBy);
 }
 
 // Hiển thị tham số tìm kiếm
@@ -223,7 +362,13 @@ function formatCurrency(amount) {
 }
 
 // Gọi API để lấy kết quả tìm kiếm
-function fetchSearchResults(search, category, minPrice, maxPrice) {
+function fetchSearchResults(
+  search,
+  category,
+  minPrice,
+  maxPrice,
+  sortBy = "default"
+) {
   const searchResultsContainer = document.getElementById("searchResults");
   if (!searchResultsContainer) return;
 
@@ -234,7 +379,7 @@ function fetchSearchResults(search, category, minPrice, maxPrice) {
     </div>
   `;
 
-  // Tạo URL gọi API
+  // Tạo URL gọi API - không cần tham số sort vì sẽ sắp xếp ở client
   let apiUrl = "../php-api/search.php?q=" + encodeURIComponent(search);
 
   if (
@@ -269,13 +414,52 @@ function fetchSearchResults(search, category, minPrice, maxPrice) {
         return;
       }
 
+      // Lưu dữ liệu sản phẩm vào biến toàn cục để sử dụng lại khi sắp xếp
+      globalProductsData = data;
+
+      // Sắp xếp dữ liệu theo tham số sortBy
+      const sortedData = sortProductsData(data, sortBy);
+
       // Hiển thị kết quả sản phẩm
-      displayProducts(data, searchResultsContainer);
+      displayProducts(sortedData, searchResultsContainer);
     })
     .catch((error) => {
       // Hiển thị lỗi nếu có
       displayError(searchResultsContainer, error.message);
     });
+}
+
+// Sắp xếp dữ liệu sản phẩm (nếu API không hỗ trợ)
+function sortProductsData(products, sortBy) {
+  if (!sortBy || sortBy === "default") {
+    return products;
+  }
+
+  // Tạo bản sao để không ảnh hưởng đến mảng gốc
+  const sortedProducts = [...products];
+
+  switch (sortBy) {
+    case "price-asc":
+      sortedProducts.sort((a, b) => parseFloat(a.Price) - parseFloat(b.Price));
+      break;
+    case "price-desc":
+      sortedProducts.sort((a, b) => parseFloat(b.Price) - parseFloat(a.Price));
+      break;
+    case "name-asc":
+      sortedProducts.sort((a, b) =>
+        a.ProductName.localeCompare(b.ProductName, "vi")
+      );
+      break;
+    case "name-desc":
+      sortedProducts.sort((a, b) =>
+        b.ProductName.localeCompare(a.ProductName, "vi")
+      );
+      break;
+    default:
+      break;
+  }
+
+  return sortedProducts;
 }
 
 // Hiển thị lỗi
@@ -363,6 +547,12 @@ function displayProducts(products, container) {
 
   // Hiển thị phân trang
   setupPagination(products.length);
+
+  // Cuộn trang lên đầu khi thay đổi sắp xếp hoặc trang
+  window.scrollTo({
+    top: document.getElementById("searchParams").offsetTop - 100,
+    behavior: "smooth",
+  });
 }
 
 // Thiết lập phân trang
@@ -460,6 +650,27 @@ function setupPagination(totalItems) {
 
 // Thay đổi trang
 function changePage(page) {
+  // Kiểm tra nếu có dữ liệu sản phẩm toàn cục, thực hiện chuyển trang không cần tải lại
+  if (globalProductsData.length > 0) {
+    const searchResultsContainer = document.getElementById("searchResults");
+    if (searchResultsContainer) {
+      // Cập nhật URL không làm mới trang
+      const url = new URL(window.location.href);
+      url.searchParams.set("page", page);
+      window.history.pushState({}, "", url);
+
+      // Lấy tham số sắp xếp hiện tại
+      const sortBy = url.searchParams.get("sort") || "default";
+
+      // Hiển thị lại sản phẩm với trang mới
+      const sortedData = sortProductsData(globalProductsData, sortBy);
+      displayProducts(sortedData, searchResultsContainer);
+
+      return false;
+    }
+  }
+
+  // Nếu không có dữ liệu toàn cục, quay lại cách cũ
   const urlParams = new URLSearchParams(window.location.search);
   urlParams.set("page", page);
 
@@ -468,12 +679,30 @@ function changePage(page) {
   return false; // Ngăn chặn hành vi mặc định của liên kết
 }
 
-// Lọc và sắp xếp sản phẩm (có thể thêm chức năng này sau)
+// Lọc và sắp xếp sản phẩm - Hàm này chỉ giữ lại cho khả năng tương thích, hiện tại không sử dụng
 function sortProducts(sortBy) {
-  const urlParams = new URLSearchParams(window.location.search);
-  urlParams.set("sort", sortBy);
-  urlParams.delete("page"); // Quay về trang 1 khi thay đổi sắp xếp
+  if (globalProductsData.length > 0) {
+    // Nếu đã có dữ liệu, sắp xếp tại client
+    const searchResultsContainer = document.getElementById("searchResults");
+    if (searchResultsContainer) {
+      updateActiveFilterButton(sortBy);
+      const sortedData = sortProductsData(globalProductsData, sortBy);
+      displayProducts(sortedData, searchResultsContainer);
+      updateUrlWithSort(sortBy);
+    }
+  } else {
+    // Hàm cũ - giữ lại cho tương thích
+    const urlParams = new URLSearchParams(window.location.search);
 
-  // Cập nhật URL với sắp xếp mới
-  window.location.search = urlParams.toString();
+    if (sortBy === "default") {
+      urlParams.delete("sort");
+    } else {
+      urlParams.set("sort", sortBy);
+    }
+
+    urlParams.delete("page"); // Quay về trang 1 khi thay đổi sắp xếp
+
+    // Cập nhật URL với sắp xếp mới
+    window.location.search = urlParams.toString();
+  }
 }

@@ -481,7 +481,9 @@ $cart_count = count($cart_items);
     <h2 style="color: rgb(59, 161, 59); text-align: center;">
       <div id="product_type_list">Loại cây</div>
     </h2>
+
     <div id="type-tree"></div>
+    <div class="sortSelect"></div>
     <div class="container-product">
       <div id="product-list">Kết quả ở đây</div>
     </div>
