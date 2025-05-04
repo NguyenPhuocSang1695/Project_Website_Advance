@@ -369,6 +369,15 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
       
       
+      
+      
+      /* Tablet styles */
+      @media (max-width: 900px) {
+        .products-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
       /* Mobile styles */
       @media (max-width: 600px) {
         .products-grid {
@@ -383,13 +392,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         
         .card-text {
           font-size: 0.9rem;
-        }
-      }
-      
-      /* Tablet styles */
-      @media (max-width: 900px) {
-        .products-grid {
-          grid-template-columns: repeat(2, 1fr);
         }
       }
       
