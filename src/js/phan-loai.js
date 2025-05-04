@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     sortContainer.innerHTML = `
       <div class="sort-container" style="text-align: right; margin: 15px 0;">
         <label for="sortProducts" style="margin-right: 10px; font-weight: bold;">Sắp xếp:</label>
-        <select id="sortProducts" class="form-select" style="display: inline-block; width: auto; width: 172px;">
+        <select id="sortProducts" class="form-select" style="display: inline-block; width: 172px;">
           <option value="default">Mặc định</option>
           <option value="price-asc">Giá: Thấp đến cao</option>
           <option value="price-desc">Giá: Cao đến thấp</option>
@@ -165,13 +165,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       // Tạo container grid cho sản phẩm
       const productGrid = document.createElement("div");
-      productGrid.className = "row";
+      productGrid.className = "products-grid"; // Sử dụng lớp custom cho grid
+
+      // // Thêm CSS cho grid vào productGrid
+      // productGrid.style.display = "grid";
+      // productGrid.style.gridTemplateColumns = "repeat(4, 1fr)";
+      // productGrid.style.gap = "20px";
 
       pageData.forEach((product) => {
-        const productCol = document.createElement("div");
-        productCol.className = "col-md-3 col-sm-6 mb-4";
-        productCol.appendChild(createProductCard(product));
-        productGrid.appendChild(productCol);
+        productGrid.appendChild(createProductCard(product));
       });
 
       productList.appendChild(productGrid);
@@ -303,17 +305,30 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Tạo danh sách sản phẩm
   function createProductCard(product) {
-    // Thay đổi cấu trúc từ card h-100 thành card mb-3
+    // Tạo card sản phẩm
     const card = document.createElement("div");
-    card.className = "card mb-3";
+    card.className = "card product-card";
+    card.style.height = "100%";
+    card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
+
+    // Thêm hiệu ứng hover
+    card.addEventListener("mouseenter", function () {
+      this.style.transform = "translateY(-5px)";
+      this.style.boxShadow = "0 10px 20px rgba(0,0,0,0.1)";
+    });
+
+    card.addEventListener("mouseleave", function () {
+      this.style.transform = "translateY(0)";
+      this.style.boxShadow = "none";
+    });
+
     card.innerHTML = `
       <div class="card-body text-center">
         <a href="user-sanpham.php?id=${product.ProductID}">
-          <img src="..${
-            product.ImageURL
-          }" class="img-fluid" style="height: 200px; object-fit: contain;" alt="${
-      product.ProductName
-    }">
+          <img src="..${product.ImageURL}" class="img-fluid" 
+            style="height: 300px; object-fit: contain;" alt="${
+              product.ProductName
+            }">
         </a>
         <h5 class="card-title mt-3" style="font-weight: bold; min-height: 50px;">
           <a href="user-sanpham.php?id=${
@@ -341,6 +356,49 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (enabled) button.addEventListener("click", onClick);
     return button;
   }
+
+  // Thêm CSS cho responsive vào trang
+  const addCustomStyles = () => {
+    const styleEl = document.createElement("style");
+    styleEl.textContent = `
+      /* Responsive grid styles */
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+      
+      
+      /* Mobile styles */
+      @media (max-width: 600px) {
+        .products-grid {
+          grid-template-columns: repeat(1, 1fr);
+          gap: 10px;
+        }
+        
+        .card-title {
+          font-size: 0.9rem;
+          min-height: 40px;
+        }
+        
+        .card-text {
+          font-size: 0.9rem;
+        }
+      }
+      
+      /* Tablet styles */
+      @media (max-width: 900px) {
+        .products-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      
+    `;
+    document.head.appendChild(styleEl);
+  };
+
+  // Thêm CSS vào trang
+  addCustomStyles();
 
   // Gọi hàm getCategories để lấy danh mục
   getCategories();
