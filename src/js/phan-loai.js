@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     sortContainer.innerHTML = `
       <div class="sort-container" style="text-align: right; margin: 15px 0;">
         <label for="sortProducts" style="margin-right: 10px; font-weight: bold;">Sắp xếp:</label>
-        <select id="sortProducts" class="form-select" style="display: inline-block; width: auto;">
+        <select id="sortProducts" class="form-select" style="display: inline-block; width: auto; width: 172px;">
           <option value="default">Mặc định</option>
           <option value="price-asc">Giá: Thấp đến cao</option>
           <option value="price-desc">Giá: Cao đến thấp</option>
