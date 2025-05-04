@@ -345,7 +345,7 @@ main {
 }
 
 main #product-list {
-  display: grid;
+  /* display: grid; */
   grid-template-columns: repeat(4, 1fr);
   /* 4 cột bằng nhau */
   gap: 20px;
