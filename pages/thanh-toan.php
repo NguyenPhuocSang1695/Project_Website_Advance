@@ -760,7 +760,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
           <input type="text" name="new_sdt" id="new-sdt" placeholder="Số điện thoại" required>
 
           <label for=""><strong>Địa chỉ</strong></label>
-          <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ(số và đường)" required>
+          <input type="text" name="new_diachi" id="new-diachi" placeholder="Nhập địa chỉ (số và đường)" required>
 
           <label for=""><strong>Tỉnh/Thành phố</strong></label>
           <select name="province" id="province" class="form-select">
