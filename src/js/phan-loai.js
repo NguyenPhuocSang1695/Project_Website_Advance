@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   const categoryId = params.get("category_id");
   const categoryName = params.get("category_name");
 
+  // Biến lưu trữ dữ liệu sản phẩm gốc
+  let originalProducts = [];
+
   // Lấy danh mục từ API PHP
   async function getCategories() {
     try {
@@ -34,18 +37,23 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Cập nhật danh mục vào dropdown
   function updateCategoryDropdown(categories) {
     const dropdownMenu = document.querySelector(".dropdown-menu");
-    dropdownMenu.innerHTML = ""; // Xóa danh sách cũ
-    categories.forEach((category) => {
-      const listItem = document.createElement("li");
-      listItem.innerHTML = `<a class="dropdown-item" href="./phan-loai.php?category_id=${category.CategoryID}">${category.CategoryName}</a>`;
-      dropdownMenu.appendChild(listItem);
-    });
+    if (dropdownMenu) {
+      dropdownMenu.innerHTML = ""; // Xóa danh sách cũ
+      categories.forEach((category) => {
+        const listItem = document.createElement("li");
+        listItem.innerHTML = `<a class="dropdown-item" href="./phan-loai.php?category_id=${category.CategoryID}">${category.CategoryName}</a>`;
+        dropdownMenu.appendChild(listItem);
+      });
+    }
   }
 
   // Hiển thị tên danh mục nếu có category_id
   function displayCategoryName(categoryMap, categoryId) {
     const categoryName = categoryMap[categoryId] || "Danh mục không tồn tại";
-    document.getElementById("product_type_list").textContent = categoryName;
+    const categoryElement = document.getElementById("product_type_list");
+    if (categoryElement) {
+      categoryElement.textContent = categoryName;
+    }
   }
 
   // Lấy dữ liệu từ php để xử lý
@@ -64,11 +72,74 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
       }
 
+      // Lưu trữ dữ liệu gốc để sử dụng cho việc sắp xếp
+      originalProducts = [...data];
+
+      // Tạo dropdown sắp xếp
+      createSortUI();
+
+      // Hiển thị sản phẩm
       paginateProducts(data);
     } catch (error) {
       console.error("Error fetching data:", error);
       productList.innerHTML = `<p class="text-danger">Lỗi khi tải dữ liệu.</p>`;
     }
+  }
+
+  // Tạo giao diện sắp xếp sản phẩm
+  function createSortUI() {
+    const sortContainer = document.querySelector(".sortSelect");
+    if (!sortContainer) return;
+
+    sortContainer.innerHTML = `
+      <div class="sort-container" style="text-align: right; margin: 15px 0;">
+        <label for="sortProducts" style="margin-right: 10px; font-weight: bold;">Sắp xếp:</label>
+        <select id="sortProducts" class="form-select" style="display: inline-block; width: 172px;">
+          <option value="default">Mặc định</option>
+          <option value="price-asc">Giá: Thấp đến cao</option>
+          <option value="price-desc">Giá: Cao đến thấp</option>
+          <option value="name-asc">Tên: A-Z</option>
+          <option value="name-desc">Tên: Z-A</option>
+        </select>
+      </div>
+    `;
+
+    // Thêm sự kiện sắp xếp
+    document
+      .getElementById("sortProducts")
+      .addEventListener("change", function () {
+        sortProducts(this.value);
+      });
+  }
+
+  // Hàm sắp xếp sản phẩm
+  function sortProducts(sortType) {
+    let sortedProducts = [...originalProducts];
+
+    switch (sortType) {
+      case "price-asc":
+        sortedProducts.sort((a, b) => parseInt(a.Price) - parseInt(b.Price));
+        break;
+      case "price-desc":
+        sortedProducts.sort((a, b) => parseInt(b.Price) - parseInt(a.Price));
+        break;
+      case "name-asc":
+        sortedProducts.sort((a, b) =>
+          a.ProductName.localeCompare(b.ProductName)
+        );
+        break;
+      case "name-desc":
+        sortedProducts.sort((a, b) =>
+          b.ProductName.localeCompare(a.ProductName)
+        );
+        break;
+      default:
+        // Giữ thứ tự mặc định
+        break;
+    }
+
+    // Cập nhật hiển thị
+    paginateProducts(sortedProducts);
   }
 
   // Xử lý dữ liệu từ API, kiểm tra số lượng sản phẩm ở 1 trang
@@ -78,16 +149,34 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Tính tổng số trang cần thiết
     const totalPages = Math.ceil(data.length / itemsPerPage);
 
+    // Hiển thị thông báo khi không có sản phẩm nào
+    const productList = document.getElementById("product-list");
+    if (data.length === 0) {
+      productList.innerHTML = `<div class="alert alert-info w-100 text-center">Không tìm thấy sản phẩm nào</div>`;
+      document.getElementById("pagination-button").innerHTML = "";
+      return;
+    }
+
     // Chuyển trang
     function renderPage(page) {
-      const productList = document.getElementById("product-list");
       productList.innerHTML = "";
       const start = (page - 1) * itemsPerPage;
       const pageData = data.slice(start, start + itemsPerPage);
 
+      // Tạo container grid cho sản phẩm
+      const productGrid = document.createElement("div");
+      productGrid.className = "products-grid"; // Sử dụng lớp custom cho grid
+
+      // // Thêm CSS cho grid vào productGrid
+      // productGrid.style.display = "grid";
+      // productGrid.style.gridTemplateColumns = "repeat(4, 1fr)";
+      // productGrid.style.gap = "20px";
+
       pageData.forEach((product) => {
-        productList.appendChild(createProductCard(product));
+        productGrid.appendChild(createProductCard(product));
       });
+
+      productList.appendChild(productGrid);
 
       // Cuộn lên đầu trang sau khi chuyển trang (sau khi render)
       requestAnimationFrame(() => {
@@ -102,8 +191,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       const paginationDiv = document.getElementById("pagination-button");
       paginationDiv.innerHTML = "";
 
+      // Tạo div wrapper cho nút phân trang
+      const paginationWrapper = document.createElement("div");
+      paginationWrapper.className = "d-flex justify-content-center mt-4";
+
       // Nút quay lại trang trước
-      paginationDiv.appendChild(
+      paginationWrapper.appendChild(
         createPaginationButton("‹", currentPage > 1, () =>
           renderPage(--currentPage)
         )
@@ -113,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       if (totalPages <= 5) {
         // Hiển thị tất cả các trang nếu totalPages <= 5
         for (let i = 1; i <= totalPages; i++) {
-          paginationDiv.appendChild(
+          paginationWrapper.appendChild(
             createPaginationButton(
               i,
               true,
@@ -127,7 +220,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
       } else {
         // Hiển thị trang 1
-        paginationDiv.appendChild(
+        paginationWrapper.appendChild(
           createPaginationButton(
             1,
             true,
@@ -154,7 +247,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Thêm dấu "..." nếu cần
         if (startPage > 2) {
-          paginationDiv.appendChild(
+          paginationWrapper.appendChild(
             createPaginationButton("...", false, null, false)
           );
         }
@@ -162,7 +255,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Hiển thị các trang giữa
         for (let i = startPage; i <= endPage; i++) {
           if (i < totalPages) {
-            paginationDiv.appendChild(
+            paginationWrapper.appendChild(
               createPaginationButton(
                 i,
                 true,
@@ -178,13 +271,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Thêm dấu "..." nếu cần
         if (endPage < totalPages - 1) {
-          paginationDiv.appendChild(
+          paginationWrapper.appendChild(
             createPaginationButton("...", false, null, false)
           );
         }
 
         // Hiển thị trang cuối
-        paginationDiv.appendChild(
+        paginationWrapper.appendChild(
           createPaginationButton(
             totalPages,
             true,
@@ -198,11 +291,13 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       // Nút đến trang tiếp theo
-      paginationDiv.appendChild(
+      paginationWrapper.appendChild(
         createPaginationButton("›", currentPage < totalPages, () =>
           renderPage(++currentPage)
         )
       );
+
+      paginationDiv.appendChild(paginationWrapper);
     }
 
     renderPage(currentPage);
@@ -210,27 +305,41 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   // Tạo danh sách sản phẩm
   function createProductCard(product) {
+    // Tạo card sản phẩm
     const card = document.createElement("div");
-    card.className = "card mb-3";
+    card.className = "card product-card";
+    card.style.height = "100%";
+    card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
+
+    // Thêm hiệu ứng hover
+    card.addEventListener("mouseenter", function () {
+      this.style.transform = "translateY(-5px)";
+      this.style.boxShadow = "0 10px 20px rgba(0,0,0,0.1)";
+    });
+
+    card.addEventListener("mouseleave", function () {
+      this.style.transform = "translateY(0)";
+      this.style.boxShadow = "none";
+    });
+
     card.innerHTML = `
-      <div class="card-body">
+      <div class="card-body text-center">
         <a href="user-sanpham.php?id=${product.ProductID}">
-          <img src="..${
-            product.ImageURL
-          }" class="img-fluid" style="height: 275px;width: 275px" alt="${
-      product.ProductName
-    }">
+          <img src="..${product.ImageURL}" class="img-fluid" 
+            style="height: 300px; object-fit: contain;" alt="${
+              product.ProductName
+            }">
         </a>
-        <h5 class="card-title" style="margin: 10px 0; font-weight: bold;">
+        <h5 class="card-title mt-3" style="font-weight: bold; min-height: 50px;">
           <a href="user-sanpham.php?id=${
             product.ProductID
           }" class="text-decoration-none text-dark">
             ${product.ProductName}
           </a>
         </h5>
-        <p class="card-text"><strong >Giá:</strong> <span style = "color: green;">${Number(
+        <p class="card-text" style="color: green; font-weight: bold;">${Number(
           product.Price
-        ).toLocaleString()} VNĐ</span></p>
+        ).toLocaleString()} VNĐ</p>
       </div>
     `;
     return card;
@@ -247,6 +356,51 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (enabled) button.addEventListener("click", onClick);
     return button;
   }
+
+  // Thêm CSS cho responsive vào trang
+  const addCustomStyles = () => {
+    const styleEl = document.createElement("style");
+    styleEl.textContent = `
+      /* Responsive grid styles */
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+      }
+      
+      
+      
+      
+      /* Tablet styles */
+      @media (max-width: 900px) {
+        .products-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* Mobile styles */
+      @media (max-width: 600px) {
+        .products-grid {
+          grid-template-columns: repeat(1, 1fr);
+          gap: 10px;
+        }
+        
+        .card-title {
+          font-size: 0.9rem;
+          min-height: 40px;
+        }
+        
+        .card-text {
+          font-size: 0.9rem;
+        }
+      }
+      
+    `;
+    document.head.appendChild(styleEl);
+  };
+
+  // Thêm CSS vào trang
+  addCustomStyles();
 
   // Gọi hàm getCategories để lấy danh mục
   getCategories();

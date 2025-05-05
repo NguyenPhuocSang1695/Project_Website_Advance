@@ -345,8 +345,8 @@ main {
 }
 
 main #product-list {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* display: grid; */
+  /* grid-template-columns: repeat(4, 1fr); */
   /* 4 cột bằng nhau */
   gap: 20px;
   padding: 20px;
@@ -379,27 +379,30 @@ main #product-list .card:hover {
   align-items: center;
 }
 
-/* Responsive Grid */
+/* Responsive Grid 
 @media screen and (max-width: 1200px) {
   main #product-list {
-    grid-template-columns: repeat(3, 1fr);
-    /* 3 cột */
+    /* grid-template-columns: repeat(3, 1fr); */
+/* 3 cột 
   }
 }
 
 @media screen and (max-width: 900px) {
   main #product-list {
-    grid-template-columns: repeat(2, 1fr);
-    /* 2 cột */
+    /* grid-template-columns: repeat(2, 1fr); */
+/* 2 cột 
   }
 }
 
 @media screen and (max-width: 600px) {
   main #product-list {
-    grid-template-columns: 1fr;
-    /* 1 cột */
+    /* grid-template-columns: 1fr; */
+/* 1 cột 
   }
 }
+
+*/
+
 
 /* Nút phân trang  */
 #pagination-button {
