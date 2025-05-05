@@ -240,14 +240,14 @@ include '../php/connect.php';
   ?>
       
     </div>
-
+ 
     <!-- Phần đơn hàng chưa xử lý -->
     <div class="order-section">
       <p class="section-title">Đơn hàng chưa xử lý</p>
       <a class="more-detail" href="orderPage.php"> Xem thêm</a>
       <?php
       // Database connection
-      $conn = new mysqli("localhost", "root", "", "c01db");
+      $conn = new mysqli("localhost", "c01u", "KtdVb9kNDRutbwFB", "c01db");
       if ($conn->connect_error) {
           die("Connection failed: " . $conn->connect_error);
       }
@@ -292,7 +292,7 @@ include '../php/connect.php';
       <a class="more-detail" href="wareHouse.php"> Xem tất cả sản phẩm</a>
       <?php
       // Database connection
-      $conn = new mysqli("localhost", "root", "", "c01db");
+      $conn = new mysqli("localhost", "c01u", "KtdVb9kNDRutbwFB", "c01db");
       if ($conn->connect_error) {
           die("Connection failed: " . $conn->connect_error);
       }

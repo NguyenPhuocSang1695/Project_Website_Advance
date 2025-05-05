@@ -514,7 +514,7 @@ session_start();
             <tbody id="productsBody">
               <?php
               // Database connection
-              $conn = new mysqli("localhost", "root", "", "c01db");
+              $conn = new mysqli("localhost", "c01u", "KtdVb9kNDRutbwFB", "c01db");
               if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
               }
