@@ -561,7 +561,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
           <thead>
             <tr>
               <th>MÃ ĐƠN HÀNG</th>
-              <th>NGÀY TẠO</th>
+              <th>NGÀY ĐẶT HÀNG</th>
               <th>Ngày giao (dự kiến)</th>
               <th>TRẠNG THÁI</th>
               <th>PHƯƠNG THỨC THANH TOÁN</th>
@@ -641,15 +641,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                 <span>Tổng giá trị đơn hàng</span>
                 <span><?php echo number_format($total, 0, ',', '.') . ' đ'; ?></span>
               </div>
-              <div class="payment-row ">
-                <span>Trạng thái thanh toán:</span>
-                <span class="<?php echo $returnFinished['class']; ?>">
-                  <?php echo  $returnFinished['text']; ?>
-                  <?php if ($returnFinished['showAmount']): ?>
-                    (<?php echo number_format($total, 0, ',', '.') . ' đ'; ?>)
-                  <?php endif; ?>
-                </span>
-              </div>
+         
             </div>
           </div>
         </div>
