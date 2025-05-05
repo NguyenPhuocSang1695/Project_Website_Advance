@@ -22,103 +22,81 @@ $districtId = isset($_GET['district_id']) ? intval($_GET['district_id']) : 0;
 // Sửa phần query SELECT với cú pháp chuẩn hơn
 $selectQuery = "
     SELECT 
-        o.OrderID AS madonhang,
-        o.DateGeneration AS ngaytao,
-        o.Status AS trangthai,
-        o.TotalAmount AS giatien,
-        u.FullName AS buyer_name,
-        u.Address AS buyer_address,
-        d.name AS buyer_district,
-        p.name AS buyer_province,
-        o.CustomerName AS receiver_name,
-        o.Address AS receiver_address,
-        d2.name AS shipping_district,
-        p2.name AS shipping_province
-    FROM orders o
-    LEFT JOIN users u 
-        ON o.Username = u.Username
-    LEFT JOIN province p 
-        ON u.Province = p.province_id
-    LEFT JOIN district d 
-        ON u.District = d.district_id
-    LEFT JOIN province p2 
-        ON o.Province = p2.province_id
-    LEFT JOIN district d2 
-        ON o.District = d2.district_id
+        OrderID AS madonhang,
+        DateGeneration AS ngaytao,
+        Status AS trangthai,
+        TotalAmount AS giatien,
+        CustomerName AS receiver_name,
+        Phone AS receiver_phone,
+        Address AS receiver_address,
+        (SELECT name FROM province WHERE province_id = orders.Province) AS province_name,
+        (SELECT name FROM district WHERE district_id = orders.District) AS district_name,
+        (SELECT name FROM wards WHERE wards_id = orders.Ward) AS ward_name
+    FROM orders
     WHERE 1=1";
 
 $params = [];
 $types = '';
 
 if ($dateFrom) {
-    $selectQuery .= " AND DATE(o.DateGeneration) >= ?";
+    $selectQuery .= " AND DATE(DateGeneration) >= ?";
     $params[] = $dateFrom;
     $types .= 's';
 }
 
 if ($dateTo) {
-    $selectQuery .= " AND DATE(o.DateGeneration) <= ?";
+    $selectQuery .= " AND DATE(DateGeneration) <= ?";
     $params[] = $dateTo;
     $types .= 's';
 }
 
 if ($orderStatus && $orderStatus !== 'all') {
-    $selectQuery .= " AND o.Status = ?";
+    $selectQuery .= " AND Status = ?";
     $params[] = $orderStatus;
     $types .= 's';
 }
 
 if ($provinceId > 0) {
-    $selectQuery .= " AND o.Province = ?";
+    $selectQuery .= " AND Province = ?";
     $params[] = $provinceId;
     $types .= 'i';
 }
 
 if ($districtId > 0) {
-    $selectQuery .= " AND o.District = ?";
+    $selectQuery .= " AND District = ?";
     $params[] = $districtId;
     $types .= 'i';
 }
 
-$selectQuery .= " ORDER BY o.DateGeneration DESC LIMIT ? OFFSET ?";
+$selectQuery .= " ORDER BY DateGeneration DESC LIMIT ? OFFSET ?";
 $params[] = $limit;
 $params[] = $offset;
 $types .= 'ii';
 
 // Sửa lại câu query đếm tổng số record
 $countQuery = "
-    SELECT COUNT(DISTINCT o.OrderID) as total 
-    FROM orders o
-    LEFT JOIN users u 
-        ON o.Username = u.Username
-    LEFT JOIN province p 
-        ON u.Province = p.province_id
-    LEFT JOIN district d 
-        ON u.District = d.district_id
-    LEFT JOIN province p2 
-        ON o.Province = p2.province_id
-    LEFT JOIN district d2 
-        ON o.District = d2.district_id
+    SELECT COUNT(DISTINCT OrderID) as total 
+    FROM orders
     WHERE 1=1";
 
 if ($dateFrom) {
-    $countQuery .= " AND DATE(o.DateGeneration) >= ?";
+    $countQuery .= " AND DATE(DateGeneration) >= ?";
 }
 
 if ($dateTo) {
-    $countQuery .= " AND DATE(o.DateGeneration) <= ?";
+    $countQuery .= " AND DATE(DateGeneration) <= ?";
 }
 
 if ($orderStatus && $orderStatus !== 'all') {
-    $countQuery .= " AND o.Status = ?";
+    $countQuery .= " AND Status = ?";
 }
 
 if ($provinceId > 0) {
-    $countQuery .= " AND o.Province = ?";
+    $countQuery .= " AND Province = ?";
 }
 
 if ($districtId > 0) {
-    $countQuery .= " AND o.District = ?";
+    $countQuery .= " AND District = ?";
 }
 
 $countParams = [];
@@ -167,29 +145,20 @@ $result = $stmt->get_result();
 
 $orders = [];
 while ($row = $result->fetch_assoc()) {
-    // Xác định thông tin người nhận dựa vào trạng thái đơn hàng
-    $displayReceiverName = $row['trangthai'] === 'success' ? $row['receiver_name'] : $row['buyer_name'];
-    $displayAddress = $row['trangthai'] === 'success' ? [
+    $receiver_address_parts = array_filter([
         $row['receiver_address'],
-        $row['shipping_district'],
-        $row['shipping_province']
-    ] : [
-        $row['buyer_address'],
-        $row['buyer_district'],
-        $row['buyer_province']
-    ];
-
-    $receiver_address_parts = array_filter($displayAddress);
+        $row['ward_name'],
+        $row['district_name'],
+        $row['province_name']
+    ]);
 
     $orders[] = [
         'madonhang' => $row['madonhang'],
         'ngaytao' => $row['ngaytao'],
         'trangthai' => $row['trangthai'],
         'giatien' => $row['giatien'],
-        'buyer_name' => $row['buyer_name'] ?? 'Không xác định',
-        'receiver_name' => $displayReceiverName ?? 'Không xác định',
-        'shipping_district' => $row['shipping_district'] ?? '',
-        'shipping_province' => $row['shipping_province'] ?? '',
+        'receiver_name' => $row['receiver_name'] ?? 'Không xác định',
+        'receiver_phone' => $row['receiver_phone'] ?? 'Không xác định',
         'receiver_address' => implode(', ', $receiver_address_parts)
     ];
 }
