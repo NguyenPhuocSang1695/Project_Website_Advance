@@ -778,31 +778,32 @@ $cart_count = count($cart_items);
             <?= htmlspecialchars($order['DistrictName']) ?>,
             <?= htmlspecialchars($order['ProvinceName']) ?>
           </p>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Sản phẩm</th>
-                <th>Hình ảnh</th>
-                <th id="solg">Số lượng</th>
-                <th id="gia">Giá</th>
-                <th>Thành tiền</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php if ($details && $details->num_rows > 0):
-                while ($row = $details->fetch_assoc()): ?>
-                  <tr>
-                    <td><?= htmlspecialchars($row['ProductName']) ?></td>
-                    <td><img src="<?= ".." . htmlspecialchars($row['ImageURL']) ?>" alt="<?= htmlspecialchars($row['ProductName']) ?>" width="80"></td>
-                    <td id="solg-02"><?= $row['Quantity'] ?></td>
-                    <td id="gia-02"><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
-                    <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
-                  </tr>
-              <?php endwhile;
-              endif; ?>
-            </tbody>
-          </table>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Hình ảnh</th>
+                  <th id="solg">Số lượng</th>
+                  <th id="gia">Giá</th>
+                  <th>Thành tiền</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php if ($details && $details->num_rows > 0):
+                  while ($row = $details->fetch_assoc()): ?>
+                    <tr>
+                      <td><?= htmlspecialchars($row['ProductName']) ?></td>
+                      <td><img src="<?= ".." . htmlspecialchars($row['ImageURL']) ?>" alt="<?= htmlspecialchars($row['ProductName']) ?>" width="80"></td>
+                      <td id="solg-02"><?= $row['Quantity'] ?></td>
+                      <td id="gia-02"><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
+                      <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
+                    </tr>
+                <?php endwhile;
+                endif; ?>
+              </tbody>
+            </table>
+          </div>
           <div class="total" style="color: red; font-size: 23px;">
             <strong>Tổng cộng: </strong> <?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ
           </div>
@@ -817,7 +818,9 @@ $cart_count = count($cart_items);
 
     </div>
   </div>
+    <style>
 
+    </style>
   <!-- FOOTER  -->
   <footer class="footer">
     <div class="footer-column">
