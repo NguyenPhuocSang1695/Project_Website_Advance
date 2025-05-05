@@ -904,3 +904,7 @@ table tbody tr {
 .order-list-item:last-child {
     border-bottom: none;
 }
+.order-item-info {
+    display: flex;
+    justify-content: space-between;
+}
