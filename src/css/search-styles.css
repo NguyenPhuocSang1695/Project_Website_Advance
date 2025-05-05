@@ -299,6 +299,7 @@
   border-radius: 4px;
   font-size: 14px;
   background-color: white;
+  /* cursor: pointer; */
 }
 
 .price-range {
@@ -596,6 +597,7 @@
   transition: all 0.2s;
   background-color: white;
   color: #333;
+  cursor: pointer;
 }
 
 .form-select:focus {

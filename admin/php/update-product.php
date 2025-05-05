@@ -14,8 +14,10 @@ try {
     }
 
     // Get and validate form data
-    if (!isset($_POST['productId']) || !isset($_POST['productName']) || !isset($_POST['categoryID']) || 
-        !isset($_POST['price']) || !isset($_POST['description'])) {
+    if (
+        !isset($_POST['productId']) || !isset($_POST['productName']) || !isset($_POST['categoryID']) ||
+        !isset($_POST['price']) || !isset($_POST['description'])
+    ) {
         throw new Exception('Missing required fields');
     }
 
@@ -27,33 +29,33 @@ try {
     $status = $_POST['status'] ?? 'appear';
 
     if (empty($productName)) {
-        throw new Exception('Product name cannot be empty');
+        throw new Exception('Tên sản phẩm không được để trống');
     }
 
     if ($price <= 0) {
-        throw new Exception('Price must be greater than 0');
+        throw new Exception('Giá phải lớn hơn 0');
     }
 
     if (!in_array($status, ['hidden', 'appear'])) {
-        throw new Exception('Invalid status value');
+        throw new Exception('Trạng thái không hợp lệ');
     }
 
     // First, get the current image URL
     $currentImageQuery = "SELECT ImageURL FROM products WHERE ProductID = ?";
     $stmt = $conn->prepare($currentImageQuery);
     if (!$stmt) {
-        throw new Exception('Failed to prepare current image query: ' . $conn->error);
+        throw new Exception('Không thể xử lý truy vấn hình ảnh hiện tại: ' . $conn->error);
     }
-    
+
     $stmt->bind_param("i", $productId);
     $stmt->execute();
     $result = $stmt->get_result();
     $currentImageData = $result->fetch_assoc();
-    
+
     if (!$currentImageData) {
         throw new Exception('Product not found');
     }
-    
+
     $currentImageURL = $currentImageData['ImageURL'];
     $stmt->close();
 
@@ -62,24 +64,24 @@ try {
     // Handle new image upload if provided
     if (isset($_FILES['imageURL']) && $_FILES['imageURL']['error'] === 0) {
         $file = $_FILES['imageURL'];
-        
+
         // Validate file
         $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
         $maxSize = 2 * 1024 * 1024; // 2MB
-        
+
         if (!in_array($file['type'], $allowedTypes)) {
-            throw new Exception('Invalid file type. Only JPG, JPEG and PNG allowed.');
+            throw new Exception('Định dạng file không hợp lệ. Chỉ chấp nhận JPG, JPEG và PNG.');
         }
-        
+
         if ($file['size'] > $maxSize) {
-            throw new Exception('File size too large. Maximum 2MB allowed.');
+            throw new Exception('Kích thước file quá lớn. Tối đa 2MB.');
         }
-        
+
         // Generate unique filename
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'product_' . uniqid() . '.' . $extension;
         $uploadPath = '../../assets/images/' . $filename;
-        
+
         // Make sure the directory exists
         $uploadDir = dirname($uploadPath);
         if (!is_dir($uploadDir)) {
@@ -87,14 +89,14 @@ try {
                 throw new Exception('Failed to create upload directory');
             }
         }
-        
+
         // Move uploaded file
         if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
-            throw new Exception('Failed to upload image');
+            throw new Exception('Không thể tải lên hình ảnh');
         }
-        
+
         $newImageURL = '/assets/images/' . $filename;
-        
+
         // Delete old image if it exists and is different
         if ($currentImageURL && $currentImageURL !== $newImageURL) {
             $oldImagePath = '../../' . $currentImageURL;
@@ -116,25 +118,24 @@ try {
 
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
-        throw new Exception('Failed to prepare update query: ' . $conn->error);
+        throw new Exception('Không thể chuẩn bị truy vấn cập nhật: ' . $conn->error);
     }
 
     $stmt->bind_param("sidsssi", $productName, $categoryId, $price, $description, $status, $newImageURL, $productId);
 
     if (!$stmt->execute()) {
-        throw new Exception('Failed to update product: ' . $stmt->error);
+        throw new Exception('Không thể cập nhật sản phẩm: ' . $stmt->error);
     }
 
     if ($stmt->affected_rows === 0) {
-        throw new Exception('No changes were made to the product');
+        throw new Exception('Không có thay đổi nào được thực hiện');
     }
 
     echo json_encode([
         'success' => true,
-        'message' => 'Product updated successfully',
+        'message' => 'Cập nhật sản phẩm thành công',
         'productId' => $productId
     ]);
-
 } catch (Exception $e) {
     echo json_encode([
         'success' => false,
@@ -148,4 +149,3 @@ try {
         $conn->close();
     }
 }
-?>
