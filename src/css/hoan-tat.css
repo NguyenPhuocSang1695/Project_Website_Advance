@@ -813,4 +813,12 @@ th {
   .invoice-container {
     width: 95%;
   }
+
+
+  th#gia,
+
+  td#gia-02 {
+    display: none;
+  }
+
 }
