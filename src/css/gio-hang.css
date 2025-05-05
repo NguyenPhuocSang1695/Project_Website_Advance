@@ -372,6 +372,7 @@ body {
 .order-img img {
   width: 8rem;
   height: 8rem;
+  border-radius: 5px;
 }
 
 .frame {
@@ -680,7 +681,7 @@ body {
   }
 
   .frame-2 {
-    width: 110%;
+    width: 80%;
   }
 
   /* khoi */
@@ -755,6 +756,12 @@ body {
     height: 10rem;
     align-items: center;
     margin: 0 0 0 0;
+  }
+
+  .order-img img {
+    width: 6rem;
+    height: 7rem;
+    border-radius: 5px;
   }
 
   .row-1 img {
