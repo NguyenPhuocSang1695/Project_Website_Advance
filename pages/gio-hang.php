@@ -11,19 +11,19 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 
-// Kiểm tra xem cookie 'token' có tồn tại không
-if (!isset($_COOKIE['token'])) {
-  header("Location: user-login.php?error=login_required");
-  exit();
-}
+  // Kiểm tra xem cookie 'token' có tồn tại không
+  if (!isset($_COOKIE['token'])) {
+    header("Location: user-login.php?error=login_required&redirect=gio-hang.php");
+    exit();
+  }
 
-try {
-  $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
-  $username = $decoded->data->Username;
-} catch (Exception $e) {
-  header("Location: user-login.php?error=token_expired");
-  exit();
-}
+  try {
+    $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
+    $username = $decoded->data->Username;
+  } catch (Exception $e) {
+    header("Location: user-login.php?error=login_required&redirect=gio-hang.php");
+    exit();
+  }
 
 
 // Xử lý thêm, cập nhật và xóa sản phẩm
