@@ -58,22 +58,27 @@ document.addEventListener('DOMContentLoaded', function() {
         orderTableBody.innerHTML = '';
         if (data.success && data.orders && data.orders.length > 0) {
           data.orders.forEach(order => {
-            const buyerName = order.buyer_name || 'Không xác định';
-            // const receiverName = order.receiver_name || 'Không xác định';
-            const address = order.receiver_address || 'Chưa có địa chỉ';
-
             const row = document.createElement('tr');
+            row.style.cursor = 'pointer';
+            row.addEventListener('click', function(e) {
+              if (!e.target.closest('.status-btn') && !e.target.closest('.action-btn')) {
+                window.location.href = `orderDetail2.php?code_Product=${order.madonhang}`;
+              }
+            });
+            
             row.innerHTML = `
               <td>${order.madonhang || ''}</td>
-              <td class="hide-index-tablet" title="${buyerName}">${truncateText(buyerName)}</td>
+              <td class="hide-index-tablet" title="${order.receiver_name}">${truncateText(order.receiver_name)}</td>
               <td>${formatDate(order.ngaytao) || ''}</td>
               <td class="hide-index-mobile">${formatCurrency(order.giatien || 0)}</td>
               <td>
-                <button class="${getStatusInfo(order.trangthai || 'unknown').class}">
+                <button class="${getStatusInfo(order.trangthai || 'unknown').class} status-btn" 
+                        data-order-id="${order.madonhang}"
+                        data-status="${order.trangthai || 'unknown'}">
                   ${getStatusInfo(order.trangthai || 'unknown').text}
                 </button>
               </td>
-              <td>${address}</td>
+              <td>${order.receiver_address}</td>
               <td class="detail-info">
                 <a href="orderDetail2.php?code_Product=${order.madonhang}" class="action-btn view-btn">
                   <i class="fa-solid fa-circle-info"></i>
@@ -498,6 +503,18 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
+    // Thêm event listener cho tất cả các nút status-btn
+    document.addEventListener('click', function(e) {
+      const statusBtn = e.target.closest('.status-btn');
+      if (statusBtn) {
+        const orderId = statusBtn.getAttribute('data-order-id');
+        const currentStatus = statusBtn.getAttribute('data-status');
+        if (orderId && currentStatus) {
+          showUpdateStatusPopup(orderId, currentStatus);
+        }
+      }
+    });
+
     handleDistrictInput();
     handleProvinceInput(); 
     
@@ -783,6 +800,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   initFilters();
 });
+
