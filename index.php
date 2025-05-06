@@ -494,8 +494,8 @@ $cart_count = count($cart_items);
     <!-- DANH MỤC SẢN PHẨM -->
     <?php
     $host = 'localhost';
-    $user = 'root';
-    $password = '';
+    $user = 'c01u';
+    $password = 'KtdVb9kNDRutbwFB';
     $dbname = 'c01db';
 
     $conn = new mysqli($host, $user, $password, $dbname);

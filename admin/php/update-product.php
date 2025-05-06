@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 
 try {
     // Database connection
-    $conn = new mysqli("localhost", "root", "", "c01db");
+    $conn = new mysqli("localhost", "c01u", "KtdVb9kNDRutbwFB", "c01db");
 
     if ($conn->connect_error) {
         throw new Exception('Connection failed: ' . $conn->connect_error);

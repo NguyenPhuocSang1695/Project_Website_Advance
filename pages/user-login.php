@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['error'])) {
 $error = '';
 
 if (isset($_POST["login"])) {
-  $connect = new PDO("mysql:host=localhost;dbname=c01db", "root", "");
+  $connect = new PDO("mysql:host=localhost;dbname=c01db", "c01u", "KtdVb9kNDRutbwFB");
   $username = trim($_POST["username"] ?? '');
   $password = $_POST["password"] ?? '';
 
