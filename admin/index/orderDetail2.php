@@ -19,12 +19,11 @@ if ($orderID) {
 
   if ($orderInfo) {
     $orderDetailID = $orderInfo['OrderID'];
-    $orderDate = $orderInfo['DateGeneration'];
-    $orderDate = date('d/m/Y', strtotime($orderDate));
+    $orderDateOriginal = $orderInfo['DateGeneration'];
+    $orderDate = date('d/m/Y', strtotime($orderDateOriginal));
     $orderStatus = $orderInfo['Status'];
     $paymentMethod = $orderInfo['PaymentMethod'];
-    $estimatedDeliveryDate = date('d/m/Y', strtotime($orderDate . ' + 4 days'));
-
+    $estimatedDeliveryDate = date('d/m/Y', strtotime($orderDateOriginal . ' + 4 days'));
 
     // 2. Lấy chi tiết đơn hàng (có thể có nhiều sản phẩm)
     $sql_details = "SELECT od.OrderID, od.ProductID, od.Quantity, od.UnitPrice, od.TotalPrice, 
@@ -58,34 +57,18 @@ if ($orderID) {
     $totalProductAmount = $paymentInfo['TotalAmount'];
     $total = $totalProductAmount;
 
-    // 4. Lấy thông tin người mua (từ bảng users) và người nhận (từ bảng orders)
+    // 4. Lấy thông tin người nhận từ bảng orders
     $sql_user = "SELECT 
-            -- Thông tin người mua 
-            u.Email as buyer_email,
-            u.Address as buyer_address,
-            u.FullName as buyer_name,
-            u.Phone as buyer_phone,
-            p1.name as buyer_province,
-            d1.name as buyer_district,
-            w1.name as buyer_ward,
-            
-            -- Thông tin người nhận
-            o.CustomerName as receiver_name,
-            o.Phone as receiver_phone,
-            o.Address as receiver_address,
-            o.Ward as receiver_ward,
-            p2.name as receiver_province,
-            d2.name as receiver_district,
-            w2.name as receiver_ward,
-            o.Status as order_status
+            o.CustomerName,
+            o.Phone,
+            o.Address,
+            p.name as province_name,
+            d.name as district_name,
+            w.name as ward_name
         FROM orders o
-        JOIN users u ON o.Username = u.Username
-        LEFT JOIN province p1 ON u.Province = p1.province_id
-        LEFT JOIN district d1 ON u.District = d1.district_id
-        LEFT JOIN province p2 ON o.Province = p2.province_id
-        LEFT JOIN district d2 ON o.District = d2.district_id
-        LEFT JOIN wards w1 ON u.Ward = w1.wards_id
-        LEFT JOIN wards w2 ON o.ward= w2.wards_id
+        LEFT JOIN province p ON o.Province = p.province_id
+        LEFT JOIN district d ON o.District = d.district_id
+        LEFT JOIN wards w ON o.Ward = w.wards_id
         WHERE o.OrderID = ?";
 
     $stmt_user = $myconn->prepare($sql_user);
@@ -95,27 +78,14 @@ if ($orderID) {
     $userInfo = $result_user->fetch_assoc();
 
     if ($userInfo) {
-      $buyerName = $userInfo['buyer_name'];
-      $buyerEmail = $userInfo['buyer_email'];
-      $buyerAddress = $userInfo['buyer_address'] . ', ' .
-        $userInfo['buyer_ward'] . ', ' .
-        $userInfo['buyer_district'] . ', ' .
-        $userInfo['buyer_province'];
-      $buyerPhone = $userInfo['buyer_phone'];
-      if ($userInfo['order_status'] === 'success') {
-        $receiverName = $userInfo['receiver_name'];
-        $receiverPhone = $userInfo['receiver_phone'];
-        $receiverAddress = $userInfo['receiver_address'] . ', ' .
-          $userInfo['receiver_ward'] . ', ' .
-          $userInfo['receiver_district'] . ', ' .
-          $userInfo['receiver_province'];
-      } else {
-        $receiverName = $userInfo['buyer_name'];
-        $receiverPhone = $userInfo['buyer_phone'];
-        $receiverAddress = $buyerAddress;
-      }
+      $receiverName = $userInfo['CustomerName'];
+      $receiverPhone = $userInfo['Phone'];
+      $receiverAddress = $userInfo['Address'] . ', ' .
+        $userInfo['ward_name'] . ', ' .
+        $userInfo['district_name'] . ', ' .
+        $userInfo['province_name'];
     } else {
-      echo "Không tìm thấy thông tin người mua";
+      echo "Không tìm thấy thông tin người nhận";
       exit;
     }
   }
@@ -239,7 +209,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
 
 <!DOCTYPE html>
 <html lang="vi">
-
+ 
 <head>
   <title>Đơn Hàng Số <?php echo $orderDetailID; ?></title>
   <meta charset="UTF-8">
@@ -254,8 +224,111 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/reponsiveOrder-detail.css">
-</head>
+  <style>
+    .table-container {
+      padding: 0;
+      overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto; 
+    }
 
+    .table-container table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table-container thead {
+      position: sticky;
+      top: 0;
+      background-color: #f8f9fa;
+      z-index: 1;
+    }
+
+    .table-container tbody {
+      background-color: #fff;
+    }
+
+    .table-container::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 10px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary-color);
+    }
+
+  
+    .table-container thead th {
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* Animate scroll */
+    .table-container {
+      scroll-behavior: smooth;
+    }
+
+    /* Hover effect cho rows */
+    .table-container tbody tr:hover {
+      background-color: rgba(106, 161, 115, 0.05);
+      transition: background-color 0.2s ease;
+    }
+
+    @media (max-width: 768px) {
+      .table-container {
+        max-height: 300px; 
+      }
+    }
+
+    .info-group {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background-color: #f8fafc;
+      transition: all 0.2s ease;
+    }
+
+    .info-group:hover {
+      background-color: #f1f5f9;
+      transform: translateX(4px);
+    }
+
+    .info-label {
+      color: #64748b;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-label i {
+      color: #6aa173;
+      font-size: 1rem;
+    }
+
+    .info-value {
+      color: #334155;
+      font-weight: 500;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .shipping-details {
+      padding: 1rem;
+    }
+  </style>
+</head>
+ 
 <body>
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
   <div class="header">
@@ -477,9 +550,9 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
           <?php
           $source = isset($_GET['source']) ? $_GET['source'] : 'order';
           if ($source === 'analyze') {
-            echo '<a href="analyzePage.php">Thống kê</a> > ';
+            echo '<a href="analyzePage.php">Thống kê</a>';
           } else {
-            echo '<a href="orderPage.php">Đơn hàng</a> >';
+            echo '<a href="orderPage.php">Đơn hàng</a>';
           }
           ?>
           <span> Đơn số <?php echo $orderDetailID; ?></span>
@@ -488,7 +561,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
           <thead>
             <tr>
               <th>MÃ ĐƠN HÀNG</th>
-              <th>NGÀY TẠO</th>
+              <th>NGÀY ĐẶT HÀNG</th>
               <th>Ngày giao (dự kiến)</th>
               <th>TRẠNG THÁI</th>
               <th>PHƯƠNG THỨC THANH TOÁN</th>
@@ -568,45 +641,30 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                 <span>Tổng giá trị đơn hàng</span>
                 <span><?php echo number_format($total, 0, ',', '.') . ' đ'; ?></span>
               </div>
-              <div class="payment-row ">
-                <span>Trạng thái thanh toán:</span>
-                <span class="<?php echo $returnFinished['class']; ?>">
-                  <?php echo  $returnFinished['text']; ?>
-                  <?php if ($returnFinished['showAmount']): ?>
-                    (<?php echo number_format($total, 0, ',', '.') . ' đ'; ?>)
-                  <?php endif; ?>
-                </span>
-              </div>
+         
             </div>
           </div>
         </div>
 
         <div class="right-section">
-          <!-- Thông tin người mua hàng -->
-          <div class="section source">
-            <div class="section-header">
-              <span>Thông Tin Người Mua Hàng</span>
-            </div>
-            <div class="buyer-info">
-              <p style="color:#007bff"><?php echo $buyerName; ?></p>
-              <p style="font-size:13px">Email: <span class="highlight"><?php echo $buyerEmail; ?></span></p>
-              <p style="font-size:13px">Địa chỉ: <span class="highlight"><?php echo $buyerAddress; ?></span></p>
-              <p style="font-size:13px">SĐT: <span class="highlight"><?php echo $buyerPhone; ?></span></p>
-            </div>
-          </div>
-
-          <!-- Thông tin người nhận hàng -->
           <div class="section shipping">
             <div class="section-header">
-              <span style="font-size: 16px; font-weight: bold;">Người Nhận Hàng</span>
+              <i class="fa-solid fa-truck-fast"></i>
+              <span>Thông tin giao hàng</span>
             </div>
             <div class="shipping-details">
-              <p style="color:#007bff;font-weight: bold">
-                <?php echo $receiverName; ?>
-                <?php if ($receiverName === $buyerName) echo ' (Người mua)'; ?>
-              </p>
-              <p>SĐT: <span class="highlight"><?php echo $receiverPhone; ?></span></p>
-              <p>Địa chỉ: <span class="highlight"><?php echo $receiverAddress; ?></span></p>
+              <div class="info-group">
+                <div class="info-label"><i class="fa-solid fa-user"></i> Người nhận:</div>
+                <div class="info-value"><?php echo $receiverName; ?></div>
+              </div>
+              <div class="info-group">
+                <div class="info-label"><i class="fa-solid fa-phone"></i> Số điện thoại:</div>
+                <div class="info-value"><?php echo $receiverPhone; ?></div>
+              </div>
+              <div class="info-group">
+                <div class="info-label"><i class="fa-solid fa-location-dot"></i> Địa chỉ:</div>
+                <div class="info-value"><?php echo $receiverAddress; ?></div>
+              </div>
             </div>
           </div>
         </div>
