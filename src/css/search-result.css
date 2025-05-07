@@ -588,11 +588,12 @@ main {
 .filter-container {
     margin: 20px 0;
     padding: 12px 15px;
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
     border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); */
     display: flex;
     align-items: center;
+    justify-content: right;
     flex-wrap: wrap;
     gap: 15px;
 }

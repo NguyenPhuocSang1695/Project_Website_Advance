@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $checkEmail->close();
 
   // Các kiểm tra đầu vào
-  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+  if (!preg_match("/^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$/", $email)) {
     $errors['email'] = "Email không hợp lệ!";
   }
   if (!preg_match("/^[a-z0-9_-]{3,16}$/", $username)) {
@@ -97,7 +97,7 @@ if ($conn->connect_error) {
 $provinceQuery = "SELECT province_id, name FROM province ORDER BY name ASC";
 $provinceResult = $conn->query($provinceQuery);
 
-$cart_count =  0;
+$cart_count = 0;
 
 if (isset($_SESSION['cart'])) {
   foreach ($_SESSION['cart'] as $item) {
@@ -123,10 +123,10 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    $price_map  = [];
+    $price_map = [];
     $status_map = [];
     while ($row = $result->fetch_assoc()) {
-      $price_map[$row['ProductID']]  = $row['Price'];
+      $price_map[$row['ProductID']] = $row['Price'];
       $status_map[$row['ProductID']] = $row['Status'];
     }
     $stmt->close();
@@ -261,7 +261,7 @@ $cart_count = count($cart_items);
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-
+                        
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);
@@ -328,17 +328,18 @@ $cart_count = count($cart_items);
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function(e) {
+              document.getElementById("searchForm").addEventListener("submit", function (e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
               });
             </script>
-           <div class="cart-wrapper">
+            <div class="cart-wrapper">
               <div class="cart-icon">
                 <a href="gio-hang.php">
                   <img src="../assets/images/cart.svg" alt="cart" />
-                  <span class="cart-count" id="mni-cart-count" style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
+                  <span class="cart-count" id="mni-cart-count"
+                    style="position: absolute; margin-top: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 12px;">
                     <?php echo $cart_count; ?>
                   </span>
                 </a>
@@ -347,11 +348,13 @@ $cart_count = count($cart_items);
                 <?php if (count($cart_items) > 0): ?>
                   <?php foreach ($cart_items as $item): ?>
                     <div class="cart-item">
-                      <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>" class="cart-thumb" />
+                      <img src="<?php echo ".." . $item['ImageURL']; ?>" alt="<?php echo $item['ProductName']; ?>"
+                        class="cart-thumb" />
                       <div class="cart-item-details">
                         <h5><?php echo $item['ProductName']; ?></h5>
                         <p>Giá: <?php echo number_format($item['Price'], 0, ',', '.') . " VNĐ"; ?></p>
-                        <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ</p>
+                        <p><?php echo $item['Quantity']; ?> × <?php echo number_format($item['Price'], 0, ',', '.'); ?>VNĐ
+                        </p>
                       </div>
                     </div>
                   <?php endforeach; ?>
@@ -484,7 +487,7 @@ $cart_count = count($cart_items);
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-
+                        
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);
@@ -630,25 +633,30 @@ $cart_count = count($cart_items);
             <div class="form-row">
               <div class="form-group">
                 <label for="fullname">Họ và tên</label>
-                <input type="text" id="fullname" name="fullname" class="form-control" required>
+                <input type="text" id="fullname" name="fullname" class="form-control" required
+                  value="<?php echo isset($errors['fullname']) ? '' : htmlspecialchars($_POST['fullname'] ?? ''); ?>">
                 <p class="error-message"><?php echo $errors['fullname'] ?? ''; ?></p>
               </div>
               <div class="form-group">
                 <label for="username">Tên đăng nhập</label>
-                <input type="text" id="username" name="username" class="form-control" required>
+                <input type="text" id="username" name="username" class="form-control" required
+                  value="<?php echo isset($errors['username']) ? '' : htmlspecialchars($_POST['username'] ?? ''); ?>">
                 <p class="error-message"><?php echo $errors['username'] ?? ''; ?></p>
               </div>
             </div>
 
             <div class="form-group">
               <label for="email">Địa chỉ email</label>
-              <input type="email" id="email" name="email" class="form-control" required>
+              <input type="text" id="email" required name="email" class="form-control" 
+                value="<?php echo isset($errors['email']) ? '' : htmlspecialchars($_POST['email'] ?? ''); ?>">
               <p class="error-message"><?php echo $errors['email'] ?? ''; ?></p>
             </div>
 
             <div class="form-group">
               <label for="phone">Số điện thoại</label>
-              <input type="text" id="phone" name="phone" class="form-control" required>
+              <input type="text" id="phone" name="phone" class="form-control" required
+                value="<?php echo isset($errors['phone']) ? '' : htmlspecialchars($_POST['phone'] ?? ''); ?>">
+
               <p class="error-message"><?php echo $errors['phone'] ?? ''; ?></p>
             </div>
 
@@ -656,7 +664,7 @@ $cart_count = count($cart_items);
               <div class="form-group">
                 <label for="province">Tỉnh/Thành phố</label>
                 <select id="province" name="province" class="form-control">
-                  <option value="">Chọn một tỉnh</option>
+                <option value="">Chọn một tỉnh</option>
                   <?php
                   if ($provinceResult->num_rows > 0) {
                     while ($row = $provinceResult->fetch_assoc()) {
@@ -686,7 +694,9 @@ $cart_count = count($cart_items);
 
             <div class="form-group">
               <label for="address">Địa chỉ</label>
-              <input type="text" id="address" name="address" class="form-control" required>
+              <input type="text" id="address" name="address" class="form-control" required
+                value="<?php echo isset($errors['address']) ? '' : htmlspecialchars($_POST['address'] ?? ''); ?>">
+
               <p class="error-message"><?php echo $errors['address'] ?? ''; ?></p>
             </div>
 
@@ -817,8 +827,8 @@ $cart_count = count($cart_items);
 
   <script src="../src/js/jquery-3.7.1.min.js"></script>
   <script>
-    $(document).ready(function() {
-      $('#province').on('change', function() {
+    $(document).ready(function () {
+      $('#province').on('change', function () {
         var province_id = $(this).val();
         if (province_id) {
           $.ajax({
@@ -828,9 +838,9 @@ $cart_count = count($cart_items);
             data: {
               province_id: province_id
             },
-            success: function(data) {
+            success: function (data) {
               $('#district').empty().append('<option value="">Chọn quận/huyện</option>');
-              $.each(data, function(i, district) {
+              $.each(data, function (i, district) {
                 $('#district').append($('<option>', {
                   value: district.id,
                   text: district.name
@@ -845,7 +855,7 @@ $cart_count = count($cart_items);
         }
       });
 
-      $('#district').on('change', function() {
+      $('#district').on('change', function () {
         var district_id = $(this).val();
         if (district_id) {
           $.ajax({
@@ -855,9 +865,9 @@ $cart_count = count($cart_items);
             data: {
               district_id: district_id
             },
-            success: function(data) {
+            success: function (data) {
               $('#wards').empty().append('<option value="">Chọn phường/xã</option>');
-              $.each(data, function(i, wards) {
+              $.each(data, function (i, wards) {
                 $('#wards').append($('<option>', {
                   value: wards.id,
                   text: wards.name

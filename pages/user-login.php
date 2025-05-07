@@ -1,5 +1,6 @@
 <?php
 session_start();
+$redirect = $_GET['redirect'] ?? '../index.php';
 require_once('../src/php/token.php');
 require_once('../src/php/check_token_v1.php');
 require __DIR__ . '/../src/Jwt/vendor/autoload.php';
@@ -7,13 +8,14 @@ require __DIR__ . '/../src/Jwt/vendor/autoload.php';
 use Firebase\JWT\JWT;
 
 $errorMessage = '';
-if (isset($_GET['error'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['error'])) {
   if ($_GET['error'] == 'login_required') {
     $errorMessage = 'Bạn cần đăng nhập để vào giỏ hàng.';
   } elseif ($_GET['error'] == 'token_expired') {
     $errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
   }
 }
+
 
 
 $error = '';
@@ -60,7 +62,7 @@ if (isset($_POST["login"])) {
         $token = JWT::encode($payload, $key, 'HS256');
 
         setcookie("token", $token, time() + 3600, "/", "", true, true);
-        header("Location: ../index.php");
+        header("Location: $redirect");
         exit();
       }
     } else {
@@ -127,13 +129,20 @@ $cart_count = count($cart_items);
 ?>
 
 <script>
-  window.addEventListener('DOMContentLoaded', function() {
-    <?php if (!empty($errorMessage)): ?>
-      alert("<?php echo $errorMessage; ?>");
-    <?php endif; ?>
+  window.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorMessage = <?php echo json_encode($errorMessage); ?>;
+
+    if (errorMessage) {
+      alert(errorMessage);
+
+      // Xoá ?error=... khỏi URL sau khi đã hiện alert
+      urlParams.delete('error');
+      const redirectUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+      window.history.replaceState({}, '', redirectUrl);
+    }
   });
 </script>
-
 
 <!DOCTYPE html>
 <html>

@@ -728,64 +728,64 @@ $cart_count = count($cart_items);
         </div>
       </div>
     </div>
+  </div>
+  <!-- SECTION  -->
+  <div class="section">
+    <div class="img-21">
+      <img src="../assets/images/CAY21.jpg" alt="CAY21" />
+    </div>
+  </div>
 
-    <!-- SECTION  -->
-    <div class="section">
-      <div class="img-21">
-        <img src="../assets/images/CAY21.jpg" alt="CAY21" />
-      </div>
+  <!-- ARTICLE -->
+  <div class="article">
+    <div class="title-cart">
+      <p class="text-success h1 text-center text-uppercase">Hoàn tất</p>
     </div>
 
-    <!-- ARTICLE -->
-    <div class="article">
-      <div class="title-cart">
-        <p class="text-success h1 text-center text-uppercase">Hoàn tất</p>
+    <div class="infor-order bg-light">
+      <div class="status-order">
+        <img class="cart-2" src="../assets/images/cart.svg" alt="cart" />
+        <hr />
+        <img src="../assets/images/id-card.svg" class="id-01" alt="id-card" />
+        <hr />
+        <img src="../assets/images/circle-check.svg" class="id-02" alt="ccheck" />
       </div>
 
-      <div class="infor-order bg-light">
-        <div class="status-order">
-          <img class="cart-2" src="../assets/images/cart.svg" alt="cart" />
-          <hr />
-          <img src="../assets/images/id-card.svg" class="id-01" alt="id-card" />
-          <hr />
-          <img src="../assets/images/circle-check.svg" class="id-02" alt="ccheck" />
-        </div>
+      <div class="noti-order-success">
+        <p class="text-uppercase fw-bold w-100 text-center">
+          bạn đã đặt hàng thành công
+        </p>
+      </div>
 
-        <div class="noti-order-success">
-          <p class="text-uppercase fw-bold w-100 text-center">
-            bạn đã đặt hàng thành công
+      <div class="noti-thanks">
+        <p class="fs-4">
+          THE TREE xin cảm ơn các bạn đã ủng hộ chúng tôi trong suốt thời gian
+          qua.
+        </p>
+      </div>
+
+      <div class="invoice-container">
+        <h2>HÓA ĐƠN MUA HÀNG</h2>
+        <?php
+        // Hiển thị thông tin đơn hàng từ database
+        if ($order): ?>
+          <p><strong>Mã hóa đơn:</strong> <?= htmlspecialchars($order['OrderID']) ?></p>
+          <p><strong>Ngày mua:</strong> <?= htmlspecialchars($order['DateGeneration']) ?></p>
+          <p><strong>Tên khách hàng:</strong> <?= htmlspecialchars($order['CustomerName']) ?></p>
+          <p><strong>Số điện thoại:</strong> <?= htmlspecialchars($order['Phone']) ?></p>
+          <p><strong>Địa chỉ:</strong> <?= htmlspecialchars($order['Address']) ?>,
+            <?= htmlspecialchars($order['WardName']) ?>,
+            <?= htmlspecialchars($order['DistrictName']) ?>,
+            <?= htmlspecialchars($order['ProvinceName']) ?>
           </p>
-        </div>
-
-        <div class="noti-thanks">
-          <p class="fs-4">
-            THE TREE xin cảm ơn các bạn đã ủng hộ chúng tôi trong suốt thời gian
-            qua.
-          </p>
-        </div>
-
-        <div class="invoice-container">
-          <h2>HÓA ĐƠN MUA HÀNG</h2>
-          <?php
-          // Hiển thị thông tin đơn hàng từ database
-          if ($order): ?>
-            <p><strong>Mã hóa đơn:</strong> <?= htmlspecialchars($order['OrderID']) ?></p>
-            <p><strong>Ngày mua:</strong> <?= htmlspecialchars($order['DateGeneration']) ?></p>
-            <p><strong>Tên khách hàng:</strong> <?= htmlspecialchars($order['CustomerName']) ?></p>
-            <p><strong>Số điện thoại:</strong> <?= htmlspecialchars($order['Phone']) ?></p>
-            <p><strong>Địa chỉ:</strong> <?= htmlspecialchars($order['Address']) ?>,
-              <?= htmlspecialchars($order['WardName']) ?>,
-              <?= htmlspecialchars($order['DistrictName']) ?>,
-              <?= htmlspecialchars($order['ProvinceName']) ?>
-            </p>
-
+          <div class="table-scroll">
             <table>
               <thead>
                 <tr>
                   <th>Sản phẩm</th>
                   <th>Hình ảnh</th>
-                  <th>Số lượng</th>
-                  <th>Giá</th>
+                  <th id="solg">Số lượng</th>
+                  <th id="gia">Giá</th>
                   <th>Thành tiền</th>
                 </tr>
               </thead>
@@ -795,97 +795,100 @@ $cart_count = count($cart_items);
                     <tr>
                       <td><?= htmlspecialchars($row['ProductName']) ?></td>
                       <td><img src="<?= ".." . htmlspecialchars($row['ImageURL']) ?>" alt="<?= htmlspecialchars($row['ProductName']) ?>" width="80"></td>
-                      <td><?= $row['Quantity'] ?></td>
-                      <td><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
+                      <td id="solg-02"><?= $row['Quantity'] ?></td>
+                      <td id="gia-02"><?= number_format($row['UnitPrice'], 0, ',', '.') ?>đ</td>
                       <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?>đ</td>
                     </tr>
                 <?php endwhile;
                 endif; ?>
               </tbody>
             </table>
-            <div class="total" style="color: red; font-size: 23px;">
-              <strong>Tổng cộng: </strong> <?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ
-            </div>
-          <?php else: ?>
-            <p>Không tìm thấy thông tin đơn hàng.</p>
-          <?php endif; ?>
-        </div>
+          </div>
+          <div class="total" style="color: red; font-size: 23px;">
+            <strong>Tổng cộng: </strong> <?= number_format($order['TotalAmount'], 0, ',', '.') ?>đ
+          </div>
+        <?php else: ?>
+          <p>Không tìm thấy thông tin đơn hàng.</p>
+        <?php endif; ?>
+      </div>
 
-        <div class="continue-shopping">
-          <a href="../index.php" class="btn btn-success" style="margin: 17px 0;">Tiếp tục mua sắm</a>
-        </div>
+      <div class="continue-shopping">
+        <a href="../index.php" class="btn btn-success" style="margin: 17px 0;">Tiếp tục mua sắm</a>
+      </div>
 
+    </div>
+  </div>
+    <style>
+
+    </style>
+  <!-- FOOTER  -->
+  <footer class="footer">
+    <div class="footer-column">
+      <h3>The Tree</h3>
+      <ul>
+        <li><a href="#">Cây dễ chăm</a></li>
+        <li><a href="#">Cây văn phòng</a></li>
+        <li><a href="#">Cây dưới nước</a></li>
+        <li><a href="#">Cây để bàn</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h3>Khám phá</h3>
+      <ul>
+        <li><a href="#">Cách chăm sóc cây</a></li>
+        <li><a href="#">Lợi ích của cây xanh</a></li>
+        <li><a href="#">Cây phong thủy</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h3>Khám phá thêm từ The Tree</h3>
+      <ul>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Cộng tác viên</a></li>
+        <li><a href="#">Liên hệ</a></li>
+        <li><a href="#">Câu hỏi thường gặp</a></li>
+        <li><a href="#">Đăng nhập</a></li>
+      </ul>
+
+    </div>
+
+    <div class="footer-column newsletter">
+
+
+      <h3>Theo dõi chúng tôi</h3>
+      <div class="social-icons">
+        <a href="#" aria-label="Pinterest">
+          <i class="fa-brands fa-pinterest"></i>
+        </a>
+        <a href="#" aria-label="Facebook">
+          <i class="fa-brands fa-facebook"></i>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+        <a href="#" aria-label="Twitter">
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
       </div>
     </div>
 
-    <!-- FOOTER  -->
-    <footer class="footer">
-      <div class="footer-column">
-        <h3>The Tree</h3>
-        <ul>
-          <li><a href="#">Cây dễ chăm</a></li>
-          <li><a href="#">Cây văn phòng</a></li>
-          <li><a href="#">Cây dưới nước</a></li>
-          <li><a href="#">Cây để bàn</a></li>
-        </ul>
+    <div class="copyright">
+      © 2021 c01.nhahodau
+
+      <div class="policies">
+        <a href="#">Điều khoản dịch vụ</a>
+        <span>|</span>
+        <a href="#">Chính sách bảo mật</a>
+        <span>|</span>
+        <a href="#">Chính sách hoàn tiền</a>
+        <span>|</span>
+        <a href="#">Chính sách trợ năng</a>
       </div>
-
-      <div class="footer-column">
-        <h3>Khám phá</h3>
-        <ul>
-          <li><a href="#">Cách chăm sóc cây</a></li>
-          <li><a href="#">Lợi ích của cây xanh</a></li>
-          <li><a href="#">Cây phong thủy</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-column">
-        <h3>Khám phá thêm từ The Tree</h3>
-        <ul>
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Cộng tác viên</a></li>
-          <li><a href="#">Liên hệ</a></li>
-          <li><a href="#">Câu hỏi thường gặp</a></li>
-          <li><a href="#">Đăng nhập</a></li>
-        </ul>
-
-      </div>
-
-      <div class="footer-column newsletter">
-
-
-        <h3>Theo dõi chúng tôi</h3>
-        <div class="social-icons">
-          <a href="#" aria-label="Pinterest">
-            <i class="fa-brands fa-pinterest"></i>
-          </a>
-          <a href="#" aria-label="Facebook">
-            <i class="fa-brands fa-facebook"></i>
-          </a>
-          <a href="#" aria-label="Instagram">
-            <i class="fa-brands fa-instagram"></i>
-          </a>
-          <a href="#" aria-label="Twitter">
-            <i class="fa-brands fa-x-twitter"></i>
-          </a>
-        </div>
-      </div>
-
-      <div class="copyright">
-        © 2021 c01.nhahodau
-
-        <div class="policies">
-          <a href="#">Điều khoản dịch vụ</a>
-          <span>|</span>
-          <a href="#">Chính sách bảo mật</a>
-          <span>|</span>
-          <a href="#">Chính sách hoàn tiền</a>
-          <span>|</span>
-          <a href="#">Chính sách trợ năng</a>
-        </div>
-      </div>
-      <!-- xong footer  -->
-    </footer>
+    </div>
+    <!-- xong footer  -->
+  </footer>
 </body>
 
 </html>
