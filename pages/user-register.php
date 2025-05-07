@@ -41,9 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $checkEmail->close();
 
   // Các kiểm tra đầu vào
-  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+  if (!preg_match("/^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$/", $email)) {
     $errors['email'] = "Email không hợp lệ!";
-  } 
+  }
   if (!preg_match("/^[a-z0-9_-]{3,16}$/", $username)) {
     $errors['username'] = "Tên đăng nhập không hợp lệ!";
   }
