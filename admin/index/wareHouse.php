@@ -972,77 +972,136 @@ session_start();
       }
     });
 
-    function searchProducts() {
+    function searchProducts(page = 1) {
       const searchInput = document.querySelector('.search-input');
       const searchTerm = searchInput.value.trim();
       const tableBody = document.getElementById('productsBody');
+      const paginationContainer = document.querySelector('.pagination');
 
-      // Show loading state
+      // Hiển thị trạng thái đang tìm kiếm
       tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Đang tìm kiếm...</td></tr>';
 
-      // Create form data
       const formData = new FormData();
       formData.append('search', searchTerm);
+      formData.append('page', page);
 
-      // Send AJAX request
       fetch('../php/search-products.php', {
           method: 'POST',
           body: formData
         })
         .then(response => response.json())
+        .catch(error => {
+          console.error('Parse Error:', error);
+          return { error: 'Invalid JSON response' };
+        })
         .then(data => {
           if (data.error) {
-            tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">${data.error}</td></tr>`;
+            console.error('Server Error:', data.error);
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Có lỗi xảy ra. Vui lòng thử lại</td></tr>`;
+            paginationContainer.innerHTML = '';
             return;
           }
 
-          if (data.products.length === 0) {
+          if (!data.products || data.products.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Không tìm thấy sản phẩm nào phù hợp</td></tr>';
+            paginationContainer.innerHTML = '';
             return;
           }
 
-          // Clear table body
+          // Hiển thị sản phẩm
           tableBody.innerHTML = '';
-
-          // Add products to table
           data.products.forEach(product => {
             const row = document.createElement('tr');
             row.innerHTML = `
-        <td><img src="${product.image}" alt="${product.name}" style="width: 100px; height: 100px; object-fit: cover;"></td>
-        <td>${product.name}</td>
-        <td>${product.category}</td>
-        <td>${product.price}</td>
-        <td class="actions">
-          <button class="btn btn-warning btn-sm" onclick="editProduct(${product.id})">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-        </td>
-      `;
+              <td><img src="${product.image}" alt="${product.name}" style="width: 100px; height: 100px; object-fit: cover;"></td>
+              <td>${product.name}</td>
+              <td>${product.category}</td>
+              <td>${product.price}</td>
+              <td class="actions">
+                <button class="btn btn-warning btn-sm" onclick="editProduct(${product.id})">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+              </td>
+            `;
             tableBody.appendChild(row);
           });
+
+          // Tạo phân trang chỉ khi có nhiều hơn 1 trang
+          if (data.pagination.totalPages > 1) {
+            let paginationHTML = '<ul class="pagination justify-content-center">';
+
+            // Nút Previous
+            if (data.pagination.currentPage > 1) {
+              paginationHTML += `
+                <li class="page-item">
+                  <a class="page-link" href="#" onclick="searchProducts(${data.pagination.currentPage - 1}); return false;"><<</a>
+                </li>`;
+            }
+
+            // Hiển thị các số trang
+            for (let i = 1; i <= data.pagination.totalPages; i++) {
+              if (
+                i === 1 || // Trang đầu
+                i === data.pagination.totalPages || // Trang cuối
+                (i >= data.pagination.currentPage - 2 && i <= data.pagination.currentPage + 2) // 2 trang trước và sau trang hiện tại
+              ) {
+                paginationHTML += `
+                  <li class="page-item ${i === data.pagination.currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="searchProducts(${i}); return false;">${i}</a>
+                  </li>`;
+              } else if (
+                i === data.pagination.currentPage - 3 ||
+                i === data.pagination.currentPage + 3
+              ) {
+                paginationHTML += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+              }
+            }
+
+            // Nút Next
+            if (data.pagination.currentPage < data.pagination.totalPages) {
+              paginationHTML += `
+                <li class="page-item">
+                  <a class="page-link" href="#" onclick="searchProducts(${data.pagination.currentPage + 1}); return false;">>></a>
+                </li>`;
+            }
+
+            paginationHTML += '</ul>';
+            paginationContainer.innerHTML = paginationHTML;
+          } else {
+            paginationContainer.innerHTML = ''; // Xóa phân trang nếu chỉ có 1 trang
+          }
         })
         .catch(error => {
-          tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Có lỗi xảy ra: ${error.message}</td></tr>`;
+          console.error('Network Error:', error);
+          tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Lỗi kết nối: ${error.message}</td></tr>`;
+          paginationContainer.innerHTML = '';
         });
     }
 
-    // Add event listener for Enter key
-    document.querySelector('.search-input').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        searchProducts();
-      }
-    });
-
-    // Add event listener for search button
-    document.querySelector('.search-btn').addEventListener('click', function() {
-      searchProducts();
-    });
-
-    // Add event listener for input changes with debounce
+    // Thêm debounce để tránh gọi API quá nhiều
     let searchTimeout;
     document.querySelector('.search-input').addEventListener('input', function() {
       clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(searchProducts, 500);
+      searchTimeout = setTimeout(() => searchProducts(1), 300); // Giảm thời gian delay xuống 300ms
+    });
+
+    // Xử lý khi nhấn Enter
+    document.querySelector('.search-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        clearTimeout(searchTimeout);
+        searchProducts(1);
+      }
+    });
+
+    // Xử lý khi nhấn nút tìm kiếm
+    document.querySelector('.search-btn').addEventListener('click', function() {
+      clearTimeout(searchTimeout);
+      searchProducts(1);
+    });
+
+    // Load tất cả sản phẩm khi trang được tải
+    document.addEventListener('DOMContentLoaded', function() {
+      searchProducts(1);
     });
   </script>
 
