@@ -3,22 +3,24 @@
 /* Smartphones (min >= 320px) (max <480px) */
 @media only screen and (min-device-width: 20em) and (max-device-width: 29.9375em) {
   .header {
-    left: -13px;
-    margin-left: 13px;
+
+      left: 1px;
+      margin-left: 0px;
+
   }
 
   .index-menu {
-    display: inline-block;
-    position: relative;
+    display: block;
+    position: fixed;
     height: auto;
-    top: 24px;
-    left: 20px;
+    top: 47px;
+    left: 14px;
     background-color: white;
-    width: 84px;
+    width: 100%;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: rgb(176, 176, 176);
-  }
+}
 
   .header-middle-section {
     width: 50%;
@@ -53,7 +55,8 @@
   }
 
   .container-function-selection {
-    margin-left: 0px;
+    margin-left: 5px;
+    width:73px;
   }
 
   .offcanvas-body {
@@ -132,10 +135,16 @@
     white-space: nowrap;
   }
 
-  td.total,
-  td:nth-child(5) {
-    display: none;
-  }
+  .product-details-content {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    /* max-width: 800px; */
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
 
 
   .filter-section {
@@ -154,11 +163,11 @@
   .container-main-warehouse {
     display: flex;
     flex-direction: column;
-    height: 1000px;
+    /* height: 1000px; */
     margin-top: 115px;
     padding: 1px;
-    margin-left: 1rem;
-    max-width: 1200px;
+    margin-left: 10px;
+    width: 90%;
 }
   .warehouse-management {
     background: #fff;
@@ -177,6 +186,25 @@ font-size: 15px;
 }
 .product-info p { 
   font-size: 13px;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-direction: column;
+  width: 85%;
+}
+.search-container {
+  display: flex;
+  margin-bottom: 20px;
+
+  width: 90%;
+  margin: auto;
+}
+.products-section {
+  flex: 1;
+  width: 60%;
 }
 }
 
@@ -221,8 +249,8 @@ font-size: 15px;
     margin: 0 auto;
     padding: 10px;
   }
-  .container h3,p{
-    font-size: 17px;
+  .container h3,p {
+    font-size: 13px;
   }
   .container h1 {
     font-size: 18px;

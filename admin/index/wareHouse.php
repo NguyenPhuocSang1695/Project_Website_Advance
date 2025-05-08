@@ -37,7 +37,7 @@ if ($product_id) {
   <link href="../style/main.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../style/responsiveWarehouse.css">
+  <link rel="stylesheet" href="../style/responsiveWareHouse.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     /* Popup overlay cho thêm sản phẩm */
@@ -290,11 +290,7 @@ if ($product_id) {
     }
 
     /* Mobile responsive */
-    @media (max-width: 600px) {
-      .card {
-        width: 90%;
-      }
-    }
+  
 
     .category-note {
       font-size: 12px;
