@@ -223,39 +223,40 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['remove_product_id'])
   }
 }
 
-// Cập nhật giá sản phẩm và Loại bỏ sản phẩm  theo database mới nhất
+// Cập nhật session giỏ hàng để loại bỏ sản phẩm ẩn
 if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
   $cart_product_ids = array_column($_SESSION['cart'], 'ProductID');
-
   $placeholders = implode(',', array_fill(0, count($cart_product_ids), '?'));
-  $sql = "SELECT ProductID, Price FROM products WHERE ProductID IN ($placeholders)";
-  $stmt = $conn->prepare($sql);
 
+  $sql = "SELECT ProductID, Status FROM products WHERE ProductID IN ($placeholders)";
+  $stmt = $conn->prepare($sql);
   if ($stmt) {
     $stmt->bind_param(str_repeat('i', count($cart_product_ids)), ...$cart_product_ids);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Tạo một mảng [ProductID => Price]
-    $price_map = [];
+    $status_map = [];
     while ($row = $result->fetch_assoc()) {
-      $price_map[$row['ProductID']] = $row['Price'];
+      $status_map[$row['ProductID']] = $row['Status'];
     }
+    $stmt->close();
 
-    // Cập nhật lại giá trong giỏ hàng
+    // Loại bỏ sản phẩm ẩn khỏi session giỏ hàng
     foreach ($_SESSION['cart'] as $key => $item) {
       $pid = $item['ProductID'];
-      if (isset($price_map[$pid])) {
-        $_SESSION['cart'][$key]['Price'] = $price_map[$pid];
+      if (isset($status_map[$pid]) && $status_map[$pid] === 'hidden') {
+        unset($_SESSION['cart'][$key]);
       }
     }
-
-    $stmt->close();
+    $_SESSION['cart'] = array_values($_SESSION['cart']); // Sắp xếp lại chỉ mục
   }
 }
-// Gián lại biến hiển thị
-$cart_items = $_SESSION['cart'] ?? [];
-$cart_count = count($cart_items);
+
+// Tính lại tổng số lượng sản phẩm trong giỏ hàng
+$cart_count = 0;
+foreach ($_SESSION['cart'] as $item) {
+  $cart_count += $item['Quantity'];
+}
 
 // Tính tổng SAU khi đã cập nhật giá
 $total_amount = 0;
