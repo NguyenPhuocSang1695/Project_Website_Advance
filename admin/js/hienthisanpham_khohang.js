@@ -396,3 +396,117 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener("DOMContentLoaded", renderProducts);
+
+function searchProducts(page = 1, specificProductId = null) {
+  const searchInput = document.querySelector('.search-input');
+  const searchTerm = searchInput.value.trim();
+  const tableBody = document.getElementById('productsBody');
+  const paginationContainer = document.querySelector('.pagination');
+
+  tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Đang tìm kiếm...</td></tr>';
+
+  const formData = new FormData();
+  formData.append('search', searchTerm);
+  formData.append('page', page);
+  if (specificProductId) {
+    formData.append('product_id', specificProductId);
+  }
+
+  fetch('../php/search-products.php', {
+    method: 'POST',
+    body: formData
+  })
+    .then(response => response.json())
+    .catch(error => {
+      console.error('Parse Error:', error);
+      return { error: 'Invalid JSON response' };
+    })
+    .then(data => {
+      if (data.error) {
+        console.error('Server Error:', data.error);
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Có lỗi xảy ra. Vui lòng thử lại</td></tr>`;
+        paginationContainer.innerHTML = '';
+        return;
+      }
+
+      // Hiển thị sản phẩm
+      tableBody.innerHTML = '';
+      if (!data.products || data.products.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Không tìm thấy sản phẩm nào phù hợp</td></tr>';
+        paginationContainer.innerHTML = '';
+        return;
+      }
+
+      data.products.forEach(product => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><img src="${product.image}" alt="${product.name}" style="width: 100px; height: 100px; object-fit: cover;"></td>
+          <td>${product.name}</td>
+          <td>${product.category}</td>
+          <td>${product.price}</td>
+          <td class="actions">
+            <button class="btn btn-warning btn-sm" onclick="editProduct(${product.id})">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+
+      // Xử lý phân trang
+      updatePagination(data.pagination);
+    })
+    .catch(error => {
+      console.error('Network Error:', error);
+      tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Lỗi kết nối: ${error.message}</td></tr>`;
+      paginationContainer.innerHTML = '';
+    });
+}
+
+function updatePagination(pagination) {
+  const paginationContainer = document.querySelector('.pagination');
+  if (!pagination || pagination.totalPages <= 1) {
+    paginationContainer.innerHTML = '';
+    return;
+  }
+
+  let paginationHTML = '<ul class="pagination justify-content-center">';
+
+  // Nút Previous
+  if (pagination.currentPage > 1) {
+    paginationHTML += `
+      <li class="page-item">
+        <a class="page-link" href="#" onclick="searchProducts(${pagination.currentPage - 1}); return false;"><<</a>
+      </li>`;
+  }
+
+  // Hiển thị các số trang
+  for (let i = 1; i <= pagination.totalPages; i++) {
+    if (
+      i === 1 ||
+      i === pagination.totalPages ||
+      (i >= pagination.currentPage - 2 && i <= pagination.currentPage + 2)
+    ) {
+      paginationHTML += `
+        <li class="page-item ${i === pagination.currentPage ? 'active' : ''}">
+          <a class="page-link" href="#" onclick="searchProducts(${i}); return false;">${i}</a>
+        </li>`;
+    } else if (
+      i === pagination.currentPage - 3 ||
+      i === pagination.currentPage + 3
+    ) {
+      paginationHTML += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+    }
+  }
+
+  // Nút Next
+  if (pagination.currentPage < pagination.totalPages) {
+    paginationHTML += `
+      <li class="page-item">
+        <a class="page-link" href="#" onclick="searchProducts(${pagination.currentPage + 1}); return false;">>></a>
+      </li>`;
+  }
+
+  paginationHTML += '</ul>';
+  paginationContainer.innerHTML = paginationHTML;
+}
