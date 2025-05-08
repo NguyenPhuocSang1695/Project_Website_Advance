@@ -209,7 +209,6 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
 
 <!DOCTYPE html>
 <html lang="vi">
- 
 <head>
   <title>Đơn Hàng Số <?php echo $orderDetailID; ?></title>
   <meta charset="UTF-8">
@@ -225,6 +224,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/reponsiveOrder-detail.css">
   <style>
+    /* Style cho bảng và container */
     .table-container {
       padding: 0;
       overflow-x: auto;
@@ -267,7 +267,6 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
       background: var(--secondary-color);
     }
 
-  
     .table-container thead th {
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
@@ -325,6 +324,23 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
 
     .shipping-details {
       padding: 1rem;
+    }
+
+    /* Style cho product image và name */
+    .product-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-image {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+    }
+
+    .product-name {
+      font-weight: 500;
     }
   </style>
 </head>
@@ -602,15 +618,15 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                     <tr>
                       <td colspan="4">Không có sản phẩm nào trong đơn hàng này.</td>
                     </tr>
-                  <?php else: ?>
+                  <?php else  : ?>
                     <?php foreach ($orderDetails as $detail): ?>
-                      <tr>
-                        <td style="text-align:center">
-                          <div style="display: flex; align-items: center; gap: 10px;">
-                            <img src="<?php echo '../..' . $detail['ImageURL']; ?>" alt="Product Image" style="width: 50px; height: 50px; object-fit: cover;">
-                            <div class="product-info">
-                              <span class="product-name"><?php echo htmlspecialchars($detail['ProductName']); ?></span>
-                            </div>
+                      <tr onclick="window.location='wareHouse.php?product_id=<?php echo $detail['ProductID']; ?>'" style="cursor: pointer;">
+                        <td style="text-align:left">
+                          <div class="product-container">
+                            <img src="<?php echo '../..' . $detail['ImageURL']; ?>" alt="Product Image" class="product-image">
+                            <span class="product-name">
+                              <?php echo htmlspecialchars($detail['ProductName']); ?>
+                            </span>
                           </div>
                         </td>
                         <td style="text-align:center"><?php echo $detail['Quantity']; ?></td>
@@ -672,5 +688,4 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
     </div>
   </div>
 </body>
-
 </html>
