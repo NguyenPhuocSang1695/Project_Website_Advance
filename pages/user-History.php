@@ -566,7 +566,7 @@ $cart_count = count($cart_items);
               <tbody>
                 <?php if (empty($orderHistory)): ?>
                   <tr>
-                    <td colspan="3" class="text-center">Chưa có sản phẩm</td>
+                    <td colspan="3" class="text-center">Chưa có đơn hàng</td>
                   </tr>
                 <?php else: ?>
                   <?php foreach ($orderHistory as $order): ?>
