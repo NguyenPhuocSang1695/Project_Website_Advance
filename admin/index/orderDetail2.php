@@ -618,7 +618,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                     <tr>
                       <td colspan="4">Không có sản phẩm nào trong đơn hàng này.</td>
                     </tr>
-                  <?php else: ?>
+                  <?php else  : ?>
                     <?php foreach ($orderDetails as $detail): ?>
                       <tr onclick="window.location='wareHouse.php?product_id=<?php echo $detail['ProductID']; ?>'" style="cursor: pointer;">
                         <td style="text-align:left">
