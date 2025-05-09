@@ -217,7 +217,5 @@ function showSuccessPopup(userName) {
 	    <p>Chuyển hướng đến trang quản lý...</p>
 	</div>
 
-
-
 </body>
 </html>

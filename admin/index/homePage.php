@@ -1,5 +1,6 @@
 <?php
 include '../php/connect.php';
+include '../php/check_session.php';
 ?>
 
 

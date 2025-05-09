@@ -1,5 +1,5 @@
 <?php
-echo "sang";
+include '../php/check_session.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

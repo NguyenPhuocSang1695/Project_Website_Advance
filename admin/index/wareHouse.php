@@ -1,4 +1,5 @@
 <?php
+include '../php/check_session.php';
 session_name('admin_session');
 session_start();
 
