@@ -1,62 +1,71 @@
 /* -----------------Phan responsive--------------- */
 @media only screen and (max-width: 47.9375em) {
   .container-main {
-      display: flex;
-      flex-direction: column;
-      margin-top: 98px;
-      justify-content: space-around;
-      margin-right: 10px;
-      margin-left: 0;
-      
+    display: flex;
+    flex-direction: column;
+    margin-top: 98px;
+    justify-content: space-around;
+    margin-right: 10px;
+    margin-left: 0;
+
   }
+
   .container-main {
-      
-      margin-right: 10px;
-      margin-top: 98px;
+
+    margin-right: 10px;
+    margin-top: 98px;
   }
 
   .overview-order {
-    width: 100%;
+    /* width: 100%; */
     padding: 8px;
     font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: fit-content;
+    height: fit-content;
 
   }
 
   .info-overview-order {
-      margin-left: 0;
-      text-align: center;
-      font-size: 12px;
-      font-size: 12px;
+    margin-left: 0;
+    text-align: center;
+    font-size: 12px;
+    font-size: 12px;
   }
 
   .button-handle {
-      width: 100%;
-      margin-left: 0;
-      margin-top: 10px;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
   }
 
   .notice {
-      font-size: 24px;
-      margin-top: 20px;
-      padding: 0 10px;
+    font-size: 24px;
+    margin-top: 20px;
+    padding: 0 10px;
   }
+
   .avatar-customer {
-      height: 50px;
-      width: 50px;
+    height: 50px;
+    width: 50px;
   }
 }
-@media (max-width: 1024px) { 
+
+@media (max-width: 1024px) {
   .container-main {
-      display: flex;
-      flex-direction: column;
-      margin-top: 98px;
-      margin-left: 70px;
-      justify-content: space-around;
-      margin-right: 10px;
-      margin-left: 0;
-      
+    display: flex;
+    flex-direction: column;
+    margin-top: 98px;
+    margin-left: 70px;
+    justify-content: space-around;
+    margin-right: 10px;
+    margin-left: 0;
+
   }
 }
+
 /* Smartphones (min >= 320px) (max <480px) */
 @media only screen and (min-device-width: 20em) and (max-device-width: 29.9375em) {
   .header {
@@ -186,7 +195,9 @@
     display: none;
   }
 
-  tbody, tr, td {
+  tbody,
+  tr,
+  td {
     display: block;
     width: 100%;
   }
@@ -235,6 +246,7 @@
 
 /* Smartphone & Mobile (< 748px) */
 @media only screen and (max-width: 47.9375em) {
+
   .name-employee p,
   .position-employee,
   .bell-notification {
@@ -274,9 +286,12 @@
     margin: 0 auto;
     padding: 10px;
   }
-  .container h3,p{
+
+  .container h3,
+  p {
     font-size: 17px;
   }
+
   .container h1 {
     font-size: 18px;
   }
@@ -336,24 +351,28 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   .overview-card {
-      background-color: #ffffff;
-      padding: 4px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      transition: transform 0.2s ease;
-}
-.order-section, .inventory-section {
-  margin-bottom: 30px;
-  margin-top: 2rem;
-}
-.dashboard-overview {
-  display: flex;
-  gap: 15px;
-  margin-top: 13px;
-  flex-direction: row;
-}
+    background-color: #ffffff;
+    padding: 4px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+  }
+
+  .order-section,
+  .inventory-section {
+    margin-bottom: 30px;
+    margin-top: 2rem;
+  }
+
+  .dashboard-overview {
+    display: flex;
+    gap: 15px;
+    margin-top: 13px;
+    flex-direction: row;
+  }
 }
 
 /* Tablet (740px - 1023px) */
@@ -407,9 +426,11 @@
   .main-content {
     width: 30%;
   }
+
   .more-detail {
     margin-left: 22rem;
   }
+
   .detail-info span,
   .hide-index-tablet,
   .filter-option {
@@ -448,20 +469,21 @@
   .container h1 {
     font-size: 22px;
   }
+
   .order-section,
   .inventory-section {
     width: 90%;
     margin-left: 4rem;
     margin-top: 2rem;
   }
+
   .dashboard-overview {
-    display: flex
-;
+    display: flex;
     gap: 41px;
     margin-top: 63px;
     flex-direction: row;
     margin-left: 4rem;
-}
+  }
 }
 
 /* PC (>= 1024px) */
