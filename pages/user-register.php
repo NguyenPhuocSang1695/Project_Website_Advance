@@ -261,7 +261,7 @@ $cart_count = count($cart_items);
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-                        
+
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);
@@ -328,7 +328,7 @@ $cart_count = count($cart_items);
             </div>
 
             <script>
-              document.getElementById("searchForm").addEventListener("submit", function (e) {
+              document.getElementById("searchForm").addEventListener("submit", function(e) {
                 e.preventDefault(); // Ngăn chặn reload trang
                 let searchInput = document.getElementById("searchInput").value;
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
@@ -487,7 +487,7 @@ $cart_count = count($cart_items);
                         <option value="">Chọn phân loại</option>
                         <?php
                         require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
-                        
+
                         $conn = connect_db();
                         $sql = "SELECT CategoryName FROM categories ORDER BY CategoryName ASC";
                         $result = $conn->query($sql);
@@ -647,7 +647,7 @@ $cart_count = count($cart_items);
 
             <div class="form-group">
               <label for="email">Địa chỉ email</label>
-              <input type="text" id="email" required name="email" class="form-control" 
+              <input type="text" id="email" required name="email" class="form-control"
                 value="<?php echo isset($errors['email']) ? '' : htmlspecialchars($_POST['email'] ?? ''); ?>">
               <p class="error-message"><?php echo $errors['email'] ?? ''; ?></p>
             </div>
@@ -664,7 +664,7 @@ $cart_count = count($cart_items);
               <div class="form-group">
                 <label for="province">Tỉnh/Thành phố</label>
                 <select id="province" name="province" class="form-control">
-                <option value="">Chọn một tỉnh</option>
+                  <option value="">Chọn một tỉnh</option>
                   <?php
                   if ($provinceResult->num_rows > 0) {
                     while ($row = $provinceResult->fetch_assoc()) {
@@ -700,12 +700,12 @@ $cart_count = count($cart_items);
               <p class="error-message"><?php echo $errors['address'] ?? ''; ?></p>
             </div>
 
-            <div class="checkbox-container">
+            <!-- <div class="checkbox-container">
               <input type="checkbox" id="terms">
               <label for="terms">Tôi đã đọc và đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách
                   bảo
                   mật</a></label>
-            </div>
+            </div> -->
             <div class="form-row">
               <div class="form-group">
                 <label for="password">Mật khẩu</label>
@@ -827,8 +827,8 @@ $cart_count = count($cart_items);
 
   <script src="../src/js/jquery-3.7.1.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#province').on('change', function () {
+    $(document).ready(function() {
+      $('#province').on('change', function() {
         var province_id = $(this).val();
         if (province_id) {
           $.ajax({
@@ -838,9 +838,9 @@ $cart_count = count($cart_items);
             data: {
               province_id: province_id
             },
-            success: function (data) {
+            success: function(data) {
               $('#district').empty().append('<option value="">Chọn quận/huyện</option>');
-              $.each(data, function (i, district) {
+              $.each(data, function(i, district) {
                 $('#district').append($('<option>', {
                   value: district.id,
                   text: district.name
@@ -855,7 +855,7 @@ $cart_count = count($cart_items);
         }
       });
 
-      $('#district').on('change', function () {
+      $('#district').on('change', function() {
         var district_id = $(this).val();
         if (district_id) {
           $.ajax({
@@ -865,9 +865,9 @@ $cart_count = count($cart_items);
             data: {
               district_id: district_id
             },
-            success: function (data) {
+            success: function(data) {
               $('#wards').empty().append('<option value="">Chọn phường/xã</option>');
-              $.each(data, function (i, wards) {
+              $.each(data, function(i, wards) {
                 $('#wards').append($('<option>', {
                   value: wards.id,
                   text: wards.name
