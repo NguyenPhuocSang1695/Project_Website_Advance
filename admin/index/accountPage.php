@@ -1,5 +1,7 @@
 <?php
+
 session_start();
+session_name('admin_session');
 if (!isset($_SESSION['Username'])) {
   header('Location: ../index.php');
   exit();
