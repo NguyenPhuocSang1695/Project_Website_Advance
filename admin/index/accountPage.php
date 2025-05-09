@@ -8,8 +8,6 @@ if (!isset($_SESSION['Username'])) {
 $avatarPath = ($_SESSION['Role'] === 'admin')
   ? "../../assets/images/admin.jpg"
   : "../../assets/images/sang.jpg";
-
-// include('../php/login_check.php');
 include('../php/connect.php');
 if ($myconn->connect_error) {
   die("Connection failed: " . $myconn->connect_error);
@@ -22,10 +20,11 @@ $address = '';
 $FullName = '';
 
 $sql = "SELECT u.Username, u.FullName, u.Email, u.Role, u.Phone, u.Address, 
-        p.name as province_name, d.name as district_name 
+        p.name as province_name, d.name as district_name , w.name as ward_name
         FROM users u
         JOIN province p ON u.Province = p.province_id
         JOIN district d ON u.District = d.district_id
+        join wards w ON u.Ward = w.wards_id
         WHERE u.Username = ?";
 
 $stmt = $myconn->prepare($sql);
@@ -40,7 +39,7 @@ if ($result->num_rows > 0) {
     $email = $row['Email'];
     $role = $row['Role'];
     $phone = $row['Phone'];
-    $address = $row['Address'] . ', ' . $row['district_name'] . ', ' . $row['province_name'];
+    $address = $row['Address'] . ', ' . $row['district_name'] . ', '. $row['ward_name'].', ' . $row['province_name'];
 ?>
 <!DOCTYPE html>
 <html lang="en">

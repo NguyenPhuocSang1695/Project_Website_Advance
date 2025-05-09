@@ -1,10 +1,29 @@
 <?php
 session_start();
+$product_id = isset($_GET['product_id']) ? $_GET['product_id'] : null;
+
+if ($product_id) {
+  echo "<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tự động tìm kiếm sản phẩm với ID cụ thể
+      fetch('../php/get-product.php?id=" . $product_id . "')
+        .then(response => response.json())
+        .then(data => {
+          if (data) {
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+              searchInput.value = data.ProductName;
+              searchProducts(1, " . $product_id . ");
+            }
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  </script>";
+}
 ?>
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
