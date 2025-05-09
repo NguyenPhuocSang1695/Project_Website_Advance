@@ -632,13 +632,13 @@ $cart_count = count($cart_items);
           <form method="POST" action="">
             <div class="form-row">
               <div class="form-group">
-                <label for="fullname">Họ và tên</label>
+                <label for="fullname">Họ và tên(*)</label>
                 <input type="text" id="fullname" name="fullname" class="form-control" required
                   value="<?php echo isset($errors['fullname']) ? '' : htmlspecialchars($_POST['fullname'] ?? ''); ?>">
                 <p class="error-message"><?php echo $errors['fullname'] ?? ''; ?></p>
               </div>
               <div class="form-group">
-                <label for="username">Tên đăng nhập</label>
+                <label for="username">Tên đăng nhập(*)</label>
                 <input type="text" id="username" name="username" class="form-control" required
                   value="<?php echo isset($errors['username']) ? '' : htmlspecialchars($_POST['username'] ?? ''); ?>">
                 <p class="error-message"><?php echo $errors['username'] ?? ''; ?></p>
@@ -646,14 +646,14 @@ $cart_count = count($cart_items);
             </div>
 
             <div class="form-group">
-              <label for="email">Địa chỉ email</label>
+              <label for="email">Địa chỉ email(*)</label>
               <input type="text" id="email" required name="email" class="form-control"
                 value="<?php echo isset($errors['email']) ? '' : htmlspecialchars($_POST['email'] ?? ''); ?>">
               <p class="error-message"><?php echo $errors['email'] ?? ''; ?></p>
             </div>
 
             <div class="form-group">
-              <label for="phone">Số điện thoại</label>
+              <label for="phone">Số điện thoại(*)</label>
               <input type="text" id="phone" name="phone" class="form-control" required
                 value="<?php echo isset($errors['phone']) ? '' : htmlspecialchars($_POST['phone'] ?? ''); ?>">
 
@@ -662,7 +662,7 @@ $cart_count = count($cart_items);
 
             <div class="form-row">
               <div class="form-group">
-                <label for="province">Tỉnh/Thành phố</label>
+                <label for="province">Tỉnh/Thành phố(*)</label>
                 <select id="province" name="province" class="form-control">
                   <option value="">Chọn một tỉnh</option>
                   <?php
@@ -676,7 +676,7 @@ $cart_count = count($cart_items);
                 <p class="error-message"><?php echo $errors['province'] ?? ''; ?></p>
               </div>
               <div class="form-group">
-                <label for="district">Quận/Huyện</label>
+                <label for="district">Quận/Huyện(*)</label>
                 <select id="district" name="district" class="form-control">
                   <option value="">Chọn quận/huyện</option>
                 </select>
@@ -685,7 +685,7 @@ $cart_count = count($cart_items);
             </div>
 
             <div class="form-group">
-              <label for="wards">Phường/Xã</label>
+              <label for="wards">Phường/Xã(*)</label>
               <select id="wards" name="wards" class="form-control">
                 <option value="">Chọn phường/xã</option>
               </select>
@@ -693,7 +693,7 @@ $cart_count = count($cart_items);
             </div>
 
             <div class="form-group">
-              <label for="address">Địa chỉ</label>
+              <label for="address">Địa chỉ(*)</label>
               <input type="text" id="address" name="address" class="form-control" required
                 value="<?php echo isset($errors['address']) ? '' : htmlspecialchars($_POST['address'] ?? ''); ?>">
 
@@ -708,12 +708,12 @@ $cart_count = count($cart_items);
             </div> -->
             <div class="form-row">
               <div class="form-group">
-                <label for="password">Mật khẩu</label>
+                <label for="password">Mật khẩu(*)</label>
                 <input type="password" id="password" name="password" class="form-control" required>
                 <p class="error-message"><?php echo $errors['password'] ?? ''; ?></p>
               </div>
               <div class="form-group">
-                <label for="confirm-password">Xác nhận mật khẩu</label>
+                <label for="confirm-password">Xác nhận mật khẩu(*)</label>
                 <input type="password" id="confirm-password" name="confirm-password" class="form-control" required>
                 <p class="error-message"><?php echo $errors['confirm-password'] ?? ''; ?></p>
               </div>
