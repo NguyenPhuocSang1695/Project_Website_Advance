@@ -7,22 +7,37 @@ if(isset($_SESSION['Username'])) {
     header("Location: ../admin/index/homePage.php");
     exit();
 }
+
+$errors = [
+    'username' => '',
+    'password' => ''
+];
+
 if (isset($_POST['submit'])) {
     $username = trim($_POST['Username']);
     $password = trim($_POST['PasswordHash']);
     
-    if (empty($username) || empty($password)) {
-        echo "<script>alert('Vui lòng nhập tên đăng nhập và mật khẩu!');</script>";
-    } 
-    else {
-        $stmt = $myconn->prepare("SELECT Username, FullName, Role, PasswordHash FROM users WHERE Username = ? AND Role = 'admin'");
+    if (empty($username)) {
+        $errors['username'] = "Vui lòng nhập tên đăng nhập!";
+    }
+    if (empty($password)) {
+        $errors['password'] = "Vui lòng nhập mật khẩu!";
+    }
+    
+    if (empty($errors['username']) && empty($errors['password'])) {
+        $stmt = $myconn->prepare("SELECT Username, FullName, Role, PasswordHash, Status FROM users WHERE Username = ? AND Role = 'admin'");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
         
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
-            if (password_verify($password, $user['PasswordHash'])) {
+            
+            // Check if account is locked
+            if ($user['Status'] === 'Block') {
+                echo "<script>alert('Tài khoản của bạn đã bị khóa. 🔒 ');</script>";
+                session_unset();
+            } else if (password_verify($password, $user['PasswordHash'])) {
                 $_SESSION['Username'] = $user['Username'];
                 $_SESSION['FullName'] = $user['FullName']; 
                 $_SESSION['Role'] = 'Nhân viên';
@@ -33,10 +48,10 @@ if (isset($_POST['submit'])) {
                     });
                 </script>";
             } else {
-                echo "<script>alert('Tên đăng nhập hoặc mật khẩu không đúng!');</script>";
+                $errors['password'] = "Mật khẩu không đúng!";
             }
         } else {
-            echo "<script>alert('Tên đăng nhập hoặc mật khẩu không đúng!');</script>";
+            $errors['username'] = "Tài khoản không tồn tại!";
         }
 
         $stmt->close();
@@ -115,6 +130,15 @@ if (isset($_POST['submit'])) {
     z-index: 999;
     animation: overlayFadeIn 0.5s ease-in-out; /* Thêm hiệu ứng */
 }
+
+.error-message {
+    color: #dc3545;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 4px;
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
 </style>
 <script>
 function showSuccessPopup(userName) {
@@ -131,6 +155,7 @@ function showSuccessPopup(userName) {
         window.location.href = '../admin/index/homePage.php';
     }, 1000);
 }
+
 </script>
 </head>
 <body>
@@ -147,21 +172,31 @@ function showSuccessPopup(userName) {
 						Đăng nhập quản lý
 					</span>
 
-					<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-						<input class="input100" type="text" name="Username" placeholder="Tên đăng nhập" required>
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" name="Username" placeholder="Tên đăng nhập" value="<?php echo isset($_POST['Username']) ? htmlspecialchars($_POST['Username']) : ''; ?>">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa-solid fa-user" aria-hidden="true"></i>
 						</span>
 					</div>
+					<?php if(!empty($errors['username'])): ?>
+					<div class="error-message">
+						<?php echo $errors['username']; ?>
+					</div>
+					<?php endif; ?>
 
-					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="password" name="PasswordHash" placeholder="Mật khẩu" required>
+					<div class="wrap-input100 validate-input">
+						<input class="input100" id="passwordField" type="password" name="PasswordHash" placeholder="Mật khẩu">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-lock" aria-hidden="true"></i>
 						</span>
 					</div>
+					<?php if(!empty($errors['password'])): ?>
+					<div class="error-message">
+						<?php echo $errors['password']; ?>
+					</div>
+					<?php endif; ?>
 					
 					<div class="container-login100-form-btn">
 						<button name="submit" type="submit" class="login100-form-btn" style="text-decoration: none; color: black;">
@@ -181,6 +216,8 @@ function showSuccessPopup(userName) {
 	    <p>Đăng nhập thành công!</p>
 	    <p>Chuyển hướng đến trang quản lý...</p>
 	</div>
+
+
 
 </body>
 </html>
