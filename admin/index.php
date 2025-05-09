@@ -17,7 +17,6 @@ if (isset($_POST['submit'])) {
     $username = trim($_POST['Username']);
     $password = trim($_POST['PasswordHash']);
     
-    // Validate input
     if (empty($username)) {
         $errors['username'] = "Vui lòng nhập tên đăng nhập!";
     }
@@ -26,14 +25,19 @@ if (isset($_POST['submit'])) {
     }
     
     if (empty($errors['username']) && empty($errors['password'])) {
-        $stmt = $myconn->prepare("SELECT Username, FullName, Role, PasswordHash FROM users WHERE Username = ? AND Role = 'admin'");
+        $stmt = $myconn->prepare("SELECT Username, FullName, Role, PasswordHash, Status FROM users WHERE Username = ? AND Role = 'admin'");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
         
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
-            if (password_verify($password, $user['PasswordHash'])) {
+            
+            // Check if account is locked
+            if ($user['Status'] === 'Block') {
+                echo "<script>alert('Tài khoản của bạn đã bị khóa. 🔒 ');</script>";
+                session_unset();
+            } else if (password_verify($password, $user['PasswordHash'])) {
                 $_SESSION['Username'] = $user['Username'];
                 $_SESSION['FullName'] = $user['FullName']; 
                 $_SESSION['Role'] = 'Nhân viên';
@@ -127,20 +131,6 @@ if (isset($_POST['submit'])) {
     animation: overlayFadeIn 0.5s ease-in-out; /* Thêm hiệu ứng */
 }
 
-.password-toggle {
-    position: absolute;
-    right: 45px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #666666;
-    z-index: 10;
-}
-
-.password-toggle:hover {
-    color: #333333;
-}
-
 .error-message {
     color: #dc3545;
     font-size: 14px;
@@ -166,20 +156,6 @@ function showSuccessPopup(userName) {
     }, 1000);
 }
 
-function togglePassword() {
-    const passwordField = document.getElementById('passwordField');
-    const toggleIcon = document.querySelector('.password-toggle');
-    
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        toggleIcon.classList.remove('fa-eye');
-        toggleIcon.classList.add('fa-eye-slash');
-    } else {
-        passwordField.type = 'password';
-        toggleIcon.classList.remove('fa-eye-slash');
-        toggleIcon.classList.add('fa-eye');
-    }
-}
 </script>
 </head>
 <body>
@@ -195,6 +171,7 @@ function togglePassword() {
 					<span class="login100-form-title">
 						Đăng nhập quản lý
 					</span>
+
 					<div class="wrap-input100 validate-input">
 						<input class="input100" type="text" name="Username" placeholder="Tên đăng nhập" value="<?php echo isset($_POST['Username']) ? htmlspecialchars($_POST['Username']) : ''; ?>">
 						<span class="focus-input100"></span>
@@ -203,7 +180,7 @@ function togglePassword() {
 						</span>
 					</div>
 					<?php if(!empty($errors['username'])): ?>
-					<div class="error-message" style="color: red; margin: -10px 0 15px 0; text-align: left; padding-left: 10px;">
+					<div class="error-message">
 						<?php echo $errors['username']; ?>
 					</div>
 					<?php endif; ?>
@@ -214,12 +191,9 @@ function togglePassword() {
 						<span class="symbol-input100">
 							<i class="fa fa-lock" aria-hidden="true"></i>
 						</span>
-						<span class="password-toggle" onclick="togglePassword()">
-							<i class="fa fa-eye" aria-hidden="true"></i>
-						</span>
 					</div>
 					<?php if(!empty($errors['password'])): ?>
-					<div class="error-message" style="color: red; margin: -10px 0 15px 0; text-align: left; padding-left: 10px;">
+					<div class="error-message">
 						<?php echo $errors['password']; ?>
 					</div>
 					<?php endif; ?>
@@ -242,6 +216,8 @@ function togglePassword() {
 	    <p>Đăng nhập thành công!</p>
 	    <p>Chuyển hướng đến trang quản lý...</p>
 	</div>
+
+
 
 </body>
 </html>
