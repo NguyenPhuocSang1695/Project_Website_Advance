@@ -1,5 +1,7 @@
 <?php
+session_name('admin_session');
 session_start();
+
 $product_id = isset($_GET['product_id']) ? $_GET['product_id'] : null;
 
 if ($product_id) {
@@ -13,7 +15,7 @@ if ($product_id) {
             const searchInput = document.querySelector('.search-input');
             if (searchInput) {
               searchInput.value = data.ProductName;
-              searchProducts(1, " . $product_id . ");
+              searchProducts(1, " .$product_id . ");
             }
           }
         })

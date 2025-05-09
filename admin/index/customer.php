@@ -236,12 +236,14 @@
           while ($row = mysqli_fetch_assoc($result)) {
             $statusText = $row['Status'] === 'Active' ? 'Hoạt động' : 'Đã khóa';
             $statusClass = $row['Status'] === 'Active' ? 'text-success' : 'text-danger';
+            $roleText = $row['Role'] === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+
             echo "<tr>";
             echo "<td>" . $row['Username'] . "</td>";
             echo "<td>" . $row['FullName'] . "</td>";
             echo "<td>" . $row['Phone'] . "</td>";
             echo "<td>" . $row['Email'] . "</td>";
-            echo "<td>" . $row['Role'] . "</td>";
+            echo "<td>" . $roleText . "</td>";
             echo "<td class='" . $statusClass . "'>" . $statusText . "</td>";
             echo "<td><button class='btn btn-outline-warning' onclick='showEditUserPopup(\"" . $row['Username'] . "\")'>Chỉnh sửa</button></td>";
             echo "</tr>";
@@ -443,7 +445,7 @@
       const tableBody = document.querySelector('#userTable tbody');
 
       // Show loading message
-      tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Đang tìm kiếm...</td></tr>';
+      tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Đang tìm kiếm...</td></tr>';
 
       // Send AJAX request
       fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}`)
@@ -454,33 +456,39 @@
           }
 
           if (data.users.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Không tìm thấy người dùng nào phù hợp</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Không tìm thấy người dùng nào phù hợp</td></tr>';
             return;
           }
 
           // Clear and update table
           tableBody.innerHTML = '';
           data.users.forEach(user => {
+            // Sửa lại phần xử lý status vì status đang trả về trực tiếp từ database
+            const statusText = user.status;
+            const statusClass = user.statusClass;
+            const roleText = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+
             const row = document.createElement('tr');
             row.innerHTML = `
-                            <td>${user.username}</td>
-                            <td>${user.fullname}</td>
-                            <td>${user.phone}</td>
-                            <td>${user.email}</td>
-                            <td class="${user.statusClass}">${user.status}</td>
-                            <td>
-                                <button class='btn btn-outline-warning' onclick='showEditUserPopup("${user.username}")'>
-                                    Chỉnh sửa
-                                </button>
-                            </td>
-                        `;
+              <td>${user.username}</td>
+              <td>${user.fullname}</td>
+              <td>${user.phone}</td>
+              <td>${user.email}</td>
+              <td>${roleText}</td>
+              <td class="${statusClass}">${statusText}</td>
+              <td>
+                <button class='btn btn-outline-warning' onclick='showEditUserPopup("${user.username}")'>
+                  Chỉnh sửa
+                </button>
+              </td>
+            `;
             tableBody.appendChild(row);
           });
         })
         .catch(error => {
           console.error('Search error:', error);
-          tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">
-                        Có lỗi xảy ra: ${error.message}</td></tr>`;
+          tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">
+            Có lỗi xảy ra: ${error.message}</td></tr>`;
         });
     }
 
@@ -598,7 +606,7 @@
             const row = document.createElement('tr');
             const statusText = data.user.status === 'Active' ? 'Hoạt động' : 'Đã khóa';
             const statusClass = data.user.status === 'Active' ? 'text-success' : 'text-danger';
-            
+
             row.innerHTML = `
               <td>${data.user.username}</td>
               <td>${data.user.fullname}</td>
@@ -673,7 +681,7 @@
             const user = data.user;
             const currentUser = JSON.parse(localStorage.getItem('userInfo'));
             const isCurrentUser = currentUser && currentUser.username === user.username;
-            
+
             document.getElementById('editUsername').value = user.username;
             document.getElementById('editFullName').value = user.fullname;
             document.getElementById('editEmail').value = user.email;

@@ -38,7 +38,9 @@ try {
     $status = isset($data['status']) ? validateInput($data['status']) : 'Active';
 
     // Kiểm tra nếu đang cố gắng thay đổi trạng thái của tài khoản admin đang đăng nhập
+    session_name('admin_session');
     session_start();
+    
     if (isset($_SESSION['Username']) && $username === $_SESSION['Username']) {
         // Nếu là tài khoản của chính mình, giữ nguyên trạng thái hiện tại
         $stmt = $myconn->prepare("SELECT Status FROM users WHERE Username = ?");
