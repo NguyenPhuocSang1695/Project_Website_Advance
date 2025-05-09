@@ -690,12 +690,12 @@ $cart_count = count($cart_items);
               <p class="error-message"><?php echo $errors['address'] ?? ''; ?></p>
             </div>
 
-            <div class="checkbox-container">
+            <!-- <div class="checkbox-container">
               <input type="checkbox" id="terms">
               <label for="terms">Tôi đã đọc và đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách
                   bảo
                   mật</a></label>
-            </div>
+            </div> -->
             <div class="form-row">
               <div class="form-group">
                 <label for="password">Mật khẩu</label>
