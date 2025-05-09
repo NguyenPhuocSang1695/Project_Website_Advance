@@ -559,7 +559,7 @@ foreach ($_SESSION['cart'] as $item) {
               <tbody>
                 <?php if (empty($orderHistory)): ?>
                   <tr>
-                    <td colspan="3" class="text-center">Chưa có sản phẩm</td>
+                    <td colspan="3" class="text-center">Chưa có đơn hàng</td>
                   </tr>
                 <?php else: ?>
                   <?php foreach ($orderHistory as $order): ?>

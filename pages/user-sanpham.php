@@ -21,13 +21,12 @@ if ($result && $result->num_rows > 0) {
 }
 
 
-$cart_count =  0;
+$cart_count = 0;
 
 if (isset($_SESSION['cart'])) {
-  foreach ($_SESSION['cart'] as $item) {
-    $cart_count += $item['Quantity'];
-  }
+    $cart_count = count($_SESSION['cart']); // Đếm số lượng sản phẩm khác nhau thay vì tổng số lượng
 }
+
 // Kiểm tra giỏ hàng
 $cart_items = isset($_SESSION['cart']) && is_array($_SESSION['cart']) ? $_SESSION['cart'] : [];
 // Tính tổng

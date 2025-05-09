@@ -74,8 +74,6 @@
   border-radius: 8px;
 }
 
-
-
 .description h2 {
   color: #1c8e2e;
   margin: 10px 0;
@@ -90,4 +88,65 @@
   text-align: justify;
   margin: 0;
   font-weight: 300px;
+}
+
+/* Thay thế phần CSS thông báo hiện tại */
+.message {
+  position: fixed;
+  bottom: 20px;
+  /* Thay đổi từ top thành bottom */
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 8px;
+  /* Tăng bo góc */
+  color: white;
+  font-weight: 500;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* Thêm đổ bóng */
+  min-width: 280px;
+  /* Đặt chiều rộng tối thiểu */
+  text-align: center;
+  animation: slideUpIn 0.5s ease-out;
+}
+
+.message.success {
+  background-color: #539255;
+  border-left: 5px solid #539255;
+  /* Thêm viền bên trái */
+}
+
+.message.error {
+  background-color: #f44336;
+  border-left: 5px solid #B71C1C;
+  /* Thêm viền bên trái */
+}
+
+/* Thay đổi animation từ slideIn thành slideUpIn */
+@keyframes slideUpIn {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+.message.fade-out {
+  animation: fadeOut 0.5s ease-out forwards;
 }

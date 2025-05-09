@@ -85,6 +85,7 @@ $searchTerm = isset($_POST['search']) ? trim($_POST['search']) : '';
 $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
 $itemsPerPage = 5;
 $offset = ($page - 1) * $itemsPerPage;
+$product_id = isset($_POST['product_id']) ? (int)$_POST['product_id'] : null;
 
 try {
     // Query cơ bản để lấy tất cả sản phẩm khi không có từ khóa
@@ -94,7 +95,9 @@ try {
                   LEFT JOIN categories c ON p.CategoryID = c.CategoryID 
                   WHERE (p.Status = 'appear' OR p.Status = 'hidden')";
     
-    if (!empty($searchTerm)) {
+    if ($product_id) {
+        $baseQuery .= " AND p.ProductID = $product_id";
+    } else if (!empty($searchTerm)) {
         // Chuẩn hóa chuỗi tìm kiếm khi có từ khóa
         $normalizedSearchTerm = normalizeSearchString($searchTerm);
         $searchTermNoAccents = removeVietnameseDiacritics($normalizedSearchTerm);
@@ -155,6 +158,8 @@ try {
                 $searchPattern, $searchPatternNoAccents, $searchPattern, $searchPattern
             );
         }
+    } else if ($product_id) {
+        $countStmt->bind_param('i', $product_id);
     }
     
     $countStmt->execute();

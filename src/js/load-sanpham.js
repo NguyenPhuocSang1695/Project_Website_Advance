@@ -69,7 +69,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 cartDropdown.innerHTML = "<p>Giỏ hàng của bạn đang trống.</p>";
               }
             }
-            displayMessage("Đã thêm vào giỏ hàng!", "success"); // Sử dụng hàm thông báo
+            // Hiển thị thông báo thành công với tên sản phẩm
+            const productName =
+              document.querySelector(".nametree h2").textContent;
+            displayMessage(`Đã thêm "${productName}" vào giỏ hàng!`, "success");
           } else {
             console.error("Lỗi thêm vào giỏ hàng:", data.message);
             displayMessage(`Lỗi: ${data.message}`, "error"); // Hiện thị thông báo lỗi
@@ -77,7 +80,10 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch((error) => {
           console.error("Lỗi fetch:", error);
-          displayMessage(`Lỗi: ${error.message}`, "error"); // Hiện thị thông báo lỗi
+          displayMessage(
+            "Không thể thêm vào giỏ hàng: " + error.message,
+            "error"
+          );
         });
     });
   }
@@ -90,24 +96,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }).format(amount);
   }
 
-  // Hàm hiển thị thông báo (thay thế alert)
+  // Thay thế hàm displayMessage với phiên bản cải tiến
   function displayMessage(message, type = "success") {
     const messageElement = document.createElement("div");
-    messageElement.classList.add("message"); // Thêm class chung
-    messageElement.classList.add(type); // Thêm class "success" hoặc "error"
+    messageElement.classList.add("message", type);
     messageElement.textContent = message;
 
-    //Kiểm tra xem message box đã tồn tại chưa
+    // Xóa thông báo cũ nếu có
     const existingMessage = document.querySelector(".message");
     if (existingMessage) {
       existingMessage.remove();
     }
 
-    document.body.appendChild(messageElement); // Thêm vào body hoặc vị trí thích hợp
+    document.body.appendChild(messageElement);
 
-    // Tự động xóa thông báo sau vài giây
+    // Thêm hiệu ứng fade out trước khi xóa
     setTimeout(() => {
-      messageElement.remove();
-    }, 3000);
+      messageElement.classList.add("fade-out");
+      setTimeout(() => {
+        messageElement.remove();
+      }, 500); // Đợi animation kết thúc rồi xóa
+    }, 2500); // Hiển thị trong 2.5 giây
   }
 });
