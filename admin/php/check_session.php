@@ -15,9 +15,7 @@ if(isset($_SESSION['Username'])) {
             session_unset();
             echo "<script>
                 alert('Tài khoản của bạn đã bị khóa. 🔒');
-                setTimeout(function() {
                     window.location.href = '../index.php';
-                }, 2000); // Chuyển hướng sau 2 giây
             </script>";
             exit();
         }
