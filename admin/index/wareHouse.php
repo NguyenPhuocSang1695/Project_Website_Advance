@@ -29,7 +29,7 @@ if ($product_id) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kho hàng</title>
 
-  <link href="../style/main_warehouse1.css" rel="stylesheet">
+  <link href="../style/main_warehouse.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/header.css">
   <link rel="stylesheet" href="../style/sidebar.css">
   <link href="../icon/css/all.css" rel="stylesheet">
@@ -37,7 +37,7 @@ if ($product_id) {
   <link href="../style/main.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../style/responsiveWarehouse.css">
+  <link rel="stylesheet" href="../style/responsiveWareHouse.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     /* Popup overlay cho thêm sản phẩm */
@@ -290,11 +290,7 @@ if ($product_id) {
     }
 
     /* Mobile responsive */
-    @media (max-width: 600px) {
-      .card {
-        width: 90%;
-      }
-    }
+  
 
     .category-note {
       font-size: 12px;
@@ -561,7 +557,7 @@ if ($product_id) {
 
               if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                  echo "<tr>";
+                  echo "<tr class='product-row'>";
                   echo "<td><img src='../.." . $row['ImageURL'] . "' alt='" . $row['ProductName'] . "' style='width: 100px; height: 100px; object-fit: cover;'></td>";
                   echo "<td>" . $row['ProductName'] . "</td>";
                   echo "<td>" . $row['CategoryName'] . "</td>";
