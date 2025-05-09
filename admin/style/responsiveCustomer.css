@@ -1,4 +1,29 @@
 /* -----------------Phan responsive--------------- */
+@media only screen and (min-width: 48em) and (max-width: 63.9375em) {
+
+  .user-table th:nth-child(4),
+  .user-table td:nth-child(4) {
+    display: none;
+  }
+}
+
+/* Laptop (>= 1024px and < 1440px) */
+@media only screen and (min-width: 64em) and (max-width: 89.9375em) {
+
+  .user-table th:nth-child(4),
+  .user-table td:nth-child(4) {
+    display: none;
+  }
+}
+
+/* Desktop (>= 1440px) */
+@media only screen and (min-width: 90em) {
+
+  .user-table th:nth-child(4),
+  .user-table td:nth-child(4) {
+    display: table-cell;
+  }
+}
 
 /* Smartphones (min >= 320px) (max <480px) */
 @media only screen and (min-device-width: 20em) and (max-device-width: 29.9375em) {
@@ -129,7 +154,9 @@
     display: none;
   }
 
-  tbody, tr, td {
+  tbody,
+  tr,
+  td {
     display: block;
     width: 100%;
   }
@@ -165,6 +192,7 @@
 
 /* Smartphone & Mobile (< 748px) */
 @media only screen and (max-width: 47.9375em) {
+
   .name-employee p,
   .position-employee,
   .bell-notification {
@@ -204,13 +232,16 @@
     margin: 0 auto;
     padding: 10px;
   }
-  .container h3,p{
+
+  .container h3,
+  p {
     font-size: 17px;
   }
+
   .container h1 {
     font-size: 18px;
   }
-} 
+}
 
 /* Mobile (< 768px) */
 @media only screen and (max-width: 47.9375em) {
@@ -348,6 +379,7 @@
   .index-menu {
     display: none;
   }
+
   .filter-option,
   .fa-circle-info {
     display: none;
