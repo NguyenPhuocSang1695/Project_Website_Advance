@@ -1,7 +1,7 @@
 <?php
 include '../php/check_session.php';
-session_name('admin_session');
-session_start();
+// session_name('admin_session');
+// session_start();
 
 $product_id = isset($_GET['product_id']) ? $_GET['product_id'] : null;
 
