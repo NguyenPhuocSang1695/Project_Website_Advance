@@ -251,7 +251,7 @@ include '../php/connect.php';
     <!-- Phần đơn hàng chưa xử lý -->
     <div class="order-section">
       <p class="section-title">Đơn hàng chưa xử lý</p>
-      <a class="more-detail" href="orderPage.php"> Xem thêm</a>
+      <a href="orderPage.php"><button class="button-handle" style="white-space:nowrap;">Xem thêm</button></a>
       <?php
       // Database connection
       $conn = new mysqli("localhost", "root", "", "c01db");
@@ -296,7 +296,7 @@ include '../php/connect.php';
     <!-- Phần hàng cần chú ý -->
     <div class="inventory-section">
       <p class="section-title">Sản phẩm mới</p>
-      <a class="more-detail" href="wareHouse.php"> Xem thêm</a>
+      <a href="wareHouse.php"><button class="button-handle" style="white-space:nowrap;">Xem thêm</button></a>
       <?php
       // Database connection
       $conn = new mysqli("localhost", "root", "", "c01db");
