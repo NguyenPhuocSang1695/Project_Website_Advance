@@ -1,6 +1,8 @@
 <?php 
 include '../admin/php/connect.php';
+    session_name('admin_session');
 session_start();
+
 if(isset($_SESSION['Username'])) {
     header("Location: ../admin/index/homePage.php");
     exit();
