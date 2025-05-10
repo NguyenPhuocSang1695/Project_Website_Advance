@@ -349,7 +349,7 @@ include '../php/check_session.php';
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 <button type="button" id="reset-filter" class="btn btn-warning">Đặt lại</button>
-                <button type="submit" form="filter-form" class="btn btn-primary">Áp dụng</button>
+                <button type="submit" form="filter-form" class="btn btn-primary" data-bs-dismiss="modal">Áp dụng</button>
               </div>
             </div>
           </div>
