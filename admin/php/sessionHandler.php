@@ -1,5 +1,7 @@
 <?php
+session_name('admin_session');
 session_start();
+
 if (isset($_SESSION['Username']) && isset($_SESSION['FullName']) && isset($_SESSION['Role'])) {
     $defaultAvatar = '../../assets/images/admin.jpg';
     if ($_SESSION['Role'] === 'admin') {

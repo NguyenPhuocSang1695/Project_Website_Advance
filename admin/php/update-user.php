@@ -37,6 +37,22 @@ try {
     $ward = validateInput($data['ward']);
     $status = isset($data['status']) ? validateInput($data['status']) : 'Active';
 
+    // Kiểm tra nếu đang cố gắng thay đổi trạng thái của tài khoản admin đang đăng nhập
+    session_name('admin_session');
+    session_start();
+    
+    if (isset($_SESSION['Username']) && $username === $_SESSION['Username']) {
+        // Nếu là tài khoản của chính mình, giữ nguyên trạng thái hiện tại
+        $stmt = $myconn->prepare("SELECT Status FROM users WHERE Username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            $status = $row['Status']; // Giữ nguyên trạng thái cũ
+        }
+        $stmt->close();
+    }
+
     // Validate email format if provided
     if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         throw new Exception("Email không hợp lệ");

@@ -1,5 +1,8 @@
 <?php
-session_start();
+include '../php/check_session.php';
+// session_name('admin_session');
+// session_start();
+
 $product_id = isset($_GET['product_id']) ? $_GET['product_id'] : null;
 
 if ($product_id) {
@@ -24,12 +27,13 @@ if ($product_id) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kho hàng</title>
 
-  <link href="../style/main_warehouse1.css" rel="stylesheet">
+  <link href="../style/main_warehouse.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/header.css">
   <link rel="stylesheet" href="../style/sidebar.css">
   <link href="../icon/css/all.css" rel="stylesheet">
@@ -37,7 +41,7 @@ if ($product_id) {
   <link href="../style/main.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../style/responsiveWarehouse.css">
+  <link rel="stylesheet" href="../style/responsiveWareHouse.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     /* Popup overlay cho thêm sản phẩm */
@@ -290,11 +294,7 @@ if ($product_id) {
     }
 
     /* Mobile responsive */
-    @media (max-width: 600px) {
-      .card {
-        width: 90%;
-      }
-    }
+
 
     .category-note {
       font-size: 12px;
@@ -561,7 +561,7 @@ if ($product_id) {
 
               if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                  echo "<tr>";
+                  echo "<tr class='product-row'>";
                   echo "<td><img src='../.." . $row['ImageURL'] . "' alt='" . $row['ProductName'] . "' style='width: 100px; height: 100px; object-fit: cover;'></td>";
                   echo "<td>" . $row['ProductName'] . "</td>";
                   echo "<td>" . $row['CategoryName'] . "</td>";
@@ -692,12 +692,12 @@ if ($product_id) {
           <form id="productForm" method="POST" enctype="multipart/form-data">
 
             <div class="form-group">
-              <label for="productName">Tên sản phẩm</label>
+              <label for="productName">Tên sản phẩm(*)</label>
               <input type="text" id="productName" name="productName" required placeholder="Nhập tên sản phẩm">
             </div>
 
             <div class="form-group">
-              <label for="categoryID">Danh mục</label>
+              <label for="categoryID">Danh mục(*)</label>
               <select id="categoryID" name="categoryID" required>
                 <?php
                 require_once '../../php-api/connectdb.php'; // Kết nối tới CSDL
@@ -725,18 +725,18 @@ if ($product_id) {
             </div>
 
             <div class="form-group">
-              <label for="price">Giá</label>
+              <label for="price">Giá(*)</label>
               <input type="number" id="price" name="price" required placeholder="Nhập giá sản phẩm" min="0">
             </div>
 
             <div class="form-group">
-              <label for="description">Mô tả</label>
-              <textarea id="description" name="description" required placeholder="Nhập mô tả sản phẩm"></textarea>
+              <label for="description">Mô tả(*)</label>
+              <textarea id="description" name="description" required placeholder="Công dụng, cách chăm sóc, nguồn gốc, ..."></textarea>
             </div>
 
             <div class="form-group">
-              <label for="imageURL">Ảnh sản phẩm</label>
-              <input type="file" id="imageURL" name="imageURL" required accept=".jpg ,.jpeg,.png" multiple>
+              <label for="imageURL">Ảnh sản phẩm(*)</label>
+              <input type="file" id="imageURL" name="imageURL" required accept=".jpg ,.jpeg,.png,.gif" multiple>
               <p class="category-note">Chọn ảnh sản phẩm (PNG, JPG, JPEG)</p>
               <p class="category-note">Kích thước tối đa: 2MB</p>
               <p class="category-note">Kích thước tối thiểu: 300x300px</p>
@@ -1011,7 +1011,9 @@ if ($product_id) {
         .then(response => response.json())
         .catch(error => {
           console.error('Parse Error:', error);
-          return { error: 'Invalid JSON response' };
+          return {
+            error: 'Invalid JSON response'
+          };
         })
         .then(data => {
           if (data.error) {

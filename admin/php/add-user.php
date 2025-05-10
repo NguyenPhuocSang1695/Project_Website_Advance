@@ -22,6 +22,7 @@ try {
     $district = validateInput($_POST['district'] ?? '');
     $ward = validateInput($_POST['ward'] ?? '');
     $status = validateInput($_POST['status'] ?? 'Active');
+    $role = validateInput($_POST['role'] ?? 'customer');
 
     // Validate required fields
     if (empty($username) || empty($fullname) || empty($password) || empty($phone)) {
@@ -67,6 +68,11 @@ try {
 
     if (empty($province_id) || empty($district_id) || empty($ward_id)) {
         throw new Exception('Vui lòng chọn đầy đủ thông tin địa chỉ');
+    }
+
+    // Validate role
+    if (!in_array($role, ['admin', 'customer'])) {
+        throw new Exception('Vai trò không hợp lệ');
     }
 
     // Verify province exists
@@ -131,14 +137,14 @@ try {
 
     // Prepare insert statement
     $sql = "INSERT INTO users (Username, FullName, Email, PasswordHash, Phone, Address, Province, District, Ward, Status, Role) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'customer')";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $myconn->prepare($sql);
     if (!$stmt) {
         throw new Exception('Lỗi chuẩn bị câu lệnh SQL: ' . $myconn->error);
     }
 
-    $stmt->bind_param("ssssssiiis", 
+    $stmt->bind_param("ssssssiiiss", 
         $username,
         $fullname,
         $email,
@@ -148,7 +154,8 @@ try {
         $province_id,
         $district_id,
         $ward_id,
-        $status
+        $status,
+        $role
     );
 
     if (!$stmt->execute()) {
@@ -163,7 +170,8 @@ try {
             'fullname' => $fullname,
             'email' => $email,
             'phone' => $phone,
-            'status' => $status
+            'status' => $status,
+            'role' => $role
         ]
     ]);
 

@@ -1,5 +1,6 @@
 <?php
 include '../php/connect.php';
+include '../php/check_session.php';
 ?>
 
 
@@ -195,61 +196,68 @@ include '../php/connect.php';
   </div>
   <div class="container-main">
     <div class="dashboard-overview">
-  <?php
-    $sql = "SELECT COUNT(*) AS totalExOder
+      <?php
+      $sql = "SELECT COUNT(*) AS totalExOder
             FROM orders o
             Where Status = 'execute';
     ";
-     $result = $myconn->query($sql);
-    
-     if($result->num_rows > 0){
-      while($row = $result ->fetch_assoc()){
+      $result = $myconn->query($sql);
+
+      if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+          echo "<a href='./orderPage.php' style='text-decoration: none; color: inherit;'>";
           echo "<div class='overview-card'>";
-          echo "<h3>". $row['totalExOder']."</h3>";
-          echo "<p>Đơn hàng chưa xử lý</p> </div>";
+          echo "<h3>" . $row['totalExOder'] . "</h3>";
+          echo "<p>Đơn hàng chưa xử lý</p>";
+          echo "</div>";
+          echo "</a>";
+        }
       }
-     }
-  ?>
-  <?php
-    $sql = "SELECT COUNT(*) AS QuantityProduct
+      ?>
+      <?php
+      $sql = "SELECT COUNT(*) AS QuantityProduct
             FROM products
     ";
-     $result = $myconn->query($sql);
-    
-     if($result->num_rows > 0){
-      while($row = $result ->fetch_assoc()){
+      $result = $myconn->query($sql);
+
+      if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+          echo "<a href='./wareHouse.php' style='text-decoration: none; color: inherit;'>";
           echo "<div class='overview-card'>";
-          echo "<h3>". $row['QuantityProduct']."</h3>";
+          echo "<h3>" . $row['QuantityProduct'] . "</h3>";
           echo "<p>Sản phẩm trong kho</p> </div>";
+          echo "</a>";
+        }
       }
-     }
-  ?>
-  <?php
-    $sql = "SELECT COUNT(*) AS QuantityUser
+      ?>
+      <?php
+      $sql = "SELECT COUNT(*) AS QuantityUser
             FROM users
     ";
-     $result = $myconn->query($sql);
-    
-     if($result->num_rows > 0){
-      while($row = $result ->fetch_assoc()){
+      $result = $myconn->query($sql);
+
+      if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+          echo "<a href='./customer.php' style='text-decoration: none; color: inherit;'>";
           echo "<div class='overview-card'>";
-          echo "<h3>". $row['QuantityUser']."</h3>";
+          echo "<h3>" . $row['QuantityUser'] . "</h3>";
           echo "<p>Khách hàng</p> </div>";
+          echo "</a>";
+        }
       }
-     }
-  ?>
-      
+      ?>
+
     </div>
 
     <!-- Phần đơn hàng chưa xử lý -->
     <div class="order-section">
       <p class="section-title">Đơn hàng chưa xử lý</p>
-      <a class="more-detail" href="orderPage.php"> Xem thêm</a>
+      <a href="orderPage.php"><button class="button-handle" style="white-space:nowrap;">Xem thêm</button></a>
       <?php
       // Database connection
       $conn = new mysqli("localhost", "root", "", "c01db");
       if ($conn->connect_error) {
-          die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: " . $conn->connect_error);
       }
 
       // Query to get pending orders
@@ -266,20 +274,20 @@ include '../php/connect.php';
       $result = $conn->query($sql);
 
       if ($result->num_rows > 0) {
-          while($row = $result->fetch_assoc()) {
-              echo "<div class='overview-order'>";
-              echo "<div class='info-overview-order'>";
-              echo "<p>" . $row['FullName'] . " <span class='label customer'>Customer</span></p>";
-              echo "<p>Ngày đặt hàng: " . date('d/m/Y', strtotime($row['DateGeneration'])) . "</p>";
-              echo "<p>Địa chỉ: " . $row['Address'] . ", " . $row['district_name'] . ", " . $row['province_name'] . "</p>";
-              echo "</div>";
-              echo "<div><a href='orderDetail2.php?code_Product=" . $row['OrderID'] . "' style='text-decoration: none; color: black;'><button class='button-handle'>Xử lý</button></a></div>";
-              echo "</div>";
-          }
-      } else {
+        while ($row = $result->fetch_assoc()) {
           echo "<div class='overview-order'>";
-          echo "<p>Không có đơn hàng chưa xử lý</p>";
+          echo "<div class='info-overview-order'>";
+          echo "<p>" . $row['FullName'] . " <span class='label customer'>Customer</span></p>";
+          echo "<p>Ngày đặt hàng: " . date('d/m/Y', strtotime($row['DateGeneration'])) . "</p>";
+          echo "<p>Địa chỉ: " . $row['Address'] . ", " . $row['district_name'] . ", " . $row['province_name'] . "</p>";
           echo "</div>";
+          echo "<div><a href='orderDetail2.php?code_Product=" . $row['OrderID'] . "' style='text-decoration: none; color: black;'><button class='button-handle'>Xử lý</button></a></div>";
+          echo "</div>";
+        }
+      } else {
+        echo "<div class='overview-order'>";
+        echo "<p>Không có đơn hàng chưa xử lý</p>";
+        echo "</div>";
       }
 
       $conn->close();
@@ -289,12 +297,12 @@ include '../php/connect.php';
     <!-- Phần hàng cần chú ý -->
     <div class="inventory-section">
       <p class="section-title">Sản phẩm mới</p>
-      <a class="more-detail" href="wareHouse.php"> Xem tất cả sản phẩm</a>
+      <a href="wareHouse.php"><button class="button-handle" style="white-space:nowrap;">Xem thêm</button></a>
       <?php
       // Database connection
       $conn = new mysqli("localhost", "root", "", "c01db");
       if ($conn->connect_error) {
-          die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: " . $conn->connect_error);
       }
 
       // Query to get newest products
@@ -308,21 +316,21 @@ include '../php/connect.php';
       $result = $conn->query($sql);
 
       if ($result->num_rows > 0) {
-          while($row = $result->fetch_assoc()) {
-              echo "<div class='overview-order'>";
-              echo "<div><img class='avatar-customer' src='../.." . $row['ImageURL'] . "' alt='Product'></div>";
-              echo "<div class='info-overview-order'>";
-              echo "<p>" . $row['ProductName'] . " <span class='label product'>Product</span></p>";
-              echo "<p>Danh mục: " . $row['CategoryName'] . "</p>";
-              echo "<p>Giá: " . number_format($row['Price'], 0, ',', '.') . " VNĐ</p>";
-              echo "</div>";
-              echo "<div><a href='wareHouse.php' style='text-decoration: none; color: black;'><button class='button-handle'>Xử lý</button></a></div>";
-              echo "</div>";
-          }
-      } else {
+        while ($row = $result->fetch_assoc()) {
           echo "<div class='overview-order'>";
-          echo "<p>Không có sản phẩm mới</p>";
+          echo "<div><img class='avatar-customer' src='../.." . $row['ImageURL'] . "' alt='Product'></div>";
+          echo "<div class='info-overview-order'>";
+          echo "<p>" . $row['ProductName'] . " <span class='label product'>Product</span></p>";
+          echo "<p>Danh mục: " . $row['CategoryName'] . "</p>";
+          echo "<p>Giá: " . number_format($row['Price'], 0, ',', '.') . " VNĐ</p>";
           echo "</div>";
+          echo "<div><a href='wareHouse.php' style='text-decoration: none; color: black;'><button class='button-handle'><p>Chi tiết</p></button></a></div>";
+          echo "</div>";
+        }
+      } else {
+        echo "<div class='overview-order'>";
+        echo "<p>Không có sản phẩm mới</p>";
+        echo "</div>";
       }
 
       $conn->close();
@@ -332,16 +340,16 @@ include '../php/connect.php';
 
   <!-- Bootstrap JS -->
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src ="../js/checklog.js"></script>
+  <script src="../js/checklog.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const cachedUserInfo = localStorage.getItem('userInfo');
-        if (cachedUserInfo) {
-            const userInfo = JSON.parse(cachedUserInfo);
-            document.querySelector('.name-employee p').textContent = userInfo.fullname;
-            document.querySelector('.position-employee p').textContent = userInfo.role;
-            document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
-        }
+      const cachedUserInfo = localStorage.getItem('userInfo');
+      if (cachedUserInfo) {
+        const userInfo = JSON.parse(cachedUserInfo);
+        document.querySelector('.name-employee p').textContent = userInfo.fullname;
+        document.querySelector('.position-employee p').textContent = userInfo.role;
+        document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
+      }
     });
   </script>
 </body>

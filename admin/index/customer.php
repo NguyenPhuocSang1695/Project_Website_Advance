@@ -1,3 +1,4 @@
+<?php include '../php/check_session.php';?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -203,6 +204,7 @@
             <th>Họ và tên</th>
             <th>Số điện thoại</th>
             <th>Email</th>
+            <th>Vai trò</th>
             <th>Trạng thái</th>
             <th></th>
           </tr>
@@ -213,7 +215,7 @@
           require_once '../php/connect.php';
 
           // Get total number of customers
-          $count_query = "SELECT COUNT(*) as total FROM users WHERE role = 'customer'";
+          $count_query = "SELECT COUNT(*) as total FROM users";
           $count_result = mysqli_query($myconn, $count_query);
           $count_row = mysqli_fetch_assoc($count_result);
           $total_records = $count_row['total'];
@@ -227,19 +229,22 @@
           $offset = ($page - 1) * $records_per_page;
 
           // Get customers for current page
-          $sql = "SELECT Username, FullName, Phone, Email, Status FROM users 
-                             WHERE role = 'customer' 
+          $sql = "SELECT Username, FullName, Phone, Email, Status, Role FROM users 
+                             ORDER BY CASE WHEN Role = 'admin' THEN 0 ELSE 1 END, Role
                              LIMIT $offset, $records_per_page";
 
           $result = mysqli_query($myconn, $sql);
           while ($row = mysqli_fetch_assoc($result)) {
             $statusText = $row['Status'] === 'Active' ? 'Hoạt động' : 'Đã khóa';
             $statusClass = $row['Status'] === 'Active' ? 'text-success' : 'text-danger';
+            $roleText = $row['Role'] === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+
             echo "<tr>";
             echo "<td>" . $row['Username'] . "</td>";
             echo "<td>" . $row['FullName'] . "</td>";
             echo "<td>" . $row['Phone'] . "</td>";
             echo "<td>" . $row['Email'] . "</td>";
+            echo "<td>" . $roleText . "</td>";
             echo "<td class='" . $statusClass . "'>" . $statusText . "</td>";
             echo "<td><button class='btn btn-outline-warning' onclick='showEditUserPopup(\"" . $row['Username'] . "\")'>Chỉnh sửa</button></td>";
             echo "</tr>";
@@ -326,6 +331,14 @@
             <option value="">Chọn phường/xã</option>
           </select>
           <span class="error" id="ward-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Vai trò: <span class="required">*</span></label>
+          <select id="addRole" required>
+            <option value="customer">Khách hàng</option>
+            <option value="admin">Quản trị viên</option>
+          </select>
+          <span class="error" id="role-error"></span>
         </div>
         <div class="form-group">
           <label>Trạng thái:</label>
@@ -433,7 +446,7 @@
       const tableBody = document.querySelector('#userTable tbody');
 
       // Show loading message
-      tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Đang tìm kiếm...</td></tr>';
+      tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Đang tìm kiếm...</td></tr>';
 
       // Send AJAX request
       fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}`)
@@ -444,33 +457,39 @@
           }
 
           if (data.users.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Không tìm thấy người dùng nào phù hợp</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Không tìm thấy người dùng nào phù hợp</td></tr>';
             return;
           }
 
           // Clear and update table
           tableBody.innerHTML = '';
           data.users.forEach(user => {
+            // Sửa lại phần xử lý status vì status đang trả về trực tiếp từ database
+            const statusText = user.status;
+            const statusClass = user.statusClass;
+            const roleText = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+
             const row = document.createElement('tr');
             row.innerHTML = `
-                            <td>${user.username}</td>
-                            <td>${user.fullname}</td>
-                            <td>${user.phone}</td>
-                            <td>${user.email}</td>
-                            <td class="${user.statusClass}">${user.status}</td>
-                            <td>
-                                <button class='btn btn-outline-warning' onclick='showEditUserPopup("${user.username}")'>
-                                    Chỉnh sửa
-                                </button>
-                            </td>
-                        `;
+              <td>${user.username}</td>
+              <td>${user.fullname}</td>
+              <td>${user.phone}</td>
+              <td>${user.email}</td>
+              <td>${roleText}</td>
+              <td class="${statusClass}">${statusText}</td>
+              <td>
+                <button class='btn btn-outline-warning' onclick='showEditUserPopup("${user.username}")'>
+                  Chỉnh sửa
+                </button>
+              </td>
+            `;
             tableBody.appendChild(row);
           });
         })
         .catch(error => {
           console.error('Search error:', error);
-          tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">
-                        Có lỗi xảy ra: ${error.message}</td></tr>`;
+          tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">
+            Có lỗi xảy ra: ${error.message}</td></tr>`;
         });
     }
 
@@ -570,6 +589,7 @@
       formData.append('district_id', document.getElementById('addDistrict').value);
       formData.append('ward_id', document.getElementById('addWard').value);
       formData.append('status', document.getElementById('addStatus').value);
+      formData.append('role', document.getElementById('addRole').value);
 
       // Clear previous error messages
       document.querySelectorAll('.error').forEach(error => error.textContent = '');
@@ -585,18 +605,22 @@
             // Add new user to table
             const tableBody = document.querySelector('#userTable tbody');
             const row = document.createElement('tr');
+            const statusText = data.user.status === 'Active' ? 'Hoạt động' : 'Đã khóa';
+            const statusClass = data.user.status === 'Active' ? 'text-success' : 'text-danger';
+
             row.innerHTML = `
-                        <td>${data.user.username}</td>
-                        <td>${data.user.fullname}</td>
-                        <td>${data.user.phone}</td>
-                        <td>${data.user.email}</td>
-                        <td class="text-success">Hoạt động</td>
-                        <td>
-                            <button class='btn btn-outline-warning' onclick='showEditUserPopup("${data.user.username}")'>
-                                Chỉnh sửa
-                            </button>
-                        </td>
-                    `;
+              <td>${data.user.username}</td>
+              <td>${data.user.fullname}</td>
+              <td>${data.user.phone}</td>
+              <td>${data.user.email}</td>
+              <td>${data.user.role}</td>
+              <td class="${statusClass}">${statusText}</td>
+              <td>
+                <button class='btn btn-outline-warning' onclick='showEditUserPopup("${data.user.username}")'>
+                  Chỉnh sửa
+                </button>
+              </td>
+            `;
             tableBody.insertBefore(row, tableBody.firstChild);
 
             // Close popup and show success message
@@ -656,6 +680,9 @@
         .then(data => {
           if (data.success) {
             const user = data.user;
+            const currentUser = JSON.parse(localStorage.getItem('userInfo'));
+            const isCurrentUser = currentUser && currentUser.username === user.username;
+
             document.getElementById('editUsername').value = user.username;
             document.getElementById('editFullName').value = user.fullname;
             document.getElementById('editEmail').value = user.email;
@@ -667,7 +694,16 @@
             provinceSelect.value = user.province_id;
             loadEditDistricts(user.province_id, user.district_id, user.ward_id);
 
-            document.getElementById('editStatus').value = user.status;
+            // Chỉ vô hiệu hóa select box trạng thái nếu là tài khoản của chính mình
+            const statusSelect = document.getElementById('editStatus');
+            statusSelect.value = user.status;
+            if (isCurrentUser) {
+              statusSelect.disabled = true;
+              statusSelect.title = "Không thể thay đổi trạng thái của chính mình";
+            } else {
+              statusSelect.disabled = false;
+              statusSelect.title = "";
+            }
 
             // Show the popup
             document.getElementById('editUserOverlay').style.display = 'flex';

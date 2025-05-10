@@ -1,3 +1,4 @@
+<?php include '../php/check_session.php';?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,18 +6,17 @@
   <title>Thống Kê Kinh Doanh</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Essential CSS -->
   <link rel="stylesheet" href="../style/generall.css">
   <link rel="stylesheet" href="../style/analyzeStyle.css">
   <link rel="stylesheet" href="../style/header.css">
   <link rel="stylesheet" href="../style/sidebar.css">
   <link rel="stylesheet" href="../style/LogInfo.css">
-  <link rel="stylesheet" href="../style/reponsiveAnalyze.css">
-  <!-- Icons -->
+  <link rel="stylesheet" href="../style/reponsiveAnalyze.css"> 
+   <!-- Icons -->
   <link rel="stylesheet" href="../icon/css/all.css">
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="./asset/bootstrap/css/bootstrap.min.css">
+  <!-- Bootstrap (JS only) -->
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="../../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -117,7 +117,7 @@
                         width:100%;
                         "></i>
       </div>
-      <div>
+      <div >
         <div class="position-employee">
           <p id="employee-role">Chức vụ</p>
         </div>
@@ -387,3 +387,38 @@ document.addEventListener('DOMContentLoaded', () => {
 </body>
 
 </html>
+
+<style>
+/* Add this to your analyzeStyle.css */
+input[type="date"] {
+    /* Reset Bootstrap styles */
+    -webkit-appearance: none;
+    appearance: none;
+    /* Your custom styles */
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.container-function-selection {
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    margin-bottom: 0px;
+    width: 54px;
+}
+.button-function-selection {
+    margin-bottom: 3px;
+}
+.header-right-section {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+}
+.name-employee {
+    margin-top: -14px;
+}
+
+</style>
