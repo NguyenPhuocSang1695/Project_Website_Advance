@@ -617,13 +617,15 @@ $cart_count = count($cart_items);
     </div>
 
     <div class="cancel-order">
-      <button id="cancelOrderBtn" class="btn btn-danger" <?php echo ($orderStatus == 'ship' || $orderStatus == 'fail') ? 'disabled' : ''; ?>>
+      <button id="cancelOrderBtn" class="btn btn-danger" <?php echo ($orderStatus == 'ship' || $orderStatus == 'fail' || $orderStatus == 'success') ? 'disabled' : ''; ?>>
         Hủy đơn hàng
       </button>
       <?php if ($orderStatus == 'ship'): ?>
         <div class="text-muted mt-2">Không thể hủy đơn hàng đang vận chuyển</div>
       <?php elseif ($orderStatus == 'fail'): ?>
         <div class="text-muted mt-2">Đơn hàng đã được hủy</div>
+      <?php elseif ($orderStatus == 'success'): ?>
+        <div class="text-muted mt-2">Đơn hàng đã được giao</div>
       <?php endif; ?>
     </div>
 

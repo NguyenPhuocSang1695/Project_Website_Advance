@@ -583,7 +583,7 @@ $cart_count = count($cart_items);
                             echo 'Đang giao';
                             break;
                           case 'success':
-                            echo 'Đã hoàn thành';
+                            echo 'Đã giao';
                             break;
                           case 'fail':
                             echo 'Đã hủy';

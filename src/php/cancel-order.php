@@ -26,6 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
+        if ($orderStatus == 'success') {
+            echo json_encode(['success' => false, 'error' => 'Order is dilivered']);
+            exit;
+        }
+
         // Proceed with cancellation if not shipped or failed
         $sql = "UPDATE orders SET Status = 'fail' WHERE OrderID = ?";
         $stmt = $conn->prepare($sql);
