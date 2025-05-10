@@ -209,7 +209,7 @@ include '../php/check_session.php';
             <button class="button-function-selection">
               <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
             </button>
-            <p>Khách hàng</p>
+            <p>Người dùng</p>
           </div>
         </a>
         <a href="orderPage.php" style="text-decoration: none; color: black;">
@@ -265,7 +265,7 @@ include '../php/check_session.php';
           <button class="button-function-selection">
             <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
           </button>
-          <p>Khách hàng</p>
+          <p>Người dùng</p>
         </div>
       </a>
       <a href="orderPage.php" style="text-decoration: none; color: black;">

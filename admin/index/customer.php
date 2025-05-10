@@ -108,7 +108,7 @@
               <button class="button-function-selection" style="background-color: #6aa173;">
                 <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
               </button>
-              <p style="color: black; text-align: center; font-size: 10x;">Khách hàng</p>
+              <p style="color: black; text-align: center; font-size: 10x;">Người dùng</p>
             </div>
           </a>
           <a href="orderPage.php" style="text-decoration: none; color: black;">
@@ -139,7 +139,7 @@
       </div>
     </div>
     <div class="header-left-section">
-      <p class="header-left-title">Khách hàng</p>
+      <p class="header-left-title">Người dùng</p>
     </div>
     <div class="header-middle-section">
       <img class="logo-store" src="../../assets/images/LOGO-2.jpg">
@@ -217,7 +217,7 @@
         <button class="button-function-selection" style="background-color: #6aa173;">
           <i class="fa-solid fa-users" style="font-size: 20px; color: #FAD4AE;"></i>
         </button>
-        <p>Khách hàng</p>
+        <p>Người dùng</p>
       </div>
     </a>
     <a href="orderPage.php" style="text-decoration: none; color: black;">

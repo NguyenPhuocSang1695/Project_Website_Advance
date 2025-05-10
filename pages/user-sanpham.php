@@ -24,7 +24,7 @@ if ($result && $result->num_rows > 0) {
 $cart_count = 0;
 
 if (isset($_SESSION['cart'])) {
-    $cart_count = count($_SESSION['cart']); // Đếm số lượng sản phẩm khác nhau thay vì tổng số lượng
+  $cart_count = count($_SESSION['cart']); // Đếm số lượng sản phẩm khác nhau thay vì tổng số lượng
 }
 
 // Kiểm tra giỏ hàng
@@ -101,6 +101,7 @@ $cart_count = count($cart_items);
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../src/js/reloadPage.js"></script>
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>

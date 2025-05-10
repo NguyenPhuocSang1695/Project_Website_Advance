@@ -86,6 +86,7 @@ $cart_count = count($cart_items);
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/phan-loai.js"></script>
   <script src="../src/js/search-index.js"></script>
+  <script src="../src/js/reloadPage.js"></script>
   <title>Phân loại</title>
 </head>
 

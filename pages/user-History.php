@@ -109,6 +109,7 @@ $cart_count = count($cart_items);
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
+  <script src="../src/js/reloadPage.js"></script>
   <title>Lịch sử người dùng</title>
   <style>
     .order-row {
@@ -583,7 +584,7 @@ $cart_count = count($cart_items);
                             echo 'Đang giao';
                             break;
                           case 'success':
-                            echo 'Đã hoàn thành';
+                            echo 'Đã giao';
                             break;
                           case 'fail':
                             echo 'Đã hủy';

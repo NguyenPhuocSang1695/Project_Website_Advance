@@ -1,7 +1,7 @@
 <?php
 include('../php/connect.php');
 include('../php/login_check.php');
-include '../php/check_session.php';
+// include '../php/check_session.php';
 $avatarPath = ($_SESSION['Role'] === 'admin')
   ? "../../assets/images/admin.jpg"
   : "../../assets/images/sang.jpg";
@@ -224,7 +224,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
   <link href="../style/orderDetail.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
-  <link rel="stylesheet" href="../style/reponsiveOrder-detail.css">
+  <link rel="stylesheet" href="../style/responsiveOrder-detail.css">
   <style>
     /* Style cho bảng và container */
     .table-container {
@@ -344,6 +344,9 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
     .product-name {
       font-weight: 500;
     }
+    .product-image {
+      display:none;
+    }
   </style>
 </head>
 
@@ -391,7 +394,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                               color: #FAD4AE;
                           "></i>
               </button>
-              <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
+              <p style="color: black;text-align: center; font-size: 10x;">Người dùng</p>
             </div>
           </a>
           <a href="orderPage.php" style="text-decoration: none; color: black;">
@@ -523,7 +526,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                         color: #FAD4AE;
                     "></i>
         </button>
-        <p>Khách hàng</p>
+        <p>Người dùng</p>
       </div>
     </a>
     <a href="orderPage.php" style="text-decoration: none; color: black;">

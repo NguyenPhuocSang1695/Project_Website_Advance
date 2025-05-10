@@ -346,6 +346,7 @@ $cart_count = count($cart_items);
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <!-- <script src="../src/js/Hoa-Don.js"></script> -->
   <script src="../src/js/search-index.js"></script>
+  <script src="../src/js/reloadPage.js"></script>
   <title>Hoàn tất đặt hàng</title>
 </head>
 
@@ -818,9 +819,9 @@ $cart_count = count($cart_items);
 
     </div>
   </div>
-    <style>
+  <style>
 
-    </style>
+  </style>
   <!-- FOOTER  -->
   <footer class="footer">
     <div class="footer-column">
