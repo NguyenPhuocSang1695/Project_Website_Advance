@@ -807,8 +807,8 @@ if ($product_id) {
             </div>
 
             <div class="form-actions text-end mt-3">
-              <button type="button" class="btn btn-danger me-2" onclick="confirmDelete()">Xóa sản phẩm</button>
               <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+              <button type="button" class="btn btn-danger me-2" onclick="confirmDelete()">Xóa sản phẩm</button>
             </div>
           </form>
         </div>
