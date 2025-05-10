@@ -348,7 +348,7 @@ if ($product_id) {
               <button class="button-function-selection">
                 <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
               </button>
-              <p>Trang chủ</p>
+              <p>Tổng quan</p>
             </div>
           </a>
           <a href="wareHouse.php" style="text-decoration: none; color: black;">
@@ -457,7 +457,7 @@ if ($product_id) {
           <button class="button-function-selection" style="margin-top: 35px;">
             <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
           </button>
-          <p>Trang chủ</p>
+          <p>Tổng quan</p>
         </div>
       </a>
     </div>

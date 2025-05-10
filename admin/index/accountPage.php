@@ -88,7 +88,7 @@ if ($result->num_rows > 0) {
                   color: #FAD4AE;
                   "></i>
                   </button>
-                  <p>Trang chủ</p>
+                  <p>Tổng quan</p>
                 </div>
               </a>
               <a href="wareHouse.php" style="text-decoration: none; color: black;">
@@ -221,7 +221,7 @@ if ($result->num_rows > 0) {
               color: #FAD4AE;
               "></i>
                 </button>
-                <p>Trang chủ</p>
+                <p>Tổng quan</p>
               </div>
             </a>
           </div>

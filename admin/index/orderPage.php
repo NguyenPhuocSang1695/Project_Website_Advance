@@ -16,33 +16,38 @@ include '../php/check_session.php';
   <link href="../style/orderStyle1.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
   <!-- <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
-     <link rel="stylesheet" href="../../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../style/reponsiveOrder.css">
   <style>
-  a {
-    text-decoration: none;
+    a {
+      text-decoration: none;
 
-  }
-.container-function-selection {
-    cursor: pointer;
-    font-size: 10px;
-    font-weight: bold;
-    margin-bottom: 0px;
-    width: 54px;
-}
-.button-function-selection {
-    margin-bottom: 3px;
-}
-.header-right-section {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    margin-top: 20px;
-}
-.name-employee {
-    margin-top: -14px;
-}
-  .notification {
+    }
+
+    .container-function-selection {
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: bold;
+      margin-bottom: 0px;
+      width: 54px;
+    }
+
+    .button-function-selection {
+      margin-bottom: 3px;
+    }
+
+    .header-right-section {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .name-employee {
+      margin-top: -14px;
+    }
+
+    .notification {
       position: fixed;
       top: 50%;
       left: 50%;
@@ -89,6 +94,7 @@ include '../php/check_session.php';
         opacity: 0;
         transform: translate(-50%, -50%) scale(0.7);
       }
+
       to {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
@@ -100,6 +106,7 @@ include '../php/check_session.php';
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
       }
+
       to {
         opacity: 0;
         transform: translate(-50%, -50%) scale(0.7);
@@ -186,7 +193,7 @@ include '../php/check_session.php';
             <button class="button-function-selection">
               <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
             </button>
-            <p>Trang chủ</p>
+            <p>Tổng quan</p>
           </div>
         </a>
         <a href="wareHouse.php" style="text-decoration: none; color: black;">
@@ -241,7 +248,7 @@ include '../php/check_session.php';
             <button class="button-function-selection" style="margin-top: 35px;">
               <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
             </button>
-            <p>Trang chủ</p>
+            <p>Tổng quan</p>
           </div>
         </a>
       </div>
