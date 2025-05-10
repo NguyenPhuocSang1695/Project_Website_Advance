@@ -620,7 +620,8 @@ $cart_count = count($cart_items);
     </div>
 
     <div class="cancel-order">
-      <button id="cancelOrderBtn" class="btn btn-danger" <?php echo ($orderStatus == 'ship' || $orderStatus == 'fail' || $orderStatus == 'success') ? 'disabled' : ''; ?>>
+      <a href="./user-History.php"><button type="button" id="BackBtn" class="btn btn-success">Quay lại</button></a>
+      <button type="button" id="cancelOrderBtn" class="btn btn-danger" <?php echo ($orderStatus == 'ship' || $orderStatus == 'fail' || $orderStatus == 'success') ? 'disabled' : ''; ?>>
         Hủy đơn hàng
       </button>
       <?php if ($orderStatus == 'ship'): ?>
@@ -656,6 +657,18 @@ $cart_count = count($cart_items);
 
       #cancelOrderBtn:not(:disabled):hover {
         background-color: #c82333;
+      }
+
+      #BackBtn {
+        padding: 10px 20px;
+        font-size: 16px;
+        /* background-color: #28a745; */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 141px;
+        /* height: 40px; */
       }
     </style>
 
