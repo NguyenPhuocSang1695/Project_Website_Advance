@@ -28,7 +28,7 @@ $orderStatus = $result->fetch_assoc()['Status'];
 
 // Lấy danh sách sản phẩm trong đơn hàng
 $stmt = $conn->prepare("
-    SELECT p.ProductName, p.ImageURL, od.Quantity, od.TotalPrice
+    SELECT p.ProductID, p.ProductName, p.Price ,p.ImageURL, od.Quantity, od.TotalPrice
     FROM orderdetails od
     JOIN products p ON od.ProductID = p.ProductID
     WHERE od.OrderID = ?
@@ -544,12 +544,12 @@ $cart_count = count($cart_items);
 
   <section>
     <div class="information-client">
-      <h2>Thông tin người nhận</h2>
+      <h2 style="font-weight: bold;">CHI TIẾT ĐƠN HÀNG</h2>
       <hr>
       <div class="thongtin">
-        <h5>Họ tên: <?= htmlspecialchars($orderInfo['CustomerName']) ?></h5>
-        <h5>Số điện thoại: <?= htmlspecialchars($orderInfo['Phone']) ?></h5>
-        <h5>Địa chỉ:
+        <h5><span style="font-weight: bold;">Họ và tên:</span> <?= htmlspecialchars($orderInfo['CustomerName']) ?></h5>
+        <h5><span style="font-weight: bold;">Số điện thoại:</span> <?= htmlspecialchars($orderInfo['Phone']) ?></h5>
+        <h5><span style="font-weight: bold;">Địa chỉ:</span>
           <?= isset($orderInfo['Address']) ? htmlspecialchars($orderInfo['Address']) . ', ' : '' ?>
           <?= htmlspecialchars($orderInfo['WardName']) ?>,
           <?= htmlspecialchars($orderInfo['DistrictName']) ?>,
@@ -573,9 +573,10 @@ $cart_count = count($cart_items);
             <table>
               <thead>
                 <tr>
-                  <th></th>
-                  <th>SỐ LƯỢNG</th>
-                  <th>THÀNH TIỀN (đ)</th>
+                  <th>TÊN SẢN PHẨM</th>
+                  <th style="text-align: center">SỐ LƯỢNG</th>
+                  <th style="text-align: center">ĐƠN GIÁ (đ)</th>
+                  <th style="text-align: center">THÀNH TIỀN (đ)</th>
                 </tr>
               </thead>
               <tbody>
@@ -584,15 +585,16 @@ $cart_count = count($cart_items);
                 while ($row = $productResult->fetch_assoc()):
                   $totalQuantity += $row['Quantity']; // <== Thêm dòng này
                 ?>
-                  <tr>
+                  <tr onclick="window.location='user-sanpham.php?id=<?= $row['ProductID'] ?>'" style="cursor: pointer;">
                     <td>
                       <img src="..<?= htmlspecialchars($row['ImageURL']) ?>" alt="Product Image">
                       <div class="product-info">
                         <span class="product-name"><?= htmlspecialchars($row['ProductName']) ?></span><br>
                       </div>
                     </td>
-                    <td><?= $row['Quantity'] ?></td>
-                    <td><?= number_format($row['TotalPrice'], 0, ',', '.') ?> đ</td>
+                    <td style="text-align: center"><?= $row['Quantity'] ?></td>
+                    <td style="text-align: center"><?= $row['Price'] ?></td>
+                    <td style="text-align: center"><?= number_format($row['TotalPrice'], 0, ',', '.') ?> đ</td>
                   </tr>
                 <?php endwhile; ?>
               </tbody>
