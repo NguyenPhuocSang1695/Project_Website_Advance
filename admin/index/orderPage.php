@@ -349,13 +349,27 @@ include '../php/check_session.php';
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 <button type="button" id="reset-filter" class="btn btn-warning">Đặt lại</button>
-                <button type="submit" form="filter-form" class="btn btn-primary">Áp dụng</button>
+                <button type="submit" form="filter-form" class="btn btn-primary" data-bs-dismiss="modal">Áp dụng</button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="statistic-section">
+          <style>
+            .statistic-table th:nth-child(1),
+            th:nth-child(2),
+            th:nth-child(3),
+            th:nth-child(4),
+            th:nth-child(5),
+            th:nth-child(6) {
+              text-align: center;
+            }
+
+            .statistic-table td {
+              text-align: center;
+            }
+          </style>
           <table class="statistic-table">
             <thead>
               <tr>

@@ -563,10 +563,56 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
   <!-- SECTION  -->
   <div class="section">
     <div class="img-21">
-      <img src="../assets/images/CAY21.jpg" alt="CAY21">
+      <!-- <img src="../assets/images/CAY21.jpg" alt="CAY21"> -->
     </div>
   </div>
 
+  <section>
+    <div class="loca">
+      <a href="../index.php">
+        <span>Trang chủ</span>
+      </a>
+      <span>></span>
+      <a href="#"><span>Giỏ hàng</span></a>
+    </div>
+
+    <style>
+      .loca {
+        padding: 20px;
+        margin: 20px 0;
+        font-size: 16px;
+        background-color: #f9f9f9;
+      }
+
+      .loca a {
+        text-decoration: none;
+        color: #666;
+        transition: color 0.3s ease;
+      }
+
+      .loca a:hover {
+        color: rgb(59, 161, 59);
+      }
+
+      .loca span {
+        margin: 0 10px;
+        color: #666;
+        font-weight: bold;
+      }
+
+      /* Responsive cho mobile */
+      @media (max-width: 768px) {
+        .loca {
+          padding: 10px;
+          font-size: 14px;
+        }
+
+        .loca span {
+          margin: 0 5px;
+        }
+      }
+    </style>
+  </section>
 
   <!-- ARTICLE -->
   <div class="article">
