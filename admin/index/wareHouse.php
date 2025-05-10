@@ -326,6 +326,28 @@ if ($product_id) {
     .product-details-overlay {
       /* // ...existing code... */
     }
+
+    .page-btn {
+      padding: 5px 15px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      margin: 0 2px;
+    }
+    .page-btn:disabled {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+      color: #999;
+    }
+    .page-btn:hover:not(:disabled) {
+      background-color: #f0f0f0;
+    }
+    #pageInfo {
+      font-size: 14px;
+      color: #666;
+      margin: 0 8px;
+    }
   </style>
 </head>
 
@@ -1045,47 +1067,13 @@ if ($product_id) {
 
           // Tạo phân trang chỉ khi có nhiều hơn 1 trang
           if (data.pagination.totalPages > 1) {
-            let paginationHTML = '<ul class="pagination justify-content-center">';
-
-            // Nút Previous
-            if (data.pagination.currentPage > 1) {
-              paginationHTML += `
-                <li class="page-item">
-                  <a class="page-link" href="#" onclick="searchProducts(${data.pagination.currentPage - 1}); return false;"><<</a>
-                </li>`;
-            }
-
-            // Hiển thị các số trang
-            for (let i = 1; i <= data.pagination.totalPages; i++) {
-              if (
-                i === 1 || // Trang đầu
-                i === data.pagination.totalPages || // Trang cuối
-                (i >= data.pagination.currentPage - 2 && i <= data.pagination.currentPage + 2) // 2 trang trước và sau trang hiện tại
-              ) {
-                paginationHTML += `
-                  <li class="page-item ${i === data.pagination.currentPage ? 'active' : ''}">
-                    <a class="page-link" href="#" onclick="searchProducts(${i}); return false;">${i}</a>
-                  </li>`;
-              } else if (
-                i === data.pagination.currentPage - 3 ||
-                i === data.pagination.currentPage + 3
-              ) {
-                paginationHTML += '<li class="page-item disabled"><span class="page-link">...</span></li>';
-              }
-            }
-
-            // Nút Next
-            if (data.pagination.currentPage < data.pagination.totalPages) {
-              paginationHTML += `
-                <li class="page-item">
-                  <a class="page-link" href="#" onclick="searchProducts(${data.pagination.currentPage + 1}); return false;">>></a>
-                </li>`;
-            }
-
-            paginationHTML += '</ul>';
+            let paginationHTML = '';
+            paginationHTML += `<button onclick="searchProducts(${data.pagination.currentPage - 1})" class="page-btn" ${data.pagination.currentPage === 1 ? 'disabled' : ''}>&lt;&lt;</button>`;
+            paginationHTML += `<span id="pageInfo">Trang ${data.pagination.currentPage} / ${data.pagination.totalPages}</span>`;
+            paginationHTML += `<button onclick="searchProducts(${data.pagination.currentPage + 1})" class="page-btn" ${data.pagination.currentPage === data.pagination.totalPages ? 'disabled' : ''}>&gt;&gt;</button>`;
             paginationContainer.innerHTML = paginationHTML;
           } else {
-            paginationContainer.innerHTML = ''; // Xóa phân trang nếu chỉ có 1 trang
+            paginationContainer.innerHTML = '';
           }
         })
         .catch(error => {

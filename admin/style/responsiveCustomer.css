@@ -165,6 +165,9 @@
 
 /* Smartphone & Mobile (< 748px) */
 @media only screen and (max-width: 47.9375em) {
+  .user-table {
+    font-size: 14px;
+  }
   .name-employee p,
   .position-employee,
   .bell-notification {
@@ -214,6 +217,9 @@
 
 /* Mobile (< 768px) */
 @media only screen and (max-width: 47.9375em) {
+  .user-table {
+    font-size: 14px;
+  }
   .header-left-title {
     font-size: 20px;
   }
@@ -329,6 +335,9 @@
   .container h1 {
     font-size: 22px;
   }
+  .user-table {
+    font-size: 14px;
+  }
 }
 
 /* PC (>= 1024px) */
@@ -376,5 +385,29 @@
 
   .container h1 {
     font-size: 24px;
+  }
+}
+
+/* Tablet (>= 768px and < 1024px) */
+@media only screen and (min-width: 48em) and (max-width: 63.9375em) {
+  .user-table th:nth-child(4),
+  .user-table td:nth-child(4) {
+    display: none;
+  }
+}
+
+/* Laptop (>= 1024px and < 1440px) */
+@media only screen and (min-width: 64em) and (max-width: 89.9375em) {
+  .user-table th:nth-child(4),
+  .user-table td:nth-child(4) {
+    display: none;
+  }
+}
+
+/* Desktop (>= 1440px) */
+@media only screen and (min-width: 90em) {
+  .user-table th:nth-child(4),
+  .user-table td:nth-child(4) {
+    display: table-cell;
   }
 }

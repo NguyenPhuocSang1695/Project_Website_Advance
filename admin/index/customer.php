@@ -14,6 +14,38 @@
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/responsiveCustomer.css">
+  <style>
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .page-btn {
+      padding: 5px 15px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .page-btn:disabled {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+      color: #999;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background-color: #f0f0f0;
+    }
+
+    #pageInfo {
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
 </head>
 
 <body>
@@ -439,35 +471,36 @@
       }
     });
 
-    function searchUsers() {
+    function searchUsers(page = 1) {
       const searchInput = document.querySelector('.search-bar-customer');
       const searchTerm = searchInput.value.trim();
       const tableBody = document.querySelector('#userTable tbody');
+      const paginationContainer = document.querySelector('.pagination');
 
       // Show loading message
       tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Đang tìm kiếm...</td></tr>';
+      paginationContainer.innerHTML = '';
 
-      // Send AJAX request
-      fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}`)
+      // Send AJAX request with page
+      fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}&page=${page}`)
         .then(response => response.json())
         .then(data => {
           if (!data.success) {
             throw new Error(data.error || 'Có lỗi xảy ra khi tìm kiếm');
           }
 
-          if (data.users.length === 0) {
+          if (!data.users || data.users.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Không tìm thấy người dùng nào phù hợp</td></tr>';
+            paginationContainer.innerHTML = '';
             return;
           }
 
           // Clear and update table
           tableBody.innerHTML = '';
           data.users.forEach(user => {
-            // Sửa lại phần xử lý status vì status đang trả về trực tiếp từ database
             const statusText = user.status;
             const statusClass = user.statusClass;
             const roleText = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
-
             const row = document.createElement('tr');
             row.innerHTML = `
               <td>${user.username}</td>
@@ -484,11 +517,22 @@
             `;
             tableBody.appendChild(row);
           });
+
+          // Pagination rendering like warehouse.php
+          if (data.pagination && data.pagination.totalPages > 1) {
+            let paginationHTML = '';
+            paginationHTML += `<button onclick="searchUsers(${data.pagination.currentPage - 1})" class="page-btn" ${data.pagination.currentPage === 1 ? 'disabled' : ''}>&lt;&lt;</button>`;
+            paginationHTML += `<span id="pageInfo">Trang ${data.pagination.currentPage} / ${data.pagination.totalPages}</span>`;
+            paginationHTML += `<button onclick="searchUsers(${data.pagination.currentPage + 1})" class="page-btn" ${data.pagination.currentPage === data.pagination.totalPages ? 'disabled' : ''}>&gt;&gt;</button>`;
+            paginationContainer.innerHTML = paginationHTML;
+          } else {
+            paginationContainer.innerHTML = '';
+          }
         })
         .catch(error => {
           console.error('Search error:', error);
-          tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">
-            Có lỗi xảy ra: ${error.message}</td></tr>`;
+          tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">Có lỗi xảy ra: ${error.message}</td></tr>`;
+          paginationContainer.innerHTML = '';
         });
     }
 
@@ -496,16 +540,18 @@
     let searchTimeout;
     document.querySelector('.search-bar-customer').addEventListener('input', function() {
       clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(searchUsers, 500);
+      searchTimeout = setTimeout(() => searchUsers(1), 500);
     });
 
     // Add event listener for search button
-    document.querySelector('.search-icon-customer').addEventListener('click', searchUsers);
+    document.querySelector('.search-icon-customer').addEventListener('click', function() {
+      searchUsers(1);
+    });
 
     // Add event listener for Enter key
     document.querySelector('.search-bar-customer').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
-        searchUsers();
+        searchUsers(1);
       }
     });
 
