@@ -159,6 +159,7 @@ $cart_count = count($cart_items);
   <link rel="stylesheet" href="../src/css/search-styles.css">
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css">
   <link rel="stylesheet" href="../src/css/footer.css">
+  <link rel="stylesheet" href="../src/css/brandname.css">
   <!-- JS  -->
   <script src="../src/js/search-common.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>

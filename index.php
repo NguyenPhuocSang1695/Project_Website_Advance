@@ -80,6 +80,7 @@ $cart_count = count($cart_items);
   <link rel="stylesheet" href="./src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="./src/css/user-sanpham.css" />
   <link rel="stylesheet" href="./src/css/footer.css">
+  <link rel="stylesheet" href="./src/css/brandname.css">
   <!-- JS  -->
   <!-- <script src="./src/js/main.js"></script> -->
   <script src="./assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
@@ -92,6 +93,45 @@ $cart_count = count($cart_items);
   <title>Trang Chủ</title>
   <!-- <script src="./src/js/search.js"></script> -->
   <!-- AVCCVSA -->
+  <style>
+    .for_more {
+      display: flex;
+      justify-content: center;
+      margin: 40px 0;
+    }
+
+    .for_more button {
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: 500;
+      background-color: #1c8e2e;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .for_more button:hover {
+      background-color: #27ae60;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .for_more button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive cho mobile */
+    @media (max-width: 768px) {
+      .for_more button {
+        padding: 10px 25px;
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 
 <!-- <script src="./src/js/search.js"></script> -->
@@ -577,7 +617,7 @@ $cart_count = count($cart_items);
                 <img style="width: 100%; height: 300px;" src=".<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['ProductName']) ?>" />
                 <div class="item_name__price">
                   <p style="text-decoration: none; color: black; font-size: 20px; font-weight:bold"><?= htmlspecialchars($product['ProductName']) ?></p>
-                  <span style="font-size: 20px"><?= number_format($product['Price'], 0, ',', '.') ?> vnđ</span>
+                  <span style="font-size: 20px"><?= number_format($product['Price'], 0, ',', '.') ?> VNĐ</span>
                 </div>
               </a>
             </div>
@@ -591,7 +631,11 @@ $cart_count = count($cart_items);
       </div>
 
 
-
+      <div class="for_more">
+        <a href="./pages/allproduct.php">
+          <button>Xem thêm</button>
+        </a>
+      </div>
     </section>
   </main>
 

@@ -126,6 +126,7 @@ $cart_count = count($cart_items);
   <link rel="stylesheet" href="../src/css/search-styles.css" />
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="../src/css/footer.css">
+  <link rel="stylesheet" href="../src/css/brandname.css">
   <!-- JS  -->
   <script src="../src/js/search-common.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
@@ -624,8 +625,8 @@ $cart_count = count($cart_items);
                 <tr>
                   <th>TÊN SẢN PHẨM</th>
                   <th style="text-align: center">SỐ LƯỢNG</th>
-                  <th style="text-align: center">ĐƠN GIÁ (đ)</th>
-                  <th style="text-align: center">THÀNH TIỀN (đ)</th>
+                  <th style="text-align: center">ĐƠN GIÁ (VNĐ)</th>
+                  <th style="text-align: center">THÀNH TIỀN (VNĐ)</th>
                 </tr>
               </thead>
               <tbody>
@@ -642,8 +643,8 @@ $cart_count = count($cart_items);
                       </div>
                     </td>
                     <td style="text-align: center"><?= $row['Quantity'] ?></td>
-                    <td style="text-align: center"><?= $row['Price'] ?></td>
-                    <td style="text-align: center"><?= number_format($row['TotalPrice'], 0, ',', '.') ?> đ</td>
+                    <td style="text-align: center"><?= number_format($row['Price'], 0, ',', '.') ?></td>
+                    <td style="text-align: center"><?= number_format($row['TotalPrice'], 0, ',', '.') ?></td>
                   </tr>
                 <?php endwhile; ?>
               </tbody>
@@ -662,7 +663,7 @@ $cart_count = count($cart_items);
           </div>
           <div class="payment-row paid">
             <span>Tổng thanh toán</span>
-            <span><?= number_format($totalAmount, 0, ',', '.') ?> đ</span>
+            <span><?= number_format($totalAmount, 0, ',', '.') ?> VNĐ</span>
           </div>
         </div>
       </div>
