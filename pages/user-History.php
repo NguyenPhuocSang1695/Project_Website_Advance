@@ -101,6 +101,7 @@ $cart_count = count($cart_items);
   <link rel="stylesheet" href="../src/css/search-styles.css" />
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="../src/css/footer.css">
+  <link rel="stylesheet" href="../src/css/brandname.css">
   <!-- JS  -->
   <script src="../src/js/search-common.js"></script>
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
@@ -587,8 +588,8 @@ $cart_count = count($cart_items);
       <h2>Hồ sơ khách hàng</h2>
       <hr>
       <div class="thongtin">
-        <h5>Họ tên: <?php echo htmlspecialchars($userInfo['FullName'] ?? ''); ?></h5>
-        <h5>Số điện thoại: <?php echo htmlspecialchars($userInfo['Phone'] ?? ''); ?></h5>
+        <h5><span style="font-weight: bold">Họ và tên:</span> <?php echo htmlspecialchars($userInfo['FullName'] ?? ''); ?></h5>
+        <h5><span style="font-weight: bold">Số điện thoại:</span> <?php echo htmlspecialchars($userInfo['Phone'] ?? ''); ?></h5>
       </div>
     </div>
 
@@ -607,7 +608,7 @@ $cart_count = count($cart_items);
               <thead>
                 <tr>
                   <th>MÃ HÓA ĐƠN</th>
-                  <th style="text-align: center">THÀNH TIỀN (đ)</th>
+                  <th style="text-align: center">THÀNH TIỀN (VNĐ)</th>
                   <th style="text-align: center">TÌNH TRẠNG</th>
                 </tr>
               </thead>
@@ -620,7 +621,7 @@ $cart_count = count($cart_items);
                   <?php foreach ($orderHistory as $order): ?>
                     <tr class="order-row" data-orderid="<?= $order['OrderID']; ?>">
                       <td><?= $order['OrderID']; ?></td>
-                      <td style="text-align: center"><?= number_format($order['TotalAmount'], 0, ',', '.') . ' VNĐ'; ?></td>
+                      <td style="text-align: center"><?= number_format($order['TotalAmount'], 0, ',', '.') . ' '; ?></td>
                       <td style="text-align: center">
                         <?php
                         switch ($order['Status']) {

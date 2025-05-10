@@ -168,6 +168,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
   <link rel="stylesheet" href="../assets/icon/fontawesome-free-6.7.2-web/css/all.min.css">
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css">
   <link rel="stylesheet" href="../src/css/footer.css">
+  <link rel="stylesheet" href="../src/css/brandname.css">
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script src="../src/js/Trang_chu.js"></script>

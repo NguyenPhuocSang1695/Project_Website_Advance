@@ -80,6 +80,7 @@ $cart_count = count($cart_items);
   <link rel="stylesheet" href="./src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="./src/css/user-sanpham.css" />
   <link rel="stylesheet" href="./src/css/footer.css">
+  <link rel="stylesheet" href="./src/css/brandname.css">
   <!-- JS  -->
   <!-- <script src="./src/js/main.js"></script> -->
   <script src="./assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
@@ -577,7 +578,7 @@ $cart_count = count($cart_items);
                 <img style="width: 100%; height: 300px;" src=".<?= htmlspecialchars($product['ImageURL']) ?>" alt="<?= htmlspecialchars($product['ProductName']) ?>" />
                 <div class="item_name__price">
                   <p style="text-decoration: none; color: black; font-size: 20px; font-weight:bold"><?= htmlspecialchars($product['ProductName']) ?></p>
-                  <span style="font-size: 20px"><?= number_format($product['Price'], 0, ',', '.') ?> vnđ</span>
+                  <span style="font-size: 20px"><?= number_format($product['Price'], 0, ',', '.') ?> VNĐ</span>
                 </div>
               </a>
             </div>

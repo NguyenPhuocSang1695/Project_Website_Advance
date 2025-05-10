@@ -115,6 +115,7 @@ if ($result && $result->num_rows > 0) {
   <link rel="stylesheet" href="../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.min.css" />
   <link rel="stylesheet" href="../src/css/footer.css">
+  <link rel="stylesheet" href="../src/css/brandname.css">
   <!-- JS  -->
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
@@ -514,7 +515,7 @@ if ($result && $result->num_rows > 0) {
       <span><?php echo htmlspecialchars($categoryName); ?></span>
     </a>
     <span>></span>
-    <span><?php echo htmlspecialchars($productName); ?></span>
+    <a href="#"><span><?php echo htmlspecialchars($productName); ?></span></a>
   </div>
 
   <style>

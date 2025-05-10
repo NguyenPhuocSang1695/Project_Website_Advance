@@ -77,7 +77,7 @@ $cart_count = count($cart_items);
   <link rel="stylesheet" href="../assets/libs/fontawesome-free-6.6.0-web/css/all.min.css" />
   <link rel="stylesheet" href="../src/css/searchAdvanceMobile.css" />
   <link rel="stylesheet" href="../src/css/user-sanpham.css" />
-
+  <link rel="stylesheet" href="../src/css/brandname.css">
   <link rel="stylesheet" href="../src/css/footer.css">
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
