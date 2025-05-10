@@ -63,7 +63,7 @@
                               color: #FAD4AE;
                           "></i>
               </button>
-              <p style="color: black;text-align: center; font-size: 10x;">Khách hàng</p>
+              <p style="color: black;text-align: center; font-size: 10x;">Người dùng</p>
             </div>
           </a>
           <a href="orderPage.php" style="text-decoration: none; color: black;">
@@ -197,7 +197,7 @@
                         color: #FAD4AE;
                     "></i>
           </button>
-          <p>Khách hàng</p>
+          <p>Người dùng</p>
         </div>
       </a>
       <a href="orderPage.php" style="text-decoration: none; color: black;">
