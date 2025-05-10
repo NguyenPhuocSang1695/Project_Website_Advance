@@ -78,7 +78,25 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
 $cart_items = $_SESSION['cart'] ?? [];
 $cart_count = count($cart_items);
 
+$sql = "SELECT p.ProductName, c.CategoryName, c.CategoryID
+        FROM products p
+        JOIN categories c ON p.CategoryID = c.CategoryID
+        WHERE p.ProductID = ? AND p.Status != 'hidden'";
 
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result && $result->num_rows > 0) {
+  $productInfo = $result->fetch_assoc();
+  $productName = $productInfo['ProductName'];
+  $categoryName = $productInfo['CategoryName'];
+  $categoryId = $productInfo['CategoryID'];
+} else {
+  header("Location: ../index.php");
+  exit;
+}
 
 ?>
 
@@ -486,6 +504,56 @@ $cart_count = count($cart_items);
   </div>
 </div>
 
+<section>
+  <div class="loca">
+    <a href="../index.php">
+      <span>Trang chủ</span>
+    </a>
+    <span>></span>
+    <a href="phan-loai.php?category_id=<?php echo $categoryId; ?>">
+      <span><?php echo htmlspecialchars($categoryName); ?></span>
+    </a>
+    <span>></span>
+    <span><?php echo htmlspecialchars($productName); ?></span>
+  </div>
+
+  <style>
+    .loca {
+      padding: 20px;
+      margin: 20px 0;
+      font-size: 16px;
+      background-color: #f9f9f9;
+    }
+
+    .loca a {
+      text-decoration: none;
+      color: #666;
+      transition: color 0.3s ease;
+    }
+
+    .loca a:hover {
+      color: rgb(59, 161, 59);
+    }
+
+    .loca span {
+      margin: 0 10px;
+      color: #666;
+      font-weight: bold;
+    }
+
+    /* Responsive cho mobile */
+    @media (max-width: 768px) {
+      .loca {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      .loca span {
+        margin: 0 5px;
+      }
+    }
+  </style>
+</section>
 
 <div class="sanpham">
   <!-- Ảnh sản phẩm -->
