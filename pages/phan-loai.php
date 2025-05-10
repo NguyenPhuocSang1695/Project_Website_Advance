@@ -478,6 +478,77 @@ $cart_count = count($cart_items);
     </div>
   </div>
 
+  <section>
+    <div class="loca">
+      <a href="../index.php">
+        <span>Trang chủ</span>
+      </a>
+      <span>></span>
+      <?php
+      require_once '../php-api/connectdb.php';
+      $conn = connect_db();
+
+      if (isset($_GET['category_id'])) {
+        $category_id = $_GET['category_id'];
+        $sql = "SELECT CategoryName FROM categories WHERE CategoryID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $category_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($row = $result->fetch_assoc()) {
+          $categoryName = htmlspecialchars($row['CategoryName']);
+          echo '<a href="#"><span>' . $categoryName . '</span></a>';
+        } else {
+          echo '<a href="#"><span>Phân loại không tồn tại</span></a>';
+        }
+
+        $stmt->close();
+      } else {
+        echo '<a href="#"><span>Tất cả sản phẩm</span></a>';
+      }
+      $conn->close();
+      ?>
+    </div>
+
+    <style>
+      .loca {
+        padding: 20px;
+        margin: 20px 0;
+        font-size: 16px;
+        background-color: #f9f9f9;
+      }
+
+      .loca a {
+        text-decoration: none;
+        color: #666;
+        transition: color 0.3s ease;
+      }
+
+      .loca a:hover {
+        color: rgb(59, 161, 59);
+      }
+
+      .loca span {
+        margin: 0 10px;
+        color: #666;
+        font-weight: bold;
+      }
+
+      /* Responsive cho mobile */
+      @media (max-width: 768px) {
+        .loca {
+          padding: 10px;
+          font-size: 14px;
+        }
+
+        .loca span {
+          margin: 0 5px;
+        }
+      }
+    </style>
+  </section>
+
   <main>
     <h2 style="color: rgb(59, 161, 59); text-align: center;">
       <div id="product_type_list">Loại cây</div>
