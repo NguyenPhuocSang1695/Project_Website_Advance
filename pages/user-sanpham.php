@@ -78,25 +78,25 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
 $cart_items = $_SESSION['cart'] ?? [];
 $cart_count = count($cart_items);
 
-$sql = "SELECT p.ProductName, c.CategoryName, c.CategoryID
-        FROM products p
-        JOIN categories c ON p.CategoryID = c.CategoryID
-        WHERE p.ProductID = ? AND p.Status != 'hidden'";
+// $sql = "SELECT p.ProductName, p.CategoryID, c.CategoryName 
+//         FROM products p
+//         INNER JOIN categories c ON p.CategoryID = c.CategoryID
+//         WHERE p.ProductID = ? AND p.Status != 'hidden'";
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result();
+// $stmt = $conn->prepare($sql);
+// $stmt->bind_param("i", $id);
+// $stmt->execute();
+// $result = $stmt->get_result();
 
-if ($result && $result->num_rows > 0) {
-  $productInfo = $result->fetch_assoc();
-  $productName = $productInfo['ProductName'];
-  $categoryName = $productInfo['CategoryName'];
-  $categoryId = $productInfo['CategoryID'];
-} else {
-  header("Location: ../index.php");
-  exit;
-}
+// if ($result && $result->num_rows > 0) {
+//   $row = $result->fetch_assoc();
+//   $productName = $row['ProductName'];
+//   $categoryId = $row['CategoryID'];
+//   $categoryName = $row['CategoryName'];
+// } else {
+//   header("Location: ../index.php");
+//   exit;
+// }
 
 ?>
 
@@ -506,17 +506,41 @@ if ($result && $result->num_rows > 0) {
 </div>
 
 <section>
-  <div class="loca">
-    <a href="../index.php">
-      <span>Trang chủ</span>
-    </a>
-    <span>></span>
-    <a href="phan-loai.php?category_id=<?php echo $categoryId; ?>">
-      <span><?php echo htmlspecialchars($categoryName); ?></span>
-    </a>
-    <span>></span>
-    <a href="#"><span><?php echo htmlspecialchars($productName); ?></span></a>
-  </div>
+  <?php
+  require_once '../php-api/connectdb.php'; // Đường dẫn đúng tới file kết nối
+  $conn = connect_db();
+  // Get product and category info
+  $sql = "SELECT p.ProductName, p.CategoryID, c.CategoryName 
+          FROM products p
+          INNER JOIN categories c ON p.CategoryID = c.CategoryID 
+          WHERE p.ProductID = ? AND p.Status != 'hidden'";
+
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("i", $id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if ($result && $result->num_rows > 0) {
+    $breadcrumb = $result->fetch_assoc();
+  ?>
+    <div class="loca">
+      <a href="../index.php">
+        <span>Trang chủ</span>
+      </a>
+      <span>></span>
+      <a href="phan-loai.php?category_id=<?php echo htmlspecialchars($breadcrumb['CategoryID']); ?>">
+        <span><?php echo htmlspecialchars($breadcrumb['CategoryName']); ?></span>
+      </a>
+      <span>></span>
+      <a href="#"><span><?php echo htmlspecialchars($breadcrumb['ProductName']); ?></span></a>
+    </div>
+  <?php
+  } else {
+    // Redirect if product not found
+    header("Location: ../index.php");
+    exit;
+  }
+  ?>
 
   <style>
     .loca {
