@@ -29,6 +29,7 @@
       background-color: #fff;
       cursor: pointer;
       border-radius: 4px;
+      transition: all 0.3s ease;
     }
 
     .page-btn:disabled {
@@ -41,9 +42,35 @@
       background-color: #f0f0f0;
     }
 
-    #pageInfo {
-      font-size: 14px;
-      color: #666;
+    .page-btn.active {
+      background-color: #6aa173;
+      color: white;
+      border-color: #6aa173;
+    }
+
+    .pagination-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .page-number {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .page-number:hover {
+      background-color: #f0f0f0;
+    }
+
+    .page-number.active {
+      background-color: #6aa173;
+      color: white;
+      border-color: #6aa173;
     }
   </style>
 </head>
@@ -222,7 +249,7 @@
   <div class="container-main">
     <div class="left-section-customer">
       <div class="search-container-customer" style="margin-bottom: 20px;">
-        <input class="search-bar-customer" type="text" placeholder="Nhập tên người dùng" onkeyup="searchUsers()">
+        <input class="search-bar-customer" type="text" placeholder="Tìm kiếm theo tên, email, số điện thoại..." onkeyup="searchUsers()">
         <button class="search-icon-customer" onclick="searchUsers()">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
@@ -285,10 +312,46 @@
       </table>
       <div class="pagination">
         <?php
-        // Add pagination links
-        echo "<button onclick='changePage(" . ($page > 1 ? $page - 1 : 1) . ")' class='page-btn' " . ($page == 1 ? 'disabled' : '') . "><<</button>";
-        echo "<span id='pageInfo'>Trang $page / $total_pages</span>";
-        echo "<button onclick='changePage(" . ($page < $total_pages ? $page + 1 : $total_pages) . ")' class='page-btn' " . ($page == $total_pages ? 'disabled' : '') . ">>></button>";
+        // Previous button
+        echo "<button onclick='changePage(" . ($page > 1 ? $page - 1 : 1) . ")' class='page-btn' " . ($page == 1 ? 'disabled' : '') . ">
+          <i class='fas fa-chevron-left'></i>
+        </button>";
+
+        // Calculate page range
+        $maxVisiblePages = 5;
+        $startPage = max(1, $page - floor($maxVisiblePages / 2));
+        $endPage = min($total_pages, $startPage + $maxVisiblePages - 1);
+
+        if ($endPage - $startPage + 1 < $maxVisiblePages) {
+          $startPage = max(1, $endPage - $maxVisiblePages + 1);
+        }
+
+        // First page
+        if ($startPage > 1) {
+          echo "<button onclick='changePage(1)' class='page-number'>1</button>";
+          if ($startPage > 2) {
+            echo "<span>...</span>";
+          }
+        }
+
+        // Page numbers
+        for ($i = $startPage; $i <= $endPage; $i++) {
+          $activeClass = $i == $page ? 'active' : '';
+          echo "<button onclick='changePage($i)' class='page-number $activeClass'>$i</button>";
+        }
+
+        // Last page
+        if ($endPage < $total_pages) {
+          if ($endPage < $total_pages - 1) {
+            echo "<span>...</span>";
+          }
+          echo "<button onclick='changePage($total_pages)' class='page-number'>$total_pages</button>";
+        }
+
+        // Next button
+        echo "<button onclick='changePage(" . ($page < $total_pages ? $page + 1 : $total_pages) . ")' class='page-btn' " . ($page == $total_pages ? 'disabled' : '') . ">
+          <i class='fas fa-chevron-right'></i>
+        </button>";
         ?>
       </div>
     </div>
@@ -471,26 +534,128 @@
       }
     });
 
+    // Add loading state management
+    let isLoading = false;
+    let searchTimeout;
+
+    function showLoading() {
+      isLoading = true;
+      const tableBody = document.querySelector('#userTable tbody');
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center;">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Đang tìm kiếm...</p>
+          </td>
+        </tr>
+      `;
+    }
+
+    function hideLoading() {
+      isLoading = false;
+    }
+
+    function showError(message) {
+      const tableBody = document.querySelector('#userTable tbody');
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; color: red;">
+            <i class="fas fa-exclamation-circle"></i>
+            ${message}
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderPagination(currentPage, totalPages) {
+      const paginationContainer = document.querySelector('.pagination');
+      let paginationHTML = '';
+
+      // Previous button
+      paginationHTML += `
+        <button onclick="searchUsers(${currentPage - 1})" class="page-btn" ${currentPage === 1 ? 'disabled' : ''}>
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      `;
+
+      // Page numbers
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+
+      if (startPage > 1) {
+        paginationHTML += `
+          <button onclick="searchUsers(1)" class="page-number">1</button>
+          ${startPage > 2 ? '<span>...</span>' : ''}
+        `;
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `
+          <button onclick="searchUsers(${i})" class="page-number ${i === currentPage ? 'active' : ''}">
+            ${i}
+          </button>
+        `;
+      }
+
+      if (endPage < totalPages) {
+        paginationHTML += `
+          ${endPage < totalPages - 1 ? '<span>...</span>' : ''}
+          <button onclick="searchUsers(${totalPages})" class="page-number">${totalPages}</button>
+        `;
+      }
+
+      paginationHTML += `
+        <button onclick="searchUsers(${currentPage + 1})" class="page-btn" ${currentPage === totalPages ? 'disabled' : ''}>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      `;
+
+      paginationContainer.innerHTML = paginationHTML;
+    }
+
     function searchUsers(page = 1) {
+      if (isLoading) return;
+
       const searchInput = document.querySelector('.search-bar-customer');
       const searchTerm = searchInput.value.trim();
       const tableBody = document.querySelector('#userTable tbody');
       const paginationContainer = document.querySelector('.pagination');
 
-      // Show loading message
-      tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Đang tìm kiếm...</td></tr>';
-      paginationContainer.innerHTML = '';
+      showLoading();
 
       // Send AJAX request with page
       fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}&page=${page}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then(data => {
+          hideLoading();
+
           if (!data.success) {
-            throw new Error(data.error || 'Có lỗi xảy ra khi tìm kiếm');
+            showError(data.error || 'Có lỗi xảy ra khi tìm kiếm');
+            paginationContainer.innerHTML = '';
+            return;
           }
 
           if (!data.users || data.users.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Không tìm thấy người dùng nào phù hợp</td></tr>';
+            tableBody.innerHTML = `
+              <tr>
+                <td colspan="7" style="text-align: center;">
+                  <i class="fas fa-search"></i>
+                  <p class="mt-2">Không tìm thấy người dùng nào phù hợp</p>
+                </td>
+              </tr>
+            `;
             paginationContainer.innerHTML = '';
             return;
           }
@@ -498,8 +663,8 @@
           // Clear and update table
           tableBody.innerHTML = '';
           data.users.forEach(user => {
-            const statusText = user.status;
-            const statusClass = user.statusClass;
+            const statusText = user.status === 'Active' ? 'Hoạt động' : 'Đã khóa';
+            const statusClass = user.status === 'Active' ? 'text-success' : 'text-danger';
             const roleText = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -518,26 +683,22 @@
             tableBody.appendChild(row);
           });
 
-          // Pagination rendering like warehouse.php
+          // Update pagination with new render function
           if (data.pagination && data.pagination.totalPages > 1) {
-            let paginationHTML = '';
-            paginationHTML += `<button onclick="searchUsers(${data.pagination.currentPage - 1})" class="page-btn" ${data.pagination.currentPage === 1 ? 'disabled' : ''}>&lt;&lt;</button>`;
-            paginationHTML += `<span id="pageInfo">Trang ${data.pagination.currentPage} / ${data.pagination.totalPages}</span>`;
-            paginationHTML += `<button onclick="searchUsers(${data.pagination.currentPage + 1})" class="page-btn" ${data.pagination.currentPage === data.pagination.totalPages ? 'disabled' : ''}>&gt;&gt;</button>`;
-            paginationContainer.innerHTML = paginationHTML;
+            renderPagination(data.pagination.currentPage, data.pagination.totalPages);
           } else {
             paginationContainer.innerHTML = '';
           }
         })
         .catch(error => {
+          hideLoading();
           console.error('Search error:', error);
-          tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: red;">Có lỗi xảy ra: ${error.message}</td></tr>`;
+          showError('Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại sau.');
           paginationContainer.innerHTML = '';
         });
     }
 
     // Add debounce to search
-    let searchTimeout;
     document.querySelector('.search-bar-customer').addEventListener('input', function() {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => searchUsers(1), 500);
@@ -551,6 +712,7 @@
     // Add event listener for Enter key
     document.querySelector('.search-bar-customer').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
+        e.preventDefault();
         searchUsers(1);
       }
     });

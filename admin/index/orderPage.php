@@ -109,6 +109,58 @@ echo "sang";
     .notification.hide {
       animation: fadeOutScale 0.3s ease forwards;
     }
+
+    .select_list {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .select_list button {
+      padding: 5px 15px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .select_list button:disabled {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+      color: #999;
+    }
+
+    .select_list button:hover:not(:disabled) {
+      background-color: #f0f0f0;
+    }
+
+    #pageNumbers {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    #pageNumbers button {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    #pageNumbers button:hover {
+      background-color: #f0f0f0;
+    }
+
+    #pageNumbers button.active {
+      background-color: #6aa173;
+      color: white;
+      border-color: #6aa173;
+    }
   </style>
 
 </head>
@@ -375,9 +427,9 @@ echo "sang";
         </div>
         <div class="select_list" id="pagination-container">
           <button id="prevPage">
-            << </button>
+            < </button>
               <div id="pageNumbers"></div>
-              <button id="nextPage">>></button>
+              <button id="nextPage">></button>
         </div>
       </div>
     </div>

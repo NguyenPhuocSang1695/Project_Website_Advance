@@ -348,6 +348,52 @@ if ($product_id) {
       color: #666;
       margin: 0 8px;
     }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .page-btn {
+      padding: 5px 15px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .page-btn:disabled {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+      color: #999;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background-color: #f0f0f0;
+    }
+
+    .page-number {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .page-number:hover {
+      background-color: #f0f0f0;
+    }
+
+    .page-number.active {
+      background-color: #6aa173;
+      color: white;
+      border-color: #6aa173;
+    }
   </style>
 </head>
 
@@ -599,57 +645,47 @@ if ($product_id) {
               echo "</tbody></table>";
 
               // Display pagination
-              echo "<nav aria-label='Page navigation' class='mt-4'>";
-              echo "<ul class='pagination justify-content-center'>";
+              echo "<div class='pagination'>";
+              echo "<button onclick='changePage(" . ($page > 1 ? $page - 1 : 1) . ")' class='page-btn' " . ($page == 1 ? 'disabled' : '') . ">
+                <i class='fas fa-chevron-left'></i>
+              </button>";
 
-              // Previous button
-              if ($page > 1) {
-                echo "<li class='page-item'><a class='page-link' href='?page=" . ($page - 1) . "'><<</a></li>";
+              // Calculate page range
+              $maxVisiblePages = 5;
+              $startPage = max(1, $page - floor($maxVisiblePages / 2));
+              $endPage = min($total_pages, $startPage + $maxVisiblePages - 1);
+
+              if ($endPage - $startPage + 1 < $maxVisiblePages) {
+                $startPage = max(1, $endPage - $maxVisiblePages + 1);
+              }
+
+              // First page
+              if ($startPage > 1) {
+                echo "<button onclick='changePage(1)' class='page-number'>1</button>";
+                if ($startPage > 2) {
+                  echo "<span>...</span>";
+                }
               }
 
               // Page numbers
-              if ($total_pages <= 5) {
-                // If total pages is 5 or less, show all pages
-                for ($i = 1; $i <= $total_pages; $i++) {
-                  echo "<li class='page-item " . ($page == $i ? 'active' : '') . "'>";
-                  echo "<a class='page-link' href='?page=$i'>$i</a>";
-                  echo "</li>";
+              for ($i = $startPage; $i <= $endPage; $i++) {
+                $activeClass = $i == $page ? 'active' : '';
+                echo "<button onclick='changePage($i)' class='page-number $activeClass'>$i</button>";
+              }
+
+              // Last page
+              if ($endPage < $total_pages) {
+                if ($endPage < $total_pages - 1) {
+                  echo "<span>...</span>";
                 }
-              } else {
-                // Show first page
-                echo "<li class='page-item " . ($page == 1 ? 'active' : '') . "'>";
-                echo "<a class='page-link' href='?page=1'>1</a></li>";
-
-                // Show pages around current page
-                $start_page = max(2, min($page - 1, $total_pages - 3));
-                $end_page = min($total_pages - 1, max($page + 1, 4));
-
-                if ($start_page > 2) {
-                  echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
-                }
-
-                for ($i = $start_page; $i <= $end_page; $i++) {
-                  echo "<li class='page-item " . ($page == $i ? 'active' : '') . "'>";
-                  echo "<a class='page-link' href='?page=$i'>$i</a>";
-                  echo "</li>";
-                }
-
-                if ($end_page < $total_pages - 1) {
-                  echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
-                }
-
-                // Show last page
-                echo "<li class='page-item " . ($page == $total_pages ? 'active' : '') . "'>";
-                echo "<a class='page-link' href='?page=$total_pages'>$total_pages</a></li>";
+                echo "<button onclick='changePage($total_pages)' class='page-number'>$total_pages</button>";
               }
 
               // Next button
-              if ($page < $total_pages) {
-                echo "<li class='page-item'><a class='page-link' href='?page=" . ($page + 1) . "'>>></a></li>";
-              }
-
-              echo "</ul>";
-              echo "</nav>";
+              echo "<button onclick='changePage(" . ($page < $total_pages ? $page + 1 : $total_pages) . ")' class='page-btn' " . ($page == $total_pages ? 'disabled' : '') . ">
+                <i class='fas fa-chevron-right'></i>
+              </button>";
+              echo "</div>";
 
               // Xử lý xóa sản phẩm khi form submit
               if (isset($_POST['delete_product'])) {
@@ -1068,9 +1104,46 @@ if ($product_id) {
           // Tạo phân trang chỉ khi có nhiều hơn 1 trang
           if (data.pagination.totalPages > 1) {
             let paginationHTML = '';
-            paginationHTML += `<button onclick="searchProducts(${data.pagination.currentPage - 1})" class="page-btn" ${data.pagination.currentPage === 1 ? 'disabled' : ''}>&lt;&lt;</button>`;
-            paginationHTML += `<span id="pageInfo">Trang ${data.pagination.currentPage} / ${data.pagination.totalPages}</span>`;
-            paginationHTML += `<button onclick="searchProducts(${data.pagination.currentPage + 1})" class="page-btn" ${data.pagination.currentPage === data.pagination.totalPages ? 'disabled' : ''}>&gt;&gt;</button>`;
+            paginationHTML += `<button onclick="searchProducts(${data.pagination.currentPage - 1})" class="page-btn" ${data.pagination.currentPage === 1 ? 'disabled' : ''}>
+              <i class="fas fa-chevron-left"></i>
+            </button>`;
+
+            // Calculate page range
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, data.pagination.currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(data.pagination.totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+              startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            // First page
+            if (startPage > 1) {
+              paginationHTML += `<button onclick="searchProducts(1)" class="page-number">1</button>`;
+              if (startPage > 2) {
+                paginationHTML += `<span>...</span>`;
+              }
+            }
+
+            // Page numbers
+            for (let i = startPage; i <= endPage; i++) {
+              const activeClass = i === data.pagination.currentPage ? 'active' : '';
+              paginationHTML += `<button onclick="searchProducts(${i})" class="page-number ${activeClass}">${i}</button>`;
+            }
+
+            // Last page
+            if (endPage < data.pagination.totalPages) {
+              if (endPage < data.pagination.totalPages - 1) {
+                paginationHTML += `<span>...</span>`;
+              }
+              paginationHTML += `<button onclick="searchProducts(${data.pagination.totalPages})" class="page-number">${data.pagination.totalPages}</button>`;
+            }
+
+            // Next button
+            paginationHTML += `<button onclick="searchProducts(${data.pagination.currentPage + 1})" class="page-btn" ${data.pagination.currentPage === data.pagination.totalPages ? 'disabled' : ''}>
+              <i class="fas fa-chevron-right"></i>
+            </button>`;
+
             paginationContainer.innerHTML = paginationHTML;
           } else {
             paginationContainer.innerHTML = '';
