@@ -23,10 +23,20 @@
     z-index: 1;
     left: -3rem;
   }
+  .header-middle-section {
+    margin-left: -5px;
+}
   .header-left-section {
     top: 30px;
     left: 0;
 }
+.header-left-section 
+ {
+        font-size: 18px;
+        font-weight: bold;
+        position: relative;
+
+    }
   .logo-store {
     width: 60px;
     height :auto;
@@ -95,10 +105,11 @@
  
   .main-content {
   display: flex;
-  margin-top: -46px;
-  margin-left: -5rem;
+  padding: 5px;
+  gap: 20px;
   flex-direction: column;
   }
+
   .statistic-table {
     max-width: 100%;
     font-size: 10px;
@@ -150,7 +161,13 @@
   .fa-trash-can, .fa-rotate-left, .fa-pen-to-square {
     font-size: 14px;
   }
-
+  .content-wrapper {
+    width: 95%;
+    margin-left: 10px;
+  }
+  .hide-display {
+    display:none;
+  }
   }
   @media only screen and (min-device-width: 426px) and (max-device-width: 767px) {
     .index-menu {

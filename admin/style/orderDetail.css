@@ -315,10 +315,10 @@ body {
   }
 }
 
-@media (max-width: 768px) {
+@media (min-width:426px) and (max-width: 768px) {
   .content-wrapper {
-    width: 100%;
-    margin-left: 0;
+    width: 91%;
+    margin-left: 65px;
     padding: 15px;
   }
   

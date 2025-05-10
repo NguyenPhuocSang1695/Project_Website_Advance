@@ -224,7 +224,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
   <link href="../style/orderDetail.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
-  <link rel="stylesheet" href="../style/reponsiveOrder-detail.css">
+  <link rel="stylesheet" href="../style/responsiveOrder-detail.css">
   <style>
     /* Style cho bảng và container */
     .table-container {
@@ -343,6 +343,9 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
 
     .product-name {
       font-weight: 500;
+    }
+    .product-image {
+      display:none;
     }
   </style>
 </head>
