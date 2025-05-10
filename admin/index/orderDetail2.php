@@ -1,7 +1,7 @@
 <?php
 include('../php/connect.php');
 include('../php/login_check.php');
-include '../php/check_session.php';
+// include '../php/check_session.php';
 $avatarPath = ($_SESSION['Role'] === 'admin')
   ? "../../assets/images/admin.jpg"
   : "../../assets/images/sang.jpg";

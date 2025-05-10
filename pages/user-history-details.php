@@ -18,6 +18,14 @@ if ($row = $result->fetch_assoc()) {
   $totalAmount = $row['TotalAmount'];
 }
 
+// Add this near the top where you fetch order details
+$sql = "SELECT Status FROM orders WHERE OrderID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $orderID);
+$stmt->execute();
+$result = $stmt->get_result();
+$orderStatus = $result->fetch_assoc()['Status'];
+
 // Lấy danh sách sản phẩm trong đơn hàng
 $stmt = $conn->prepare("
     SELECT p.ProductName, p.ImageURL, od.Quantity, od.TotalPrice
@@ -608,11 +616,83 @@ $cart_count = count($cart_items);
       </div>
     </div>
 
+    <div class="cancel-order">
+      <button id="cancelOrderBtn" class="btn btn-danger" <?php echo ($orderStatus == 'ship' || $orderStatus == 'fail') ? 'disabled' : ''; ?>>
+        Hủy đơn hàng
+      </button>
+      <?php if ($orderStatus == 'ship'): ?>
+        <div class="text-muted mt-2">Không thể hủy đơn hàng đang vận chuyển</div>
+      <?php elseif ($orderStatus == 'fail'): ?>
+        <div class="text-muted mt-2">Đơn hàng đã được hủy</div>
+      <?php endif; ?>
+    </div>
+
+    <style>
+      .cancel-order {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      #cancelOrderBtn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #cancelOrderBtn:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+
+      #cancelOrderBtn:not(:disabled):hover {
+        background-color: #c82333;
+      }
+    </style>
+
+    <div class="cancel-order"></div>
+
   </section>
 
   <script>
     $("#menu-btn").click(function() {
       $("#menu").toggleClass("active");
+    });
+  </script>
+
+  <script>
+    document.getElementById('cancelOrderBtn').addEventListener('click', function() {
+      // Check if button is disabled
+      if (this.disabled) {
+        return;
+      }
+
+      if (confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) {
+        fetch('../src/php/cancel-order.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'orderID=<?php echo $orderID; ?>'
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Đơn hàng đã được hủy thành công');
+              window.location.reload();
+            } else {
+              alert('Có lỗi xảy ra khi hủy đơn hàng');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi hủy đơn hàng');
+          });
+      }
     });
   </script>
 
