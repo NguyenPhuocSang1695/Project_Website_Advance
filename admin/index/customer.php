@@ -14,6 +14,65 @@
   <link href="../style/LogInfo.css" rel="stylesheet">
   <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../style/responsiveCustomer.css">
+  <style>
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .page-btn {
+      padding: 5px 15px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .page-btn:disabled {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+      color: #999;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background-color: #f0f0f0;
+    }
+
+    .page-btn.active {
+      background-color: #6aa173;
+      color: white;
+      border-color: #6aa173;
+    }
+
+    .pagination-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .page-number {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .page-number:hover {
+      background-color: #f0f0f0;
+    }
+
+    .page-number.active {
+      background-color: #6aa173;
+      color: white;
+      border-color: #6aa173;
+    }
+  </style>
 </head>
 
 <body>
@@ -190,7 +249,7 @@
   <div class="container-main">
     <div class="left-section-customer">
       <div class="search-container-customer" style="margin-bottom: 20px;">
-        <input class="search-bar-customer" type="text" placeholder="Nhập tên người dùng" onkeyup="searchUsers()">
+        <input class="search-bar-customer" type="text" placeholder="Tìm kiếm theo tên, email, số điện thoại..." onkeyup="searchUsers()">
         <button class="search-icon-customer" onclick="searchUsers()">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
@@ -203,6 +262,7 @@
             <th>Họ và tên</th>
             <th>Số điện thoại</th>
             <th>Email</th>
+            <th>Vai trò</th>
             <th>Trạng thái</th>
             <th></th>
           </tr>
@@ -213,7 +273,7 @@
           require_once '../php/connect.php';
 
           // Get total number of customers
-          $count_query = "SELECT COUNT(*) as total FROM users WHERE role = 'customer'";
+          $count_query = "SELECT COUNT(*) as total FROM users";
           $count_result = mysqli_query($myconn, $count_query);
           $count_row = mysqli_fetch_assoc($count_result);
           $total_records = $count_row['total'];
@@ -227,19 +287,22 @@
           $offset = ($page - 1) * $records_per_page;
 
           // Get customers for current page
-          $sql = "SELECT Username, FullName, Phone, Email, Status FROM users 
-                             WHERE role = 'customer' 
+          $sql = "SELECT Username, FullName, Phone, Email, Status, Role FROM users 
+                             ORDER BY CASE WHEN Role = 'admin' THEN 0 ELSE 1 END, Role
                              LIMIT $offset, $records_per_page";
 
           $result = mysqli_query($myconn, $sql);
           while ($row = mysqli_fetch_assoc($result)) {
             $statusText = $row['Status'] === 'Active' ? 'Hoạt động' : 'Đã khóa';
             $statusClass = $row['Status'] === 'Active' ? 'text-success' : 'text-danger';
+            $roleText = $row['Role'] === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+
             echo "<tr>";
             echo "<td>" . $row['Username'] . "</td>";
             echo "<td>" . $row['FullName'] . "</td>";
             echo "<td>" . $row['Phone'] . "</td>";
             echo "<td>" . $row['Email'] . "</td>";
+            echo "<td>" . $roleText . "</td>";
             echo "<td class='" . $statusClass . "'>" . $statusText . "</td>";
             echo "<td><button class='btn btn-outline-warning' onclick='showEditUserPopup(\"" . $row['Username'] . "\")'>Chỉnh sửa</button></td>";
             echo "</tr>";
@@ -249,10 +312,46 @@
       </table>
       <div class="pagination">
         <?php
-        // Add pagination links
-        echo "<button onclick='changePage(" . ($page > 1 ? $page - 1 : 1) . ")' class='page-btn' " . ($page == 1 ? 'disabled' : '') . "><<</button>";
-        echo "<span id='pageInfo'>Trang $page / $total_pages</span>";
-        echo "<button onclick='changePage(" . ($page < $total_pages ? $page + 1 : $total_pages) . ")' class='page-btn' " . ($page == $total_pages ? 'disabled' : '') . ">>></button>";
+        // Previous button
+        echo "<button onclick='changePage(" . ($page > 1 ? $page - 1 : 1) . ")' class='page-btn' " . ($page == 1 ? 'disabled' : '') . ">
+          <i class='fas fa-chevron-left'></i>
+        </button>";
+
+        // Calculate page range
+        $maxVisiblePages = 5;
+        $startPage = max(1, $page - floor($maxVisiblePages / 2));
+        $endPage = min($total_pages, $startPage + $maxVisiblePages - 1);
+
+        if ($endPage - $startPage + 1 < $maxVisiblePages) {
+          $startPage = max(1, $endPage - $maxVisiblePages + 1);
+        }
+
+        // First page
+        if ($startPage > 1) {
+          echo "<button onclick='changePage(1)' class='page-number'>1</button>";
+          if ($startPage > 2) {
+            echo "<span>...</span>";
+          }
+        }
+
+        // Page numbers
+        for ($i = $startPage; $i <= $endPage; $i++) {
+          $activeClass = $i == $page ? 'active' : '';
+          echo "<button onclick='changePage($i)' class='page-number $activeClass'>$i</button>";
+        }
+
+        // Last page
+        if ($endPage < $total_pages) {
+          if ($endPage < $total_pages - 1) {
+            echo "<span>...</span>";
+          }
+          echo "<button onclick='changePage($total_pages)' class='page-number'>$total_pages</button>";
+        }
+
+        // Next button
+        echo "<button onclick='changePage(" . ($page < $total_pages ? $page + 1 : $total_pages) . ")' class='page-btn' " . ($page == $total_pages ? 'disabled' : '') . ">
+          <i class='fas fa-chevron-right'></i>
+        </button>";
         ?>
       </div>
     </div>
@@ -326,6 +425,14 @@
             <option value="">Chọn phường/xã</option>
           </select>
           <span class="error" id="ward-error"></span>
+        </div>
+        <div class="form-group">
+          <label>Vai trò: <span class="required">*</span></label>
+          <select id="addRole" required>
+            <option value="customer">Khách hàng</option>
+            <option value="admin">Quản trị viên</option>
+          </select>
+          <span class="error" id="role-error"></span>
         </div>
         <div class="form-group">
           <label>Trạng thái:</label>
@@ -427,68 +534,211 @@
       }
     });
 
+    // Add loading state management
+    let isLoading = false;
+    let searchTimeout;
+
+    function showLoading() {
+      isLoading = true;
+      const tableBody = document.querySelector('#userTable tbody');
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center;">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Đang tìm kiếm...</p>
+          </td>
+        </tr>
+      `;
+    }
+
+    function hideLoading() {
+      isLoading = false;
+    }
+
+    function showError(message) {
+      const tableBody = document.querySelector('#userTable tbody');
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; color: red;">
+            <i class="fas fa-exclamation-circle"></i>
+            ${message}
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderPagination(currentPage, totalPages) {
+      const paginationContainer = document.querySelector('.pagination');
+      let paginationHTML = '';
+
+      // Previous button
+      paginationHTML += `
+        <button onclick="searchUsers(${currentPage - 1})" class="page-btn" ${currentPage === 1 ? 'disabled' : ''}>
+          <i class="fas fa-chevron-left"></i>
+        </button>`;
+
+      // Page numbers
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+
+      if (startPage > 1) {
+        paginationHTML += `
+          <button onclick="searchUsers(1)" class="page-number">1</button>
+          ${startPage > 2 ? '<span>...</span>' : ''}
+        `;
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `
+          <button onclick="searchUsers(${i})" class="page-number ${i === currentPage ? 'active' : ''}">
+            ${i}
+          </button>
+        `;
+      }
+
+      if (endPage < totalPages) {
+        paginationHTML += `
+          ${endPage < totalPages - 1 ? '<span>...</span>' : ''}
+          <button onclick="searchUsers(${totalPages})" class="page-number">${totalPages}</button>
+        `;
+      }
+
+      paginationHTML += `
+        <button onclick="searchUsers(${currentPage + 1})" class="page-btn" ${currentPage === totalPages ? 'disabled' : ''}>
+          <i class="fas fa-chevron-right"></i>
+        </button>`;
+
+      paginationContainer.innerHTML = paginationHTML;
+    }
+
     function searchUsers() {
       const searchInput = document.querySelector('.search-bar-customer');
       const searchTerm = searchInput.value.trim();
       const tableBody = document.querySelector('#userTable tbody');
+      const paginationContainer = document.querySelector('.pagination');
 
-      // Show loading message
-      tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Đang tìm kiếm...</td></tr>';
+      // Show loading state
+      tableBody.innerHTML = `
+        <tr>
+            <td colspan="7" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `;
 
-      // Send AJAX request
-      fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}`)
+      fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}&page=1&per_page=5`)
         .then(response => response.json())
         .then(data => {
-          if (!data.success) {
-            throw new Error(data.error || 'Có lỗi xảy ra khi tìm kiếm');
-          }
+            console.log('Search response:', data); // Debug log
+            if (data.success) {
+                tableBody.innerHTML = '';
 
-          if (data.users.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Không tìm thấy người dùng nào phù hợp</td></tr>';
-            return;
-          }
-
-          // Clear and update table
-          tableBody.innerHTML = '';
-          data.users.forEach(user => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                            <td>${user.username}</td>
-                            <td>${user.fullname}</td>
-                            <td>${user.phone}</td>
-                            <td>${user.email}</td>
-                            <td class="${user.statusClass}">${user.status}</td>
-                            <td>
-                                <button class='btn btn-outline-warning' onclick='showEditUserPopup("${user.username}")'>
-                                    Chỉnh sửa
-                                </button>
+                if (data.users.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="text-center">
+                                <i class="fas fa-search"></i>
+                                <p class="mt-2">Không tìm thấy người dùng nào phù hợp</p>
                             </td>
+                        </tr>
+                    `;
+                    paginationContainer.innerHTML = '';
+                } else {
+                    data.users.forEach(user => {
+                        console.log('Processing user:', user); // Debug log
+                        const statusText = user.status === 'Active' ? 'Hoạt động' : 'Đã khóa';
+                        const statusClass = user.status === 'Active' ? 'text-success' : 'text-danger';
+                        const roleText = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+                        
+                        console.log('Status values:', { // Debug log
+                            originalStatus: user.status,
+                            statusText: statusText,
+                            statusClass: statusClass
+                        });
+                        
+                        const row = `
+                            <tr>
+                                <td>${user.username}</td>
+                                <td>${user.fullname}</td>
+                                <td>${user.phone}</td>
+                                <td>${user.email || 'Chưa cập nhật'}</td>
+                                <td>${roleText}</td>
+                                <td class="${statusClass}">${statusText}</td>
+                                <td>
+                                    <button class='btn btn-outline-warning' onclick='showEditUserPopup("${user.username}")'>
+                                        Chỉnh sửa
+                                    </button>
+                                </td>
+                            </tr>
                         `;
-            tableBody.appendChild(row);
-          });
+                        tableBody.innerHTML += row;
+                    });
+
+                    // Update pagination
+                    if (data.pagination && data.pagination.totalPages > 0) {
+                        renderPagination(data.pagination.currentPage, data.pagination.totalPages);
+                    } else {
+                        paginationContainer.innerHTML = `
+                            <button class="page-btn" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="page-number active">1</button>
+                            <button class="page-btn" disabled>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        `;
+                    }
+                }
+            } else {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-danger">
+                            ${data.message || 'Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại.'}
+                        </td>
+                    </tr>
+                `;
+                paginationContainer.innerHTML = '';
+            }
         })
         .catch(error => {
-          console.error('Search error:', error);
-          tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">
-                        Có lỗi xảy ra: ${error.message}</td></tr>`;
+            console.error('Error:', error);
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-danger">
+                        Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại.
+                    </td>
+                </tr>
+            `;
+            paginationContainer.innerHTML = '';
         });
     }
 
     // Add debounce to search
-    let searchTimeout;
     document.querySelector('.search-bar-customer').addEventListener('input', function() {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(searchUsers, 500);
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => searchUsers(), 500);
     });
 
     // Add event listener for search button
-    document.querySelector('.search-icon-customer').addEventListener('click', searchUsers);
+    document.querySelector('.search-icon-customer').addEventListener('click', function() {
+        searchUsers();
+    });
 
     // Add event listener for Enter key
     document.querySelector('.search-bar-customer').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        searchUsers();
-      }
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            searchUsers();
+        }
     });
 
     function loadDistricts(provinceId) {
@@ -570,6 +820,7 @@
       formData.append('district_id', document.getElementById('addDistrict').value);
       formData.append('ward_id', document.getElementById('addWard').value);
       formData.append('status', document.getElementById('addStatus').value);
+      formData.append('role', document.getElementById('addRole').value);
 
       // Clear previous error messages
       document.querySelectorAll('.error').forEach(error => error.textContent = '');
@@ -585,18 +836,22 @@
             // Add new user to table
             const tableBody = document.querySelector('#userTable tbody');
             const row = document.createElement('tr');
+            const statusText = data.user.status === 'Active' ? 'Hoạt động' : 'Đã khóa';
+            const statusClass = data.user.status === 'Active' ? 'text-success' : 'text-danger';
+
             row.innerHTML = `
-                        <td>${data.user.username}</td>
-                        <td>${data.user.fullname}</td>
-                        <td>${data.user.phone}</td>
-                        <td>${data.user.email}</td>
-                        <td class="text-success">Hoạt động</td>
-                        <td>
-                            <button class='btn btn-outline-warning' onclick='showEditUserPopup("${data.user.username}")'>
-                                Chỉnh sửa
-                            </button>
-                        </td>
-                    `;
+              <td>${data.user.username}</td>
+              <td>${data.user.fullname}</td>
+              <td>${data.user.phone}</td>
+              <td>${data.user.email}</td>
+              <td>${data.user.role}</td>
+              <td class="${statusClass}">${statusText}</td>
+              <td>
+                <button class='btn btn-outline-warning' onclick='showEditUserPopup("${data.user.username}")'>
+                  Chỉnh sửa
+                </button>
+              </td>
+            `;
             tableBody.insertBefore(row, tableBody.firstChild);
 
             // Close popup and show success message
@@ -622,10 +877,10 @@
           alert('Có lỗi xảy ra khi thêm người dùng');
         });
 
-      return false; // Prevent form submission
+      return false;
     }
 
-    // Add password validation on input
+  
     document.getElementById('addConfirmPassword').addEventListener('input', function() {
       const password = document.getElementById('addPassword').value;
       const confirmPassword = this.value;
@@ -656,6 +911,9 @@
         .then(data => {
           if (data.success) {
             const user = data.user;
+            const currentUser = JSON.parse(localStorage.getItem('userInfo'));
+            const isCurrentUser = currentUser && currentUser.username === user.username;
+
             document.getElementById('editUsername').value = user.username;
             document.getElementById('editFullName').value = user.fullname;
             document.getElementById('editEmail').value = user.email;
@@ -667,7 +925,16 @@
             provinceSelect.value = user.province_id;
             loadEditDistricts(user.province_id, user.district_id, user.ward_id);
 
-            document.getElementById('editStatus').value = user.status;
+            // Chỉ vô hiệu hóa select box trạng thái nếu là tài khoản của chính mình
+            const statusSelect = document.getElementById('editStatus');
+            statusSelect.value = user.status;
+            if (isCurrentUser) {
+              statusSelect.disabled = true;
+              statusSelect.title = "Không thể thay đổi trạng thái của chính mình";
+            } else {
+              statusSelect.disabled = false;
+              statusSelect.title = "";
+            }
 
             // Show the popup
             document.getElementById('editUserOverlay').style.display = 'flex';

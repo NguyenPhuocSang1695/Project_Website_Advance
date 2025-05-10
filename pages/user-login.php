@@ -1,4 +1,5 @@
 <?php
+session_name('session_user');
 session_start();
 $redirect = $_GET['redirect'] ?? '../index.php';
 require_once('../src/php/token.php');
@@ -129,7 +130,7 @@ $cart_count = count($cart_items);
 ?>
 
 <script>
-  window.addEventListener('DOMContentLoaded', function () {
+  window.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const errorMessage = <?php echo json_encode($errorMessage); ?>;
 
@@ -351,7 +352,7 @@ $cart_count = count($cart_items);
                 window.location.href = "./search-result.php?q=" + encodeURIComponent(searchInput);
               });
             </script>
-           <div class="cart-wrapper">
+            <div class="cart-wrapper">
               <div class="cart-icon">
                 <a href="gio-hang.php">
                   <img src="../assets/images/cart.svg" alt="cart" />

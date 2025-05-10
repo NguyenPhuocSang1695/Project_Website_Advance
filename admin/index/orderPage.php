@@ -1,5 +1,5 @@
 <?php
-echo "sang";
+include '../php/check_session.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,11 +15,34 @@ echo "sang";
   <link href="../style/main1.css" rel="stylesheet">
   <link href="../style/orderStyle1.css" rel="stylesheet">
   <link href="../style/LogInfo.css" rel="stylesheet">
-  <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- <link href="asset/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+     <link rel="stylesheet" href="../../assets/libs/bootstrap-5.3.3-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../style/reponsiveOrder.css">
   <style>
-    /* Styles cho notification popup */
-    .notification {
+  a {
+    text-decoration: none;
+
+  }
+.container-function-selection {
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    margin-bottom: 0px;
+    width: 54px;
+}
+.button-function-selection {
+    margin-bottom: 3px;
+}
+.header-right-section {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+}
+.name-employee {
+    margin-top: -14px;
+}
+  .notification {
       position: fixed;
       top: 50%;
       left: 50%;
