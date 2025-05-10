@@ -559,9 +559,9 @@ $cart_count = count($cart_items);
 
               <thead>
                 <tr>
-                  <th>Mã hóa đơn</th>
-                  <th>Tổng tiền(đ)</th>
-                  <th>Tình trạng</th>
+                  <th>MÃ HÓA ĐƠN</th>
+                  <th style="text-align: center">THÀNH TIỀN (đ)</th>
+                  <th style="text-align: center">TÌNH TRẠNG</th>
                 </tr>
               </thead>
               <tbody>
@@ -572,9 +572,9 @@ $cart_count = count($cart_items);
                 <?php else: ?>
                   <?php foreach ($orderHistory as $order): ?>
                     <tr class="order-row" data-orderid="<?= $order['OrderID']; ?>">
-                      <td>#f<?= $order['OrderID']; ?></td>
-                      <td><?= number_format($order['TotalAmount'], 0, ',', '.') . ' VNĐ'; ?></td>
-                      <td>
+                      <td><?= $order['OrderID']; ?></td>
+                      <td style="text-align: center"><?= number_format($order['TotalAmount'], 0, ',', '.') . ' VNĐ'; ?></td>
+                      <td style="text-align: center">
                         <?php
                         switch ($order['Status']) {
                           case 'execute':

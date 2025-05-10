@@ -674,14 +674,16 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
       </div>
 
       <form action="gio-hang.php" method="POST" name="ThanhToan">
-        <div class="dat-hang">
+        <div class="dat-hang" style="gap: 10px;">
+          <a style="text-decoration: none;" href="../index.php"><button type="button" class="btn btn-secondary" style="width: 185px; height: 50px; margin: 10px 0 15px 0;">Tiếp tục mua hàng</button></a>
+
           <button type="submit" class="btn btn-success" name="checkout" style="width: 185px;
           height: 50px; margin: 10px 0 15px 0;">ĐẶT HÀNG</button>
         </div>
       </form>
       <div class="text" style="margin-bottom: 10px;">
         <!-- quay về trang chủ  -->
-        <a style="text-decoration: none;" href="../index.php">Tiếp tục mua hàng</a>
+
       </div>
     </div>
 

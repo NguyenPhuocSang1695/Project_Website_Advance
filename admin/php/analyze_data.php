@@ -13,20 +13,23 @@ $end_date = isset($_POST['end_date']) ? $_POST['end_date'] . ' 23:59:59' : date(
 
 // Truy vấn khách hàng mua nhiều nhất
 $customer_query = "SELECT 
-    u.FullName AS customer_name,
+    o.CustomerName AS customer_name,
+    o.Phone AS phone,
+    o.Address AS address,
+    o.Province AS province,
+    o.District AS district,
+    o.Ward AS ward,
     MAX(o.DateGeneration) AS latest_order_date,
     COUNT(o.OrderID) AS order_count,
-    MAX(o.OrderID) AS latest_order_id,
     SUM(o.TotalAmount) AS total_amount,
     GROUP_CONCAT(DISTINCT o.OrderID) AS order_ids
-FROM users u
-JOIN orders o ON u.Username = o.Username
+FROM orders o
 WHERE o.DateGeneration >= ? AND o.DateGeneration <= ?
     AND o.TotalAmount >= 0
     AND o.Status = 'success'
-GROUP BY u.Username, u.FullName
+GROUP BY o.CustomerName, o.Phone, o.Address, o.Province, o.District, o.Ward
 HAVING COUNT(o.OrderID) > 0
-ORDER BY order_count DESC, total_amount DESC 
+ORDER BY total_amount DESC, order_count DESC 
 LIMIT 5";
 
 $stmt = $myconn->prepare($customer_query);
@@ -35,19 +38,45 @@ $stmt->execute();
 $customer_result = $stmt->get_result();
 $customers = [];
 while ($row = $customer_result->fetch_assoc()) {
+    // Lấy danh sách order_id và total_amount cho từng khách hàng
     $order_ids = explode(',', $row['order_ids']);
-    $order_links = array_map(function($order_id) {
+    $order_amounts = [];
+    if (!empty($order_ids)) {
+        // Truy vấn lấy giá tiền từng đơn hàng
+        $placeholders = implode(',', array_fill(0, count($order_ids), '?'));
+        $types = str_repeat('i', count($order_ids));
+        $order_query = "SELECT OrderID, TotalAmount FROM orders WHERE OrderID IN ($placeholders) ORDER BY TotalAmount DESC";
+        $order_stmt = $myconn->prepare($order_query);
+        $order_stmt->bind_param($types, ...$order_ids);
+        $order_stmt->execute();
+        $order_result = $order_stmt->get_result();
+        while ($order_row = $order_result->fetch_assoc()) {
+            $order_amounts[] = [
+                'id' => $order_row['OrderID'],
+                'amount' => $order_row['TotalAmount'],
+                'url' => "orderDetail2.php?code_Product=" . $order_row['OrderID']
+            ];
+        }
+        $order_stmt->close();
+    }
+    // Tạo order_links đã sắp xếp
+    $order_links = array_map(function($order) {
         return [
-            'id' => $order_id,
-            'url' => "orderDetail2.php?code_Product=" . $order_id
+            'id' => $order['id'],
+            'url' => $order['url'],
+            'amount' => $order['amount']
         ];
-    }, $order_ids);
+    }, $order_amounts);
 
     $customers[] = [
         'customer_name' => htmlspecialchars($row['customer_name']),
+        'phone' => $row['phone'],
+        'address' => $row['address'],
+        'province' => $row['province'],
+        'district' => $row['district'],
+        'ward' => $row['ward'],
         'latest_order_date' => $row['latest_order_date'],
         'order_count' => (int)$row['order_count'],
-        'latest_order_id' => $row['latest_order_id'],
         'total_amount' => (float)$row['total_amount'],
         'order_links' => $order_links
     ];

@@ -464,7 +464,7 @@ body {
 .dat-hang {
   width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   top: 10rem;
 }
@@ -715,6 +715,11 @@ body {
 @media only screen and (max-width: 425.01px) {
   .section img {
     height: 7em;
+  }
+
+  .dat-hang {
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .infor-order {
