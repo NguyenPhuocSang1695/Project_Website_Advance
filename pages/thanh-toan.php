@@ -924,7 +924,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
             </div>
 
             <div class="payment-button" style="gap: 10px; flex-wrap: wrap;">
-              <a style="text-decoration: none;" href="../index.php"><button type="button" class="btn btn-secondary" style="width: 185px; height: 50px;">Tiếp tục mua hàng</button></a>
+              <a style="text-decoration: none;" href="./gio-hang.php"><button type="button" class="btn btn-secondary" style="width: 185px; height: 50px;">Quay lại</button></a>
               <button type="submit" class="btn btn-success" style="width: 185px; height: 50px;">THANH TOÁN</button>
             </div>
           </form>

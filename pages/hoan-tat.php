@@ -814,7 +814,7 @@ $cart_count = count($cart_items);
       </div>
 
       <div class="continue-shopping">
-        <a href="../index.php" class="btn btn-success" style="margin: 17px 0;">Tiếp tục mua sắm</a>
+        <a href="../index.php"><button class=" btn btn-success" style="margin: 17px 0; height: 43px;">Tiếp tục mua hàng</button></a>
       </div>
 
     </div>
@@ -823,7 +823,7 @@ $cart_count = count($cart_items);
 
   </style>
   <!-- FOOTER  -->
-  <footer class="footer">
+  <footer class=" footer">
     <div class="footer-column">
       <h3>The Tree</h3>
       <ul>
