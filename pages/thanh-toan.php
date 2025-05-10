@@ -923,7 +923,8 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
               <input type="text" name="zip_code" placeholder="Mã bưu điện" class="banking-required">
             </div>
 
-            <div class="payment-button">
+            <div class="payment-button" style="gap: 10px; flex-wrap: wrap;">
+              <a style="text-decoration: none;" href="../index.php"><button type="button" class="btn btn-secondary" style="width: 185px; height: 50px;">Tiếp tục mua hàng</button></a>
               <button type="submit" class="btn btn-success" style="width: 185px; height: 50px;">THANH TOÁN</button>
             </div>
           </form>
@@ -1072,9 +1073,9 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
             });
           </script>
 
-          <a href="../index.php" style="text-decoration: none; display: flex; justify-content: center; margin-bottom: 10px;">
+          <!-- <a href="../index.php" style="text-decoration: none; display: flex; justify-content: center; margin-bottom: 10px;">
             Tiếp tục mua hàng
-          </a>
+          </a> -->
         </div>
       </div>
     </div>
