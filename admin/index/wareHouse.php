@@ -687,7 +687,6 @@ if ($product_id) {
               </button>";
               echo "</div>";
 
-              // Xử lý xóa sản phẩm khi form submit
               if (isset($_POST['delete_product'])) {
                 $productId = $_POST['productId'];
 
@@ -1146,7 +1145,16 @@ if ($product_id) {
 
             paginationContainer.innerHTML = paginationHTML;
           } else {
-            paginationContainer.innerHTML = '';
+        
+            let paginationHTML = '';
+            paginationHTML += `<button class="page-btn" disabled>
+              <i class="fas fa-chevron-left"></i>
+            </button>`;
+            paginationHTML += `<button class="page-number active">1</button>`;
+            paginationHTML += `<button class="page-btn" disabled>
+              <i class="fas fa-chevron-right"></i>
+            </button>`;
+            paginationContainer.innerHTML = paginationHTML;
           }
         })
         .catch(error => {

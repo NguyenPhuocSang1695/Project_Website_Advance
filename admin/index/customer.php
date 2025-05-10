@@ -687,9 +687,18 @@
           if (data.pagination && data.pagination.totalPages > 1) {
             renderPagination(data.pagination.currentPage, data.pagination.totalPages);
           } else {
-            paginationContainer.innerHTML = '';
+            let paginationHTML = '';
+            paginationHTML += `<button class="page-btn" disabled>
+              <i class="fas fa-chevron-left"></i>
+            </button>`;
+            paginationHTML += `<button class="page-number active">1</button>`;
+            paginationHTML += `<button class="page-btn" disabled>
+              <i class="fas fa-chevron-right"></i>
+            </button>`;
+            paginationContainer.innerHTML = paginationHTML;
           }
         })
+        
         .catch(error => {
           hideLoading();
           console.error('Search error:', error);
