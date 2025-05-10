@@ -953,7 +953,7 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
             <!-- Form chuyển khoản -->
             <div id="banking-form" style="display: none;">
               <h2>Liên kết thẻ</h2>
-              <label>Thông tin thẻ</label>
+              <!-- <label>Thông tin thẻ</label> -->
               <label style="font-weight: bold;" for="card_number">Số thẻ:</label>
               <input type="text" id="card_number" name="card_number" placeholder="1234 1234 1234 1234" class="banking-required">
               <label for="expiry_date" style="font-weight: bold;">Ngày hết hạn:</label>
