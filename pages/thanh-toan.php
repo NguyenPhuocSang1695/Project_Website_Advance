@@ -954,15 +954,28 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
             <div id="banking-form" style="display: none;">
               <h2>Liên kết thẻ</h2>
               <label>Thông tin thẻ</label>
-              <input type="text" name="card_number" placeholder="1234 1234 1234 1234" class="banking-required">
-              <input type="text" name="expiry_date" placeholder="MM / YY" class="banking-required">
-              <input type="text" name="cvc" placeholder="CVC" class="banking-required">
+              <label style="font-weight: bold;" for="card_number">Số thẻ:</label>
+              <input type="text" id="card_number" name="card_number" placeholder="1234 1234 1234 1234" class="banking-required">
+              <label for="expiry_date" style="font-weight: bold;">Ngày hết hạn:</label>
+              <input type="text" id="expiry_date" name="expiry_date" placeholder="MM / YY" class="banking-required">
+              <label for="cvc" style="font-weight: bold;">Mã bảo mật:</label>
+              <input type="text" id="cvc" name="cvc" placeholder="CVC" class="banking-required">
               <label>Tên chủ thẻ</label>
               <input type="text" name="card_holder" placeholder="Full name on card" class="banking-required">
               <label>Địa chỉ</label>
               <select name="country" class="banking-required">
                 <option value="">Chọn quốc gia</option>
                 <option value="Vietnam">Vietnam</option>
+                <option value="Thailand">Thailand</option>
+                <option value="Malaysia">Malaysia</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Indonesia">Indonesia</option>
+                <option value="Philippines">Philippines</option>
+                <option value="Laos">Laos</option>
+                <option value="Cambodia">Cambodia</option>
+                <option value="Myanmar">Myanmar</option>
+                <option value="Brunei">Brunei</option>
+                <option value="East Timor">East Timor</option>
               </select>
               <input type="text" name="address1" placeholder="Địa chỉ 1" class="banking-required">
               <input type="text" name="address2" placeholder="Địa chỉ 2">
