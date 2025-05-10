@@ -109,6 +109,7 @@ $cart_count = count($cart_items);
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
+  <script src="../src/js/reloadPage.js"></script>
   <title>Lịch sử người dùng</title>
   <style>
     .order-row {

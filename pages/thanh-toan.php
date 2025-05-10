@@ -290,9 +290,9 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
   <script src="../src/js/gio-hang.js"></script>
   <script src="../src/js/PhuongThucChuyenKhoan.js"></script>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../src/js/jquery-3.7.1.min.js"></script>
 
-
+  <script src="../src/js/reloadPage.js"></script>
 
   <title>Hoàn tất thanh toán</title>
 </head>
@@ -690,12 +690,12 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
           <i class="fa-solid fa-circle-check"></i>
         </div>
         <div class="option-address">
-          <label for="">
-            <input type="radio" name="chon" id="default-information" checked> <span>Sử dụng thông tin mặc
+          <label for="default-information" style="cursor: pointer">
+            <input type="radio" name="chon" id="default-information" style="cursor: pointer" checked> <span>Sử dụng thông tin mặc
               định</span>
           </label>
-          <label for="">
-            <input type="radio" name="chon" id="new-information"> <span>Nhập thông tin mới</span>
+          <label for="new-information" style="cursor: pointer">
+            <input type="radio" name="chon" id="new-information" style="cursor: pointer"> <span>Nhập thông tin mới</span>
           </label>
         </div>
         <script>
@@ -893,12 +893,12 @@ $total_price_formatted = number_format($total_amount, 0, ',', '.') . " VNĐ";
               <input type="hidden" name="district" id="hidden-district">
               <input type="hidden" name="wards" id="hidden-wards">
               <label>
-                <input type="radio" name="paymentMethod" value="COD" checked onchange="toggleBankingForm()">
-                <span>Thanh toán khi nhận hàng</span>
+                <input type="radio" name="paymentMethod" value="COD" checked onchange="toggleBankingForm()" style="cursor: pointer">
+                <span style="cursor: pointer">Thanh toán khi nhận hàng</span>
               </label>
               <label>
-                <input type="radio" name="paymentMethod" value="Banking" onchange="toggleBankingForm()">
-                <span>Chuyển khoản</span>
+                <input type="radio" name="paymentMethod" value="Banking" onchange="toggleBankingForm()" style="cursor: pointer">
+                <span style="cursor: pointer">Chuyển khoản</span>
               </label>
             </div>
 

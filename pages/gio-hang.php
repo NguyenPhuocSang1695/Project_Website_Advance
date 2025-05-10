@@ -11,19 +11,19 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 
-  // Kiểm tra xem cookie 'token' có tồn tại không
-  if (!isset($_COOKIE['token'])) {
-    header("Location: user-login.php?error=login_required&redirect=gio-hang.php");
-    exit();
-  }
+// Kiểm tra xem cookie 'token' có tồn tại không
+if (!isset($_COOKIE['token'])) {
+  header("Location: user-login.php?error=login_required&redirect=gio-hang.php");
+  exit();
+}
 
-  try {
-    $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
-    $username = $decoded->data->Username;
-  } catch (Exception $e) {
-    header("Location: user-login.php?error=login_required&redirect=gio-hang.php");
-    exit();
-  }
+try {
+  $decoded = JWT::decode($_COOKIE['token'], new Key($key, 'HS256'));
+  $username = $decoded->data->Username;
+} catch (Exception $e) {
+  header("Location: user-login.php?error=login_required&redirect=gio-hang.php");
+  exit();
+}
 
 
 // Xử lý thêm, cập nhật và xóa sản phẩm
@@ -171,7 +171,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
   <!-- JS  -->
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
-
+  <script src="../src/js/reloadPage.js"></script>
   <!-- <script src="../src/js/main.js"></script> -->
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>

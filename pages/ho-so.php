@@ -109,6 +109,7 @@ $cart_count = count($cart_items);
   <script src="../assets/libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
   <script src="../src/js/Trang_chu.js"></script>
   <!-- <script src="../src/js/main.js"></script> -->
+  <script src="../src/js/reloadPage.js"></script>
   <script src="../src/js/search-common.js"></script>
   <script src="../src/js/onOffSeacrhAdvance.js"></script>
   <script src="../src/js/search-index.js"></script>
