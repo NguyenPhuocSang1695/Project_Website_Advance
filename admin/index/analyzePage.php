@@ -1,4 +1,4 @@
-<?php include '../php/check_session.php';?>
+<?php include '../php/check_session.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="../style/header.css">
   <link rel="stylesheet" href="../style/sidebar.css">
   <link rel="stylesheet" href="../style/LogInfo.css">
-  <link rel="stylesheet" href="../style/reponsiveAnalyze.css"> 
-   <!-- Icons -->
+  <link rel="stylesheet" href="../style/reponsiveAnalyze.css">
+  <!-- Icons -->
   <link rel="stylesheet" href="../icon/css/all.css">
   <!-- Bootstrap (JS only) -->
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -43,7 +43,7 @@
                   color: #FAD4AE;
                   "></i>
               </button>
-              <p>Trang chủ</p>
+              <p>Tổng quan</p>
             </div>
           </a>
           <a href="wareHouse.php" style="text-decoration: none; color: black;">
@@ -117,7 +117,7 @@
                         width:100%;
                         "></i>
       </div>
-      <div >
+      <div>
         <div class="position-employee">
           <p id="employee-role">Chức vụ</p>
         </div>
@@ -160,7 +160,7 @@
                 <a href="#" class="btn_2 cancel">Hủy</a>
               </div>
             </div>
-          </div> 
+          </div>
         </div>
       </div>
     </div>
@@ -176,7 +176,7 @@
               color: #FAD4AE;
               "></i>
             </button>
-            <p>Trang chủ</p>
+            <p>Tổng quan</p>
           </div>
         </a>
       </div>
@@ -248,7 +248,7 @@
         </form>
       </div>
 
-      <table> 
+      <table>
         <thead>
           <tr>
             <th>STT</th>
@@ -276,7 +276,7 @@
         </div>
       </div>
     </div>
- 
+
     <!-- Container 2: Mặt hàng và các mục bán chạy/ế -->
     <div class="container" style="margin-top: 3rem;">
       <h1>Thống Kê Mặt Hàng Bán Ra</h1>
@@ -327,7 +327,7 @@
         <h2>Chi tiết đơn hàng #<span id="modalOrderId"></span></h2>
         <span id="modalOrderStatus" class="status-badge"></span>
       </div>
-      
+
       <div class="order-info-grid">
         <div class="order-info-section">
           <h3>Thông tin đơn hàng</h3>
@@ -340,7 +340,7 @@
             <span id="modalPaymentMethod" class="info-value"></span>
           </div>
         </div>
-         
+
         <div class="order-info-section">
           <h3>Thông tin khách hàng</h3>
           <div class="info-row">
@@ -372,25 +372,25 @@
   </div>
 
   <script src="../js/analyzePage.js"></script>
-  <script src ="../js/checklog.js"></script>
+  <script src="../js/checklog.js"></script>
   <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const cachedUserInfo = localStorage.getItem('userInfo');
-    if (cachedUserInfo) {
+    document.addEventListener('DOMContentLoaded', () => {
+      const cachedUserInfo = localStorage.getItem('userInfo');
+      if (cachedUserInfo) {
         const userInfo = JSON.parse(cachedUserInfo);
         document.querySelector('.name-employee p').textContent = userInfo.fullname;
         document.querySelector('.position-employee p').textContent = userInfo.role;
         document.querySelectorAll('.avatar').forEach(img => img.src = userInfo.avatar);
-    }
-});
-</script>
+      }
+    });
+  </script>
 </body>
 
 </html>
 
 <style>
-/* Add this to your analyzeStyle.css */
-input[type="date"] {
+  /* Add this to your analyzeStyle.css */
+  input[type="date"] {
     /* Reset Bootstrap styles */
     -webkit-appearance: none;
     appearance: none;
@@ -400,25 +400,28 @@ input[type="date"] {
     border-radius: 6px;
     transition: all 0.3s ease;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-.container-function-selection {
+  }
+
+  .container-function-selection {
     cursor: pointer;
     font-size: 10px;
     font-weight: bold;
     margin-bottom: 0px;
     width: 54px;
-}
-.button-function-selection {
+  }
+
+  .button-function-selection {
     margin-bottom: 3px;
-}
-.header-right-section {
+  }
+
+  .header-right-section {
     display: flex;
     flex-direction: row;
     gap: 10px;
     margin-top: 20px;
-}
-.name-employee {
-    margin-top: -14px;
-}
+  }
 
+  .name-employee {
+    margin-top: -14px;
+  }
 </style>

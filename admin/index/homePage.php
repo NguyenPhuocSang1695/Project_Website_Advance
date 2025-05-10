@@ -10,7 +10,7 @@ include '../php/check_session.php';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản lý bán hàng - Trang chủ Admin</title>
+  <title>Quản lý bán hàng - Tổng quan trang Admin</title>
 
   <link rel="stylesheet" href="../style/header.css">
   <link rel="stylesheet" href="../style/sidebar.css">
@@ -40,7 +40,7 @@ include '../php/check_session.php';
               <button class="button-function-selection" style="background-color: #6aa173;">
                 <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
               </button>
-              <p>Trang chủ</p>
+              <p>Tổng quan</p>
             </div>
           </a>
           <a href="wareHouse.php" style="text-decoration: none; color: black;">
@@ -87,7 +87,7 @@ include '../php/check_session.php';
       </div>
     </div>
     <div class="header-left-section">
-      <p class="header-left-title">Trang chủ</p>
+      <p class="header-left-title">Tổng quan</p>
     </div>
     <div class="header-middle-section">
       <img class="logo-store" src="../../assets/images/LOGO-2.jpg">
@@ -149,7 +149,7 @@ include '../php/check_session.php';
           <button class="button-function-selection" style="background-color: #6aa173; margin-top: 35px;">
             <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
           </button>
-          <p>Trang chủ</p>
+          <p>Tổng quan</p>
         </div>
       </a>
     </div>

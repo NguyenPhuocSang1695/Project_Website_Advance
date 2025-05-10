@@ -210,6 +210,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <title>Đơn Hàng Số <?php echo $orderDetailID; ?></title>
   <meta charset="UTF-8">
@@ -230,7 +231,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
       padding: 0;
       overflow-x: auto;
       max-height: 400px;
-      overflow-y: auto; 
+      overflow-y: auto;
     }
 
     .table-container table {
@@ -269,7 +270,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
     }
 
     .table-container thead th {
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     /* Animate scroll */
@@ -285,7 +286,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
 
     @media (max-width: 768px) {
       .table-container {
-        max-height: 300px; 
+        max-height: 300px;
       }
     }
 
@@ -345,7 +346,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
     }
   </style>
 </head>
- 
+
 <body>
   <script src="./asset/bootstrap/js/bootstrap.bundle.min.js"></script>
   <div class="header">
@@ -370,7 +371,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                   color: #FAD4AE;
                   "></i>
               </button>
-              <p>Trang chủ</p>
+              <p>Tổng quan</p>
             </div>
           </a>
           <a href="../index/wareHouse.php" style="text-decoration: none; color: black;">
@@ -501,7 +502,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
             color: #FAD4AE;
             "></i>
           </button>
-          <p>Trang chủ</p>
+          <p>Tổng quan</p>
         </div>
       </a>
     </div>
@@ -619,7 +620,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                     <tr>
                       <td colspan="4">Không có sản phẩm nào trong đơn hàng này.</td>
                     </tr>
-                  <?php else  : ?>
+                  <?php else : ?>
                     <?php foreach ($orderDetails as $detail): ?>
                       <tr onclick="window.location='wareHouse.php?product_id=<?php echo $detail['ProductID']; ?>'" style="cursor: pointer;">
                         <td style="text-align:left">
@@ -658,7 +659,7 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
                 <span>Tổng giá trị đơn hàng</span>
                 <span><?php echo number_format($total, 0, ',', '.') . ' đ'; ?></span>
               </div>
-         
+
             </div>
           </div>
         </div>
@@ -689,4 +690,5 @@ $paymentStatusInfo = getPaymentStatusInfo($paymentMethod);
     </div>
   </div>
 </body>
+
 </html>

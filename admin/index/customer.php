@@ -92,7 +92,7 @@
               <button class="button-function-selection">
                 <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
               </button>
-              <p>Trang chủ</p>
+              <p>Tổng quan</p>
             </div>
           </a>
           <a href="wareHouse.php" style="text-decoration: none; color: black;">
@@ -200,7 +200,7 @@
           <button class="button-function-selection" style=" margin-top: 35px;">
             <i class="fa-solid fa-house" style="font-size: 20px; color: #FAD4AE;"></i>
           </button>
-          <p>Trang chủ</p>
+          <p>Tổng quan</p>
         </div>
       </a>
     </div>
@@ -638,12 +638,12 @@
       fetch(`../php/search-users.php?search=${encodeURIComponent(searchTerm)}&page=1&per_page=5`)
         .then(response => response.json())
         .then(data => {
-            console.log('Search response:', data); // Debug log
-            if (data.success) {
-                tableBody.innerHTML = '';
+          console.log('Search response:', data); // Debug log
+          if (data.success) {
+            tableBody.innerHTML = '';
 
-                if (data.users.length === 0) {
-                    tableBody.innerHTML = `
+            if (data.users.length === 0) {
+              tableBody.innerHTML = `
                         <tr>
                             <td colspan="7" class="text-center">
                                 <i class="fas fa-search"></i>
@@ -651,21 +651,21 @@
                             </td>
                         </tr>
                     `;
-                    paginationContainer.innerHTML = '';
-                } else {
-                    data.users.forEach(user => {
-                        console.log('Processing user:', user); // Debug log
-                        const statusText = user.status === 'Active' ? 'Hoạt động' : 'Đã khóa';
-                        const statusClass = user.status === 'Active' ? 'text-success' : 'text-danger';
-                        const roleText = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
-                        
-                        console.log('Status values:', { // Debug log
-                            originalStatus: user.status,
-                            statusText: statusText,
-                            statusClass: statusClass
-                        });
-                        
-                        const row = `
+              paginationContainer.innerHTML = '';
+            } else {
+              data.users.forEach(user => {
+                console.log('Processing user:', user); // Debug log
+                const statusText = user.status === 'Active' ? 'Hoạt động' : 'Đã khóa';
+                const statusClass = user.status === 'Active' ? 'text-success' : 'text-danger';
+                const roleText = user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng';
+
+                console.log('Status values:', { // Debug log
+                  originalStatus: user.status,
+                  statusText: statusText,
+                  statusClass: statusClass
+                });
+
+                const row = `
                             <tr>
                                 <td>${user.username}</td>
                                 <td>${user.fullname}</td>
@@ -680,14 +680,14 @@
                                 </td>
                             </tr>
                         `;
-                        tableBody.innerHTML += row;
-                    });
+                tableBody.innerHTML += row;
+              });
 
-                    // Update pagination
-                    if (data.pagination && data.pagination.totalPages > 0) {
-                        renderPagination(data.pagination.currentPage, data.pagination.totalPages);
-                    } else {
-                        paginationContainer.innerHTML = `
+              // Update pagination
+              if (data.pagination && data.pagination.totalPages > 0) {
+                renderPagination(data.pagination.currentPage, data.pagination.totalPages);
+              } else {
+                paginationContainer.innerHTML = `
                             <button class="page-btn" disabled>
                                 <i class="fas fa-chevron-left"></i>
                             </button>
@@ -696,49 +696,49 @@
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         `;
-                    }
-                }
-            } else {
-                tableBody.innerHTML = `
+              }
+            }
+          } else {
+            tableBody.innerHTML = `
                     <tr>
                         <td colspan="7" class="text-center text-danger">
                             ${data.message || 'Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại.'}
                         </td>
                     </tr>
                 `;
-                paginationContainer.innerHTML = '';
-            }
+            paginationContainer.innerHTML = '';
+          }
         })
         .catch(error => {
-            console.error('Error:', error);
-            tableBody.innerHTML = `
+          console.error('Error:', error);
+          tableBody.innerHTML = `
                 <tr>
                     <td colspan="7" class="text-center text-danger">
                         Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại.
                     </td>
                 </tr>
             `;
-            paginationContainer.innerHTML = '';
+          paginationContainer.innerHTML = '';
         });
     }
 
     // Add debounce to search
     document.querySelector('.search-bar-customer').addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => searchUsers(), 500);
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => searchUsers(), 500);
     });
 
     // Add event listener for search button
     document.querySelector('.search-icon-customer').addEventListener('click', function() {
-        searchUsers();
+      searchUsers();
     });
 
     // Add event listener for Enter key
     document.querySelector('.search-bar-customer').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            searchUsers();
-        }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        searchUsers();
+      }
     });
 
     function loadDistricts(provinceId) {
@@ -880,7 +880,7 @@
       return false;
     }
 
-  
+
     document.getElementById('addConfirmPassword').addEventListener('input', function() {
       const password = document.getElementById('addPassword').value;
       const confirmPassword = this.value;
