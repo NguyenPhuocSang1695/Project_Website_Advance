@@ -563,7 +563,7 @@ $total_price_formatted = number_format($total, 0, ',', '.') . " VNĐ";
   <!-- SECTION  -->
   <div class="section">
     <div class="img-21">
-      <img src="../assets/images/CAY21.jpg" alt="CAY21">
+      <!-- <img src="../assets/images/CAY21.jpg" alt="CAY21"> -->
     </div>
   </div>
 
