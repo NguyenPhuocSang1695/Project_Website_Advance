@@ -578,59 +578,6 @@ if ($product_id) {
               // Close the table
               echo "</tbody></table>";
 
-              // Display pagination
-              echo "<nav aria-label='Page navigation' class='mt-4'>";
-              echo "<ul class='pagination justify-content-center'>";
-
-              // Previous button
-              if ($page > 1) {
-                echo "<li class='page-item'><a class='page-link' href='?page=" . ($page - 1) . "'><<</a></li>";
-              }
-
-              // Page numbers
-              if ($total_pages <= 5) {
-                // If total pages is 5 or less, show all pages
-                for ($i = 1; $i <= $total_pages; $i++) {
-                  echo "<li class='page-item " . ($page == $i ? 'active' : '') . "'>";
-                  echo "<a class='page-link' href='?page=$i'>$i</a>";
-                  echo "</li>";
-                }
-              } else {
-                // Show first page
-                echo "<li class='page-item " . ($page == 1 ? 'active' : '') . "'>";
-                echo "<a class='page-link' href='?page=1'>1</a></li>";
-
-                // Show pages around current page
-                $start_page = max(2, min($page - 1, $total_pages - 3));
-                $end_page = min($total_pages - 1, max($page + 1, 4));
-
-                if ($start_page > 2) {
-                  echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
-                }
-
-                for ($i = $start_page; $i <= $end_page; $i++) {
-                  echo "<li class='page-item " . ($page == $i ? 'active' : '') . "'>";
-                  echo "<a class='page-link' href='?page=$i'>$i</a>";
-                  echo "</li>";
-                }
-
-                if ($end_page < $total_pages - 1) {
-                  echo "<li class='page-item disabled'><span class='page-link'>...</span></li>";
-                }
-
-                // Show last page
-                echo "<li class='page-item " . ($page == $total_pages ? 'active' : '') . "'>";
-                echo "<a class='page-link' href='?page=$total_pages'>$total_pages</a></li>";
-              }
-
-              // Next button
-              if ($page < $total_pages) {
-                echo "<li class='page-item'><a class='page-link' href='?page=" . ($page + 1) . "'>>></a></li>";
-              }
-
-              echo "</ul>";
-              echo "</nav>";
-
               // Xử lý xóa sản phẩm khi form submit
               if (isset($_POST['delete_product'])) {
                 $productId = $_POST['productId'];
@@ -1055,7 +1002,7 @@ if ($product_id) {
             if (data.pagination.currentPage > 1) {
               paginationHTML += `
                 <li class="page-item">
-                  <a class="page-link" href="#" onclick="searchProducts(${data.pagination.currentPage - 1}); return false;"><<</a>
+                  <a class="page-link" href="#" onclick="searchProducts(${data.pagination.currentPage - 1}); return false;"><</a>
                 </li>`;
             }
 
@@ -1082,7 +1029,7 @@ if ($product_id) {
             if (data.pagination.currentPage < data.pagination.totalPages) {
               paginationHTML += `
                 <li class="page-item">
-                  <a class="page-link" href="#" onclick="searchProducts(${data.pagination.currentPage + 1}); return false;">>></a>
+                  <a class="page-link" href="#" onclick="searchProducts(${data.pagination.currentPage + 1}); return false;">></a>
                 </li>`;
             }
 

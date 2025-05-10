@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if ($password !== $confirmPassword) {
     $errors['confirm-password'] = "Mật khẩu xác nhận không khớp!";
   }
-  if (!preg_match("/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,}/", $password)) {
+  if (!preg_match("/(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,}/", $password)) {
     $errors['password'] = "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.";
   }
   if (!preg_match('/^([\p{L}]+(?:\s[\p{L}]+){0,79})$/u', $fullname)) {

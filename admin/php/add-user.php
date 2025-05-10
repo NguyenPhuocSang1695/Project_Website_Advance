@@ -3,7 +3,8 @@ header('Content-Type: application/json');
 require_once 'connect.php';
 
 // Validate and sanitize input
-function validateInput($data) {
+function validateInput($data)
+{
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
@@ -51,9 +52,9 @@ try {
     if (!preg_match('/[A-Z]/', $password)) {
         throw new Exception('Mật khẩu phải chứa ít nhất một chữ hoa');
     }
-    if (!preg_match('/[a-z]/', $password)) {
-        throw new Exception('Mật khẩu phải chứa ít nhất một chữ thường');
-    }
+    // if (!preg_match('/[a-z]/', $password)) {
+    //     throw new Exception('Mật khẩu phải chứa ít nhất một chữ thường');
+    // }
     if (!preg_match('/[0-9]/', $password)) {
         throw new Exception('Mật khẩu phải chứa ít nhất một số');
     }
@@ -144,7 +145,8 @@ try {
         throw new Exception('Lỗi chuẩn bị câu lệnh SQL: ' . $myconn->error);
     }
 
-    $stmt->bind_param("ssssssiiiss", 
+    $stmt->bind_param(
+        "ssssssiiiss",
         $username,
         $fullname,
         $email,
@@ -186,4 +188,3 @@ try {
         $myconn->close();
     }
 }
-?>

@@ -382,9 +382,9 @@ include '../php/check_session.php';
         </div>
         <div class="select_list" id="pagination-container">
           <button id="prevPage">
-            << </button>
+            < </button>
               <div id="pageNumbers"></div>
-              <button id="nextPage">>></button>
+              <button id="nextPage">></button>
         </div>
       </div>
     </div>
