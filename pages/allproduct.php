@@ -126,7 +126,7 @@ $cart_count = count($cart_items);
         }
 
         .product-price {
-            color: #2ecc71;
+            color: #1c8e2e;
             font-weight: bold;
             margin: 10px 0;
         }
@@ -134,7 +134,7 @@ $cart_count = count($cart_items);
         .btn-view-product {
             display: inline-block;
             padding: 8px 15px;
-            background-color: #2ecc71;
+            background-color: #1c8e2e;
             color: white;
             text-decoration: none;
             border-radius: 4px;
@@ -718,7 +718,7 @@ $cart_count = count($cart_items);
                 echo '<div class="product-info">';
                 echo '<h3 class="product-name" style="font-weight: bold;">' . htmlspecialchars($product['ProductName']) . '</h3>';
                 echo '<div class="product-price">' . number_format($product['Price'], 0, ',', '.') . ' VNĐ</div>';
-                echo '<a href="user-sanpham.php?id=' . $product['ProductID'] . '" class="btn-view-product">Xem chi tiết</a>';
+                echo '<a href="user-sanpham.php?id=' . $product['ProductID'] . '" class="btn btn-success">Xem chi tiết</a>';
                 echo '</div>';
                 echo '</div>';
             }
