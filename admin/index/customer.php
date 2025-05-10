@@ -255,6 +255,20 @@
         </button>
       </div>
       <button type="button" class="btn btn-success" onclick="showAddUserPopup()">Thêm người dùng</button>
+      <style>
+        #userTable th:nth-child(1),
+        th:nth-child(2),
+        th:nth-child(3),
+        th:nth-child(4),
+        th:nth-child(5),
+        th:nth-child(6) {
+          text-align: center;
+        }
+
+        #userTable td {
+          text-align: center;
+        }
+      </style>
       <table class="user-table" id="userTable">
         <thead>
           <tr>

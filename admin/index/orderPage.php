@@ -356,6 +356,20 @@ include '../php/check_session.php';
         </div>
 
         <div class="statistic-section">
+          <style>
+            .statistic-table th:nth-child(1),
+            th:nth-child(2),
+            th:nth-child(3),
+            th:nth-child(4),
+            th:nth-child(5),
+            th:nth-child(6) {
+              text-align: center;
+            }
+
+            .statistic-table td {
+              text-align: center;
+            }
+          </style>
           <table class="statistic-table">
             <thead>
               <tr>

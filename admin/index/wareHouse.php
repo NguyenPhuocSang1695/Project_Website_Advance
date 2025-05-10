@@ -524,12 +524,19 @@ if ($product_id) {
             <thead>
               <tr>
                 <th>Ảnh</th>
-                <th>Tên sản phẩm</th>
-                <th>Danh mục</th>
-                <th>Giá</th>
-                <th></th>
+                <th style="text-align: center;">Tên sản phẩm</th>
+                <th style="text-align: center;">Danh mục</th>
+                <th style="text-align: center;">Giá</th>
+                <th style="text-align: center;"></th>
               </tr>
             </thead>
+            <style>
+              #productsTable td:nth-child(2),
+              td:nth-child(3),
+              td:nth-child(4) {
+                text-align: center;
+              }
+            </style>
             <tbody id="productsBody">
               <?php
               // Database connection
@@ -563,9 +570,9 @@ if ($product_id) {
                 while ($row = $result->fetch_assoc()) {
                   echo "<tr class='product-row'>";
                   echo "<td><img src='../.." . $row['ImageURL'] . "' alt='" . $row['ProductName'] . "' style='width: 100px; height: 100px; object-fit: cover;'></td>";
-                  echo "<td>" . $row['ProductName'] . "</td>";
-                  echo "<td>" . $row['CategoryName'] . "</td>";
-                  echo "<td>" . number_format($row['Price'], 0, ',', '.') . " VNĐ</td>";
+                  echo "<td style='text-align: center;'>" . $row['ProductName'] . "</td>";
+                  echo "<td style='text-align: center;'>" . $row['CategoryName'] . "</td>";
+                  echo "<td style='text-align: center;'>" . number_format($row['Price'], 0, ',', '.') . " VNĐ</td>";
                   echo "<td class='actions'>";
                   echo "<button class='btn btn-warning btn-sm' onclick='editProduct(" . $row['ProductID'] . ")'><i class='fa-solid fa-pen-to-square'></i></button> ";
                   echo "</td>";
